@@ -5,11 +5,11 @@ import FeaturedCategories from "@/components/FeaturedCategories";
 import React from "react";
 
 const transmissionTypes = [
-  { name: "Electric", img: "/transmission/electric.png" },
-  { name: "CVT", img: "/transmission/cvt.png" },
-  { name: "AMT", img: "/transmission/amt.png" },
-  { name: "Automatic", img: "/transmission/automatic.png" },
-  { name: "Manual Reset", img: "/transmission/manualreset.png" },
+  { name: "Electric", img: "/transmission/images/electric.png" },
+  { name: "CVT", img: "/transmission/images/cvt.png" },
+  { name: "AMT", img: "/transmission/images/amt.png" },
+  { name: "Automatic", img: "/transmission/images/automatic.png" },
+  { name: "Manual Reset", img: "/transmission/images/manual.png" },
 ];
 
 // Local wrapper for tweaks

@@ -30,15 +30,15 @@ export default function EnginePage() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="flex flex-col items-center">
             <Image src="/engine/img-1.png" alt="Engine Type 1" width={384} height={240} className="rounded-lg object-cover" />
-            <span className="mt-2 text-base font-medium text-[#1E4A8F]">Engine Type 1</span>
+            {/* <span className="mt-2 text-base font-medium text-[#1E4A8F]">Engine Type 1</span> */}
           </div>
           <div className="flex flex-col items-center">
-            <Image src="/engine/hybrid.png" alt="Hybrid Engine" width={384} height={240} className="rounded-lg object-cover" />
-            <span className="mt-2 text-base font-medium text-[#1E4A8F]">Hybrid Engine</span>
+            <Image src="/engine/desl.png" alt="Diesel Engine" width={384} height={240} className="rounded-lg object-cover" />
+            {/* <span className="mt-2 text-base font-medium text-[#1E4A8F]">Hybrid Engine</span> */}
           </div>
           <div className="flex flex-col items-center">
-            <Image src="/engine/gasoline.png" alt="Gasoline Engine" width={384} height={240} className="rounded-lg object-cover" />
-            <span className="mt-2 text-base font-medium text-[#1E4A8F]">Gasoline Engine</span>
+            <Image src="/engine/hybrid-engine.png" alt="hybrid Engine" width={384} height={240} className="rounded-lg object-cover" />
+            {/* <span className="mt-2 text-base font-medium text-[#1E4A8F]">Gasoline Engine</span> */}
           </div>
         </div>
       </section>

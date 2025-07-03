@@ -385,36 +385,41 @@ const getCardImages = (folder: string): string[] => {
 
 export default function AutoPartsPage() {
   return (
-    <div className="min-h-screen bg-[#091B33] pb-12">
-      {/* Breadcrumb */}
-      <div className="flex items-center gap-2 px-6 py-8">
-        <Image src="/autoparts/HouseLine.png" alt="Home" width={24} height={24} />
-        <Image src="/autoparts/arrows.png" alt=">" width={16} height={16} />
-        <span className="text-white text-lg font-audiowide">Auto parts</span>
+    <>
+      <div className="w-full h-[320px] relative">
+        <Image src="/Images/title_img (2).png" alt="Banner" fill className="object-cover w-full h-full" priority />
       </div>
-      {/* Grids */}
-      <div className="flex flex-col gap-y-12 px-6">
-        {PARTS.map((part) => (
-          <div key={part.name} className="p-4 w-full">
-            <div className="mb-4 text-white text-[32px] font-audiowide capitalize">{part.name.replace(/_/g, ' ')}</div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {part.images.map((img) => (
-                <div key={img} className="w-full h-[56px] md:h-[112px] bg-[#1A3557] rounded flex items-center justify-center">
-                  <Image
-                    src={`/autoparts/${part.name}/${img}`}
-                    alt={part.name + " card"}
-                    width={282}
-                    height={112}
-                    className="object-contain w-full h-auto"
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                </div>
-              ))}
+      <div className="min-h-screen bg-[#091B33] pb-12">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 px-6 py-8">
+          <Image src="/autoparts/HouseLine.png" alt="Home" width={24} height={24} />
+          <Image src="/autoparts/arrows.png" alt=">" width={16} height={16} />
+          <span className="text-white text-lg font-audiowide">Auto parts</span>
+        </div>
+        {/* Grids */}
+        <div className="flex flex-col gap-y-12 px-6">
+          {PARTS.map((part) => (
+            <div key={part.name} className="p-4 w-full">
+              <div className="mb-4 text-white text-[32px] font-audiowide capitalize">{part.name.replace(/_/g, ' ')}</div>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {part.images.map((img) => (
+                  <div key={img} className="w-full h-[56px] md:h-[112px] bg-[#1A3557] rounded flex items-center justify-center">
+                    <Image
+                      src={`/autoparts/${part.name}/${img}`}
+                      alt={part.name + " card"}
+                      width={282}
+                      height={112}
+                      className="object-contain w-full h-auto"
+                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 

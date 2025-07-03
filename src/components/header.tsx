@@ -20,23 +20,23 @@
 // * **Hours**: `Mon‑Fri: 8AM ‑ 7PM EST`
 // * **Utility Icons** (right side):
 
-//   * Search icon: `public/images/MagnifyingGlass.svg
-//   * Cart icon:   `public/images/ShoppingCartSimple.svg
-//   * Home icon:   public/images/Garage.svg- 
-//   * Profile icon:  - public/images/User.svg
+//   * Search icon:  take all the images from public\header folder . logos ,arrows icons find there read name.
+//   * Cart icon:   `
+//   * Home icon:   
+//   * Profile icon:  -
 
 // ### Navbar Content
-
+// header
 // #### Primary Links (xl/lg horizontal)
 
 // | Label              | Behavior                        |
 // | ------------------ | ------------------------------- |
-// | Shop by Categories | opens full-panel sidebar/flyout |
+// | Shop by Categories |  opens full-panel sidebar/flyout |(add hamburgur button here ) Shop by Categories (dropdown arrow icon)
 // | Auto Parts         | dropdown → with sub-items       |
 // | Engine             | simple link or flyout           |
 // | Transmission       | link or flyout                  |
 // | Contact Us         | direct link                     |
-// | Info               | opens small submenu             |
+// | Info               | opens small submenu  (add arow next to it)           |
 
 // #### Categories Sidebar (when Shop by Categories active)
 
@@ -136,12 +136,16 @@
 // > **Note:** All design details (padding, colors, font sizes) should match the provided screenshots exactly. Breakpoints use Tailwind's default `sm, md, lg, xl`.
 
 import React, {  useState } from 'react';
-// import Image from 'next/image'; // Uncomment if using next/image for SVGs
-// import Logo from '@/public/images/autosquare-logo.svg';
-// import MagnifyingGlass from 'public/images/MagnifyingGlass.svg';
-// import ShoppingCartSimple from 'public/images/ShoppingCartSimple.svg';
-// import Garage from 'public/images/Garage.svg';
-// import User from 'public/images/User.svg';
+import Image from 'next/image';
+import Hamburger from '@/public/header/hamburgur-button.png';
+import Arrow from '@/public/header/arrows (4).png';
+
+/**
+ * fix hegiht for top bar
+ * 
+ * 
+ * 
+ */
 
 const categories = [
   {
@@ -182,7 +186,7 @@ const navLinks = [
   { label: 'Engine', type: 'link' },
   { label: 'Transmission', type: 'link' },
   { label: 'Contact Us', type: 'link' },
-  { label: 'Info', type: 'submenu', sub: ['About', 'FAQ', 'Policies'] },
+  { label: 'Info', type: 'submenu', sub: ['About us', 'Warranty and Return','Shipping and Payment', 'Privacy Policy','Terms & Conditions','Blogs','Testimonials','Track my order','Submit a ticket','Make a Payment'] },
 ];
 
 export default function Header() {
@@ -212,113 +216,125 @@ export default function Header() {
 
   // --- Top Bar ---
   return (
-    <header className="w-full bg-[#0D1B38] text-white border-b border-gray-700">
+    <header className="w-full  bg-[#091B33] text-white ">
       {/* Top Bar */}
-      <div className="flex items-center justify-between px-4 py-2 text-sm font-medium">
+      <div className="flex items-center justify-between px-4 py-4 text-sm font-medium">
         <div className="flex items-center gap-4">
-          {/* <Image src={Logo} alt="Logo" width={120} height={32} /> */}
-          <span className="font-bold text-lg">[Logo]</span>
+          <Image src="/header/logo (2).png" alt="Logo" width={200} height={40} />
           <span className="hidden md:inline ml-6">(888) 748‑0882</span>
           <span className="hidden md:inline border-l border-gray-700 pl-4 ml-4">Mon‑Fri: 8AM ‑ 7PM EST</span>
         </div>
-        <div className="flex items-center gap-4">
-          {/* <Image src={MagnifyingGlass} alt="Search" className="w-5 h-5" /> */}
-          <span className="w-5 h-5">🔍</span>
-          {/* <Image src={ShoppingCartSimple} alt="Cart" className="w-5 h-5" /> */}
-          <span className="w-5 h-5">🛒</span>
-          {/* <Image src={Garage} alt="Home" className="w-5 h-5" /> */}
-          <span className="w-5 h-5">🏠</span>
-          {/* <Image src={User} alt="Profile" className="w-5 h-5" /> */}
-          <span className="w-5 h-5">👤</span>
+        <div className="flex items-center gap-6">
+          <Image src="/header/MagnifyingGlass.png" alt="Search" width={24} height={24} />
+          <Image src="/header/ShoppingCartSimple.png" alt="Cart" width={24} height={24} />
+          <Image src="/header/Garage.png" alt="Home" width={24} height={24} />
+          <Image src="/header/User.png" alt="Profile" width={24} height={24} />
         </div>
       </div>
       {/* Navbar */}
-      <nav className="border-t border-gray-700">
+      <nav className=" bg-[#090d15]">
         {/* Desktop xl/lg */}
-        <div className="hidden lg:flex items-center px-4 h-14">
+        <div className="hidden lg:flex items-center px-4 h-14 w-full">
           {navLinks.map((link, i) => (
-            <div
-              key={link.label}
-              className="relative group"
-              onMouseEnter={() => {
-                if (link.type === 'categories') setCategoriesOpen(true);
-                if (link.type === 'dropdown') setDropdownOpen(link.label);
-                if (link.type === 'submenu') setSubmenuOpen(true);
-              }}
-              onMouseLeave={() => {
-                if (link.type === 'categories') setCategoriesOpen(false);
-                if (link.type === 'dropdown') setDropdownOpen(null);
-                if (link.type === 'submenu') setSubmenuOpen(false);
-              }}
-            >
-              <button
-                className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 transition rounded focus:outline-none"
-                aria-haspopup={link.type !== 'link'}
-                aria-expanded={
-                  (link.type === 'categories' && categoriesOpen) ||
-                  (link.type === 'dropdown' && dropdownOpen === link.label) ||
-                  (link.type === 'submenu' && submenuOpen)
-                }
+            <React.Fragment key={link.label}>
+              {link.label === 'Shop by Categories' && (
+                <button
+                  className="flex items-center justify-center px-2 h-10 mr-2 border border-gray-700 rounded bg-gray-900 hover:bg-gray-800 transition"
+                  aria-label="Open menu"
+                  tabIndex={-1}
+                  style={{ minWidth: 40 }}
+                >
+                  <Image src="/header/vector.png" alt="Menu" width={24} height={24} />
+                </button>
+              )}
+              <div
+                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 ${link.label === 'Shop by Categories' ? 'flex-[2]' : 'flex-1'}`}
+                onMouseEnter={() => {
+                  if (link.type === 'categories') setCategoriesOpen(true);
+                  if (link.type === 'dropdown') setDropdownOpen(link.label);
+                  if (link.type === 'submenu') setSubmenuOpen(true);
+                }}
+                onMouseLeave={() => {
+                  if (link.type === 'categories') setCategoriesOpen(false);
+                  if (link.type === 'dropdown') setDropdownOpen(null);
+                  if (link.type === 'submenu') setSubmenuOpen(false);
+                }}
               >
-                {link.label}
-              </button>
-              {/* Categories Flyout */}
-              {link.type === 'categories' && categoriesOpen && (
-                <div className="absolute left-0 top-full mt-2 w-[600px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in">
-                  {/* Category List */}
-                  <div className="w-1/2 max-h-80 overflow-y-auto border-r border-gray-700">
-                    {categories.map((cat) => (
-                      <div
-                        key={cat.name}
-                        className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${activeCategory === cat.name ? 'bg-gray-800 text-blue-400' : ''}`}
-                        onMouseEnter={() => setActiveCategory(cat.name)}
-                        tabIndex={0}
-                        role="menuitem"
-                        aria-haspopup={!!cat.sub}
-                        aria-expanded={activeCategory === cat.name}
-                      >
-                        {cat.name}
-                      </div>
-                    ))}
+                <button
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 hover:text-blue-400 transition rounded focus:outline-none h-full"
+                  aria-haspopup={link.type !== 'link'}
+                  aria-expanded={
+                    (link.type === 'categories' && categoriesOpen) ||
+                    (link.type === 'dropdown' && dropdownOpen === link.label) ||
+                    (link.type === 'submenu' && submenuOpen)
+                  }
+                >
+                  {link.label}
+                  {(link.type === 'categories' || link.type === 'submenu') && (
+                    <Image src="/header/arrows (4).png" alt="arrow" className="w-3 h-3 ml-1" width={12} height={12} />
+                  )}
+                </button>
+                {/* Categories Flyout */}
+                {link.type === 'categories' && categoriesOpen && (
+                  <div className="absolute left-0 top-full mt-2 w-[600px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in">
+                    {/* Category List */}
+                    <div className="w-1/2 max-h-80 overflow-y-auto border-r border-gray-700">
+                      {categories.map((cat) => (
+                        <div
+                          key={cat.name}
+                          className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${activeCategory === cat.name ? 'bg-gray-800 text-blue-400' : ''}`}
+                          onMouseEnter={() => setActiveCategory(cat.name)}
+                          tabIndex={0}
+                          role="menuitem"
+                          aria-haspopup={!!cat.sub}
+                          aria-expanded={activeCategory === cat.name}
+                        >
+                          {cat.name}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Subcategory Panel */}
+                    <div className="w-1/2 p-4">
+                      {(() => {
+                        const cat = categories.find((c) => c.name === activeCategory) || categories[0];
+                        return cat.sub ? (
+                          <ul>
+                            {cat.sub.map((sub) => (
+                              <li key={sub} className="py-1 hover:text-blue-400 cursor-pointer">{sub}</li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <div className="text-gray-400">No subcategories</div>
+                        );
+                      })()}
+                    </div>
                   </div>
-                  {/* Subcategory Panel */}
-                  <div className="w-1/2 p-4">
-                    {(() => {
-                      const cat = categories.find((c) => c.name === activeCategory) || categories[0];
-                      return cat.sub ? (
-                        <ul>
-                          {cat.sub.map((sub) => (
-                            <li key={sub} className="py-1 hover:text-blue-400 cursor-pointer">{sub}</li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <div className="text-gray-400">No subcategories</div>
-                      );
-                    })()}
+                )}
+                {/* Dropdown Panel */}
+                {link.type === 'dropdown' && dropdownOpen === link.label && (
+                  <div className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[200px] z-30 animate-fade-in">
+                    <ul>
+                      {link.sub?.map((item) => (
+                        <li key={item} className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 cursor-pointer">{item}</li>
+                      ))}
+                    </ul>
                   </div>
-                </div>
-              )}
-              {/* Dropdown Panel */}
-              {link.type === 'dropdown' && dropdownOpen === link.label && (
-                <div className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[200px] z-30 animate-fade-in">
-                  <ul>
-                    {link.sub?.map((item) => (
-                      <li key={item} className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 cursor-pointer">{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-              {/* Info Submenu */}
-              {link.type === 'submenu' && submenuOpen && (
-                <div className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[180px] z-30 animate-fade-in">
-                  <ul>
-                    {link.sub?.map((item) => (
-                      <li key={item} className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 cursor-pointer">{item}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
+                )}
+                {/* Info Submenu */}
+                {link.type === 'submenu' && submenuOpen && (
+                  <div className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[180px] z-30 animate-fade-in">
+                    <ul>
+                      {link.sub?.map((item) => (
+                        <li key={item} className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 cursor-pointer flex items-center justify-between">
+                          {item}
+                          <Image src="/header/arrows (4).png" alt="arrow" className="w-3 h-3 ml-1" width={12} height={12} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </React.Fragment>
           ))}
         </div>
         {/* Mobile/Tablet Hamburger */}
@@ -329,7 +345,7 @@ export default function Header() {
             aria-expanded={menuOpen}
             onClick={() => setMenuOpen((v) => !v)}
           >
-            <span className="w-7 h-7 block">☰</span>
+            <Image src="/header/hamburgur-button.png" alt="Menu" width={28} height={28} />
           </button>
           <span className="font-bold text-lg">Menu</span>
         </div>
@@ -382,10 +398,10 @@ export default function Header() {
                 <span>(888) 748‑0882</span>
                 <span>Mon‑Fri: 8AM ‑ 7PM EST</span>
                 <div className="flex gap-4 mt-2">
-                  <span className="w-5 h-5">🔍</span>
-                  <span className="w-5 h-5">🛒</span>
-                  <span className="w-5 h-5">🏠</span>
-                  <span className="w-5 h-5">👤</span>
+                  <Image src="/header/MagnifyingGlass.png" alt="Search" width={20} height={20} />
+                  <Image src="/header/ShoppingCartSimple.png" alt="Cart" width={20} height={20} />
+                  <Image src="/header/Garage.png" alt="Home" width={20} height={20} />
+                  <Image src="/header/User.png" alt="Profile" width={20} height={20} />
                 </div>
               </div>
             </aside>

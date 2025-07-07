@@ -1,26 +1,4 @@
-// <!-- shipping-address.md -->
-// # Shipping Address Page Prompt
 
-// Render a **mobile-first**, responsive "Shipping Address" page with:
-
-// - **Banner + Sidebar** as in Profile. Sidebar's active item: "Shipping Address".  
-// - **Content**:
-//   - Title **"SHIPPING ADDRESS"** (uppercase).  
-//   - **Form grid**:
-//     - On mobile: single-column fields stacked.
-//     - On md/lg: two columns for First/Last Name; Street & Apt side-by-side; City/State/ZIP in three columns.
-//   - **Fields (with placeholders)**:
-//     1. First Name* – `"Kseniiia"`
-//     2. Last Name* – `"Melnyk"`
-//     3. Phone* – `"(888) 000-0000"`
-//     4. Country* – `<select>` default `"Choose Country…"`
-//     5. Street address* – `"Address"`
-//     6. Apartment, etc. (optional) – `"Apartment, etc. (optional)"`
-//     7. City* – `"City"`
-//     8. State* – `<select>` default `"Choose state…"`
-//     9. ZIP Code* – `"ZIP Code"`
-//   - **Button**: **"Save Changes"**, `border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-2 px-6`.
-// - All controls: 2xl rounded, `shadow-sm`, consistent `gap-4`.
 "use client";
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';

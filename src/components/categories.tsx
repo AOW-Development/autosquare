@@ -1,15 +1,3 @@
-// Create this section : full-wdth , h=918px
-// top title " featured categories" in audiowide font ; mt-24px , mb=24px
-// down is grid 3*2 col*row : 
-// top row imges size and path :
-// public\categories_section\engine.png ,public\categories_section\transmission.png,public\categories_section\axel.png 
-// size is : w*h = 282*284,282*284,588*284 px
-
-// down row : 
-// size 588*284,282*284,282*284, px
-// path : public\categories_section\transfer-case.png , public\categories_section\head-light.png ,public\categories_section\tail-light.png
-
-// bg is  : #1D3759
 
 import Image from 'next/image';
 

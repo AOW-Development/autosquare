@@ -1,24 +1,4 @@
-// <!-- order-history.md -->
-// # Order History Page Prompt
 
-// Render a **responsive** "Order History" screen:
-
-// - **Banner + Sidebar** (active "Order History").
-// - Title **"ORDER HISTORY"**.
-// - A row of **filter pills**:  
-//   - **All** (active, `bg-gray-700 text-white`),  
-//   - This month, Last month, This year, Last year (outline style).
-// - A vertical list of **order cards** (up to 10):  
-//   - On mobile: full-width stacked  
-//   - On md/lg: `max-w-2xl` centered  
-//   - Each card shows:
-//     1. **Order #123456** – date **"11 July 2024"**
-//     2. Status text colored: In progress (yellow), Completed (green), Canceled (red)
-//     3. Total: **$3640**
-//     4. Thumbnails of product images (up to 3), with "+2" if more
-//     5. **Details** button: `border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-1 px-3`
-// - **Pagination** at bottom: "< 1 2 3 4 5 >" with current page highlighted.
-// - Spacing: `gap-6` between cards, `p-4` mobile → `p-6` md → `p-8` lg.
 "use client";
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';

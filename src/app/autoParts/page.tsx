@@ -422,11 +422,3 @@ export default function AutoPartsPage() {
     </>
   );
 }
-
-//  create autoParts page which has 19 grids in col 4 , each grid has cards in size of (w*h = 282*112) , find all card here in 19 folder in path "public\autoparts". 
-
-// on top put bredcrumb  public\autoparts\HouseLine.png public\autoparts\arrows.png "Auto parts"
-// bg color is #091B33
-// each grid has title which is folder name .  font is audiowide , 32px
-// below title are cards in  grid col 4 in desktop and col-2 in mobile reponsive.
-

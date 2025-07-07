@@ -1,7 +1,3 @@
-// Write this sectio where (see attached image)
-// take all the logos from here : public\Images\home\Makers-logos
-//  top heading is "AUTO PART FOR YOUR MAKE " IN  audiowide font 32px
-// below it in grid format , 4 col , put fix space betn cols , is total 32 (logo,brand name, and this ">" icon ">" (icon location public\Images\home\Makers-logos\arrows.png)with under line color #00A3FF )
 
 
 "use client";

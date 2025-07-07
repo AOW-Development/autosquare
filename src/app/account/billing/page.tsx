@@ -1,8 +1,4 @@
-// <!-- billing-address.md -->
-// # Billing Address Page Prompt
 
-// Generate a responsive "Billing Address" page, identical layout and styles to Shipping Address—**Banner + Sidebar** active "Billing Address"—but with title **"BILLING ADDRESS"**. All field placeholders and button text remain the same. Use the same two-column and three-column grid breakpoints.
-"use client";
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';
 import FormField from '@/components/FormField';

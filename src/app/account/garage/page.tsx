@@ -1,17 +1,4 @@
-// <!-- garage.md -->
-// # Garage Page Prompt
 
-// Create a **responsive** "Garage" page with:
-
-// - **Banner + Sidebar** (active "Garage").  
-// - Content title **"GARAGE"**.  
-// - A list of vehicles, each row with:
-//   - `ford-logo.svg` on left (32×32),
-//   - text **"Ford Bronco 1991"**,
-//   - edit (pencil) and delete (×) icons on right.
-// - On mobile: each vehicle card full-width, stacked; on md/lg: container `max-w-lg` centered.
-// - **Add new vehicle** button below list: `bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 px-4`.
-// - Spacing: `gap-4`, `p-4` mobile → `p-6` md → `p-8` lg.
 "use client";
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';

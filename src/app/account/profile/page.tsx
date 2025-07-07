@@ -1,21 +1,4 @@
-// <!-- profile.md -->
-// # Profile Page Prompt
 
-// Generate a **responsive** "Profile" page component with:
-
-// - **Banner** at top: full-width car image background, centered `brand-logo.svg` overlay.  
-// - **Sidebar** on left: links "Profile" (active), "Shipping Address", "Billing Address", "Order History", "Garage", "Log out". Collapsible on mobile.  
-// - **Content** area:  
-//   - Title **"PROFILE"** (uppercase, `text-2xl` mobile → `text-3xl` md/lg)  
-//   - Form fields:
-//     1. **Email*** `(type="email")`, placeholder `"example@gmail.com"`  
-//     2. Section header **"CHANGE PASSWORD"**  
-//     3. **Current Password (leave blank to keep unchanged)** `(type="password")`, placeholder `"••••"`  
-//     4. **New Password (leave blank to keep unchanged)** `(type="password")`, placeholder `"••••"`  
-//     5. **Confirm New Password** `(type="password")`, placeholder `"••••"`  
-//   - **Save Changes** button: `border-2 border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-2 px-4`  
-// - **Spacing**: sidebar `p-4`, content `p-4` mobile → `p-6` md → `p-8` lg.  
-// - **Inputs**: `w-full` mobile, `max-w-md` on md/lg. 2xl rounded, subtle shadow, with show/hide icon on password fields.
 "use client";
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';

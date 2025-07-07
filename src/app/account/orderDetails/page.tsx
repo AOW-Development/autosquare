@@ -1,31 +1,4 @@
-// <!-- order-details.md -->
-// # Order Details Page Prompt
 
-// Generate a **responsive** "Order Details" view:
-
-// - **Banner + Sidebar** (active "Order History").
-// - Title row: **"ORDER: #123456"** on left, status **"In progress"** (yellow) on right.
-// - A **four-step** horizontal progress bar:
-//   1. Order accepted (✓)
-//   2. Packed (✓)
-//   3. Shipped (current, highlighted)
-//   4. Delivered (future)
-// - Under progress: text **"Your order has been delivered: DHL (tracking number 9988774455661122)"**.
-// - **Itemized list**: for each part
-//   - thumbnail (64×64)
-//   - **Title of part**
-//   - Description:  
-//     "Ford Bronco 1991 | 4.9L | from 2/3/91 (AIR inner manifold) | E4OD transmission"
-//   - qty "1 pc" or "2×"
-//   - price "$800" or "$400"
-// - **Payment Method**: show `mastercard.svg` + masked "**** 8888".
-// - **Summary** block (right-aligned on md/lg):
-//   - Cart total: **$1600**
-//   - Shipping: **Free Shipping**
-//   - Sales Tax: **$46**
-//   - **TOTAL: $1646**
-// - Two address cards below (side-by-side on md/lg): Shipping Address and Billing Address, each listing Name, Email, Phone Number, Full street.
-// - Spacing: `p-4` mobile → `p-6` md → `p-8` lg; cards with `rounded-2xl`, `shadow`.
 "use client";
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';

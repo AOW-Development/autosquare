@@ -1,33 +1,3 @@
-// create ENgines featured  page where :
-
-
-//  : title "Quantity of Products"
-//  : 15 images in grid, 3 col format(so each row has 3 imges, total  5 rows) . img size is 282*477 px 
-//  path for 15 imges (use this same img for all 15 cards/images): 
-// public/featuredEngines/cards (1).png
-// 
-
-//  so this grid containing 15 img is right side and left side create :
- // 5 vertically stacked cards sizes (top to bottom) : (make black bg for these 5 cards)
- // card 1 : 250*400px 
- // card 2 : 250* 170px
- // card 3 : 250* 150px
- // card 4 : 250* 250px
- // card 5 : 250* 150px 
- 
-//  card 1 text : Choose your specification , 4.9L , from2/391 inner, 
-// card 2 text : price range
-// card 3 text : state : used , new
-// card 4 text : car milage miles , upto 50 , 50 to 100 ,100 to 150
-// card 5 : condition
-
-
-// bg color is bg-[#091b33]
-
-// at last  add center : public/transmission/arrows (1).png 1 2 3 4  5  public/arrows.png
-
-
-
 
 
 import Image from 'next/image';

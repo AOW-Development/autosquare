@@ -1,0 +1,132 @@
+"use client";
+import Image from "next/image";
+
+export default function PaymentInfoPage() {
+  return (
+    <div className="min-h-screen bg-[#091b33] text-white flex flex-col px-4 py-8">
+      <div className="max-w-5xl mx-auto w-full">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 text-xs text-white/60 mb-6">
+          <Image src="/engine/HouseLine.png" alt="Home" width={16} height={16} />
+          <span>&gt;</span>
+          <span>Make a payment</span>
+        </div>
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 uppercase tracking-wide">Make a Payment</h1>
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Form */}
+          <form className="flex-1 bg-transparent">
+            <div className="flex items-center justify-between mb-4">
+              <span className="font-semibold text-sm uppercase tracking-wide">Recipient Details</span>
+              <span className="text-sm text-white/60">Have an account? <a href="#" className="text-blue-400 underline">Log in</a></span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+              <div>
+                <label className="block text-xs mb-1">First Name*</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" defaultValue="Ksenia" />
+              </div>
+              <div>
+                <label className="block text-xs mb-1">Last Name*</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" defaultValue="Melnyk" />
+              </div>
+              <div>
+                <label className="block text-xs mb-1">Email*</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" defaultValue="example@gmail.com" />
+              </div>
+              <div>
+                <label className="block text-xs mb-1">Phone*</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" defaultValue="(888) 748-0882" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs mb-1">Company</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" placeholder="Company name (optional)" />
+              </div>
+              <div className="md:col-span-2">
+                <label className="block text-xs mb-1">Country*</label>
+                <select className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none">
+                  <option>United States</option>
+                  <option>Canada</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div className="md:col-span-2 flex gap-4">
+                <div className="flex-1">
+                  <label className="block text-xs mb-1">Street address*</label>
+                  <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" placeholder="Address" />
+                </div>
+                <div className="flex-1">
+                  <label className="block text-xs mb-1">&nbsp;</label>
+                  <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" placeholder="Apartment, etc. (optional)" />
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs mb-1">City*</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" defaultValue="Beverly Hills" />
+              </div>
+              <div>
+                <label className="block text-xs mb-1">State*</label>
+                <select className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none">
+                  <option>California</option>
+                  <option>Texas</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs mb-1">ZIP Code*</label>
+                <input className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none" defaultValue="90210" />
+              </div>
+            </div>
+          </form>
+          {/* Order Summary */}
+          <aside className="w-full md:w-[350px] flex-shrink-0">
+            <div className="bg-[#091627] rounded-2xl shadow-sm p-6">
+              <h3 className="text-sm font-semibold mb-4 uppercase tracking-wide">Products in Order</h3>
+              <div className="flex flex-col gap-4 mb-4">
+                {[1,2].map((i) => (
+                  <div key={i} className="flex gap-3 items-start">
+                    <Image src="/Images/photo-2.png" alt="Product" width={56} height={56} className="rounded-lg object-cover" />
+                    <div className="flex-1">
+                      <div className="font-semibold text-sm mb-1">Title name of part</div>
+                      <div className="text-xs text-white/70">Ford Bronco 1991</div>
+                      {i === 1 && (
+                        <>
+                          <div className="text-xs text-white/70">4.9L</div>
+                          <div className="text-xs text-white/70">from 2/3/91 (AIR inner manifold)</div>
+                          <div className="text-xs text-white/70 mb-1">E4OD transmission</div>
+                        </>
+                      )}
+                      <div className="text-xs text-white/70">1 pc.</div>
+                    </div>
+                    <div className="font-bold text-sm mt-1">$800</div>
+                  </div>
+                ))}
+              </div>
+              <div className="flex gap-2 mb-4">
+                <input type="text" placeholder="Coupon Code" className="flex-1 bg-[#091b33] rounded-lg px-3 py-2 text-white border border-white/10 focus:outline-none text-xs" />
+                <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs">Apply</button>
+              </div>
+              <div className="flex justify-between text-sm mb-1">
+                <span>Cart total:</span>
+                <span>$1600</span>
+              </div>
+              <div className="flex justify-between text-sm mb-1">
+                <span>Shipping:</span>
+                <span>Free Shipping</span>
+              </div>
+              <div className="flex justify-between text-base font-bold mb-4 mt-2">
+                <span>TOTAL:</span>
+                <span className="text-white">$1600</span>
+              </div>
+              <div className="flex items-start gap-2 mb-4">
+                <input type="checkbox" id="accept" className="mt-1 accent-blue-600" />
+                <label htmlFor="accept" className="text-xs text-white/70 select-none">
+                  I have Read and Accept the <a href="#" className="text-blue-400 underline">terms and conditions</a>, return policy and the <a href="#" className="text-blue-400 underline">Privacy Policy</a> of autosquare.us *
+                </label>
+              </div>
+              <button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg text-base transition-colors disabled:opacity-60">Continue to payment</button>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,0 +1,130 @@
+import React, { useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+
+const testimonials = [
+  {
+    name: 'Amma Bloomberg',
+    text: 'Extremely pleased with my experience at this online auto parts store.  I highly recommend this store to all car enthusiasts!',
+    avatar: '/Images/Gender.png',
+  },
+  {
+    name: 'Stuart Borer',
+    text: 'This auto parts store is absolutely fantastic! A wide range of products, a user-friendly website, quick order processing, and on-time delivery. The quality of the parts is outstanding.',
+    avatar: '/Images/Gender (1).png',
+  },
+  {
+    name: 'Philip Christiansen',
+    text: 'Fantastic auto parts shop! Quick service, quality parts, and a user-friendly website. Highly recommended!',
+    avatar: '/Images/Gender (1).png',
+  },
+  {
+    name: 'Raymond Rippin',
+    text: 'Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface.',
+    avatar: '/Images/Gender (1).png',
+},
+  {
+    name: 'Isabel D amore',
+    text: 'Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface.',
+    avatar: '/Images/Gender (1).png',
+  },
+  {
+    name: 'Virgil Shields',
+    text: 'Extremely pleased with my experience at this online auto parts store. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!',
+    avatar: '/Images/Gender (1).png',
+  },
+  {
+    name: 'Santiago Beer',
+    text: 'Extremely pleased with my experience at this online auto parts store.  The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!',
+    avatar: '/Images/Gender (1).png',
+  },
+  {
+    name: 'Nettie Oberbrunner',
+    text: 'Extremely pleased with my experience at this online auto parts store. The quality of the parts is top-notch.',
+    avatar: '/Images/Gender (1).png',
+  },
+  {
+    name: 'Sandra Wehner',
+    text: 'Extremely pleased with my experience at this online auto parts store.  The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!',
+    avatar: '/Images/Gender (1).png',
+  },
+];
+
+function TestimonialCard({ name, text, avatar }: { name: string; text: string; avatar: string }) {
+  return (
+    <div className="relative rounded-md border border-blue-400 bg-[#12263A] p-0 flex flex-col shadow-lg w-full max-w-[370px] mx-auto min-h-[320px] overflow-hidden">
+      <Image
+        src="/Images/cards-bg.png"
+        alt=""
+        fill
+        className="object-cover z-0 pointer-events-none"
+        priority={false}
+        quality={70}
+      />
+      <div className="relative z-10 flex items-center gap-3 px-6 pt-6">
+        <Image src={avatar} alt={name} width={48} height={48} className="rounded-full" />
+        <div className="flex-1">
+          <div className="font-bold text-white text-xl mt-2">{name}</div>
+          <div className="flex items-center gap-1 mt-0">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="text-yellow-400 text-2xl">★</span>
+            ))}
+          </div>
+        </div>
+        <Image src="/account/google.png" alt="Google" width={34} height={34} className="ml-2 mb-4" />
+      </div>
+      <div className="relative z-10 px-6 pb-6 pt-4">
+        <p className="text-white/80 text-base leading-relaxed">{text}</p>
+      </div>
+    </div>
+  );
+}
+
+export default function TestimonialsSection() {
+  const [start, setStart] = useState(0);
+  const visible = testimonials.slice(start, start + 3);
+  const canLeft = start > 0;
+  const canRight = start + 3 < testimonials.length;
+
+  return (
+    <section className="bg-[#091b33] py-12 px-2">
+      <div>
+      <div className="max-w-7xl mx-auto">
+      <div className="flex items-center justify-between mb-8">
+  <h2 className="text-white text-3xl md:text-4xl font-bold pl-14">TESTIMONIALS</h2>
+  <div className="flex gap-0 pr-12">
+    <button
+      onClick={() => canLeft && setStart(start - 1)}
+      disabled={!canLeft}
+      className={`p-2${!canLeft ? ' cursor-not-allowed' : ''}`}
+      aria-label="Previous"
+    >
+      <Image src="/Images/arrows (1).png" alt="Left" width={32} height={32} />
+    </button>
+    <button
+      onClick={() => canRight && setStart(start + 1)}
+      disabled={!canRight}
+      className={`p-2${!canRight ? ' cursor-not-allowed' : ''}`}
+      aria-label="Next"
+    >
+      <Image src="/Images/arrows.png" alt="Right" width={32} height={32} />
+    </button>
+  </div>
+</div>
+          <div className="flex  w-full justify-center px-14">
+            {visible.map((t, i) => (
+              <TestimonialCard key={t.name + i} {...t} />
+            ))}
+          </div>
+            <div className="flex justify-center mt-8">
+              <Link href="/Testimonials" passHref legacyBehavior>
+                <a className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition">
+                  View more
+                </a>
+              </Link>
+        </div>
+      </div>
+      </div>
+    </section>
+  );
+}

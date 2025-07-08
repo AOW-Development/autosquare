@@ -1,16 +1,17 @@
 "use client"
 import Image from "next/image";
-import Footer from "@/components/footer";
+
 import FeaturedCategories from "@/components/FeaturedCategories";
 import WhyChooseUs from "@/components/whyChooseUs";
-import Header from "@/components/header";
+
 import ShopByVehicle from "@/components/shopByVehicle";
 import CategoriesSection from "@/components/categories";
+import TestimonialsSection from "@/components/testimonialsSection";
 
 export default function Home() {
   return (
     <div>
-      <Header />
+     
       <section className="relative w-full h-[710px]">
         <Image
           src="/Images/img_banner.png"
@@ -48,8 +49,9 @@ export default function Home() {
       <ShopByVehicle />
       <CategoriesSection /> 
       <WhyChooseUs />
+      <TestimonialsSection />
       <FeaturedCategories />
-      <Footer />
+     
     </div>
   );
 }

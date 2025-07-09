@@ -66,24 +66,48 @@ export default function CategoriesSection() {
         style={{ height: '684px' }}
       >
         {/* Top row */}
-        <div className="col-span-1 row-span-1 flex items-center justify-center">
+        <div className="col-span-1 row-span-1 flex items-center justify-center relative">
           <Image src={categories[0].src} alt={categories[0].alt} width={282} height={284} />
+          <div className="absolute top-4 right-4 flex flex-col items-end mt-8 pr-4">
+            <span className="text-white text-xl font-bold mb-2 drop-shadow">ENGINE</span>
+            <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-8 text-sm hover:bg-[#0086cc] transition">Go shop</button>
+          </div>
         </div>
-        <div className="col-span-1 row-span-1 flex items-center justify-center">
+        <div className="col-span-1 row-span-1 flex items-center justify-center relative">
           <Image src={categories[1].src} alt={categories[1].alt} width={282} height={284} />
+          <div className="absolute top-4 right-4 flex flex-col items-end  mt-8 pr-4">
+            <span className="text-white text-lg font-bold mb-2 drop-shadow">TRANSMISSION</span>
+            <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-8 text-sm hover:bg-[#0086cc] transition">Go shop</button>
+          </div>
         </div>
-        <div className="col-span-2 row-span-1 flex items-center justify-center">
+        <div className="col-span-2 row-span-1 flex items-center justify-center relative">
           <Image src={categories[2].src} alt={categories[2].alt} width={588} height={284} />
+          <div className="absolute top-4 right-4 flex flex-col items-end mt-8 pr-4 ">
+            <span className="text-white text-lg font-bold mb-2 drop-shadow">AXLE ASSEMBLY</span>
+            <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-8 text-sm hover:bg-[#0086cc] transition">Go shop</button>
+          </div>
         </div>
         {/* Bottom row */}
-        <div className="col-span-2 row-span-1 flex items-center justify-center">
+        <div className="col-span-2 row-span-1 flex items-center justify-center relative mb-22">
           <Image src={categories[3].src} alt={categories[3].alt} width={588} height={284} />
+          <div className="absolute top-4 right-4 flex flex-col items-end pr-4">
+            <span className="text-white text-lg font-bold mb-2 drop-shadow">TRANSFER CASE</span>
+            <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-8 text-sm hover:bg-[#0086cc] transition">Go shop</button>
+          </div>
         </div>
-        <div className="col-span-1 row-span-1 flex items-center justify-center">
+        <div className="col-span-1 row-span-1 flex items-center justify-center relative mb-22">
           <Image src={categories[4].src} alt={categories[4].alt} width={282} height={284} />
+          <div className="absolute top-4 right-4 flex flex-col items-end pr-4">
+            <span className="text-white text-lg font-bold mb-2 drop-shadow ">HEADLIGHT</span>
+            <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-8 text-sm hover:bg-[#0086cc] transition">Go shop</button>
+          </div>
         </div>
-        <div className="col-span-1 row-span-1 flex items-center justify-center">
+        <div className="col-span-1 row-span-1 flex items-center justify-center relative mb-22">
           <Image src={categories[5].src} alt={categories[5].alt} width={282} height={284} />
+          <div className="absolute top-4 right-4 flex flex-col items-end pr-4">
+            <span className="text-white text-lg font-bold mb-2 drop-shadow">TAIL LIGHT</span>
+            <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-8 text-sm hover:bg-[#0086cc] transition">Go shop</button>
+          </div>
         </div>
       </div>
       </div>

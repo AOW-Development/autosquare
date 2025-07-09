@@ -1,4 +1,5 @@
 "use client";
+import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import path from "path";
 
@@ -386,15 +387,18 @@ const getCardImages = (folder: string): string[] => {
 export default function AutoPartsPage() {
   return (
     <>
-      <div className="w-full h-[320px] relative">
-        <Image src="/Images/title_img (2).png" alt="Banner" fill className="object-cover w-full h-full" priority />
+      <div className="w-full h-[320px] bg-[#091B33] relative">
+        <Image src="/Images/title_img (2).png" alt="Banner" fill className="object-cover bg-[#091B33] w-full h-full" priority />
       </div>
+      <ShopByVehicle /> 
       <div className="min-h-screen bg-[#091B33] pb-12">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 px-6 py-8">
+        <div className="mt-32">
+        <div className="flex items-center gap-2 px-6 py-8 ">
           <Image src="/autoparts/HouseLine.png" alt="Home" width={24} height={24} />
           <Image src="/autoparts/arrows.png" alt=">" width={16} height={16} />
           <span className="text-white text-lg font-audiowide">Auto parts</span>
+        </div>
         </div>
         {/* Grids */}
         <div className="flex flex-col gap-y-12 px-6">

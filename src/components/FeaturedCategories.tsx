@@ -1,5 +1,3 @@
-
-
 "use client";
 import Image from "next/image";
 import React from "react";
@@ -44,9 +42,9 @@ const arrowIcon = "/Images/home/Makers-logos/arrows.png";
 
 export default function FeaturedCategories() {
   return (
-    <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-12">
+    <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-8 px-2 sm:px-4">
       <h2
-        className="text-[32px] font-normal mb-6"
+        className="text-xl sm:text-2xl md:text-[32px] font-normal mb-6"
         style={{
           fontFamily: "Audiowide, sans-serif",
           letterSpacing: "0.04em",
@@ -55,14 +53,18 @@ export default function FeaturedCategories() {
       >
         AUTO PARTS FOR YOUR MAKE
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-x-16 gap-y-6 w-full max-w-6xl">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-16 gap-y-4 md:gap-y-6 w-full max-w-6xl">
         {makers.slice(0, 32).map((maker, i) => (
           <div
             key={maker.name}
-            className="flex items-center justify-between border-b"
-            style={{ borderColor: "#00A3FF", paddingBottom: 8, marginBottom: 8 }}
+            className="flex items-center p-4 cursor-pointer justify-between border-[#00A3FF] border-b hover:border-0 hover:rounded-lg hover:bg-[#7f88cbb0]  transition-all"
+            style={{
+              // borderColor: "#00A3FF",
+              paddingBottom: 8,
+              marginBottom: 8,
+            }}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
               <Image
                 src={maker.logo}
                 alt={maker.name}
@@ -70,7 +72,10 @@ export default function FeaturedCategories() {
                 height={24}
                 style={{ objectFit: "contain" }}
               />
-              <span className="text-white text-[15px] font-normal" style={{ fontFamily: "Audiowide, sans-serif" }}>
+              <span
+                className="text-white text-sm sm:text-[15px] font-normal"
+                style={{ fontFamily: "Audiowide, sans-serif" }}
+              >
                 {maker.name}
               </span>
             </div>

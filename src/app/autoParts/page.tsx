@@ -1,6 +1,9 @@
 "use client";
+import Header from "@/components/header";
+import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import path from "path";
+import { useState } from "react";
 
 const PARTS = [
   {
@@ -174,12 +177,7 @@ const PARTS = [
   },
   {
     name: "entertainment",
-    images: [
-      "cards-1.png",
-      "cards-2.png",
-      "cards-3.png",
-      "cards.png",
-    ],
+    images: ["cards-1.png", "cards-2.png", "cards-3.png", "cards.png"],
   },
   {
     name: "front body",
@@ -355,24 +353,24 @@ const getCardImages = (folder: string): string[] => {
   // Just use cards*.png and cards (*).png
   const count: Record<string, number> = {
     "air and fuel": 7,
-    "axel": 9,
-    "brakes": 6,
+    axel: 9,
+    brakes: 6,
     "center body": 7,
     "cooling and heating": 12,
-    "doors": 13,
-    "electrical": 36,
-    "engine": 10,
-    "Engine_Accessories": 19,
-    "entertainment": 3,
+    doors: 13,
+    electrical: 36,
+    engine: 10,
+    Engine_Accessories: 19,
+    entertainment: 3,
     "front body": 15,
     "glass and mirrors": 10,
-    "interior": 17,
-    "lights": 7,
+    interior: 17,
+    lights: 7,
     "rear body": 19,
-    "safety": 4,
+    safety: 4,
     "suspension or steering": 23,
-    "transmission": 10,
-    "wheels": 5,
+    transmission: 10,
+    wheels: 5,
   };
   // Try cards-1.png ... cards-N.png, fallback to cards.png
   let imgs: string[] = [];
@@ -384,33 +382,112 @@ const getCardImages = (folder: string): string[] => {
 };
 
 export default function AutoPartsPage() {
+  // State to track which part is open on mobile
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  // Helper to toggle open/close
+  const handleToggle = (idx: number) => {
+    setOpenIndex(openIndex === idx ? null : idx);
+  };
+
   return (
     <>
-      <div className="w-full h-[320px] relative">
-        <Image src="/Images/title_img (2).png" alt="Banner" fill className="object-cover w-full h-full" priority />
+      <div className="w-full h-[160px] md:h-[320px] relative">
+        <Image
+          src="/Images/title_img (2).png"
+          alt="Banner"
+          fill
+          className="object-cover w-full h-full"
+          priority
+        />
       </div>
-      <div className="min-h-screen bg-[#091B33] pb-12">
+      <div className="z-10 absolute top-[30%] left-[30%] translate-x-[-30%] traslate-y-[-30%] md:top-[60%] md:left-[60%] md:translate-x-[-60%] md:translate-y-[-60%] w-full">
+        <ShopByVehicle />
+      </div>
+      <div className="min-h-screen bg-[#091B33] pb-8 pt-4 md:pb-12">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 px-6 py-8">
-          <Image src="/autoparts/HouseLine.png" alt="Home" width={24} height={24} />
-          <Image src="/autoparts/arrows.png" alt=">" width={16} height={16} />
-          <span className="text-white text-lg font-audiowide">Auto parts</span>
+        <div className="flex items-center gap-2 px-4 md:px-10 py-4 md:py-8">
+          <Image
+            src="/autoparts/HouseLine.png"
+            alt="Home"
+            width={20}
+            height={20}
+            className="w-5 h-5 md:w-6 md:h-6"
+          />
+          <Image
+            src="/autoparts/arrows.png"
+            alt=">"
+            width={14}
+            height={14}
+            className="w-5 h-5 md:w-6 md:h-6 -rotate-90"
+          />
+          <span className="text-white text-base md:text-lg font-audiowide">
+            Auto parts
+          </span>
         </div>
         {/* Grids */}
-        <div className="flex flex-col gap-y-12 px-6">
-          {PARTS.map((part) => (
-            <div key={part.name} className="p-4 w-full">
-              <div className="mb-4 text-white text-[32px] font-audiowide capitalize">{part.name.replace(/_/g, ' ')}</div>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="flex flex-col gap-y-4 md:gap-y-12 px-3 md:px-6">
+          {PARTS.map((part, idx) => (
+            <div key={part.name} className="p-2 md:p-4 w-full">
+              {/* Collapsible header for mobile */}
+              <div
+                className="mb-2 md:mb-4 text-white text-xl md:text-[32px] font-audiowide capitalize flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
+                onClick={() => handleToggle(idx)}
+              >
+                <span>{part.name.replace(/_/g, " ")}</span>
+                {/* Arrow only on mobile */}
+                <span className="inline-block md:hidden ml-2 text-lg">
+                  {openIndex === idx ? (
+                    <Image
+                      src="/autoparts/arrows.png"
+                      alt=">"
+                      width={14}
+                      height={14}
+                      className="w-4 h-4 md:w-5 md:h-5"
+                    />
+                  ) : (
+                    <Image
+                      src="/autoparts/arrows.png"
+                      alt=">"
+                      width={14}
+                      height={14}
+                      className="w-4 h-4 md:w-5 md:h-5 rotate-270"
+                    />
+                  )}
+                </span>
+              </div>
+              {/* Images: show on desktop, or if open on mobile */}
+              <div
+                className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4 transition-all duration-300 overflow-hidden
+                  ${openIndex === idx ? "max-h-[1000px] mb-2" : "max-h-0 mb-0"}
+                  md:max-h-none md:mb-0
+                  ${
+                    openIndex === idx || typeof window === "undefined"
+                      ? ""
+                      : "hidden"
+                  }
+                  md:grid`}
+                style={{
+                  display:
+                    openIndex === idx || typeof window === "undefined"
+                      ? undefined
+                      : undefined,
+                }}
+              >
                 {part.images.map((img) => (
-                  <div key={img} className="w-full h-[56px] md:h-[112px] bg-[#1A3557] rounded flex items-center justify-center">
+                  <div
+                    key={img}
+                    className="w-full h-[48px] sm:h-[72px] md:h-[112px] rounded flex items-center justify-center"
+                  >
                     <Image
                       src={`/autoparts/${part.name}/${img}`}
                       alt={part.name + " card"}
                       width={282}
                       height={112}
-                      className="object-contain w-full h-auto"
-                      onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                      className="object-contain w-full h-auto max-h-[48px] sm:max-h-[72px] md:max-h-[112px]"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
                     />
                   </div>
                 ))}

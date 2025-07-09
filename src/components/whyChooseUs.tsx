@@ -37,21 +37,43 @@ const cards = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="bg-[#091b33] py-16 px-4">
+    <section className="bg-[#091b33] py-8 px-2 md:py-16 md:px-4">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-audiowide text-white mb-4">WHY CHOOSE US</h2>
-        <p className="text-white font-exo2 mb-10">
-          Our goal is to make the buying process as seamless and worry free as possible for our customers and to provide after sales service in a professional manner. We want to treat you like we would want to be treated.
+        <h2
+          className="text-2xl md:text-4xl font-audiowide text-white mb-4"
+          style={{
+            fontFamily: "Audiowide, sans-serif",
+            letterSpacing: "0.04em",
+            color: "#fff",
+          }}
+        >
+          WHY CHOOSE US
+        </h2>
+        <p className="text-white font-exo2 mb-6 md:mb-10">
+          Our goal is to make the buying process as seamless and worry free as
+          possible for our customers and to provide after sales service in a
+          professional manner. We want to treat you like we would want to be
+          treated.
         </p>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
           {cards.map((card, i) => (
             <div
               key={i}
-              className="border border-blue-500 rounded-lg p-8 flex flex-col items-center text-center bg-transparent"
+              className="border border-blue-500 rounded-lg p-4 md:p-8 flex flex-col items-center text-center bg-transparent"
             >
-              <Image src={card.icon} alt={card.title} width={60} height={60} className="mb-4" />
-              <h3 className="font-audiowide text-lg text-white mb-2">{card.title}</h3>
-              <p className="font-exo2 text-white">{card.desc}</p>
+              <Image
+                src={card.icon}
+                alt={card.title}
+                width={60}
+                height={60}
+                className="mb-4"
+              />
+              <h3 className="font-audiowide text-base md:text-lg text-white mb-2">
+                {card.title}
+              </h3>
+              <p className="font-exo2 text-white text-xs md:text-base">
+                {card.desc}
+              </p>
             </div>
           ))}
         </div>

@@ -1,8 +1,7 @@
-
-
 import Image from "next/image";
 import FeaturedCategories from "@/components/FeaturedCategories";
 import React from "react";
+import ShopByVehicle from "@/components/shopByVehicle";
 
 const transmissionTypes = [
   { name: "Electric", img: "/transmission/images/electric.png" },
@@ -55,16 +54,24 @@ function TransmissionFeaturedCategories() {
     <section className="w-full bg-[#091b33] flex flex-col py-12">
       <h2
         className="text-[32px] font-normal mb-6"
-        style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.04em", color: "#fff" }}
+        style={{
+          fontFamily: "Audiowide, sans-serif",
+          letterSpacing: "0.04em",
+          color: "#fff",
+        }}
       >
         Transmission FOR YOUR MAKE
       </h2>
-      <div className="grid grid-cols-1  items-center sm:grid-cols-2 md:grid-cols-4 gap-x-16 gap-y-6 w-full max-w-6xl">
+      <div className="grid grid-cols-2  items-center md:grid-cols-4 gap-x-5 gap-y-6 w-full max-w-6xl">
         {makers.slice(0, 32).map((maker) => (
           <div
             key={maker.name}
             className="flex items-center justify-between border-b"
-            style={{ borderColor: "#00A3FF", paddingBottom: 8, marginBottom: 8 }}
+            style={{
+              borderColor: "#00A3FF",
+              paddingBottom: 8,
+              marginBottom: 8,
+            }}
           >
             <div className="flex items-center gap-3">
               <Image
@@ -74,7 +81,10 @@ function TransmissionFeaturedCategories() {
                 height={24}
                 style={{ objectFit: "contain" }}
               />
-              <span className="text-white text-[15px] font-normal" style={{ fontFamily: "Audiowide, sans-serif" }}>
+              <span
+                className="text-white text-[15px] font-normal"
+                style={{ fontFamily: "Audiowide, sans-serif" }}
+              >
                 {maker.name + " Transmission"}
               </span>
             </div>
@@ -96,36 +106,69 @@ export default function TransmissionPage() {
   return (
     <div className="bg-[#091b33] min-h-screen">
       {/* Banner */}
-      <div className="w-full h-[320px] relative">
-        <Image src="/transmission/title_img.png" alt="Transmission Banner" fill style={{objectFit:'cover'}} priority />
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
+        <Image
+          src="/transmission/title_img.png"
+          alt="Transmission Banner"
+          fill
+          style={{ objectFit: "cover" }}
+          priority
+        />
       </div>
-      {/* Main content container for px-6 alignment */}
-      <div className="px-6 max-w-6xl mx-auto">
+      {/* Main content container for px-4 on mobile, px-6 on md+ */}
+      <div className="z-10 absolute top-[30%] left-[30%] translate-x-[-30%] traslate-y-[-30%] md:top-[60%] md:left-[60%] md:translate-x-[-60%] md:translate-y-[-60%] w-full">
+        <ShopByVehicle />
+      </div>
+      <div className="px-4 sm:px-6 max-w-6xl mx-auto">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 py-4">
-          <Image src="/engine/HouseLine.png" alt="Home" width={24} height={24} />
-          <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-          <span className="text-white text-sm">AutoParts</span>
-          <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-          <span className="text-white text-sm font-semibold">Transmission</span>
+        <div className="flex flex-wrap items-center gap-2 pt-12 text-xs sm:text-sm">
+          <Image
+            src="/engine/HouseLine.png"
+            alt="Home"
+            width={20}
+            height={20}
+          />
+          <Image src="/engine/arrows.png" alt=">" width={14} height={14} />
+          <span className="text-white">AutoParts</span>
+          <Image src="/engine/arrows.png" alt=">" width={14} height={14} />
+          <span className="text-white font-semibold">Transmission</span>
         </div>
         {/* Transmission Types */}
-        <section className="py-8">
-          <h2 className="text-white text-2xl font-bold mb-6">Transmission Types</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <section className="py-6 sm:py-8">
+          {/* <h2 className="text-white text-xl sm:text-2xl font-bold mb-4 sm:mb-6">
+            Transmission Types
+          </h2> */}
+          <h2
+            className="font-audiowide text-white text-xl sm:text-3xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
+            style={{
+              fontFamily: "Audiowide, sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
+            Transmission Types
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
             {transmissionTypes.map((type) => (
-              <div key={type.name} className="flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md">
-                <Image src={type.img} alt={type.name} width={384} height={240} className="object-cover" />
-                {/* <span className="text-white text-lg font-medium py-3">{type.name}</span> */}
+              <div
+                key={type.name}
+                className="flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md"
+              >
+                <Image
+                  src={type.img}
+                  alt={type.name}
+                  width={384}
+                  height={240}
+                  className="object-cover w-full h-[140px] sm:h-[180px] md:h-[200px]"
+                />
+                {/* <span className="text-white text-base sm:text-lg font-medium py-3">{type.name}</span> */}
               </div>
             ))}
           </div>
         </section>
-      
-      {/* Featured Categories (tweaked) */}
-      <div className="max-w-6xl mx-auto w-full">
-        <TransmissionFeaturedCategories />
-      </div>
+        {/* Featured Categories (tweaked) */}
+        <div className="max-w-6xl mx-auto w-full">
+          <TransmissionFeaturedCategories />
+        </div>
       </div>
     </div>
   );

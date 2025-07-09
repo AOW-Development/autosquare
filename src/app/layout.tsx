@@ -1,9 +1,9 @@
-
 import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import { Inter, Exo_2, Audiowide } from "next/font/google";
 import "./globals.css";
-
+import Header from "@/components/header";
+import Footer from "@/components/footer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -34,10 +34,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${inter.variable} ${exo2.variable} ${audiowide.variable}`}>
+    <html
+      lang="en"
+      className={`${inter.variable} ${exo2.variable} ${audiowide.variable}`}
+    >
       <body className="font-custom-stack antialiased">
         {/* TEST: Font family visual check */}
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

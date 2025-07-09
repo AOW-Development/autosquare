@@ -1,9 +1,6 @@
-
 import type { Metadata } from "next";
-// import { Geist, Geist_Mono } from "next/font/google";
 import { Inter, Exo_2, Audiowide } from "next/font/google";
 import "./globals.css";
-
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,13 +32,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={`${inter.variable} ${exo2.variable} ${audiowide.variable}`}>
-      <body className="font-custom-stack antialiased">
-        {/* TEST: Font family visual check */}
+      {/* Changed font-custom-stack to font-sans to apply the default font from tailwind.config.js */}
+      <body className="font-sans antialiased">
         {children}
       </body>
     </html>
   );
 }
-// To use Inter: className="font-inter"
-// To use Exo 2: className="font-exo-2"
-// To use Audiowide: className="font-audiowide"

@@ -1,5 +1,4 @@
 "use client";
-import Header from "@/components/header";
 import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import path from "path";
@@ -392,38 +391,31 @@ export default function AutoPartsPage() {
 
   return (
     <>
-      <div className="w-full h-[160px] md:h-[320px] relative">
+      <div className="w-full h-[320px] bg-[#091B33] relative">
         <Image
           src="/Images/title_img (2).png"
           alt="Banner"
           fill
-          className="object-cover w-full h-full"
+          className="object-cover bg-[#091B33] w-full h-full"
           priority
         />
       </div>
-      <div className="z-10 absolute top-[30%] left-[30%] translate-x-[-30%] traslate-y-[-30%] md:top-[60%] md:left-[60%] md:translate-x-[-60%] md:translate-y-[-60%] w-full">
-        <ShopByVehicle />
-      </div>
-      <div className="min-h-screen bg-[#091B33] pb-8 pt-4 md:pb-12">
+      <ShopByVehicle />
+      <div className="min-h-screen bg-[#091B33] pb-12">
         {/* Breadcrumb */}
-        <div className="flex items-center gap-2 px-4 md:px-10 py-4 md:py-8">
-          <Image
-            src="/autoparts/HouseLine.png"
-            alt="Home"
-            width={20}
-            height={20}
-            className="w-5 h-5 md:w-6 md:h-6"
-          />
-          <Image
-            src="/autoparts/arrows.png"
-            alt=">"
-            width={14}
-            height={14}
-            className="w-5 h-5 md:w-6 md:h-6 -rotate-90"
-          />
-          <span className="text-white text-base md:text-lg font-audiowide">
-            Auto parts
-          </span>
+        <div className="mt-32">
+          <div className="flex items-center gap-2 px-6 py-8 ">
+            <Image
+              src="/autoparts/HouseLine.png"
+              alt="Home"
+              width={24}
+              height={24}
+            />
+            <Image src="/autoparts/arrows.png" alt=">" width={16} height={16} />
+            <span className="text-white text-lg font-audiowide">
+              Auto parts
+            </span>
+          </div>
         </div>
         {/* Grids */}
         <div className="flex flex-col gap-y-4 md:gap-y-12 px-3 md:px-6">

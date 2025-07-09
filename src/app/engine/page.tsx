@@ -17,61 +17,95 @@ export default function EnginePage() {
           priority
         />
       </div>
-      <div className="z-10 absolute top-[30%] left-[30%] translate-x-[-30%] traslate-y-[-30%] md:top-[60%] md:left-[60%] md:translate-x-[-60%] md:translate-y-[-60%] w-full">
-        <ShopByVehicle />
-      </div>
+      <ShopByVehicle />
       {/* Breadcrumb */}
-      <div className="flex flex-wrap items-center gap-2 px-4 pt-8 sm:px-28 md:pt-10 bg-[#091b33] text-xs sm:text-[15px] font-medium">
-        <Image src="/engine/HouseLine.png" alt="Home" width={18} height={18} />
-        <Image src="/engine/arrows.png" alt=">" width={14} height={14} />
-        <span className="text-white">AutoParts</span>
-        <Image src="/engine/arrows.png" alt=">" width={14} height={14} />
-        <span className="text-white">Engine</span>
-      </div>
+
       {/* Engine Types Section */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 py-8 sm:py-10">
-        {/* <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 sm:mb-8 uppercase tracking-wide">
-          Engine Types
-        </h2> */}
-        <h2
-          className="font-audiowide text-white text-xl sm:text-3xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
-          style={{
-            fontFamily: "Audiowide, sans-serif",
-            letterSpacing: "0.1em",
-          }}
-        >
+      <section className="max-w-6xl mx-auto px-6 py-10">
+        <div className="flex items-center gap-2  py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
+          <Image
+            src="/engine/HouseLine.png"
+            alt="Home"
+            width={20}
+            height={20}
+          />
+          <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
+          <span className="text-gray-500">AutoParts</span>
+          <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
+          <span className="text-white">Engine</span>
+        </div>
+        <h2 className="text-2xl font-bold text-white mb-8 uppercase tracking-wide">
           Engine Types
         </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
-          <div className="flex flex-col items-center">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          {/* Gasoline */}
+          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg">
             <Image
               src="/engine/img-1.png"
               alt="Engine Type 1"
               width={384}
               height={240}
-              className="rounded-lg object-cover w-full h-[140px] sm:h-[180px] md:h-[200px]"
+              className="object-cover opacity-70"
             />
-            {/* <span className="mt-2 text-base font-medium text-[#1E4A8F]">Engine Type 1</span> */}
+            <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div>
+                <h3 className="text-white text-xl font-bold mb-2">GASOLINE</h3>
+                <p className="text-white text-sm font-normal leading-snug mb-4">
+                  Engines use gasoline as fuel and operate through internal
+                  combustion with spark ignition. They are known for their high
+                  power output and simplicity in maintenance
+                </p>
+              </div>
+              <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
+                View
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
+          {/* Diesel */}
+          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg">
             <Image
               src="/engine/desl.png"
               alt="Diesel Engine"
               width={384}
               height={240}
-              className="rounded-lg object-cover w-full h-[140px] sm:h-[180px] md:h-[200px]"
+              className="object-cover opacity-70"
             />
-            {/* <span className="mt-2 text-base font-medium text-[#1E4A8F]">Hybrid Engine</span> */}
+            <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div>
+                <h3 className="text-white text-xl font-bold mb-2">DIESEL</h3>
+                <p className="text-white text-sm font-normal leading-snug mb-4">
+                  Runs on diesel fuel, operates through internal combustion with
+                  ignition from high-temperature compressed air, efficient with
+                  high torque
+                </p>
+              </div>
+              <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
+                View
+              </button>
+            </div>
           </div>
-          <div className="flex flex-col items-center">
+          {/* Hybrid */}
+          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg">
             <Image
               src="/engine/hybrid-engine.png"
-              alt="hybrid Engine"
+              alt="Hybrid Engine"
               width={384}
               height={240}
-              className="rounded-lg object-cover w-full h-[140px] sm:h-[180px] md:h-[200px]"
+              className="object-cover opacity-70"
             />
-            {/* <span className="mt-2 text-base font-medium text-[#1E4A8F]">Gasoline Engine</span> */}
+            <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div>
+                <h3 className="text-white text-xl font-bold mb-2">HYBRID</h3>
+                <p className="text-white text-sm font-normal leading-snug mb-4">
+                  Hybrid engine combines with an electric motor, providing
+                  dual-fuel operation, increased fuel efficiency, lower
+                  emissions, and energy source flexibility
+                </p>
+              </div>
+              <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-1 hover:bg-[#0086cc] transition mb-3">
+                View
+              </button>
+            </div>
           </div>
         </div>
       </section>

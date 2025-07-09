@@ -42,52 +42,50 @@ const arrowIcon = "/Images/home/Makers-logos/arrows.png";
 
 export default function FeaturedCategories() {
   return (
-    <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-8 px-2 sm:px-4">
-      <h2
-        className="text-xl sm:text-2xl md:text-[32px] font-normal mb-6"
-        style={{
-          fontFamily: "Audiowide, sans-serif",
-          letterSpacing: "0.04em",
-          color: "#fff",
-        }}
-      >
-        AUTO PARTS FOR YOUR MAKE
-      </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-16 gap-y-4 md:gap-y-6 w-full max-w-6xl">
-        {makers.slice(0, 32).map((maker, i) => (
-          <div
-            key={maker.name}
-            className="flex items-center p-4 cursor-pointer justify-between border-[#00A3FF] border-b hover:border-0 hover:rounded-lg hover:bg-[#7f88cbb0]  transition-all"
-            style={{
-              // borderColor: "#00A3FF",
-              paddingBottom: 8,
-              marginBottom: 8,
-            }}
-          >
-            <div className="flex items-center gap-2 sm:gap-3">
+    <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-12 px-2 sm:px-4">
+      <div className="w-full max-w-6xl mx-auto px-4">
+        <h2
+          className="text-xl sm:text-2xl md:text-[32px] font-normal mb-6 text-left"
+          style={{
+            fontFamily: "Audiowide, sans-serif",
+            letterSpacing: "0.04em",
+            color: "#fff",
+          }}
+        >
+          AUTO PARTS FOR YOUR MAKE
+        </h2>
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-4 md:gap-x-16 gap-y-4 md:gap-y-6 w-full max-w-6xl">
+          {makers.slice(0, 32).map((maker, i) => (
+            <div
+              key={maker.name}
+              className="flex items-center p-4 cursor-pointer justify-between border-[#00A3FF] border-b hover:border-0 hover:rounded-lg hover:bg-[#7f88cbb0] transition-all"
+              style={{ paddingBottom: 8, marginBottom: 8 }}
+            >
+              <div className="flex items-center gap-2 sm:gap-3">
+                <Image
+                  src={maker.logo}
+                  alt={maker.name}
+                  width={24}
+                  height={24}
+                  style={{ objectFit: "contain" }}
+                />
+                <span
+                  className="text-white text-sm sm:text-[15px] font-normal"
+                  style={{ fontFamily: "Audiowide, sans-serif" }}
+                >
+                  {maker.name}
+                </span>
+              </div>
               <Image
-                src={maker.logo}
-                alt={maker.name}
-                width={24}
-                height={24}
+                src={arrowIcon}
+                alt="arrow"
+                width={18}
+                height={18}
                 style={{ objectFit: "contain" }}
               />
-              <span
-                className="text-white text-sm sm:text-[15px] font-normal"
-                style={{ fontFamily: "Audiowide, sans-serif" }}
-              >
-                {maker.name}
-              </span>
             </div>
-            <Image
-              src={arrowIcon}
-              alt="arrow"
-              width={18}
-              height={18}
-              style={{ objectFit: "contain" }}
-            />
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </section>
   );

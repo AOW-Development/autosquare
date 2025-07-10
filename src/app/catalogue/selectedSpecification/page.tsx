@@ -59,7 +59,7 @@ export default function CatalogPage() {
           {/* Filter Sidebar */}
           <aside className="w-[250px] text-sm flex-shrink-0">
             {/* CHOOSE YOUR SPECIFICATION - Applied Audiowide font */}
-            <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+            <div className="mb-6 bg-[#091627] p-4 rounded-lg">
               <h3 className=" mb-3 font-audiowide">CHOOSE YOUR SPECIFICATION</h3>
               <ul className="space-y-2">
                 <li>
@@ -85,19 +85,19 @@ export default function CatalogPage() {
             </div>
 
             {/* PRICE RANGE - Applied Audiowide font */}
-            <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+            <div className="mb-6 bg-[#091627] p-4 rounded-lg">
               <h3 className=" mb-3 font-audiowide">PRICE RANGE</h3>
               <div className="flex gap-2 mb-3">
-                <input type="number" placeholder="0" className="w-1/2 bg-gray-700 border border-gray-600 rounded-md p-2 text-sm text-white focus:ring-sky-500 focus:border-sky-500" />
-                <input type="number" placeholder="100000" className="w-1/2 bg-gray-700 border border-gray-600 rounded-md p-2 text-sm text-white focus:ring-sky-500 focus:border-sky-500" />
+                <input type="number" placeholder="0" className="w-1/2 bg-[#091627] border border-white rounded-md p-2 text-sm text-white focus:ring-sky-500 focus:border-sky-500" />
+                <input type="number" placeholder="100000" className="w-1/2 bg-[#091627] border border-white rounded-md p-2 text-sm text-white focus:ring-sky-500 focus:border-sky-500" />
               </div>
-              <button className="w-full bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors">
+              <button className="w-full bg-[#091627] border border-blue hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors">
                 Filter
               </button>
             </div>
 
             {/* STATE - Applied Audiowide font */}
-            <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+            <div className="mb-6 bg-[#091627] p-4 rounded-lg">
               <h3 className=" mb-3 font-audiowide">STATE</h3>
               <label className="flex items-center mb-2">
                 <input type="checkbox" className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600" />
@@ -110,7 +110,7 @@ export default function CatalogPage() {
             </div>
 
             {/* CAR MILEAGE - Applied Audiowide font */}
-            <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+            <div className="mb-6 bg-[#091627] p-4 rounded-lg">
               <h3 className=" mb-3 font-audiowide">CAR MILEAGE, MILES</h3>
               <label className="flex items-center mb-2">
                 <input type="checkbox" className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600" />
@@ -131,7 +131,7 @@ export default function CatalogPage() {
             </div>
 
             {/* CONDITION - Applied Audiowide font */}
-            <div className="bg-[#0C2A4D] p-4 rounded-lg">
+            <div className="bg-[#091627] p-4 rounded-lg">
               <h3 className=" mb-3 font-audiowide">CONDITION</h3>
               <label className="flex items-center mb-2">
                 <input type="checkbox" className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600" />
@@ -151,10 +151,10 @@ export default function CatalogPage() {
                 Quantity of products: <span className="font-semibold">{dummyData.length}</span>
               </div>
               <div className="flex items-center space-x-2">
-                <label htmlFor="sort-by" className="text-sm text-gray-300">Sort by:</label>
+                {/* <label htmlFor="sort-by" className="text-sm text-gray-300">Sort by:</label> */}
                 <select
                   id="sort-by"
-                  className="bg-[#0C2A4D] border border-gray-700 text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 p-2.5"
+                  className="bg-[#091627] border border-white text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 p-2.5"
                 >
                   <option>Recommended</option>
                   <option>Price: Low to High</option>

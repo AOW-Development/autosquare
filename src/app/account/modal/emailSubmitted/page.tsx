@@ -12,3 +12,7 @@
 //   3. **Button**: “Ok” full-width, `bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2`.
 
 // - Ensure responsive sizing: modal width 90% mobile, 80% md, etc.; typography scales at breakpoints.  
+export default function EmailSubmittedPage() {
+    return <div>Email submitted!</div>;
+  }  
+  

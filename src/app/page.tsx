@@ -10,8 +10,8 @@ import TestimonialsSection from "@/components/testimonialsSection";
 
 export default function Home() {
   return (
-    <div>
-      <section className="relative w-full h-[710px]">
+    <div className="overflow-hidden">
+      <section className="relative w-full h-[450px] lg:h-[710px]">
         <Image
           src="/Images/img_banner.png"
           alt="Autoparts banner"

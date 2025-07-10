@@ -1,8 +1,8 @@
-import Image from 'next/image';
+import Image from "next/image";
 
 export default function Banner() {
   return (
-    <div className="w-full h-[320px] relative bg-[#091B33] rounded-2xl shadow-lg overflow-hidden flex items-center justify-center">
+    <div className="w-full h-[220px] md:h-[320px] relative bg-[#091B33] shadow-lg overflow-hidden flex items-center justify-center">
       <Image
         src="/Images/acc_banner.png"
         alt="Account Banner"
@@ -10,7 +10,7 @@ export default function Banner() {
         className="object-cover object-center opacity-80"
         priority
       />
-      <div className="absolute inset-0 flex items-center justify-center">
+      {/* <div className="absolute inset-0 flex items-center justify-center">
         <Image
           src="/Images/brand-logo.svg"
           alt="Brand Logo"
@@ -19,7 +19,7 @@ export default function Banner() {
           className="mx-auto"
           priority
         />
-      </div>
+      </div> */}
     </div>
   );
-} 
+}

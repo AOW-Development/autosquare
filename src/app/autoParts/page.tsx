@@ -390,8 +390,8 @@ export default function AutoPartsPage() {
   };
 
   return (
-    <>
-      <div className="w-full h-[320px] bg-[#091B33] relative">
+    <div className="bg-[#091b33] min-h-screen">
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
         <Image
           src="/Images/title_img (2).png"
           alt="Banner"
@@ -401,10 +401,11 @@ export default function AutoPartsPage() {
         />
       </div>
       <ShopByVehicle />
-      <div className="min-h-screen bg-[#091B33] pb-12">
+      {/* <div className="min-h-screen bg-[#091B33] pb-12"> */}
+      <section className="max-w-6xl mx-auto px-6 py-10">
         {/* Breadcrumb */}
-        <div className="mt-32">
-          <div className="flex items-center gap-2 px-6 py-8 ">
+        <div className="">
+          {/* <div className="flex items-center gap-2 px-6 py-8 ">
             <Image
               src="/autoparts/HouseLine.png"
               alt="Home"
@@ -415,12 +416,22 @@ export default function AutoPartsPage() {
             <span className="text-white text-lg font-audiowide">
               Auto parts
             </span>
+          </div> */}
+          <div className="flex items-center gap-2  py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
+            <Image
+              src="/autoparts/HouseLine.png"
+              alt="Home"
+              width={20}
+              height={20}
+            />
+            <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
+            <span className="text-gray-500">AutoParts</span>
           </div>
         </div>
         {/* Grids */}
-        <div className="flex flex-col gap-y-4 md:gap-y-12 px-3 md:px-6">
+        <div className="flex flex-col gap-y-4 md:gap-y-12">
           {PARTS.map((part, idx) => (
-            <div key={part.name} className="p-2 md:p-4 w-full">
+            <div key={part.name} className="p-2 md:p-1 w-full">
               {/* Collapsible header for mobile */}
               <div
                 className="mb-2 md:mb-4 text-white text-xl md:text-[32px] font-audiowide capitalize flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
@@ -450,7 +461,7 @@ export default function AutoPartsPage() {
               </div>
               {/* Images: show on desktop, or if open on mobile */}
               <div
-                className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 md:gap-4 transition-all duration-300 overflow-hidden
+                className={`grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-2 md:gap-4 transition-all duration-300 overflow-hidden
                   ${openIndex === idx ? "max-h-[1000px] mb-2" : "max-h-0 mb-0"}
                   md:max-h-none md:mb-0
                   ${
@@ -487,7 +498,8 @@ export default function AutoPartsPage() {
             </div>
           ))}
         </div>
-      </div>
-    </>
+        {/* </div> */}
+      </section>
+    </div>
   );
 }

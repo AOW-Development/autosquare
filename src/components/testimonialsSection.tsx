@@ -44,7 +44,7 @@ const testimonials = [
     avatar: "/Images/Gender (1).png",
   },
   {
-    name: "Sandra Wehner",
+    name: "Sandro Wehner",
     text: "Extremely pleased with my experience at this online auto parts store.  The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
     avatar: "/Images/Gender (1).png",
   },
@@ -174,11 +174,11 @@ export default function TestimonialsSection() {
             >
               TESTIMONIALS
             </h2>
-            <div className="flex gap-0 pr-4 sm:pr-12">
+            <div className="flex gap-0 mr-10">
               <button
                 onClick={() => canLeft && handleManualNav(start - 1)}
                 disabled={!canLeft}
-                className={`p-2${!canLeft ? " cursor-not-allowed" : ""}`}
+                className={`p-2 ${!canLeft ? " cursor-not-allowed" : ""}`}
                 aria-label="Previous"
               >
                 <Image
@@ -191,7 +191,7 @@ export default function TestimonialsSection() {
               <button
                 onClick={() => canRight && handleManualNav(start + 1)}
                 disabled={!canRight}
-                className={`p-2${!canRight ? " cursor-not-allowed" : ""}`}
+                className={`p-2 ${!canRight ? " cursor-not-allowed" : ""}`}
                 aria-label="Next"
               >
                 <Image
@@ -203,21 +203,25 @@ export default function TestimonialsSection() {
               </button>
             </div>
           </div>
-          <div className="flex w-full justify-center px-2 lg:mx-20  sm:px-14 transition-all duration-300">
+          <div className="flex w-full justify-center px-2 lg:mx-3 sm:px-14 transition-all duration-300">
             {visible.map((t, i) => (
               <div
                 key={t.name + i}
-                className="w-full max-w-xs sm:max-w-sm md:max-w-md flex-shrink-0 "
+                className="w-full max-w-xs sm:max-w-sm md:max-w-md"
               >
                 <TestimonialCard {...t} />
               </div>
             ))}
           </div>
           <div className="flex justify-center mt-8">
-            <Link href="/Testimonials" passHref legacyBehavior>
-              <a className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition">
-                View more
-              </a>
+            <Link
+              className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition"
+              href="/Testimonials"
+              passHref
+            >
+              {/* <a className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition"> */}
+              View more
+              {/* </a> */}
             </Link>
           </div>
         </div>

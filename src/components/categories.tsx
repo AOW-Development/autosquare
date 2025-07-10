@@ -1,35 +1,44 @@
+import { link } from "fs";
 import Image from "next/image";
+import Link from "next/link";
 
 const categories = [
   {
     src: "/categories_section/engine.png",
     alt: "Engine",
+    link: "/engine",
   },
   {
     src: "/categories_section/transmission.png",
     alt: "Transmission",
+    link: "/transmission",
   },
   {
     src: "/categories_section/axel.png",
     alt: "Axle Assembly",
+    link: "",
   },
   {
     src: "/categories_section/transfer-case.png",
     alt: "Transfer Case",
+    link: "",
   },
   {
     src: "/categories_section/head-light.png",
     alt: "Headlight",
+    link: "",
   },
   {
     src: "/categories_section/tail-light.png",
     alt: "Tail Light",
+    link: "",
   },
 ];
 
 type CategoryCardProps = {
   src: string;
   alt: string;
+  link: string;
   fullWidth?: boolean;
 };
 
@@ -41,7 +50,7 @@ export default function CategoriesSection() {
           featured categories
         </h2> */}
         <h1
-          className="font-audiowide text-white text-2xl sm:text-4xl mt-10 md:mt-6 mb-6 tracking-wide uppercase text-left w-full"
+          className="font-audiowide text-white text-2xl sm:text-4xl mt-10 md:mt-20 mb-6 md:mb-10 tracking-wide uppercase text-left w-full"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -51,7 +60,7 @@ export default function CategoriesSection() {
         </h1>
         <div
           className="grid grid-cols-2 gap-2 md:grid-cols-4 md:grid-rows-2 md:gap-x-2 md:gap-y-0 w-full max-w-[1200px]"
-          style={{ minHeight: "684px" }}
+          style={{ minHeight: "460px" }}
         >
           {/* First two images side by side */}
           <CategoryCard {...categories[0]} fullWidth={false} />
@@ -69,7 +78,12 @@ export default function CategoriesSection() {
   );
 }
 
-function CategoryCard({ src, alt, fullWidth = false }: CategoryCardProps) {
+function CategoryCard({
+  src,
+  alt,
+  link,
+  fullWidth = false,
+}: CategoryCardProps) {
   return (
     <div
       className={
@@ -89,9 +103,11 @@ function CategoryCard({ src, alt, fullWidth = false }: CategoryCardProps) {
         <span className="text-white text-base sm:text-lg md:text-xl font-bold mb-2 drop-shadow uppercase">
           {alt}
         </span>
-        <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-6 text-xs sm:text-sm hover:bg-[#0086cc] transition">
-          Go shop
-        </button>
+        <Link href={link}>
+          <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-6 text-xs sm:text-sm hover:bg-[#0086cc] transition cursor-pointer">
+            Go shop
+          </button>
+        </Link>
       </div>
     </div>
   );

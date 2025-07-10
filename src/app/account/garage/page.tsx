@@ -1,10 +1,10 @@
 "use client";
 import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
-import { Edit } from "lucide-react";
+import { Edit, X } from "lucide-react";
 import Image from "next/image";
 
-const vehicles = [{ logo: "/Images/ford-logo.svg", name: "Ford Bronco 1991" }];
+const vehicles = [{ logo: "/Images/car_logo.png", name: "Ford Bronco 1991" }];
 
 export default function GaragePage() {
   return (
@@ -46,7 +46,7 @@ export default function GaragePage() {
                     className="text-red-400 hover:text-red-600"
                     title="Delete"
                   >
-                    ✖️
+                    <X />
                   </button>
                 </div>
               ))}

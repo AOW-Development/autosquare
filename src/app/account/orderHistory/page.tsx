@@ -10,7 +10,7 @@ const orders = [
     date: "11 July 2024",
     status: "In progress",
     total: "$3640",
-    items: ["/Images/part1.png", "/Images/part2.png", "+2"],
+    items: ["/Images/item2.png"],
   },
 ];
 
@@ -22,7 +22,7 @@ export default function OrderHistoryPage() {
       </div> */}
       <div className="flex-1 flex flex-col gap-6">
         <Banner />
-        <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto">
+        <div className="flex flex-col md:flex-row w-full max-w-4xl lg:max-w-6xl mx-auto">
           <div className="mb-6 md:mb-0">
             <Sidebar activeKey="Order History" />
           </div>
@@ -44,21 +44,22 @@ export default function OrderHistoryPage() {
                 </button>
               ))}
             </div>
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-6 w-full border-2 rounded-md border-blue-600 overflow-hidden">
               {orders.map((order, i) => (
                 <div
                   key={order.id}
-                  className="bg-[#091627] rounded-2xl shadow p-4 flex flex-col md:flex-row md:items-center gap-4"
+                  className="bg-[#091627] rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center gap-4"
                 >
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
-                      <span className="font-bold">Order {order.id}</span>
-                      <span className="text-xs text-gray-400 ml-2">
+                  {/* Left: Order Info */}
+                  <div className="flex-1 flex flex-col justify-center">
+                    <div className="flex items-center gap-2">
+                      <span className="font-bold">Order: {order.id}</span>
+                      <span className="text-xs text-gray-400">
                         {order.date}
                       </span>
                     </div>
                     <div
-                      className={`font-semibold text-sm ${
+                      className={`font-semibold text-sm mt-1 ${
                         order.status === "In progress"
                           ? "text-yellow-400"
                           : order.status === "Completed"
@@ -68,29 +69,35 @@ export default function OrderHistoryPage() {
                     >
                       {order.status}
                     </div>
-                    <div className="font-bold mt-1">Total: {order.total}</div>
-                    <div className="flex gap-2 mt-2 items-center">
-                      {order.items.map((img, j) =>
-                        typeof img === "string" && img.startsWith("+") ? (
-                          <span key={j} className="text-gray-400 font-bold">
-                            {img}
-                          </span>
-                        ) : (
-                          <Image
-                            key={j}
-                            src={img}
-                            alt="item"
-                            width={32}
-                            height={32}
-                            className="rounded"
-                          />
-                        )
-                      )}
-                    </div>
                   </div>
-                  <button className="border border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-1 px-3 font-semibold transition-colors self-start md:self-center">
-                    Details
-                  </button>
+
+                  {/* Right: Total, Items, Details */}
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 min-w-[300px] justify-between">
+                    <div className="flex flex-row  md:justify-center md:items-center">
+                      <div className="font-bold">Total: {order.total}</div>
+                      <div className="flex gap-2 mt-2 items-start md:items-center md:justify-end justify-start">
+                        {order.items.map((img, j) =>
+                          typeof img === "string" && img.startsWith("+") ? (
+                            <span key={j} className="text-gray-400 font-bold">
+                              {img}
+                            </span>
+                          ) : (
+                            <Image
+                              key={j}
+                              src={img}
+                              alt="item"
+                              width={102}
+                              height={102}
+                              className="rounded"
+                            />
+                          )
+                        )}
+                      </div>
+                    </div>
+                    <button className="border border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-1 px-3 font-semibold transition-colors self-start  md:self-center">
+                      Details
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

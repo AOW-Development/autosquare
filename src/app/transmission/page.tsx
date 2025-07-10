@@ -117,7 +117,7 @@ export default function TransmissionPage() {
           priority
         />
       </div>
-      <div className="ml-18 mt-6">
+      <div className="mt-6">
         <ShopByVehicle />
       </div>
 

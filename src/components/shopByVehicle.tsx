@@ -172,22 +172,22 @@ const ShopByVehicle: React.FC = () => {
 
       {/* Mobile Layout */}
       <div
-        className="absolute top-[-80px] left-1/2 transform -translate-x-1/2 w-[95%] max-w-[400px] backdrop-blur-md rounded-lg shadow-lg px-4 py-6 flex flex-col justify-center lg:hidden"
+        className="absolute top-[-60px] sm:top-[-80px] left-1/2 transform -translate-x-1/2 w-[92%] max-w-[400px] backdrop-blur-md rounded-lg shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center lg:hidden mobile-shop-container"
         style={{ background: "#00A3FFA6" }}
       >
         <div
-          className="text-center font-exo-2 font-bold text-[16px] tracking-wider mb-4 uppercase text-white"
+          className="text-center font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
           id="shop-by-vehicle-title-mobile"
         >
           SHOP BY VEHICLE
         </div>
 
-        <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-2 sm:gap-3">
           {/* Make Dropdown - Always visible */}
           <select
             id="make-select-mobile"
             aria-label="Select make"
-            className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
+            className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
               makeActive
                 ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
                 : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
@@ -219,7 +219,7 @@ const ShopByVehicle: React.FC = () => {
             <select
               id="model-select-mobile"
               aria-label="Select model"
-              className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+              className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
               value={model}
               onChange={(e) => {
                 setModel(e.target.value);
@@ -246,7 +246,7 @@ const ShopByVehicle: React.FC = () => {
             <select
               id="year-select-mobile"
               aria-label="Select year"
-              className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+              className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
               value={year}
               onChange={(e) => {
                 setYear(e.target.value);
@@ -272,7 +272,7 @@ const ShopByVehicle: React.FC = () => {
             <select
               id="part-select-mobile"
               aria-label="Select part"
-              className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+              className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
               value={part}
               onChange={(e) => setPart(e.target.value)}
               onFocus={() => setFocused("part")}
@@ -303,6 +303,15 @@ const ShopByVehicle: React.FC = () => {
           overflow: hidden !important;
           clip: rect(0,0,0,0) !important;
           border: 0 !important;
+        }
+        
+        /* Extra small screen adjustments */
+        @media (max-width: 375px) {
+          .mobile-shop-container {
+            width: 96% !important;
+            max-width: 350px !important;
+            top: -50px !important;
+          }
         }
       `}</style>
     </div>

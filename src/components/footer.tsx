@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     //py-[60px] md:py-[40px] sm:py-[32px]
     <footer className="w-full bg-[#090D15] font-exo2">
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-8 md:py-16">
+      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-30 md:py-16">
         {/* Top Grid: Stacked on mobile, row on desktop */}
         <div className="flex flex-col md:flex-row md:space-x-4 gap-y-6">
           {/* Company Info */}

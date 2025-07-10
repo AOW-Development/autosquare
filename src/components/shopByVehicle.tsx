@@ -42,8 +42,9 @@ const ShopByVehicle: React.FC = () => {
 
   return (
     <div className="relative z-20">
+      {/* Desktop Layout */}
       <div
-        className="absolute top-[-80px] left-1/2 transform -translate-x-1/2 w-[1200px] h-[121px] backdrop-blur-md rounded-lg shadow-lg px-6 py-4 flex flex-col justify-center"
+        className="absolute top-[-80px] left-1/2 transform -translate-x-1/2 w-[1200px] h-[121px] backdrop-blur-md rounded-lg shadow-lg px-6 py-4  flex-col justify-center hidden lg:block"
         style={{ background: "#00A3FFA6" }}
       >
         <div
@@ -166,6 +167,128 @@ const ShopByVehicle: React.FC = () => {
               </option>
             ))}
           </select>
+        </div>
+      </div>
+
+      {/* Mobile Layout */}
+      <div
+        className="absolute top-[-80px] left-1/2 transform -translate-x-1/2 w-[95%] max-w-[400px] backdrop-blur-md rounded-lg shadow-lg px-4 py-6 flex flex-col justify-center lg:hidden"
+        style={{ background: "#00A3FFA6" }}
+      >
+        <div
+          className="text-center font-exo-2 font-bold text-[16px] tracking-wider mb-4 uppercase text-white"
+          id="shop-by-vehicle-title-mobile"
+        >
+          SHOP BY VEHICLE
+        </div>
+
+        <div className="flex flex-col gap-3">
+          {/* Make Dropdown - Always visible */}
+          <select
+            id="make-select-mobile"
+            aria-label="Select make"
+            className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
+              makeActive
+                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
+                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
+            }`}
+            value={make}
+            onChange={(e) => {
+              setMake(e.target.value);
+              setModel("");
+              setYear("");
+              setPart("");
+            }}
+            onFocus={() => setFocused("make")}
+            onBlur={() => setFocused(null)}
+            disabled={!makeActive}
+            style={arrowStyle}
+          >
+            <option value="" disabled>
+              Select make...
+            </option>
+            {MAKES.map((m) => (
+              <option key={m} value={m}>
+                {m}
+              </option>
+            ))}
+          </select>
+
+          {/* Model Dropdown - Only visible when make is selected */}
+          {modelActive && (
+            <select
+              id="model-select-mobile"
+              aria-label="Select model"
+              className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+              value={model}
+              onChange={(e) => {
+                setModel(e.target.value);
+                setYear("");
+                setPart("");
+              }}
+              onFocus={() => setFocused("model")}
+              onBlur={() => setFocused(null)}
+              style={arrowStyle}
+            >
+              <option value="" disabled>
+                Select model...
+              </option>
+              {(MODELS[make] || []).map((mo) => (
+                <option key={mo} value={mo}>
+                  {mo}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* Year Dropdown - Only visible when make and model are selected */}
+          {yearActive && (
+            <select
+              id="year-select-mobile"
+              aria-label="Select year"
+              className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+              value={year}
+              onChange={(e) => {
+                setYear(e.target.value);
+                setPart("");
+              }}
+              onFocus={() => setFocused("year")}
+              onBlur={() => setFocused(null)}
+              style={arrowStyle}
+            >
+              <option value="" disabled>
+                Select year...
+              </option>
+              {YEARS.map((y) => (
+                <option key={y} value={y}>
+                  {y}
+                </option>
+              ))}
+            </select>
+          )}
+
+          {/* Part Dropdown - Only visible when make, model, and year are selected */}
+          {partActive && (
+            <select
+              id="part-select-mobile"
+              aria-label="Select part"
+              className={`w-full h-[44px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+              value={part}
+              onChange={(e) => setPart(e.target.value)}
+              onFocus={() => setFocused("part")}
+              onBlur={() => setFocused(null)}
+              style={arrowStyle}
+            >
+              <option value="" disabled>
+                Select part...
+              </option>
+              {PARTS.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          )}
         </div>
       </div>
 

@@ -12,3 +12,7 @@
 //   3. **Button**: “Ok” full-width, `bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2`.
 
 // - Ensure modal is responsive: width scales (90% mobile, 80% md, 60% lg), text sizes adjust.  
+export default function EmailSubmittedPage() {
+    return <div>ticket submitted!</div>;
+  }  
+  

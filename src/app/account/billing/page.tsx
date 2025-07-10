@@ -1,4 +1,4 @@
-
+"use client"
 import Banner from '@/components/Banner';
 import Sidebar from '@/components/Sidebar';
 import FormField from '@/components/FormField';

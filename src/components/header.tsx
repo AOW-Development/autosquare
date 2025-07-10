@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Hamburger from "@/public/header/hamburgur-button.png";
 import Arrow from "@/public/header/arrows (4).png";
 
@@ -23,7 +24,7 @@ const categories = [
   { name: "Cooling and Heating" },
   { name: "Doors" },
   { name: "Electrical" },
-  { name: "Engine" },
+  { name: "Engine", href: "/catalogue/engine/home" },
   { name: "Engine Accessories" },
   { name: "Entertainment" },
   { name: "Front Body" },
@@ -42,25 +43,29 @@ const navLinks = [
   {
     label: "Auto Parts",
     type: "dropdown",
-    sub: ["Engine", "Transmission", "Brakes"],
+    sub: [
+      { label: "Engine", href: "/engine" },
+      { label: "Transmission", href: "/transmission" },
+      { label: "Brakes", href: "/autoParts" },
+    ],
   },
-  { label: "Engine", type: "link" },
-  { label: "Transmission", type: "link" },
-  { label: "Contact Us", type: "link" },
+  { label: "Engine", type: "link", href: "/engine" },
+  { label: "Transmission", type: "link", href: "/transmission" },
+  { label: "Contact Us", type: "link", href: "/contactUs" },
   {
     label: "Info",
     type: "submenu",
     sub: [
-      "About us",
-      "Warranty and Return",
-      "Shipping and Payment",
-      "Privacy Policy",
-      "Terms & Conditions",
-      "Blogs",
-      "Testimonials",
-      "Track my order",
-      "Submit a ticket",
-      "Make a Payment",
+      { label: "About us", href: "/aboutUs" },
+      { label: "Warranty and Return", href: "/account/warrantyAndReturn" },
+      { label: "Shipping and Payment", href: "/account/shippingPaymentPolicy" },
+      { label: "Privacy Policy", href: "/account/privacyPolicy" },
+      { label: "Terms & Conditions", href: "/account/t&c" },
+      { label: "Blogs", href: "/Blog/blogListing" },
+      { label: "Testimonials", href: "/Testimonials" },
+      { label: "Track my order", href: "/account/trackOrder" },
+      { label: "Submit a ticket", href: "/account/submitTicket" },
+      { label: "Make a Payment", href: "/account/paymentInfo" },
     ],
   },
 ];
@@ -103,6 +108,7 @@ export default function Header() {
       <div className="md:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
         {/* Row 1: Logo left, contact info right */}
         <div className="flex items-center justify-between w-full">
+          <Link href="/">
           <Image
             src="/header/logo (2).png"
             alt="Logo"
@@ -110,6 +116,7 @@ export default function Header() {
             height={28}
             className="w-[110px] h-[28px]"
           />
+          </Link>
           <div className="flex flex-col items-end text-xs">
             <span className="font-bold">(888) 748-0882</span>
             <span>Mon-Fri: 8AM - 7PM EST</span>
@@ -135,25 +142,10 @@ export default function Header() {
             <span className="ml-1 font-medium">Menu</span>
           </button>
           <div className="flex items-center gap-4">
-            <Image
-              src="/header/MagnifyingGlass.png"
-              alt="Search"
-              width={22}
-              height={22}
-            />
-            <Image
-              src="/header/ShoppingCartSimple.png"
-              alt="Cart"
-              width={22}
-              height={22}
-            />
-            <Image src="/header/Garage.png" alt="Home" width={22} height={22} />
-            <Image
-              src="/header/User.png"
-              alt="Profile"
-              width={22}
-              height={22}
-            />
+            <Image src="/header/MagnifyingGlass.png" alt="Search" width={22} height={22} />
+            <Link href="/account/cart"><Image src="/header/ShoppingCartSimple.png" alt="Cart" width={22} height={22} /></Link>
+            <Link href="/account/garage"><Image src="/header/Garage.png" alt="Garage" width={22} height={22} /></Link>
+            <Link href="/account/profile"><Image src="/header/User.png" alt="Profile" width={22} height={22} /></Link>
           </div>
         </div>
       </div>
@@ -161,6 +153,7 @@ export default function Header() {
       <div className="hidden md:grid grid-cols-3 items-center px-4 py-4 text-sm font-medium gap-2 md:gap-0">
         {/* Left: Logo */}
         <div className="flex items-center gap-4 w-full md:w-auto justify-start">
+          <Link href="/">
           <Image
             src="/header/logo (2).png"
             alt="Logo"
@@ -168,6 +161,7 @@ export default function Header() {
             height={32}
             className="md:w-[200px] md:h-[40px] w-[140px] h-[32px]"
           />
+          </Link>
         </div>
         {/* Center: Contact Info */}
         <div className="flex flex-row gap-2 items-center justify-center">
@@ -176,20 +170,10 @@ export default function Header() {
         </div>
         {/* Right: Icons */}
         <div className="flex items-center gap-6 justify-end">
-          <Image
-            src="/header/MagnifyingGlass.png"
-            alt="Search"
-            width={24}
-            height={24}
-          />
-          <Image
-            src="/header/ShoppingCartSimple.png"
-            alt="Cart"
-            width={24}
-            height={24}
-          />
-          <Image src="/header/Garage.png" alt="Home" width={24} height={24} />
-          <Image src="/header/User.png" alt="Profile" width={24} height={24} />
+          <Image src="/header/MagnifyingGlass.png" alt="Search" width={24} height={24} />
+          <Link href="/account/cart"><Image src="/header/ShoppingCartSimple.png" alt="Cart" width={24} height={24} /></Link>
+          <Link href="/account/garage"><Image src="/header/Garage.png" alt="Garage" width={24} height={24} /></Link>
+          <Link href="/account/profile"><Image src="/header/User.png" alt="Profile" width={24} height={24} /></Link>
         </div>
       </div>
       {/* Navbar */}
@@ -230,19 +214,30 @@ export default function Header() {
               >
                 {link.label === "Shop by Categories" && (
                   <button
-                    className="flex items-center justify-center px-2 h-10 ml-2 border border-gray-700 rounded bg-gray-900 hover:bg-gray-800 hover:text-blue-400 focus:outline-none transition"
+                    className="flex items-center justify-center px-2 h-10 ml-2 rounded  hover:text-blue-400 focus:outline-none transition gap-2"
                     aria-label="Open menu"
                     tabIndex={-1}
                     style={{ minWidth: 40 }}
                   >
                     <Image
-                      src="/header/vector.png"
+                      src="/Images/ham.png"
                       alt="Menu"
                       width={24}
                       height={24}
+                      className="mr-2"
                     />
+                    
                   </button>
                 )}
+                {link.type === "link" ? (
+                  <Link
+                    href={link.href || "#"}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 hover:text-blue-400 transition rounded focus:outline-none h-full"
+                    onClick={closeAll}
+                  >
+                    {link.label}
+                  </Link>
+                ) : (
                 <button
                   className="w-full flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 hover:text-blue-400 transition rounded focus:outline-none h-full"
                   aria-haspopup={link.type !== "link"}
@@ -263,6 +258,7 @@ export default function Header() {
                     />
                   )}
                 </button>
+                )}
                 {/* Categories Flyout */}
                 {link.type === "categories" && categoriesOpen && (
                   <div className="absolute left-0 top-full mt-2 w-[600px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in">
@@ -282,7 +278,11 @@ export default function Header() {
                           aria-haspopup={!!cat.sub}
                           aria-expanded={activeCategory === cat.name}
                         >
-                          {cat.name}
+                          {cat.href ? (
+                            <Link href={cat.href} onClick={closeAll}>{cat.name}</Link>
+                          ) : (
+                            cat.name
+                          )}
                         </div>
                       ))}
                     </div>
@@ -316,10 +316,12 @@ export default function Header() {
                     <ul>
                       {link.sub?.map((item) => (
                         <li
-                          key={item}
+                          key={item.label}
                           className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 cursor-pointer"
                         >
-                          {item}
+                          <Link href={item.href} onClick={closeAll}>
+                            {item.label}
+                          </Link>
                         </li>
                       ))}
                     </ul>
@@ -331,10 +333,12 @@ export default function Header() {
                     <ul>
                       {link.sub?.map((item) => (
                         <li
-                          key={item}
+                          key={item.label}
                           className="px-4 py-2 hover:bg-gray-800 hover:text-blue-400 cursor-pointer flex items-center justify-between"
                         >
-                          {item}
+                          <Link href={item.href} onClick={closeAll}>
+                            {item.label}
+                          </Link>
                           {/* <Image
                             src="/header/arrows (4).png"
                             alt="arrow"
@@ -481,9 +485,13 @@ export default function Header() {
                   // Simple link
                   return (
                     <li key={link.label}>
-                      <button className="w-full text-left px-2 py-2 rounded hover:bg-gray-800">
+                      <Link 
+                        href={link.href || "#"} 
+                        className="w-full text-left px-2 py-2 rounded hover:bg-gray-800 block"
+                        onClick={closeAll}
+                      >
                         {link.label}
-                      </button>
+                      </Link>
                     </li>
                   );
                 })}
@@ -528,7 +536,7 @@ export default function Header() {
 }
 
 // --- Add DropdownSidebar helper component for mobile sidebar ---
-function DropdownSidebar({ label, items }: { label: string; items: string[] }) {
+function DropdownSidebar({ label, items }: { label: string; items: Array<{ label: string; href: string }> }) {
   const [open, setOpen] = React.useState(false);
   return (
     <div>
@@ -551,8 +559,10 @@ function DropdownSidebar({ label, items }: { label: string; items: string[] }) {
       {open && (
         <ul className="pl-4 mt-1">
           {items.map((item) => (
-            <li key={item} className="py-1 hover:text-blue-400 cursor-pointer">
-              {item}
+            <li key={item.label} className="py-1 hover:text-blue-400 cursor-pointer">
+              <Link href={item.href} onClick={() => setOpen(false)}>
+                {item.label}
+              </Link>
             </li>
           ))}
         </ul>

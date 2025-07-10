@@ -1,5 +1,6 @@
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -105,12 +106,12 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/delivery-payment" className="hover:text-white">
+                  <a href="/account/shippingPaymentPolicy" className="hover:text-white">
                     Delivery and Payment
                   </a>
                 </li>
                 <li>
-                  <a href="/warranty-returns" className="hover:text-white">
+                  <a href="/account/warrantyAndReturn" className="hover:text-white">
                     Warranty and Returns
                   </a>
                 </li>
@@ -133,29 +134,19 @@ export default function Footer() {
               </h3>
               <ul className="space-y-[8px] text-[14px] text-[#CCCCCC] leading-[1.6]">
                 <li>
-                  <a href="/track-order" className="hover:text-white">
-                    Track my order
-                  </a>
+                  <Link href="/account/trackOrder" className="hover:text-white">Track my order</Link>
                 </li>
                 <li>
-                  <a href="/make-payment" className="hover:text-white">
-                    Make a payment
-                  </a>
+                  <Link href="/account/paymentInfo" className="hover:text-white">Make a payment</Link>
                 </li>
                 <li>
-                  <a href="/submit-ticket" className="hover:text-white">
-                    Submit a ticket
-                  </a>
+                  <Link href="/account/submitTicket" className="hover:text-white">Submit a ticket</Link>
                 </li>
                 <li>
-                  <a href="/testimonials" className="hover:text-white">
-                    Testimonials
-                  </a>
+                  <Link href="/Testimonials" className="hover:text-white">Testimonials</Link>
                 </li>
                 <li>
-                  <a href="/blogs" className="hover:text-white">
-                    Blogs
-                  </a>
+                  <Link href="/Blog/blogListing" className="hover:text-white">Blogs</Link>
                 </li>
               </ul>
             </div>

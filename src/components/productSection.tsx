@@ -1,11 +1,3 @@
-// create product section where 3 items vertically : 
-//  bg color is #091b33 and text is #FFFFFF
-// top is table 
-// below is featured product :
-//           (left side is title, right side is <> (path is ) )
-//           4 cards are in row path is pro/cards.png
-
-//at bottom is "You have viewd" titel and one card path is pro/cards.png 
 
 import Image from 'next/image';
 
@@ -38,18 +30,39 @@ export default function ProductSection() {
   return (
     <section className="bg-[#091b33] text-white w-full py-8 px-2 flex flex-col gap-12">
       {/* Top Table */}
-      <div className="max-w-5xl mx-auto w-full">
+      <div className="max-w-6xl mx-auto w-full">
         <h2 className="text-xl font-bold mb-4">DESCRIPTION</h2>
-        <table className="w-full border-separate border-spacing-y-2">
-          <tbody>
-            {productDetails.map((row, i) => (
-              <tr key={i} className="bg-[#091b33] border-b border-[#1a2a44]">
-                <td className="py-2 px-4 font-semibold text-sm w-32 text-[#b0c4de]">{row.label}</td>
-                <td className="py-2 px-4 text-sm">{row.value}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <div className="border border-[#00a3ff] rounded-md overflow-hidden" style={{ borderWidth: 1 }}>
+          <table className="w-full border-separate border-spacing-y-0">
+            <tbody>
+              {productDetails.map((row, i) => (
+                <tr
+                  key={i}
+                  className={`${i % 2 === 1 ? 'bg-black' : 'bg-[#091b33]'} text-white`}
+                >
+                  <td
+                    className="py-2 px-4 text-sm w-32 text-white border-l border-t border-b"
+                    style={{
+                      borderColor: 'rgba(0,163,255,0.4)', // lighter blue, more transparent
+                      borderWidth: '0.5px 0 0.5px 0.5px'
+                    }}
+                  >
+                    {row.label}
+                  </td>
+                  <td
+                    className="py-2 px-4 text-sm border-r border-t border-b"
+                    style={{
+                      borderColor: 'rgba(0,163,255,0.4)',
+                      borderWidth: '0.5px 0.5px 0.5px 0'
+                    }}
+                  >
+                    {row.value}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Featured Products */}
@@ -62,17 +75,49 @@ export default function ProductSection() {
           </div>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {featuredProducts.map((prod, i) => (
-            <div key={i} className="bg-[#12263A] rounded-lg shadow-lg flex flex-col items-center p-4 min-h-[340px]">
-              <div className="w-full h-32 relative mb-4">
-                <Image src={prod.img} alt={prod.title} fill className="object-contain rounded" />
+          {featuredProducts.map((prod, i) => {
+            // Parse desc for fields
+            const [vehicle, specs, condition, grade, miles, warranty] = prod.desc.split('\n');
+            return (
+              <div key={i} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden">
+                <div
+                  className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
+                  style={{
+                    background:
+                      'radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)',
+                    width: '250px',
+                    height: '160px',
+                  }}
+                >
+                  <Image
+                    src="/catalog/card.png"
+                    alt="Engine"
+                    width={250}
+                    height={160}
+                    className="relative z-10 rounded-md object-contain"
+                    priority
+                  />
+                  <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg"></div>
+                <div className="relative z-20 pt-2">
+                  <h3 className="text-white text-base mb-1">{prod.title}</h3>
+                  <p className="text-sm text-gray-300 mb-1">{vehicle}</p>
+                  <p className="text-xs text-gray-400 mb-1">{specs}</p>
+                  <p className="text-xs text-gray-400 mb-1">{condition}</p>
+                  <p className="text-xs text-gray-400 mb-1">{grade}</p>
+                  <p className="text-xs text-gray-400 mb-1">{miles}</p>
+                  <p className="text-xs text-gray-400 mb-2">{warranty}</p>
+                  <div className="flex justify-between items-center mt-3">
+                    <span className="text-xl font-bold text-white">{prod.price}</span>
+                    <button className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
               </div>
-              <div className="font-bold text-lg mb-1">{prod.title}</div>
-              <div className="text-xs whitespace-pre-line text-gray-300 mb-2">{prod.desc}</div>
-              <div className="font-bold text-xl mb-2">{prod.price}</div>
-              <button className="bg-[#00a3ff] text-white px-4 py-1 rounded hover:bg-[#1558b0] transition text-sm">Add cart</button>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -80,15 +125,49 @@ export default function ProductSection() {
       <div className="max-w-6xl mx-auto w-full mt-12">
         <h2 className="text-2xl font-bold mb-6">YOU HAVE VIEWED</h2>
         <div className="flex flex-wrap gap-6">
-          <div className="bg-[#12263A] rounded-lg shadow-lg flex flex-col items-center p-4 min-h-[340px] w-full max-w-xs">
-            <div className="w-full h-32 relative mb-4">
-              <Image src={viewedProduct.img} alt={viewedProduct.title} fill className="object-contain rounded" />
-            </div>
-            <div className="font-bold text-lg mb-1">{viewedProduct.title}</div>
-            <div className="text-xs whitespace-pre-line text-gray-300 mb-2">{viewedProduct.desc}</div>
-            <div className="font-bold text-xl mb-2">{viewedProduct.price}</div>
-            <button className="bg-[#00a3ff] text-white px-4 py-1 rounded hover:bg-[#1558b0] transition text-sm">Add cart</button>
-          </div>
+          {/* Only one card for viewedProduct, but use same card style */}
+          {(() => {
+            const [vehicle, specs, condition, grade, miles, warranty] = viewedProduct.desc.split('\n');
+            return (
+              <div className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden w-full max-w-xs">
+                <div
+                  className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
+                  style={{
+                    background:
+                      'radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)',
+                    width: '250px',
+                    height: '160px',
+                  }}
+                >
+                  <Image
+                    src="/catalog/card.png"
+                    alt="Engine"
+                    width={250}
+                    height={160}
+                    className="relative z-10 rounded-md object-contain"
+                    priority
+                  />
+                  <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg"></div>
+                <div className="relative z-20 pt-2">
+                  <h3 className="text-white text-base mb-1">{viewedProduct.title}</h3>
+                  <p className="text-sm text-gray-300 mb-1">{vehicle}</p>
+                  <p className="text-xs text-gray-400 mb-1">{specs}</p>
+                  <p className="text-xs text-gray-400 mb-1">{condition}</p>
+                  <p className="text-xs text-gray-400 mb-1">{grade}</p>
+                  <p className="text-xs text-gray-400 mb-1">{miles}</p>
+                  <p className="text-xs text-gray-400 mb-2">{warranty}</p>
+                  <div className="flex justify-between items-center mt-3">
+                    <span className="text-xl font-bold text-white">{viewedProduct.price}</span>
+                    <button className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors">
+                      Add to Cart
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })()}
         </div>
       </div>
     </section>

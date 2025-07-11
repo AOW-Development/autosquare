@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="w-full md:w-[350px] mb-6 md:mb-0">
             <div>
               <Image
-                src="/images/home/logo-auto.png"
+                src="/Images/home/logo-auto.png"
                 alt="AutoSquare logo"
                 width={200}
                 height={60}
@@ -40,7 +40,7 @@ export default function Footer() {
               <div className="flex space-x-[16px] mt-[16px]">
                 <div className="flex items-center space-x-1">
                   <Image
-                    src="/images/home/social media (5).svg"
+                    src="/Images/home/social media (5).svg"
                     alt="Facebook"
                     width={24}
                     height={24}
@@ -49,7 +49,7 @@ export default function Footer() {
                 </div>
                 <div className="flex items-center space-x-1">
                   <Image
-                    src="/images/home/social media (4).svg"
+                    src="/Images/home/social media (4).svg"
                     alt="Instagram"
                     width={24}
                     height={24}
@@ -162,28 +162,28 @@ export default function Footer() {
             {/* First row of payment icons */}
             <div className="flex space-x-[8px]">
               <Image
-                src="/images/home/visa-inverted_82058.png"
+                src="/Images/home/visa-inverted_82058.png"
                 alt="Visa"
                 width={48}
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
               <Image
-                src="/images/home/mastercard_82049.png"
+                src="/Images/home/mastercard_82049.png"
                 alt="Mastercard"
                 width={48}
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
               <Image
-                src="/images/home/americanexpress_82060 1.png"
+                src="/Images/home/americanexpress_82060 1.png"
                 alt="Amex"
                 width={48}
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
               <Image
-                src="/images/home/discover_82082.png"
+                src="/Images/home/discover_82082.png"
                 alt="Discover"
                 width={48}
                 height={30}
@@ -193,14 +193,14 @@ export default function Footer() {
             {/* Second row of payment icons */}
             <div className="flex space-x-[8px] mt-1">
               <Image
-                src="/images/home/authorize-net-seeklogo 1.png"
+                src="/Images/home/authorize-net-seeklogo 1.png"
                 alt="Authorize.Net"
                 width={60}
                 height={48}
                 className="bg-[#1E2A44] object-contain"
               />
               <Image
-                src="/images/home/visa-inverted_82058 (1).png"
+                src="/Images/home/visa-inverted_82058 (1).png"
                 alt="Visa 2"
                 width={80}
                 height={48}
@@ -215,7 +215,7 @@ export default function Footer() {
                 Member
               </span>
               <Image
-                src="/images/home/icon.png"
+                src="/Images/home/icon.png"
                 alt="Member Icon"
                 width={64}
                 height={30}
@@ -229,21 +229,21 @@ export default function Footer() {
               </span>
               <div className="flex flex-row gap-1 md:gap-4">
                 <Image
-                  src="/images/home/white-logo.png"
+                  src="/Images/home/white-logo.png"
                   alt="Affiliate 1"
                   width={64}
                   height={30}
                   className="bg-[#1E2A44] object-contain"
                 />
                 <Image
-                  src="/images/home/white-logo.png"
+                  src="/Images/home/white-logo.png"
                   alt="Affiliate 2"
                   width={64}
                   height={30}
                   className="bg-[#1E2A44] object-contain"
                 />
                 <Image
-                  src="/images/home/white-logo.png"
+                  src="/Images/home/white-logo.png"
                   alt="Affiliate 3"
                   width={64}
                   height={30}

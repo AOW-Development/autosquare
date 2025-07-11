@@ -1,5 +1,8 @@
 "use client";
 import Image from "next/image";
+import { useEffect, useRef } from "react";
+import gsap from "gsap";
+import { usePathname } from "next/navigation";
 
 import FeaturedCategories from "@/components/FeaturedCategories";
 import WhyChooseUs from "@/components/whyChooseUs";
@@ -9,6 +12,34 @@ import CategoriesSection from "@/components/categories";
 import TestimonialsSection from "@/components/testimonialsSection";
 
 export default function Home() {
+  const leftTextRef = useRef(null);
+  const rightTextRef = useRef(null);
+  const headingRef = useRef(null);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    if (pathname === "/") {
+      const tl = gsap.timeline();
+      tl.fromTo(
+        headingRef.current,
+        { x: -200, opacity: 0 },
+        { x: 0, opacity: 1, duration: 1, ease: "power3.out" }
+      )
+        .fromTo(
+          leftTextRef.current,
+          { x: 200, opacity: 0 },
+          { x: 0, opacity: 1, duration: 1, ease: "power3.out" },
+          "-=0.5"
+        )
+        .fromTo(
+          rightTextRef.current,
+          { x: 200, opacity: 0 },
+          { x: 0, opacity: 1, duration: 1, ease: "power3.out" },
+          "<"
+        );
+    }
+  }, [pathname]);
+
   return (
     <div className="overflow-hidden">
       <section className="relative w-full h-[450px] lg:h-[710px]">
@@ -21,6 +52,7 @@ export default function Home() {
         />
         <div className="absolute inset-0 flex flex-col items-center justify-center px-2">
           <h1
+            ref={headingRef}
             className="font-audiowide text-white text-2xl md:text-4xl lg:text-[64px] tracking-widest text-center"
             style={{
               fontFamily: "Audiowide, sans-serif",
@@ -31,12 +63,14 @@ export default function Home() {
           </h1>
           <div className="flex flex-col md:flex-row items-center mt-2">
             <span
+              ref={leftTextRef}
               className="font-audiowide text-lg md:text-2xl lg:text-[32px] text-white text-center md:text-left"
               style={{ fontFamily: "Audiowide, sans-serif" }}
             >
               Your car, your choice,
             </span>
             <span
+              ref={rightTextRef}
               className="font-audiowide text-lg md:text-2xl lg:text-[32px] md:ml-2 text-[#00A3FF] text-center md:text-left"
               style={{ fontFamily: "Audiowide, sans-serif" }}
             >

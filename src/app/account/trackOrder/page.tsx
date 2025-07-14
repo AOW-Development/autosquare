@@ -1,5 +1,5 @@
-'use client';
-import React, { useState } from 'react';
+"use client";
+import React, { useState } from "react";
 
 export default function TrackOrderPage() {
   const [show, setShow] = useState(true);
@@ -9,25 +9,28 @@ export default function TrackOrderPage() {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm">
       <div className="absolute inset-0 -z-10 bg-black/60 backdrop-blur-sm" />
-      <div className="relative bg-[#11213A] rounded-lg shadow-xl p-8 w-full max-w-lg mx-4">
+      <div className="relative bg-[#11213A] rounded-lg shadow-xl p-8 w-full max-w-lg md:max-w-2xl mx-4">
         {/* Close Button */}
         <button
-          className="absolute top-3 right-3 text-gray-400 hover:text-white text-xl"
+          className="absolute top-3 md:top-6 right-3 text-gray-400 hover:text-white text-xl"
           onClick={() => setShow(false)}
           aria-label="Close"
         >
           &times;
         </button>
         {/* Title */}
-        <h2 className="text-xl font-audiowide mb-2 tracking-wide">ORDER TRACKING</h2>
+        <h2 className="text-xl font-audiowide mb-2 tracking-wide text-white">
+          ORDER TRACKING
+        </h2>
         {/* Description */}
         <p className="mb-5 text-gray-300 text-sm">
-          Please provide the order number as indicated in the invoice copy sent to your email to check the current status of your order.
+          Please provide the order number as indicated in the invoice copy sent
+          to your email to check the current status of your order.
         </p>
         {/* Form */}
         <form
           className="flex flex-col sm:flex-row gap-3"
-          onSubmit={e => {
+          onSubmit={(e) => {
             e.preventDefault();
             // handle submit here
           }}

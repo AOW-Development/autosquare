@@ -148,7 +148,7 @@ export default function Cart() {
                   <div className="flex items-center space-x-2  border border-[#FFFFFF] rounded-md p-1">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-6 h-6 flex items-center border border-[#FFFFFF] rounded-md p-1 justify-center text-white hover:bg-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-6 h-6 flex items-center border border-[#FFFFFF] rounded-md p-1 justify-center text-white hover:bg-gray-600  focus:outline-none focus:ring-2 focus:ring-blue-300"
                     >
                       –
                     </button>
@@ -161,7 +161,7 @@ export default function Cart() {
                     />
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-6 h-6 flex items-center justify-center border border-[#FFFFFF] rounded-md p-1 text-white hover:bg-gray-600 rounded focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-6 h-6 flex items-center justify-center border border-[#FFFFFF] rounded-md p-1 text-white hover:bg-gray-600  focus:outline-none focus:ring-2 focus:ring-blue-300"
                     >
                       +
                     </button>

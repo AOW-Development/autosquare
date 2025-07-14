@@ -1,7 +1,6 @@
 "use client";
 
-
-import AddedCartPopup from '../../../account/modal/AddedCartPopup/page';
+import AddedCartPopup from "../../../account/modal/AddedCartPopup/page";
 
 import React, { useState } from "react";
 import Link from "next/link";
@@ -10,7 +9,6 @@ import ShopByVehicle from "@/components/shopByVehicle";
 import EngineFilterSidebar from "@/components/EngineFilterSidebar";
 // import Footer from '@/components/footer';
 // import Header from '@/components/header';
-
 
 const dummyData = new Array(15).fill({
   title: "Engine assembly",
@@ -24,17 +22,14 @@ const dummyData = new Array(15).fill({
 });
 
 export default function CatalogPage() {
-
   const [showCartPopup, setShowCartPopup] = useState(false);
-  const [inCartIdx, setInCartIdx] = useState<number|null>(null);
+  const [inCartIdx, setInCartIdx] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
-
-
 
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
-      <div className="px-2 pt-4">
+      <div className="px-2 pt-4 py-4">
         <nav className="max-w-6xl ml-4 md:ml-38 text-xs md:text-sm text-gray-300 flex items-center md:space-x-2">
           <Link
             href="/"
@@ -46,7 +41,7 @@ export default function CatalogPage() {
               width={24}
               height={24}
             />
-            <span>Home</span>
+            {/* <span>Home</span> */}
           </Link>
           <Image
             src="/autoparts/arrows (1).png"
@@ -54,7 +49,7 @@ export default function CatalogPage() {
             width={16}
             height={16}
           />
-          <Link href="/auto-parts" className="hover:underline hover:text-white">
+          <Link href="/autoParts" className="hover:underline hover:text-white">
             Auto parts
           </Link>
           <Image
@@ -144,15 +139,23 @@ export default function CatalogPage() {
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
               {dummyData.map((item, index) => (
-                <div key={index} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group">
-                  <Link href="/product/engines" className="block cursor-pointer" tabIndex={-1}>
+                <div
+                  key={index}
+                  className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
+                >
+                  <Link
+                    href="/product/engines"
+                    className="block cursor-pointer"
+                    tabIndex={-1}
+                  >
                     {/* Image container */}
                     <div
                       className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
                       style={{
-                        background: 'radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)',
-                        width: '250px',
-                        height: '160px',
+                        background:
+                          "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
+                        width: "250px",
+                        height: "160px",
                       }}
                     >
                       <Image
@@ -163,32 +166,48 @@ export default function CatalogPage() {
                         className="relative z-10 rounded-md object-contain"
                         priority
                       />
-                      <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+                      <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                        Stock image
+                      </p>
                     </div>
                     <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
                     <div className="relative z-20 pt-2">
-                      <h3 className="text-white text-base mb-1">{item.title}</h3>
-                      <p className="text-sm text-gray-300 mb-1">{item.vehicle}</p>
+                      <h3 className="text-white text-base mb-1">
+                        {item.title}
+                      </h3>
+                      <p className="text-sm text-gray-300 mb-1">
+                        {item.vehicle}
+                      </p>
                       <p className="text-xs text-gray-400 mb-1">{item.specs}</p>
-                      <p className="text-xs text-gray-400 mb-1">{item.condition}</p>
+                      <p className="text-xs text-gray-400 mb-1">
+                        {item.condition}
+                      </p>
                       <p className="text-xs text-gray-400 mb-1">{item.grade}</p>
                       <p className="text-xs text-gray-400 mb-1">{item.miles}</p>
-                      <p className="text-xs text-gray-400 mb-2">{item.warranty}</p>
+                      <p className="text-xs text-gray-400 mb-2">
+                        {item.warranty}
+                      </p>
                     </div>
                   </Link>
                   <div className="flex justify-between items-center mt-3 relative z-30">
-                    <span className="text-xl font-bold text-white">{item.price}</span>
+                    <span className="text-xl font-bold text-white">
+                      {item.price}
+                    </span>
                     <button
-                      className={`bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors ${inCartIdx === index ? 'bg-[#1d3759] cursor-default hover:bg-[#1d3759]' : ''}`}
+                      className={`bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors ${
+                        inCartIdx === index
+                          ? "bg-[#1d3759] cursor-default hover:bg-[#1d3759]"
+                          : ""
+                      }`}
                       disabled={inCartIdx === index}
-                      onClick={e => {
+                      onClick={(e) => {
                         e.stopPropagation();
                         setShowCartPopup(true);
                         setInCartIdx(index);
                         setTimeout(() => setShowCartPopup(false), 2000);
                       }}
                     >
-                      {inCartIdx === index ? 'In cart' : 'Add to Cart'}
+                      {inCartIdx === index ? "In cart" : "Add to Cart"}
                     </button>
                   </div>
                 </div>

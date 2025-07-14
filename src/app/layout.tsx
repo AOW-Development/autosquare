@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${exo2.variable} ${audiowide.variable}`}
+      className={`${inter.variable} ${exo2.className} ${audiowide.variable}`}
     >
       <body className="font-custom-stack antialiased">
         {/* TEST: Font family visual check */}

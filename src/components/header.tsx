@@ -117,7 +117,7 @@ export default function Header() {
               className="w-[110px] h-[28px]"
             />
           </Link>
-          <div className="flex flex-col items-end text-xs">
+          <div className="flex flex-col items-end text-xs font-exo-2">
             <span className="font-bold">(888) 748-0882</span>
             <span>Mon-Fri: 8AM - 7PM EST</span>
           </div>
@@ -190,7 +190,7 @@ export default function Header() {
           </Link>
         </div>
         {/* Center: Contact Info */}
-        <div className="flex flex-row gap-2 items-center justify-center">
+        <div className="flex flex-row gap-2 items-center justify-center font-exo-2">
           <span className="ml-6">(888) 748‑0882</span>|
           <span className="border-l-0 pl-0 ml-0">Mon‑Fri: 8AM ‑ 7PM EST</span>
         </div>
@@ -231,7 +231,7 @@ export default function Header() {
       {/* Navbar */}
       <nav className="bg-[#090d15]">
         {/* Desktop xl/lg */}
-        <div className="hidden lg:flex items-center px-4 h-14 w-full">
+        <div className="hidden lg:flex items-center px-4 h-14 w-full font-exo-2">
           {navLinks.map((link, i) => (
             <React.Fragment key={link.label}>
               {/* {link.label === "Shop by Categories" && (
@@ -250,7 +250,7 @@ export default function Header() {
                 </button>
               )} */}
               <div
-                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 ${
+                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 font-exo-2 ${
                   link.label === "Shop by Categories" ? "flex-[2]" : "flex-1"
                 }`}
                 onMouseEnter={() => {

@@ -118,12 +118,12 @@ export default function CatalogPage() {
                 </label> */}
                 <select
                   id="sort-by"
-                  className=" border-2  border-blue-600 shadow-2xl text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 px-5 py-2"
+                  className=" border bg-[#091b33] border-white shadow-2xl text-white text-sm rounded-md  focus:border-white px-5 py-2"
                 >
-                  <option className="text-black">Recommended</option>
-                  <option className="text-black">Price: Low to High</option>
-                  <option className="text-black">Price: High to Low</option>
-                  <option className="text-black">Newest Arrivals</option>
+                  <option className="text-white">Recommended</option>
+                  <option className="text-white">Price: Low to High</option>
+                  <option className="text-white">Price: High to Low</option>
+                  <option className="text-white">Newest Arrivals</option>
                 </select>
               </div>
             </div>

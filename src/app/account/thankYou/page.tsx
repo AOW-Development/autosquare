@@ -96,7 +96,9 @@ export default function ThankYouPage() {
             </div>
             {/* Actions */}
             <div className="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
-              <button className="bg-blue-500 hover:bg-blue-600 text-white rounded-lg py-2 px-6 font-semibold w-full md:w-auto transition">Track order</button>
+              <Link href="/account/trackOrder">
+              <button className="bg-blue-500 hover:bg-blue-600 text-white rounded-md py-2 px-6  w-full md:w-auto transition">Track order</button>
+              </Link>
               <Link href="/" className="text-blue-400 hover:underline ml-0 md:ml-4 mt-2 md:mt-0 inline-block text-base">Continue shopping</Link>
             </div>
           </div>

@@ -164,7 +164,7 @@ export default function Header() {
                 height={22}
               />
             </Link>
-            <Link href="/account/profile">
+            <Link href="/account/signUp">
               <Image
                 src="/header/User.png"
                 alt="Profile"
@@ -218,7 +218,7 @@ export default function Header() {
               height={24}
             />
           </Link>
-          <Link href="/account/profile">
+          <Link href="/account/signUp">
             <Image
               src="/header/User.png"
               alt="Profile"

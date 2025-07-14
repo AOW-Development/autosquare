@@ -394,16 +394,22 @@ export default function Checkout() {
               </label>
 
               {/* Continue Button */}
-              <button
-                disabled={!isFormValid()}
-                className={`w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 ${
-                  isFormValid()
-                    ? 'bg-[#00A3FF] text-white hover:bg-blue-500'
-                    : 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                }`}
-              >
-                Continue to payment
-              </button>
+              {isFormValid() ? (
+                <Link href="/account/payMethod">
+                  <button
+                    className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
+                  >
+                    Continue to payment
+                  </button>
+                </Link>
+              ) : (
+                <button
+                  disabled
+                  className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-gray-600 text-gray-400 cursor-not-allowed"
+                >
+                  Continue to payment
+                </button>
+              )}
             </div>
           </div>
         </div>

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from 'next/navigation';
 
 interface CartItem {
   id: number;
@@ -92,6 +93,14 @@ export default function PayMethod() {
       );
     }
     return true; // PayPal doesn't require additional fields
+  };
+
+  const router = useRouter();
+
+  const handlePayment = async (e: React.FormEvent) => {
+    e.preventDefault();
+    // ... payment logic
+    router.push('/account/thankYou');
   };
 
   return (
@@ -610,16 +619,19 @@ export default function PayMethod() {
               </div>
 
               {/* Payment Button */}
-              <button
-                disabled={!isFormValid()}
-                className={`w-full py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 ${
-                  isFormValid()
-                    ? "bg-[#009AFF] text-white hover:bg-blue-500"
-                    : "bg-gray-600 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Payment
-              </button>
+              <form onSubmit={handlePayment}>
+                <button
+                  type="submit"
+                  disabled={!isFormValid()}
+                  className={`w-full py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 ${
+                    isFormValid()
+                      ? "bg-[#009AFF] text-white hover:bg-blue-500"
+                      : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  Payment
+                </button>
+              </form>
 
               {/* Back Link */}
               <div className="text-center">

@@ -4,7 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import EmailSubmittedModal from "../account/modal/emailSubmitted/page";
+import EmailSubmittedModal from "@/components/EmailSubmittedModal";
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({

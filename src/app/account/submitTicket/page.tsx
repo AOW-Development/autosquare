@@ -1,7 +1,7 @@
 "use client"
 import React, { useState } from "react";
 import Image from 'next/image';
-import TicketSubmittedModal from "../modal/ticketSubmitted/page";
+import TicketSubmittedModal from "@/components/TicketSubmittedModal";
 
 export default function SubmitTicketPage() {
   const [modalOpen, setModalOpen] = useState(false);

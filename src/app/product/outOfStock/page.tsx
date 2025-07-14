@@ -1,5 +1,6 @@
 "use client"
 import { useRouter } from 'next/navigation';
+import TicketSubmittedModal from '@/app/account/modal/ticketSubmitted/page';
 
 export default function Page() {
   const router = useRouter();

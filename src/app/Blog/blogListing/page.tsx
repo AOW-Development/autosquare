@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 
 const blogs = [
   {
@@ -74,7 +75,7 @@ export default function BlogListingPage() {
                 </div>
                 <h2 className="text-lg font-semibold mb-1 text-white">{blog.title}</h2>
                 <p className="text-sm text-gray-300 line-clamp-2 mb-2">{blog.excerpt}</p>
-                <a href={blog.link} className="text-blue-400 text-right underline hover:underline font-medium text-sm mt-4">Read more</a>
+                <Link href="/Blog/blogDetails" className="text-blue-400 text-right underline hover:underline font-medium text-sm mt-4">Read more</Link>
               </div>
             ))}
           </div>

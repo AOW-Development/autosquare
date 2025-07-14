@@ -16,7 +16,7 @@ const featuredBlogs = [
 
 export default function BlogDetailPage() {
   return (
-    <div className="min-h-screen bg-[#091b33] text-white flex flex-col px-4 md:px-0 py-8 pb-16">
+    <div className="min-h-screen bg-[#091b33] text-white flex flex-col px-4 md:px-6 py-8 pb-16">
       <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-8">
         {/* Main Content */}
         <div className="flex-1 max-w-3xl">

@@ -4,6 +4,7 @@ import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
+import AddedCartPopup from "../../account/modal/AddedCartPopup/page";
 
 const galleryImages = [
   "/Images/var.png",
@@ -41,6 +42,14 @@ export default function EngineProductPage() {
   const [selectedImg, setSelectedImg] = useState(1);
   const [selectedOption, setSelectedOption] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [inCart, setInCart] = useState(false);
+
+  const handleAddToCart = () => {
+    setShowCartPopup(true);
+    setInCart(true);
+    setTimeout(() => setShowCartPopup(false), 2000);
+  };
 
   return (
     <>
@@ -107,9 +116,16 @@ export default function EngineProductPage() {
           <span className="text-2xl text-gray-400 line-through">100$</span>
         </div>
         <div className="flex gap-4 mb-4">
-          <button className="flex-1 bg-[#00a3ff] text-white py-2 rounded  hover:bg-[#1558b0] transition">Add to cart</button>
+          <button
+            className={`flex-1 py-2 rounded transition ${inCart ? 'bg-[#1d3759] text-white cursor-default' : 'bg-[#00a3ff] text-white hover:bg-[#1558b0]'}`}
+            disabled={inCart}
+            onClick={handleAddToCart}
+          >
+            {inCart ? 'In cart' : 'Add to cart'}
+          </button>
           <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition">Buy in one click</button>
         </div>
+        {showCartPopup && <AddedCartPopup />}
         {/* Accordion */}
         <div className=" w-full">
           {accordionData.map((item, i) => (

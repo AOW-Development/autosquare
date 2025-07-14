@@ -252,9 +252,11 @@ export default function Cart() {
             <div className="text-lg font-bold font-exo2">
               TOTAL: ${total}
             </div>
+            <Link href="/account/checkout">
             <button className="bg-[#009AFF] text-white px-8 py-2 rounded-md hover:bg-blue-600 transition-colors font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300">
               Proceed to Checkout
             </button>
+            </Link>
           </div>
         </div>
       </div>

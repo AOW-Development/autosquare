@@ -129,13 +129,13 @@ export default function PayMethod() {
             letterSpacing: "0.1em",
           }}
         >
-          PAYMENT
+          MAKE A PAYMENT
         </h2>
 
         {/* Step Indicator */}
-        <div className="flex items-center justify-between mb-8 w-full">
+        {/* <div className="flex items-center justify-between mb-8 w-full"> */}
           {/* Connector 1 */}
-          <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
+          {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
               <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
@@ -145,13 +145,13 @@ export default function PayMethod() {
             <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
               Cart
             </span>
-          </div>
+          </div> */}
 
           {/* Connector 2 */}
-          <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
+          {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div> */}
 
           {/* Step 2 - Completed */}
-          <div className="flex flex-col items-center">
+          {/* <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
               <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
                 ✓
@@ -160,13 +160,13 @@ export default function PayMethod() {
             <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
               Information
             </span>
-          </div>
+          </div> */}
 
           {/* Connector 3 */}
-          <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
+          {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div> */}
 
           {/* Step 3 - Active */}
-          <div className="flex flex-col items-center">
+          {/* <div className="flex flex-col items-center">
             <div className="w-10 h-10 bg-[#009AFF] rounded-full flex items-center justify-center">
               <span className="text-white font-exo2 font-semibold text-sm">
                 3
@@ -175,55 +175,55 @@ export default function PayMethod() {
             <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
               Payment
             </span>
-          </div>
+          </div> */}
           {/* Connector 4 */}
-          <div className="flex-1 h-0.5 bg-white mb-4"></div>
-        </div>
+          {/* <div className="flex-1 h-0.5 bg-white mb-4"></div>
+        </div> */}
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Left Column: Payment Form */}
           <div className="lg:col-span-2 space-y-8">
             {/* Order Summary Table */}
-            <div className="bg-black/75 border-2 border-[#009AFF] mb-8">
+            <div className="bg-black/75 border border-[#009AFF] mb-8">
               <div className="space-y-4">
-                <div className="border-b-2 border-[#009AFF] flex w-full items-center p-2">
-                  <span className="font-exo2 font-medium w-1/3 text-left">
+                <div className="border-b border-[#009AFF] flex w-full items-center p-2">
+                  <span className="font-exo2 font-exo2 w-1/3 text-left">
                     Contact
                   </span>
-                  <span className="font-exo2 font-semibold flex-1 text-center">
+                  <span className="font-exo2 font-exo2 flex-1 text-center">
                     example@gmail.com
                   </span>
                   <Link
                     href="/account/checkout"
-                    className="text-blue-400 hover:underline text-sm font-exo2 w-1/3 text-right"
+                    className="text-white hover:underline text-base font-exo2 w-1/3 text-right"
                   >
                     Change
                   </Link>
                 </div>
-                <div className="border-b-2 border-[#009AFF] flex w-full items-center p-2">
-                  <span className="font-exo2 font-medium w-1/3 text-left">
+                <div className="border-b border-[#009AFF] flex w-full items-center p-2">
+                  <span className="font-exo2 font-exo2 w-1/3 text-left">
                     Ship to
                   </span>
-                  <span className="font-exo2 font-semibold flex-1 text-center">
+                  <span className="font-exo2 font-exo2 flex-1 text-center">
                     Street 1, City, State, ZIP code, Country
                   </span>
                   <Link
                     href="/account/checkout"
-                    className="text-blue-400 hover:underline text-sm font-exo2 w-1/3 text-right"
+                    className="text-white hover:underline text-base font-exo2 w-1/3 text-right"
                   >
                     Change
                   </Link>
                 </div>
                 <div className="flex w-full items-center p-2">
-                  <span className="font-exo2 font-medium w-1/3 text-left">
+                  <span className="font-exo2 font-ex02 w-1/3 text-left">
                     Shipping method
                   </span>
-                  <span className="font-exo2 font-semibold flex-1 text-center">
+                  <span className="font-exo2 font-exo2 flex-1 text-center">
                     Free
                   </span>
                   <Link
                     href="/account/checkout"
-                    className="text-blue-400 hover:underline text-sm font-exo2 w-1/3 text-right"
+                    className="text-white hover:underline text-base font-exo2 w-1/3 text-right"
                   >
                     Change
                   </Link>
@@ -232,11 +232,11 @@ export default function PayMethod() {
             </div>
 
             {/* Payment Method Selector */}
-            <div>
+            <div >
               <h2 className="text-lg font-semibold mb-4 font-exo2">
                 PAYMENT METHOD
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-4 border border-white rounded-md">
                 {/* Credit/Debit Card Option */}
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
@@ -260,17 +260,17 @@ export default function PayMethod() {
                 </label>
 
                 {paymentMethod === "card" && (
-                  <fieldset className="border border-gray-700 rounded-lg p-6 space-y-4">
+                  <fieldset className="border border-white rounded-md p-6 space-y-4">
                     {/* Google Pay Button */}
                     <button className="bg-black text-white py-3 rounded-md flex items-center justify-center w-full font-exo2 hover:bg-gray-800 transition-colors">
                       <Image
-                        src="/Images/g-logo.png"
+                        src="/Images/google.png"
                         alt="Google Pay"
                         width={24}
                         height={24}
-                        className="mr-2"
+                        className="mr-2 text-2xl"
                       />
-                      G Pay
+                      Pay
                     </button>
 
                     {/* Card Number */}

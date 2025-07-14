@@ -1,7 +1,14 @@
-
+"use client"
+import React, { useState } from "react";
 import Image from 'next/image';
+import TicketSubmittedModal from "../modal/ticketSubmitted/page";
 
 export default function SubmitTicketPage() {
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setModalOpen(true);
+  };
   return (
     <div className="min-h-screen w-full bg-[#0B1422] flex flex-col items-center py-8 px-2">
       {/* Breadcrumb */}
@@ -53,7 +60,7 @@ export default function SubmitTicketPage() {
         </div>
         {/* Form Column */}
         <div className="bg-gray-900 rounded-lg shadow-sm p-6 flex flex-col justify-center">
-          <form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
+          <form className="w-full grid grid-cols-1 md:grid-cols-2 gap-4" onSubmit={handleSubmit}>
             {/* Full Name */}
             <div className="flex flex-col col-span-1">
               <label htmlFor="name" className="text-white text-sm font-medium mb-1">Full Name<span className="text-white-500">*</span></label>
@@ -83,7 +90,10 @@ export default function SubmitTicketPage() {
           </form>
         </div>
       </div>
-      </div>
+      {modalOpen && (
+        <TicketSubmittedModal onClose={() => setModalOpen(false)} />
+      )}
+    </div>
     
 
   );

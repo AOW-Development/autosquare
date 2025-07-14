@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const MAKES = ["Acura", "Audi", "BMW", "Buick", "Cadillac", "Ford"];
 const MODELS: Record<string, string[]> = {
@@ -39,6 +40,14 @@ const ShopByVehicle: React.FC = () => {
     backgroundPosition: "right 1rem center",
     backgroundSize: "20px 20px",
   };
+
+  const router = useRouter();
+
+  React.useEffect(() => {
+    if (make && model && year && part) {
+      router.push("/catalogue/engine/home");
+    }
+  }, [make, model, year, part, router]);
 
   return (
     <div className="relative z-20">
@@ -269,25 +278,27 @@ const ShopByVehicle: React.FC = () => {
 
           {/* Part Dropdown - Only visible when make, model, and year are selected */}
           {partActive && (
-            <select
-              id="part-select-mobile"
-              aria-label="Select part"
-              className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
-              value={part}
-              onChange={(e) => setPart(e.target.value)}
-              onFocus={() => setFocused("part")}
-              onBlur={() => setFocused(null)}
-              style={arrowStyle}
-            >
-              <option value="" disabled>
-                Select part...
-              </option>
-              {PARTS.map((p) => (
-                <option key={p} value={p}>
-                  {p}
+            <>
+              <select
+                id="part-select-mobile"
+                aria-label="Select part"
+                className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+                value={part}
+                onChange={(e) => setPart(e.target.value)}
+                onFocus={() => setFocused("part")}
+                onBlur={() => setFocused(null)}
+                style={arrowStyle}
+              >
+                <option value="" disabled>
+                  Select part...
                 </option>
-              ))}
-            </select>
+                {PARTS.map((p) => (
+                  <option key={p} value={p}>
+                    {p}
+                  </option>
+                ))}
+              </select>
+            </>
           )}
         </div>
       </div>

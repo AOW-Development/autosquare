@@ -4,6 +4,7 @@ import Sidebar from '@/components/Sidebar';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import EmailSubmittedModal from "../account/modal/emailSubmitted/page";
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
@@ -11,7 +12,11 @@ export default function ContactUsPage() {
     email: '',
     message: '',
   });
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setModalOpen(true);
+  };
   return (
     <div>
       <div className="w-full h-[320px] relative bg-[#091B33]   overflow-hidden flex items-center justify-center">
@@ -83,7 +88,7 @@ export default function ContactUsPage() {
 
             {/* Right Column - Form */}
             <div className="bg-[#091627] rounded-md shadow-sm p-6 mt-6">
-              <form className="flex flex-col gap-4 ">
+              <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
                 <div>
                   <label className="block font-semibold mb-2">Name*</label>
                   <input
@@ -124,6 +129,9 @@ export default function ContactUsPage() {
                   Submit Now
                 </button>
               </form>
+              {modalOpen && (
+                <EmailSubmittedModal onClose={() => setModalOpen(false)} />
+              )}
             </div>
           </main>
         </div>

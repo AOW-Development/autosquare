@@ -109,13 +109,13 @@ export default function Header() {
         {/* Row 1: Logo left, contact info right */}
         <div className="flex items-center justify-between w-full">
           <Link href="/">
-          <Image
-            src="/header/logo (2).png"
-            alt="Logo"
-            width={110}
-            height={28}
-            className="w-[110px] h-[28px]"
-          />
+            <Image
+              src="/header/logo (2).png"
+              alt="Logo"
+              width={110}
+              height={28}
+              className="w-[110px] h-[28px]"
+            />
           </Link>
           <div className="flex flex-col items-end text-xs">
             <span className="font-bold">(888) 748-0882</span>
@@ -142,10 +142,36 @@ export default function Header() {
             <span className="ml-1 font-medium">Menu</span>
           </button>
           <div className="flex items-center gap-4">
-            <Image src="/header/MagnifyingGlass.png" alt="Search" width={22} height={22} />
-            <Link href="/account/cart"><Image src="/header/ShoppingCartSimple.png" alt="Cart" width={22} height={22} /></Link>
-            <Link href="/account/garage"><Image src="/header/Garage.png" alt="Garage" width={22} height={22} /></Link>
-            <Link href="/account/profile"><Image src="/header/User.png" alt="Profile" width={22} height={22} /></Link>
+            <Image
+              src="/header/MagnifyingGlass.png"
+              alt="Search"
+              width={22}
+              height={22}
+            />
+            <Link href="/account/cart">
+              <Image
+                src="/header/ShoppingCartSimple.png"
+                alt="Cart"
+                width={22}
+                height={22}
+              />
+            </Link>
+            <Link href="/account/garage">
+              <Image
+                src="/header/Garage.png"
+                alt="Garage"
+                width={22}
+                height={22}
+              />
+            </Link>
+            <Link href="/account/profile">
+              <Image
+                src="/header/User.png"
+                alt="Profile"
+                width={22}
+                height={22}
+              />
+            </Link>
           </div>
         </div>
       </div>
@@ -154,13 +180,13 @@ export default function Header() {
         {/* Left: Logo */}
         <div className="flex items-center gap-4 w-full md:w-auto justify-start">
           <Link href="/">
-          <Image
-            src="/header/logo (2).png"
-            alt="Logo"
-            width={140}
-            height={32}
-            className="md:w-[200px] md:h-[40px] w-[140px] h-[32px]"
-          />
+            <Image
+              src="/header/logo (2).png"
+              alt="Logo"
+              width={140}
+              height={32}
+              className="md:w-[200px] md:h-[40px] w-[140px] h-[32px]"
+            />
           </Link>
         </div>
         {/* Center: Contact Info */}
@@ -170,10 +196,36 @@ export default function Header() {
         </div>
         {/* Right: Icons */}
         <div className="flex items-center gap-6 justify-end">
-          <Image src="/header/MagnifyingGlass.png" alt="Search" width={24} height={24} />
-          <Link href="/account/cart"><Image src="/header/ShoppingCartSimple.png" alt="Cart" width={24} height={24} /></Link>
-          <Link href="/account/garage"><Image src="/header/Garage.png" alt="Garage" width={24} height={24} /></Link>
-          <Link href="/account/profile"><Image src="/header/User.png" alt="Profile" width={24} height={24} /></Link>
+          <Image
+            src="/header/MagnifyingGlass.png"
+            alt="Search"
+            width={24}
+            height={24}
+          />
+          <Link href="/account/cart">
+            <Image
+              src="/header/ShoppingCartSimple.png"
+              alt="Cart"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Link href="/account/garage">
+            <Image
+              src="/header/Garage.png"
+              alt="Garage"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Link href="/account/profile">
+            <Image
+              src="/header/User.png"
+              alt="Profile"
+              width={24}
+              height={24}
+            />
+          </Link>
         </div>
       </div>
       {/* Navbar */}
@@ -226,7 +278,6 @@ export default function Header() {
                       height={24}
                       className="mr-2"
                     />
-                    
                   </button>
                 )}
                 {link.type === "link" ? (
@@ -238,26 +289,28 @@ export default function Header() {
                     {link.label}
                   </Link>
                 ) : (
-                <button
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 hover:text-blue-400 transition rounded focus:outline-none h-full"
-                  aria-haspopup={link.type !== "link"}
-                  aria-expanded={
-                    (link.type === "categories" && categoriesOpen) ||
-                    (link.type === "dropdown" && dropdownOpen === link.label) ||
-                    (link.type === "submenu" && submenuOpen)
-                  }
-                >
-                  {link.label}
-                  {(link.type === "categories" || link.type === "submenu") && (
-                    <Image
-                      src="/header/arrows (4).png"
-                      alt="arrow"
-                      className="w-3 h-3 ml-1"
-                      width={12}
-                      height={12}
-                    />
-                  )}
-                </button>
+                  <button
+                    className="w-full flex items-center justify-center gap-2 px-4 py-2 hover:bg-gray-800 hover:text-blue-400 transition rounded focus:outline-none h-full"
+                    aria-haspopup={link.type !== "link"}
+                    aria-expanded={
+                      (link.type === "categories" && categoriesOpen) ||
+                      (link.type === "dropdown" &&
+                        dropdownOpen === link.label) ||
+                      (link.type === "submenu" && submenuOpen)
+                    }
+                  >
+                    {link.label}
+                    {(link.type === "categories" ||
+                      link.type === "submenu") && (
+                      <Image
+                        src="/header/arrows (4).png"
+                        alt="arrow"
+                        className="w-3 h-3 ml-1"
+                        width={12}
+                        height={12}
+                      />
+                    )}
+                  </button>
                 )}
                 {/* Categories Flyout */}
                 {link.type === "categories" && categoriesOpen && (
@@ -279,7 +332,9 @@ export default function Header() {
                           aria-expanded={activeCategory === cat.name}
                         >
                           {cat.href ? (
-                            <Link href={cat.href} onClick={closeAll}>{cat.name}</Link>
+                            <Link href={cat.href} onClick={closeAll}>
+                              {cat.name}
+                            </Link>
                           ) : (
                             cat.name
                           )}
@@ -361,7 +416,10 @@ export default function Header() {
         </div> */}
         {/* Sidebar/Drawer for md/sm - now shows all navLinks */}
         {menuOpen && (
-          <div className="fixed inset-0 z-40 bg-transparent" onClick={closeAll}>
+          <div
+            className="fixed inset-0 z-40 bg-transparent backdrop-blur-sm"
+            onClick={closeAll}
+          >
             <aside
               className="fixed top-0 left-0 h-full w-80 max-w-full bg-gray-900 shadow-xl p-4 flex flex-col transition-transform duration-300 z-50"
               onClick={(e) => e.stopPropagation()}
@@ -485,8 +543,8 @@ export default function Header() {
                   // Simple link
                   return (
                     <li key={link.label}>
-                      <Link 
-                        href={link.href || "#"} 
+                      <Link
+                        href={link.href || "#"}
                         className="w-full text-left px-2 py-2 rounded hover:bg-gray-800 block"
                         onClick={closeAll}
                       >
@@ -536,7 +594,13 @@ export default function Header() {
 }
 
 // --- Add DropdownSidebar helper component for mobile sidebar ---
-function DropdownSidebar({ label, items }: { label: string; items: Array<{ label: string; href: string }> }) {
+function DropdownSidebar({
+  label,
+  items,
+}: {
+  label: string;
+  items: Array<{ label: string; href: string }>;
+}) {
   const [open, setOpen] = React.useState(false);
   return (
     <div>
@@ -559,7 +623,10 @@ function DropdownSidebar({ label, items }: { label: string; items: Array<{ label
       {open && (
         <ul className="pl-4 mt-1">
           {items.map((item) => (
-            <li key={item.label} className="py-1 hover:text-blue-400 cursor-pointer">
+            <li
+              key={item.label}
+              className="py-1 hover:text-blue-400 cursor-pointer"
+            >
               <Link href={item.href} onClick={() => setOpen(false)}>
                 {item.label}
               </Link>

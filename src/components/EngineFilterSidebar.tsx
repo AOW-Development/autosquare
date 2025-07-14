@@ -1,0 +1,133 @@
+import React from "react";
+import Link from "next/link";
+
+const EngineFilterSidebar = () => (
+  <>
+    {/* CHOOSE YOUR SPECIFICATION */}
+    <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+      <h3 className=" mb-3">CHOOSE YOUR SPECIFICATION</h3>
+      <ul className="space-y-2">
+        <li>
+          <p className="text-white">4.9L</p>
+          <p className="text-xs text-gray-400">
+            from 2/3/91 (AIR inner manifold)
+          </p>
+          <Link href="#" className="text-sky-400 hover:underline text-xs">
+            E40D transmission
+          </Link>
+          <br />
+          <Link href="#" className="text-sky-400 hover:underline text-xs">
+            w/o E40D transmission
+          </Link>
+        </li>
+        <li className="mt-3">
+          <p className="text-white">thru 2/2/91 (AIR inner head)</p>
+          <Link href="#" className="text-sky-400 hover:underline text-xs">
+            E40D transmission
+          </Link>
+          <br />
+          <Link href="#" className="text-sky-400 hover:underline text-xs">
+            w/o E40D transmission
+          </Link>
+        </li>
+        <li className="mt-3">
+          <p className="text-white">5.0L</p>
+          <p className="text-xs text-gray-400">VIN N, 8th digit</p>
+        </li>
+        <li className="mt-3">
+          <p className="text-white">5.8L</p>
+          <p className="text-xs text-gray-400">VIN H, 8th digit, 8-35TW</p>
+        </li>
+      </ul>
+    </div>
+    {/* PRICE RANGE */}
+    <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+      <h3 className=" mb-3">PRICE RANGE</h3>
+      <div className="flex gap-2 mb-3">
+        <input
+          type="number"
+          placeholder="0"
+          className="w-1/2 bg-gray-700 border-2 border-blue-600 shadow-2xl rounded-md p-2 text-sm text-white focus:ring-sky-500 focus:border-sky-500"
+        />
+        <input
+          type="number"
+          placeholder="100000"
+          className="w-1/2 bg-gray-700 border-2 border-blue-600 shadow-2xl rounded-md p-2 text-sm text-white focus:ring-sky-500 focus:border-sky-500"
+        />
+      </div>
+      <button className="w-full bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors">
+        Filter
+      </button>
+    </div>
+    {/* STATE */}
+    <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+      <h3 className=" mb-3">STATE</h3>
+      <label className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        Used
+      </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        New
+      </label>
+    </div>
+    {/* CAR MILEAGE, MILES */}
+    <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+      <h3 className=" mb-3">CAR MILEAGE, MILES</h3>
+      <label className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        Up to 50 thousand
+      </label>
+      <label className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        50-100 thousand
+      </label>
+      <label className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        100-150 thousand
+      </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        150-200 thousand
+      </label>
+    </div>
+    {/* CONDITION */}
+    <div className="bg-[#0C2A4D] p-4 rounded-lg">
+      <h3 className=" mb-3">CONDITION</h3>
+      <label className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        Excellent
+      </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        Very Good
+      </label>
+    </div>
+  </>
+);
+
+export default EngineFilterSidebar;

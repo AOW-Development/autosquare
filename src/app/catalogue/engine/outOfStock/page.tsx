@@ -79,7 +79,7 @@ export default function CatalogPage() {
         <div className="flex gap-6 px-3">
           {/* Left Filter Sidebar */}
           <aside className="hidden md:block w-[250px] text-sm flex-shrink-0">
-            <div className="mb-6 bg-[#0C2A4D] p-4 rounded-lg">
+            <div className="mb-6 bg-[#091627] p-4 rounded-lg">
               <h3 className="mb-3 font-audiowide">CHOOSE YOUR SPECIFICATION</h3>
               <ul className="space-y-2">
                 <li>
@@ -140,12 +140,12 @@ export default function CatalogPage() {
                 </label> */}
                 <select
                   id="sort-by"
-                  className=" border-2  border-blue-600 shadow-2xl text-white text-sm rounded-lg focus:ring-sky-500 focus:border-sky-500 px-5 py-2"
+                  className=" border bg-[#061c37] border-white  text-white text-sm rounded-md focus:ring-sky-500 focus:border-white px-5 py-2"
                 >
-                  <option className="text-black">Recommended</option>
-                  <option className="text-black">Price: Low to High</option>
-                  <option className="text-black">Price: High to Low</option>
-                  <option className="text-black">Newest Arrivals</option>
+                  <option className="text-white">Recommended</option>
+                  <option className="text-white">Price: Low to High</option>
+                  <option className="text-white">Price: High to Low</option>
+                  <option className="text-white">Newest Arrivals</option>
                 </select>
               </div>
             </div>

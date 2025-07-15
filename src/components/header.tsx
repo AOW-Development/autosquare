@@ -118,7 +118,7 @@ export default function Header() {
               className="w-[110px] h-[28px]"
             />
           </Link>
-          <div className="flex flex-col items-end text-xs font-exo-2">
+          <div className="flex flex-col items-end text-xs ">
             <span className="font-bold">(888) 748-0882</span>
             <span>Mon-Fri: 8AM - 7PM EST</span>
           </div>
@@ -194,8 +194,13 @@ export default function Header() {
           </Link>
         </div>
         {/* Center: Contact Info */}
-        <div className="flex flex-row gap-2 items-center justify-center font-exo-2">
-          <span className="ml-6">(888) 748‑0882</span>|
+        <div
+          className="flex flex-row gap-2 items-center justify-center font-exo-2"
+          style={{
+            fontFamily: "var(--font-exo-2), sans-serif",
+          }}
+        >
+          <span className="ml-6 font-exo-2">(888) 748‑0882</span>|
           <span className="border-l-0 pl-0 ml-0">Mon‑Fri: 8AM ‑ 7PM EST</span>
         </div>
         {/* Right: Icons */}

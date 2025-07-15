@@ -9,7 +9,7 @@ export default function AboutUsPage() {
     <div>
     <div className="w-full h-[320px] relative bg-[#091B33]   overflow-hidden flex items-center justify-center">
       <Image
-        src="/autoParts/banner.png"
+        src="/autoparts/banner.png"
         alt="Account Banner"
         fill
         className="object-cover object-center "

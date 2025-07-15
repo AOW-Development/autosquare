@@ -238,7 +238,7 @@ export default function Header() {
       {/* Navbar */}
       <nav className="bg-[#090d15]">
         {/* Desktop xl/lg */}
-        <div className="hidden lg:flex items-center px-4 h-14 w-full font-exo-2">
+        <div className="hidden lg:flex items-center px-4 h-12 w-full font-exo-2">
           {navLinks.map((link, i) => (
             <React.Fragment key={link.label}>
               {/* {link.label === "Shop by Categories" && (

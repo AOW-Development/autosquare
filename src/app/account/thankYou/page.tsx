@@ -7,21 +7,21 @@ export default function ThankYouPage() {
   return (
     <div className="min-h-screen w-full bg-[#0B1422] flex flex-col items-center justify-center relative overflow-x-hidden">
       {/* Side-by-side layout for md+ */}
-      <div className="w-full flex flex-col md:flex-row items-center justify-center min-h-screen relative">
-        {/* Car image left, fixed size, only visible on md+ */}
-        <div className="hidden md:flex items-center justify-end flex-1 relative min-h-[600px]">
-          <div className="relative w-[520px] h-[480px] xl:w-[700px] xl:h-[600px] 2xl:w-[900px] 2xl:h-[700px]">
+      <div className="w-full flex items-center justify-center min-h-screen relative">
+        {/* Car image full width */}
+        <div className="absolute inset-0 w-full h-full">
+          <div className="relative w-full h-full">
             <Image
-              src="/Images/thx_img.png"
+              src="/Images/thx_car.png"
               alt="Car background"
               fill
-              className="object-cover object-left rounded-2xl shadow-2xl"
+              className="object-cover object-center"
               priority
             />
           </div>
         </div>
-        {/* Content card right, overlapping car image */}
-        <main className="relative z-10 w-full md:w-auto flex flex-col items-center justify-center px-2 py-8 md:py-6 md:-ml-32 lg:-ml-40 xl:-ml-56 2xl:-ml-72">
+        {/* Content card centered */}
+        <main className="relative z-10 w-full flex flex-col items-center justify-center px-4 py-8">
           <div className="mx-auto w-full max-w-lg lg:max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
             {/* Logo and Title */}
             <div className="flex flex-col items-center mb-6">

@@ -9,6 +9,7 @@ import ShopByVehicle from "@/components/shopByVehicle";
 import EngineFilterSidebar from "@/components/EngineFilterSidebar";
 // import Footer from '@/components/footer';
 // import Header from '@/components/header';
+import { useCartStore } from "@/store/cartStore";
 
 const dummyData = new Array(15).fill({
   title: "Engine assembly",
@@ -204,6 +205,11 @@ export default function CatalogPage() {
                         e.stopPropagation();
                         setShowCartPopup(true);
                         setInCartIdx(index);
+                        // Add to Zustand cart store
+                        useCartStore.getState().addItem({
+                          id: `engine-${index}`,
+                          name: item.title || `Engine ${index + 1}`,
+                        });
                         setTimeout(() => setShowCartPopup(false), 2000);
                       }}
                     >

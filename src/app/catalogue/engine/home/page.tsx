@@ -27,6 +27,11 @@ export default function CatalogPage() {
   const [inCartIdx, setInCartIdx] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
 
+  const cartItems = useCartStore((s) => s.items);
+  const addItem = useCartStore((s) => s.addItem);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const removeItem = useCartStore((s) => s.removeItem);
+
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
@@ -139,85 +144,112 @@ export default function CatalogPage() {
               </div>
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-              {dummyData.map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
-                >
-                  <Link
-                    href="/product/engines"
-                    className="block cursor-pointer"
-                    tabIndex={-1}
+              {dummyData.map((item, index) => {
+                const cartItem = cartItems.find((i) => i.id === `engine-${index}`);
+                return (
+                  <div
+                    key={index}
+                    className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
                   >
-                    {/* Image container */}
-                    <div
-                      className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
-                      style={{
-                        background:
-                          "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
-                        width: "250px",
-                        height: "160px",
-                      }}
+                    <Link
+                      href="/product/engines"
+                      className="block cursor-pointer"
+                      tabIndex={-1}
                     >
-                      <Image
-                        src="/catalog/card.png"
-                        alt="Engine"
-                        width={250}
-                        height={160}
-                        className="relative z-10 rounded-md object-contain"
-                        priority
-                      />
-                      <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                        Stock image
-                      </p>
+                      {/* Image container */}
+                      <div
+                        className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
+                        style={{
+                          background:
+                            "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
+                          width: "250px",
+                          height: "160px",
+                        }}
+                      >
+                        <Image
+                          src="/catalog/card.png"
+                          alt="Engine"
+                          width={250}
+                          height={160}
+                          className="relative z-10 rounded-md object-contain"
+                          priority
+                        />
+                        <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                          Stock image
+                        </p>
+                      </div>
+                      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
+                      <div className="relative z-20 pt-2">
+                        <h3 className="text-white text-base mb-1">
+                          {item.title}
+                        </h3>
+                        <p className="text-sm text-gray-300 mb-1">
+                          {item.vehicle}
+                        </p>
+                        <p className="text-xs text-gray-400 mb-1">{item.specs}</p>
+                        <p className="text-xs text-gray-400 mb-1">
+                          {item.condition}
+                        </p>
+                        <p className="text-xs text-gray-400 mb-1">{item.grade}</p>
+                        <p className="text-xs text-gray-400 mb-1">{item.miles}</p>
+                        <p className="text-xs text-gray-400 mb-2">
+                          {item.warranty}
+                        </p>
+                      </div>
+                    </Link>
+                    <div className="flex justify-between items-center mt-3 relative z-30">
+                      <span className="text-xl font-bold text-white">
+                        {item.price}
+                      </span>
+                      {cartItem ? (
+                        <button
+                          className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
+                          style={{ minWidth: 120 }}
+                          tabIndex={0}
+                          onClick={e => e.preventDefault()} // prevent card click
+                        >
+                          <span
+                            className="cursor-pointer select-none text-3xl px-1"
+                            onClick={e => {
+                              e.stopPropagation();
+                              if (cartItem.quantity <= 1) {
+                                removeItem(cartItem.id);
+                              } else {
+                                updateQuantity(cartItem.id, cartItem.quantity - 1);
+                              }
+                            }}
+                          >-</span>
+                          <span className="text-white text-[17px] font-exo-2 text-center select-none">{cartItem.quantity}</span>
+                          <span
+                            className="cursor-pointer select-none px-1 text-3xl "
+                            onClick={e => {
+                              e.stopPropagation();
+                              updateQuantity(cartItem.id, cartItem.quantity + 1);
+                            }}
+                          >+</span>
+                        </button>
+                      ) : (
+                        <button
+                          className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
+                          onClick={e => {
+                            e.stopPropagation();
+                            setShowCartPopup(true);
+                            setInCartIdx(index);
+                            addItem({
+                              id: `engine-${index}`,
+                              name: item.title || `Engine ${index + 1}`,
+                              quantity: 1,
+                            });
+                            setTimeout(() => setShowCartPopup(false), 2000);
+                          }}
+                        >
+                          Add to Cart
+                        </button>
+                      )}
                     </div>
-                    <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
-                    <div className="relative z-20 pt-2">
-                      <h3 className="text-white text-base mb-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-gray-300 mb-1">
-                        {item.vehicle}
-                      </p>
-                      <p className="text-xs text-gray-400 mb-1">{item.specs}</p>
-                      <p className="text-xs text-gray-400 mb-1">
-                        {item.condition}
-                      </p>
-                      <p className="text-xs text-gray-400 mb-1">{item.grade}</p>
-                      <p className="text-xs text-gray-400 mb-1">{item.miles}</p>
-                      <p className="text-xs text-gray-400 mb-2">
-                        {item.warranty}
-                      </p>
-                    </div>
-                  </Link>
-                  <div className="flex justify-between items-center mt-3 relative z-30">
-                    <span className="text-xl font-bold text-white">
-                      {item.price}
-                    </span>
-                    <button
-                      className={`bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors ${
-                        inCartIdx === index
-                          ? "bg-[#1d3759] cursor-default hover:bg-[#1d3759]"
-                          : ""
-                      }`}
-                      disabled={inCartIdx === index}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        setShowCartPopup(true);
-                        setInCartIdx(index);
-                        // Add to Zustand cart store
-                        useCartStore.getState().addItem({
-                          id: `engine-${index}`,
-                          name: item.title || `Engine ${index + 1}`,
-                        });
-                        setTimeout(() => setShowCartPopup(false), 2000);
-                      }}
-                    >
-                      {inCartIdx === index ? "In cart" : "Add to Cart"}
-                    </button>
                   </div>
-                </div>
-              ))}
+                );
+              })}
               {showCartPopup && <AddedCartPopup />}
             </div>
           </main>

@@ -402,7 +402,7 @@ export default function AutoPartsPage() {
       </div>
       <ShopByVehicle />
       {/* <div className="min-h-screen bg-[#091B33] pb-12"> */}
-      <section className="max-w-6xl mx-auto px-6 py-10">
+      <section className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
         {/* Breadcrumb */}
         <div className="">
           {/* <div className="flex items-center gap-2 px-6 py-8 ">
@@ -418,12 +418,14 @@ export default function AutoPartsPage() {
             </span>
           </div> */}
           <div className="flex items-center gap-2  py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
-            <Image
-              src="/autoparts/HouseLine.png"
-              alt="Home"
-              width={20}
-              height={20}
-            />
+            <a href="/">
+              <Image
+                src="/autoparts/HouseLine.png"
+                alt="Home"
+                width={20}
+                height={20}
+              />
+            </a>
             <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
             <span className="text-gray-500">AutoParts</span>
           </div>
@@ -437,7 +439,14 @@ export default function AutoPartsPage() {
                 className="mb-2 md:mb-4 text-white text-xl md:text-[32px] font-audiowide capitalize flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
                 onClick={() => handleToggle(idx)}
               >
-                <span>{part.name.replace(/_/g, " ")}</span>
+                <span
+                  style={{
+                    fontFamily: "Audiowide, sans-serif",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {part.name.replace(/_/g, " ")}
+                </span>
                 {/* Arrow only on mobile */}
                 <span className="inline-block md:hidden ml-2 text-lg">
                   {openIndex === idx ? (

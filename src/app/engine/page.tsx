@@ -21,20 +21,30 @@ export default function EnginePage() {
       {/* Breadcrumb */}
 
       {/* Engine Types Section */}
-      <section className="max-w-6xl mx-auto px-6 py-10">
+      <section className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
         <div className="flex items-center gap-2  py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
-          <Image
-            src="/engine/HouseLine.png"
-            alt="Home"
-            width={20}
-            height={20}
-          />
+          <a href="/">
+            <Image
+              src="/engine/HouseLine.png"
+              alt="Home"
+              width={20}
+              height={20}
+            />
+          </a>
           <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-          <span className="text-gray-500">AutoParts</span>
+          <a href="/autoParts">
+            <span className="text-gray-500">AutoParts</span>
+          </a>
           <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
           <span className="text-white">Engine</span>
         </div>
-        <h2 className="text-2xl font-bold text-white mb-8 uppercase tracking-wide">
+        <h2
+          className="text-2xl font-bold text-white mb-8 uppercase tracking-wide"
+          style={{
+            fontFamily: "Audiowide, sans-serif",
+            letterSpacing: "0.1em",
+          }}
+        >
           Engine Types
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

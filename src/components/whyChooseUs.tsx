@@ -37,8 +37,8 @@ const cards = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="bg-[#091b33] py-8 px-2 md:py-16 md:px-4">
-      <div className="max-w-6xl mx-auto">
+    <section className="bg-[#091b33] py-8 px-2 md:py-16 md:px-0">
+      <div className="max-w-6xl mx-auto md:mx-40">
         <h2
           className="text-2xl md:text-4xl font-audiowide text-white mb-4"
           style={{
@@ -68,12 +68,16 @@ export default function WhyChooseUs() {
                 height={60}
                 className="mb-4"
               />
-              <h3 className="font-audiowide text-base md:text-lg text-white mb-2">
+              <h3
+                className="font-audiowide text-base md:text-lg text-white mb-2"
+                // style={{
+                //   fontFamily: "Audiowide, sans-serif",
+                //   letterSpacing: "0.04em",
+                // }}
+              >
                 {card.title}
               </h3>
-              <p className="font-exo2 text-white text-xs md:text-base">
-                {card.desc}
-              </p>
+              <p className=" text-white text-xs">{card.desc}</p>
             </div>
           ))}
         </div>

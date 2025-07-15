@@ -42,7 +42,7 @@ export default function Home() {
 
   return (
     <div className="overflow-hidden">
-      <section className="relative w-full h-[450px] lg:h-[710px]">
+      <section className="relative w-full h-[250px] md:h-[450px] lg:h-[710px]">
         <Image
           src="/Images/img_banner.png"
           alt="Autoparts banner"
@@ -53,7 +53,7 @@ export default function Home() {
         <div className="absolute inset-0 flex flex-col items-center justify-center px-2">
           <h1
             ref={headingRef}
-            className="font-audiowide text-white text-2xl md:text-4xl lg:text-[64px] tracking-widest text-center"
+            className="text-white text-2xl md:text-4xl lg:text-[64px] tracking-widest text-center"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
@@ -61,7 +61,7 @@ export default function Home() {
           >
             Move forward with us
           </h1>
-          <div className="flex flex-col md:flex-row items-center mt-2">
+          <div className="flex flex-col md:flex-row items-center mt-2 pb-4">
             <span
               ref={leftTextRef}
               className="font-audiowide text-lg md:text-2xl lg:text-[32px] text-white text-center md:text-left"

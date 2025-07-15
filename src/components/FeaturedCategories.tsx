@@ -42,7 +42,7 @@ const arrowIcon = "/Images/home/Makers-logos/arrows.png";
 
 export default function FeaturedCategories() {
   return (
-    <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-12 px-2 sm:px-4">
+    <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-12 px-0  sm:px-2">
       <div className="w-full max-w-6xl mx-auto">
         <h2
           className="text-xl sm:text-2xl md:text-[32px] font-normal mb-6 text-left"
@@ -70,8 +70,8 @@ export default function FeaturedCategories() {
                   style={{ objectFit: "contain" }}
                 />
                 <span
-                  className="text-white text-sm sm:text-[15px] font-normal"
-                  style={{ fontFamily: "Audiowide, sans-serif" }}
+                  className="text-white text-sm sm:text-[18px]"
+                  // style={{ fontFamily: "Audiowide, sans-serif" }}
                 >
                   {maker.name}
                 </span>

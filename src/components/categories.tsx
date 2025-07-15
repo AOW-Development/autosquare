@@ -104,7 +104,7 @@ function CategoryCard({
           {alt}
         </span>
         <Link href={link}>
-          <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-2 px-6 text-xs sm:text-sm hover:bg-[#0086cc] transition cursor-pointer">
+          <button className="bg-[#00A3FF] text-white  rounded-md py-2 px-6 text-xs sm:text-sm hover:bg-[#0086cc] transition cursor-pointer">
             Go shop
           </button>
         </Link>

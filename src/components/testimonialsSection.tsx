@@ -161,12 +161,12 @@ export default function TestimonialsSection() {
   const canRight = start + visibleCount < testimonials.length;
 
   return (
-    <section className="bg-[#091b33] py-12 px-2">
+    <section className="bg-[#091b33] py-12 px-2 md:px-0">
       <div>
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h2
-              className="text-white text-xl md:text-4xl pl-4 sm:pl-14"
+              className="text-white text-xl md:text-4xl pl-2 sm:pl-10"
               style={{
                 fontFamily: "Audiowide, sans-serif",
                 letterSpacing: "0.1em",
@@ -203,7 +203,7 @@ export default function TestimonialsSection() {
               </button>
             </div>
           </div>
-          <div className="flex w-full justify-center px-2 lg:mx-3 sm:px-14 transition-all duration-300">
+          <div className="flex w-full justify-center px-2 lg:mx-3 sm:px-8 transition-all duration-300">
             {visible.map((t, i) => (
               <div
                 key={t.name + i}
@@ -215,7 +215,7 @@ export default function TestimonialsSection() {
           </div>
           <div className="flex justify-center mt-8">
             <Link
-              className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition"
+              className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg  shadow-lg hover:bg-[#1558b0] transition"
               href="/Testimonials"
               passHref
             >

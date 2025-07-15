@@ -57,8 +57,11 @@ const ShopByVehicle: React.FC = () => {
         style={{ background: "#00A3FFA6" }}
       >
         <div
-          className="text-left font-exo-2 font-bold text-[16px] tracking-wider mb-2 uppercase text-white"
+          className="text-left text-[16px] tracking-wider mb-2 uppercase text-white"
           id="shop-by-vehicle-title"
+          // style={{
+          //   fontFamily: "var(--font-exo-2), sans-serif",
+          // }}
         >
           SHOP BY VEHICLE
         </div>

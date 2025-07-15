@@ -110,7 +110,7 @@ export default function Header() {
         <div className="flex items-center justify-between w-full">
           <Link href="/">
             <Image
-              src="/header/logo (2).png"
+              src="/Images/gptlogo"
               alt="Logo"
               width={110}
               height={28}
@@ -181,7 +181,7 @@ export default function Header() {
         <div className="flex items-center gap-4 w-full md:w-auto justify-start">
           <Link href="/">
             <Image
-              src="/header/logo (2).png"
+              src="/Images/pclogo.png"
               alt="Logo"
               width={140}
               height={32}

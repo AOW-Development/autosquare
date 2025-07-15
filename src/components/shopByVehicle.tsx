@@ -29,7 +29,7 @@ const SUBCAT = [
   "Engine Misc",
   "Engine Parts",
   "Exhaust Parts",
-]
+];
 
 const OPTIONS = [
   "Air cleaner",
@@ -37,7 +37,7 @@ const OPTIONS = [
   "Throttle body assembly",
   "Fan Blade",
   "Fan Clutch",
-]
+];
 
 const ShopByVehicle: React.FC = () => {
   const [make, setMake] = useState("");
@@ -186,7 +186,7 @@ const ShopByVehicle: React.FC = () => {
             ))}
           </select>
 
-            {/* Part Dropdown */}
+          {/* Part Dropdown */}
           <select
             id="part-select"
             aria-label="Select part"
@@ -270,8 +270,6 @@ const ShopByVehicle: React.FC = () => {
               </option>
             ))}
           </select>
-
-
         </div>
       </div>
 

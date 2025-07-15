@@ -166,7 +166,7 @@ export default function TestimonialsSection() {
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h2
-              className="text-white text-xl md:text-4xl pl-2 sm:pl-10"
+              className="text-white text-2xl md:text-4xl px-2  md:pl-10"
               style={{
                 fontFamily: "Audiowide, sans-serif",
                 letterSpacing: "0.1em",
@@ -174,11 +174,11 @@ export default function TestimonialsSection() {
             >
               TESTIMONIALS
             </h2>
-            <div className="flex gap-0 mr-10">
+            <div className="flex gap-0 mr-1 md:mr-10">
               <button
                 onClick={() => canLeft && handleManualNav(start - 1)}
                 disabled={!canLeft}
-                className={`p-2 ${!canLeft ? " cursor-not-allowed" : ""}`}
+                className={`md:p-2 ${!canLeft ? " cursor-not-allowed" : ""}`}
                 aria-label="Previous"
               >
                 <Image
@@ -191,7 +191,7 @@ export default function TestimonialsSection() {
               <button
                 onClick={() => canRight && handleManualNav(start + 1)}
                 disabled={!canRight}
-                className={`p-2 ${!canRight ? " cursor-not-allowed" : ""}`}
+                className={`md:p-2 ${!canRight ? " cursor-not-allowed" : ""}`}
                 aria-label="Next"
               >
                 <Image
@@ -207,7 +207,7 @@ export default function TestimonialsSection() {
             {visible.map((t, i) => (
               <div
                 key={t.name + i}
-                className="w-full max-w-xs sm:max-w-sm md:max-w-md"
+                className="w-full max-w-sm sm:max-w-sm md:max-w-md"
               >
                 <TestimonialCard {...t} />
               </div>

@@ -115,7 +115,7 @@ export default function Header() {
               alt="Logo"
               width={200}
               height={60}
-              className="w-[110px] h-[28px]"
+              className="w-[160px] h-[28px] md:w-[110px] md:h-[28px]"
             />
           </Link>
           <div className="flex flex-col items-end text-xs ">

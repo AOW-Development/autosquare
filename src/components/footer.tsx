@@ -13,7 +13,7 @@ export default function Footer() {
           <div className="w-full md:w-[350px] mb-6 md:mb-0">
             <div>
               <Image
-                src="/Images/home/logo-auto.png"
+                src="/logos/pc2.png"
                 alt="AutoSquare logo"
                 width={200}
                 height={60}

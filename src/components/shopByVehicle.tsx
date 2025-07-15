@@ -20,17 +20,40 @@ const PARTS = [
   "Tail light",
 ];
 
+const SUBCAT = [
+  "Alternator",
+  "Blower Motor",
+  "Coil / Ignitor",
+  "Engine / Motor Control Module",
+  "Engine Cooling",
+  "Engine Misc",
+  "Engine Parts",
+  "Exhaust Parts",
+]
+
+const OPTIONS = [
+  "Air cleaner",
+  "Oil plan",
+  "Throttle body assembly",
+  "Fan Blade",
+  "Fan Clutch",
+]
+
 const ShopByVehicle: React.FC = () => {
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [part, setPart] = useState("");
+  const [subCategory, setSubCategory] = useState("");
+  const [option, setOption] = useState("");
   const [focused, setFocused] = useState<string | null>(null);
 
   const makeActive = true;
   const modelActive = make !== "";
   const yearActive = make !== "" && model !== "";
   const partActive = make !== "" && model !== "" && year !== "";
+  const subCategoryActive = partActive && part !== "";
+  const optionActive = subCategoryActive && subCategory !== "";
 
   const arrowUrl = "/Images/home/arrows.png";
 
@@ -44,10 +67,10 @@ const ShopByVehicle: React.FC = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (make && model && year && part) {
+    if (make && model && year && part && subCategory && option) {
       router.push("/catalogue/engine/home");
     }
-  }, [make, model, year, part, router]);
+  }, [make, model, year, part, subCategory, option, router]);
 
   return (
     <div className="relative z-20">
@@ -81,6 +104,9 @@ const ShopByVehicle: React.FC = () => {
               setMake(e.target.value);
               setModel("");
               setYear("");
+              setPart("");
+              setSubCategory("");
+              setOption("");
             }}
             onFocus={() => setFocused("make")}
             onBlur={() => setFocused(null)}
@@ -110,6 +136,9 @@ const ShopByVehicle: React.FC = () => {
             onChange={(e) => {
               setModel(e.target.value);
               setYear("");
+              setPart("");
+              setSubCategory("");
+              setOption("");
             }}
             onFocus={() => setFocused("model")}
             onBlur={() => setFocused(null)}
@@ -139,6 +168,8 @@ const ShopByVehicle: React.FC = () => {
             onChange={(e) => {
               setYear(e.target.value);
               setPart("");
+              setSubCategory("");
+              setOption("");
             }}
             onFocus={() => setFocused("year")}
             onBlur={() => setFocused(null)}
@@ -155,6 +186,7 @@ const ShopByVehicle: React.FC = () => {
             ))}
           </select>
 
+            {/* Part Dropdown */}
           <select
             id="part-select"
             aria-label="Select part"
@@ -164,7 +196,11 @@ const ShopByVehicle: React.FC = () => {
                 : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
             }`}
             value={part}
-            onChange={(e) => setPart(e.target.value)}
+            onChange={(e) => {
+              setPart(e.target.value);
+              setSubCategory("");
+              setOption("");
+            }}
             onFocus={() => setFocused("part")}
             onBlur={() => setFocused(null)}
             disabled={!partActive}
@@ -179,6 +215,63 @@ const ShopByVehicle: React.FC = () => {
               </option>
             ))}
           </select>
+
+          {/* sub-category Dropdown */}
+          <select
+            id="subcat-select"
+            aria-label="Select sub-category"
+            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
+              subCategoryActive
+                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
+                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
+            }`}
+            value={subCategory}
+            onChange={(e) => {
+              setSubCategory(e.target.value);
+              setOption("");
+            }}
+            onFocus={() => setFocused("subCategory")}
+            onBlur={() => setFocused(null)}
+            disabled={!subCategoryActive}
+            style={arrowStyle}
+          >
+            <option value="" disabled>
+              Select sub-category...
+            </option>
+            {SUBCAT.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+
+          {/* options Dropdown */}
+          <select
+            id="option-select"
+            aria-label="Select option"
+            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
+              optionActive
+                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
+                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
+            }`}
+            value={option}
+            onChange={(e) => setOption(e.target.value)}
+            onFocus={() => setFocused("option")}
+            onBlur={() => setFocused(null)}
+            disabled={!optionActive}
+            style={arrowStyle}
+          >
+            <option value="" disabled>
+              Select option...
+            </option>
+            {OPTIONS.map((o) => (
+              <option key={o} value={o}>
+                {o}
+              </option>
+            ))}
+          </select>
+
+
         </div>
       </div>
 
@@ -210,6 +303,8 @@ const ShopByVehicle: React.FC = () => {
               setModel("");
               setYear("");
               setPart("");
+              setSubCategory("");
+              setOption("");
             }}
             onFocus={() => setFocused("make")}
             onBlur={() => setFocused(null)}
@@ -237,6 +332,8 @@ const ShopByVehicle: React.FC = () => {
                 setModel(e.target.value);
                 setYear("");
                 setPart("");
+                setSubCategory("");
+                setOption("");
               }}
               onFocus={() => setFocused("model")}
               onBlur={() => setFocused(null)}
@@ -263,6 +360,8 @@ const ShopByVehicle: React.FC = () => {
               onChange={(e) => {
                 setYear(e.target.value);
                 setPart("");
+                setSubCategory("");
+                setOption("");
               }}
               onFocus={() => setFocused("year")}
               onBlur={() => setFocused(null)}
@@ -287,7 +386,11 @@ const ShopByVehicle: React.FC = () => {
                 aria-label="Select part"
                 className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
                 value={part}
-                onChange={(e) => setPart(e.target.value)}
+                onChange={(e) => {
+                  setPart(e.target.value);
+                  setSubCategory("");
+                  setOption("");
+                }}
                 onFocus={() => setFocused("part")}
                 onBlur={() => setFocused(null)}
                 style={arrowStyle}
@@ -301,6 +404,55 @@ const ShopByVehicle: React.FC = () => {
                   </option>
                 ))}
               </select>
+              {/* sub-category Dropdown */}
+              {subCategoryActive && (
+                <select
+                  id="subcat-select-mobile"
+                  aria-label="Select sub-category"
+                  className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+                  value={subCategory}
+                  onChange={(e) => {
+                    setSubCategory(e.target.value);
+                    setOption("");
+                  }}
+                  onFocus={() => setFocused("subCategory")}
+                  onBlur={() => setFocused(null)}
+                  style={arrowStyle}
+                  disabled={!subCategoryActive}
+                >
+                  <option value="" disabled>
+                    Select sub-category...
+                  </option>
+                  {SUBCAT.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+              )}
+              {/* options Dropdown */}
+              {optionActive && (
+                <select
+                  id="option-select-mobile"
+                  aria-label="Select option"
+                  className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
+                  value={option}
+                  onChange={(e) => setOption(e.target.value)}
+                  onFocus={() => setFocused("option")}
+                  onBlur={() => setFocused(null)}
+                  style={arrowStyle}
+                  disabled={!optionActive}
+                >
+                  <option value="" disabled>
+                    Select option...
+                  </option>
+                  {OPTIONS.map((o) => (
+                    <option key={o} value={o}>
+                      {o}
+                    </option>
+                  ))}
+                </select>
+              )}
             </>
           )}
         </div>

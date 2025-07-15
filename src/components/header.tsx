@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Hamburger from "@/public/header/hamburgur-button.png";
 import Arrow from "@/public/header/arrows (4).png";
+import { useCartStore } from "@/store/cartStore";
 
 const categories = [
   {
@@ -110,10 +111,10 @@ export default function Header() {
         <div className="flex items-center justify-between w-full">
           <Link href="/">
             <Image
-              src="/header/logo (2).png"
+             src="/logos/header-3.png"
               alt="Logo"
-              width={110}
-              height={28}
+              width={200}
+              height={60}
               className="w-[110px] h-[28px]"
             />
           </Link>
@@ -148,13 +149,16 @@ export default function Header() {
               width={22}
               height={22}
             />
-            <Link href="/account/cart">
+            <Link href="/account/cart" className="relative">
               <Image
                 src="/header/ShoppingCartSimple.png"
                 alt="Cart"
                 width={22}
                 height={22}
               />
+              <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
+                {useCartStore((s) => s.items.length)}
+              </span>
             </Link>
             <Link href="/account/garage">
               <Image
@@ -181,7 +185,7 @@ export default function Header() {
         <div className="flex items-center gap-4 w-full md:w-auto justify-start">
           <Link href="/">
             <Image
-              src="/header/logo (2).png"
+              src="/logos/pc2.png"
               alt="Logo"
               width={140}
               height={32}
@@ -207,13 +211,16 @@ export default function Header() {
             width={24}
             height={24}
           />
-          <Link href="/account/cart">
+          <Link href="/account/cart" className="relative">
             <Image
               src="/header/ShoppingCartSimple.png"
               alt="Cart"
               width={24}
               height={24}
             />
+            <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
+              {useCartStore((s) => s.items.length)}
+            </span>
           </Link>
           <Link href="/account/garage">
             <Image

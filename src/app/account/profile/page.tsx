@@ -5,7 +5,7 @@ import FormField from "@/components/FormField";
 import { use, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 export default function ProfilePage() {
   const [fields, setFields] = useState({
@@ -20,7 +20,7 @@ export default function ProfilePage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // ... registration logic
-    router.push('/account/profile');
+    router.push("/account/profile");
   };
 
   return (
@@ -36,7 +36,13 @@ export default function ProfilePage() {
           </div>
           {/* PROFILE */}
           <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
-            <h1 className="text-2xl md:text-3xl font-bold text-center mb-4">
+            <h1
+              className="text-2xl md:text-3xl font-bold text-center mb-4"
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               PROFILE
             </h1>
             <FormField

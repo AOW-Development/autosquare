@@ -20,8 +20,8 @@ export default function RegistrationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#091B33] text-white flex flex-col items-center justify-center p-4 md:p-6 lg:p-8">
-      <div className="w-full max-w-md mx-auto">
+    <div className="min-h-screen bg-[#091B33] text-white  pt-8 pb-22">
+      <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6 text-left">
           <Link
@@ -31,17 +31,17 @@ export default function RegistrationPage() {
             <Image
               src="/Images/HouseLine.png"
               alt="Home"
-              width={16}
-              height={16}
-              className="w-4 h-4"
+              width={24}
+              height={24}
+              // className="w-4 h-4"
             />
           </Link>
           <Image
             src="/Images/arrows.png"
             alt="Arrow"
-            width={12}
-            height={12}
-            className="w-3 h-3"
+            width={16}
+            height={16}
+            // className="w-3 h-3"
           />
           <span className="font-exo2">Account</span>
         </div>
@@ -55,7 +55,10 @@ export default function RegistrationPage() {
           >
             REGISTRATION
           </h1>
-          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
+          <form
+            onSubmit={handleSubmit}
+            className="grid w-full md:w-[75%] items-center md:mx-40"
+          >
             <FormField
               label="Email*"
               type="email"
@@ -79,7 +82,7 @@ export default function RegistrationPage() {
             />
             <button
               type="submit"
-              className="w-full rounded-lg py-2 bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold transition-colors mt-2"
+              className="w-full rounded-lg py-2 bg-blue-500 hover:bg-blue-600 text-white text-base font-semibold transition-colors mt-6"
             >
               Register now
             </button>

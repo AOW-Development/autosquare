@@ -427,7 +427,7 @@ export default function AutoPartsPage() {
               />
             </a>
             <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-            <span className="text-gray-500">AutoParts</span>
+            <span className="text-white">AutoParts</span>
           </div>
         </div>
         {/* Grids */}

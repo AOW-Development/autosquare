@@ -73,14 +73,14 @@ export default function PrivacyPolicy() {
         "Our website is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.",
     },
     {
-      question: "autosquare.us General Privacy Policy",
+      question: "partscentral.us General Privacy Policy",
       answer:
-        "This privacy policy applies specifically to our website and services. For information about how autosquare.us handles your data across all platforms, please refer to our general privacy policy available on our main website.",
+        "This privacy policy applies specifically to our website and services. For information about how partscentral.us handles your data across all platforms, please refer to our general privacy policy available on our main website.",
     },
     {
       question: "Contacting Us About our Privacy Policy",
       answer:
-        "If you have any questions about this Privacy Policy or our privacy practices, please contact us through our customer service channels or email us at privacy@autosquare.us.",
+        "If you have any questions about this Privacy Policy or our privacy practices, please contact us through our customer service channels or email us at privacy@partscentral.us",
     },
     {
       question: "Privacy Policy Changes",
@@ -131,10 +131,10 @@ export default function PrivacyPolicy() {
         <div className="mb-6 text-left mx-auto">
           <p className="font-exo2 text-sm md:text-base leading-relaxed text-left">
             This Site is managed by a third party service provider of
-            autosquare.us (the "Online Store" and collectively with
-            autosquare.us "we" or "us"). We are committed to protecting our
+            partscentral.us (the "Online Store" and collectively with
+            partscentral.us "we" or "us"). We are committed to protecting our
             customers' privacy. Your privacy through the use of the Web site
-            located at URL https://www.autosquare.us ("the Site") is paramount
+            located at URL https://www.partscentral.us ("the Site") is paramount
             in that goal. Other service providers we use on the site include
             credit card processors and shipping services.
           </p>

@@ -58,7 +58,7 @@ export default function FeaturedCategories() {
           {makers.slice(0, 32).map((maker, i) => (
             <div
               key={maker.name}
-              className="flex items-center p-4 cursor-pointer justify-between border-[#00A3FF] border-b hover:border-0 hover:rounded-lg hover:bg-[#7f88cbb0] transition-all"
+              className="flex items-center p-4 cursor-pointer justify-between text-white border-[#00A3FF] border-b hover:bg-[rgba(59,131,246,0.32)] hover:border-0 hover:rounded-md hover:shadow-[0_0_24px_4px_rgba(59,130,246,0.4)]  hover:outline-2 hover:outline-blue-500  hover:text-blue-400 transition-all"
               style={{ paddingBottom: 8, marginBottom: 8 }}
             >
               <div className="flex items-center gap-2 sm:gap-3">
@@ -70,7 +70,7 @@ export default function FeaturedCategories() {
                   style={{ objectFit: "contain" }}
                 />
                 <span
-                  className="text-white text-sm sm:text-[18px]"
+                  className=" text-sm sm:text-[18px]"
                   // style={{ fontFamily: "Audiowide, sans-serif" }}
                 >
                   {maker.name}

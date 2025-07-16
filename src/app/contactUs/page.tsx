@@ -101,7 +101,7 @@ export default function ContactUsPage() {
                         Phone
                       </span>
                       <span className="text-gray-200 text-sm">
-                        (888) 748-0882
+                        (888) 338-2540
                       </span>
                     </div>
                   </div>
@@ -117,7 +117,7 @@ export default function ContactUsPage() {
                         Email address
                       </span>
                       <span className="text-gray-200 text-sm underline">
-                        support@autosquare.us
+                        partscentralus@gmail.com
                       </span>
                     </div>
                   </div>
@@ -133,7 +133,7 @@ export default function ContactUsPage() {
                         Office location
                       </span>
                       <span className="text-gray-200 text-sm">
-                        6335 Contessa Dr, Orlando, FL 32829
+                        76 Imperial Dr Suite E Evanston, WY 82930, USA
                       </span>
                     </div>
                   </div>

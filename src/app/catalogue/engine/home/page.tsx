@@ -35,8 +35,8 @@ export default function CatalogPage() {
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
-      <div className="px-2 pt-4 py-4">
-        <nav className="max-w-6xl ml-4 md:ml-38 text-xs md:text-sm text-gray-300 flex items-center md:space-x-2">
+      <div className="px-2 pt-4 md:py-4">
+        <nav className="max-w-6xl ml-4 md:ml-38 pt-4 text-[15px] text-gray-300 flex items-center md:space-x-2">
           <Link
             href="/"
             className="flex items-center gap-2 hover:text-white transition-colors"
@@ -55,7 +55,7 @@ export default function CatalogPage() {
             width={16}
             height={16}
           />
-          <Link href="/autoParts" className="hover:underline hover:text-white">
+          <Link href="/autoParts" className=" hover:text-white">
             Auto parts
           </Link>
           <Image
@@ -64,7 +64,7 @@ export default function CatalogPage() {
             width={16}
             height={16}
           />
-          <Link href="/engine" className="hover:underline hover:text-white">
+          <Link href="/engine" className=" hover:text-white">
             Engine
           </Link>
           <Image
@@ -79,12 +79,12 @@ export default function CatalogPage() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-2 md:px-6 pb-12">
-        <div className="relative pt-24 pb-8">
+        <div className="relative pt-12 md:pt-24 pb-10 md:pb-20">
           <ShopByVehicle />
         </div>
 
         <h2
-          className="text-xl md:text-3xl  font-audiowide mt-8 mb-2 md:mb-6 pl-3 "
+          className="text-xl md:text-3xl  font-audiowide md:mt-8 mb-2 md:mb-6 pl-3 "
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -145,7 +145,9 @@ export default function CatalogPage() {
             )}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
               {dummyData.map((item, index) => {
-                const cartItem = cartItems.find((i) => i.id === `engine-${index}`);
+                const cartItem = cartItems.find(
+                  (i) => i.id === `engine-${index}`
+                );
                 return (
                   <div
                     key={index}
@@ -186,12 +188,18 @@ export default function CatalogPage() {
                         <p className="text-sm text-gray-300 mb-1">
                           {item.vehicle}
                         </p>
-                        <p className="text-xs text-gray-400 mb-1">{item.specs}</p>
+                        <p className="text-xs text-gray-400 mb-1">
+                          {item.specs}
+                        </p>
                         <p className="text-xs text-gray-400 mb-1">
                           {item.condition}
                         </p>
-                        <p className="text-xs text-gray-400 mb-1">{item.grade}</p>
-                        <p className="text-xs text-gray-400 mb-1">{item.miles}</p>
+                        <p className="text-xs text-gray-400 mb-1">
+                          {item.grade}
+                        </p>
+                        <p className="text-xs text-gray-400 mb-1">
+                          {item.miles}
+                        </p>
                         <p className="text-xs text-gray-400 mb-2">
                           {item.warranty}
                         </p>
@@ -206,32 +214,44 @@ export default function CatalogPage() {
                           className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
                           style={{ minWidth: 120 }}
                           tabIndex={0}
-                          onClick={e => e.preventDefault()} // prevent card click
+                          onClick={(e) => e.preventDefault()} // prevent card click
                         >
                           <span
                             className="cursor-pointer select-none text-3xl px-1"
-                            onClick={e => {
+                            onClick={(e) => {
                               e.stopPropagation();
                               if (cartItem.quantity <= 1) {
                                 removeItem(cartItem.id);
                               } else {
-                                updateQuantity(cartItem.id, cartItem.quantity - 1);
+                                updateQuantity(
+                                  cartItem.id,
+                                  cartItem.quantity - 1
+                                );
                               }
                             }}
-                          >-</span>
-                          <span className="text-white text-[17px] font-exo-2 text-center select-none">{cartItem.quantity}</span>
+                          >
+                            -
+                          </span>
+                          <span className="text-white text-[17px] font-exo-2 text-center select-none">
+                            {cartItem.quantity}
+                          </span>
                           <span
                             className="cursor-pointer select-none px-1 text-3xl "
-                            onClick={e => {
+                            onClick={(e) => {
                               e.stopPropagation();
-                              updateQuantity(cartItem.id, cartItem.quantity + 1);
+                              updateQuantity(
+                                cartItem.id,
+                                cartItem.quantity + 1
+                              );
                             }}
-                          >+</span>
+                          >
+                            +
+                          </span>
                         </button>
                       ) : (
                         <button
                           className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
-                          onClick={e => {
+                          onClick={(e) => {
                             e.stopPropagation();
                             setShowCartPopup(true);
                             setInCartIdx(index);

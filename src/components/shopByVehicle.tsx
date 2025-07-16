@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Listbox } from '@headlessui/react' 
 
 const MAKES = ["Acura", "Audi", "BMW", "Buick", "Cadillac", "Ford"];
 const MODELS: Record<string, string[]> = {
@@ -76,8 +77,8 @@ const ShopByVehicle: React.FC = () => {
     <div className="relative z-20">
       {/* Desktop Layout */}
       <div
-        className="absolute top-[-80px] left-1/2 transform -translate-x-1/2 w-[1200px] h-[121px] backdrop-blur-md rounded-lg shadow-lg px-6 py-4  flex-col justify-center hidden lg:block"
-        style={{ background: "#00A3FFA6" }}
+        className="absolute top-[-47px] left-1/2 transform -translate-x-1/2 w-[1200px] h-[121px]  rounded-lg shadow-lg px-6 py-4  flex-col justify-center hidden lg:block"
+        style={{ background: "#00A3FF80" }}
       >
         <div
           className="text-left text-[16px] tracking-wider mb-2 uppercase text-white"
@@ -274,12 +275,15 @@ const ShopByVehicle: React.FC = () => {
       </div>
 
       {/* Mobile Layout */}
+      <div className="w-full lg:hidden" style={{ position: "relative" }}>
+        {/* This wrapper gives the background color only below the overlap */}
+        <div className="bg-[#091B33] pt-12 sm:pt-20">
       <div
-        className="absolute top-[-60px] sm:top-[-80px] left-1/2 transform -translate-x-1/2 w-[92%] max-w-[400px] backdrop-blur-md rounded-lg shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center lg:hidden mobile-shop-container"
-        style={{ background: "#00A3FFA6" }}
+            className="relative -mt-12 sm:-mt-20 mx-auto  w-[92%] max-w-[400px]  rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container"
+            style={{ background: "#00A3FF80" }}
       >
         <div
-          className="text-center font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
+              className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
           id="shop-by-vehicle-title-mobile"
         >
           SHOP BY VEHICLE
@@ -287,174 +291,242 @@ const ShopByVehicle: React.FC = () => {
 
         <div className="flex flex-col gap-2 sm:gap-3">
           {/* Make Dropdown - Always visible */}
-          <select
-            id="make-select-mobile"
-            aria-label="Select make"
-            className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              makeActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={make}
-            onChange={(e) => {
-              setMake(e.target.value);
-              setModel("");
+          <Listbox value={make} onChange={(value) => {
+            setMake(value);
+            setModel("");
+            setYear("");
+            setPart("");
+            setSubCategory("");
+            setOption("");
+          }}>
+            {({ open }) => (
+              <div className="relative">
+                <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
+                  {make || "Select make..."}
+                  <svg
+                    className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </Listbox.Button>
+                <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
+                  {MAKES.map((m) => (
+                    <Listbox.Option
+                      key={m}
+                      value={m}
+                      className={({ active }) =>
+                        `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
+                      }
+                    >
+                      {m}
+                    </Listbox.Option>
+                  ))}
+                </Listbox.Options>
+              </div>
+            )}
+          </Listbox>
+
+          {/* Model Dropdown - Only visible when make is selected */}
+          {modelActive && (
+            <Listbox value={model} onChange={(value) => {
+              setModel(value);
               setYear("");
               setPart("");
               setSubCategory("");
               setOption("");
-            }}
-            onFocus={() => setFocused("make")}
-            onBlur={() => setFocused(null)}
-            disabled={!makeActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select make...
-            </option>
-            {MAKES.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
-
-          {/* Model Dropdown - Only visible when make is selected */}
-          {modelActive && (
-            <select
-              id="model-select-mobile"
-              aria-label="Select model"
-              className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
-              value={model}
-              onChange={(e) => {
-                setModel(e.target.value);
-                setYear("");
-                setPart("");
-                setSubCategory("");
-                setOption("");
-              }}
-              onFocus={() => setFocused("model")}
-              onBlur={() => setFocused(null)}
-              style={arrowStyle}
-            >
-              <option value="" disabled>
-                Select model...
-              </option>
-              {(MODELS[make] || []).map((mo) => (
-                <option key={mo} value={mo}>
-                  {mo}
-                </option>
-              ))}
-            </select>
+            }}>
+              {({ open }) => (
+                <div className="relative">
+                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
+                    {model || "Select model..."}
+                    <svg
+                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
+                    {(MODELS[make] || []).map((mo) => (
+                      <Listbox.Option
+                        key={mo}
+                        value={mo}
+                        className={({ active }) =>
+                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
+                        }
+                      >
+                        {mo}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              )}
+            </Listbox>
           )}
 
           {/* Year Dropdown - Only visible when make and model are selected */}
           {yearActive && (
-            <select
-              id="year-select-mobile"
-              aria-label="Select year"
-              className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
-              value={year}
-              onChange={(e) => {
-                setYear(e.target.value);
-                setPart("");
-                setSubCategory("");
-                setOption("");
-              }}
-              onFocus={() => setFocused("year")}
-              onBlur={() => setFocused(null)}
-              style={arrowStyle}
-            >
-              <option value="" disabled>
-                Select year...
-              </option>
-              {YEARS.map((y) => (
-                <option key={y} value={y}>
-                  {y}
-                </option>
-              ))}
-            </select>
+            <Listbox value={year} onChange={(value) => {
+              setYear(value);
+              setPart("");
+              setSubCategory("");
+              setOption("");
+            }}>
+              {({ open }) => (
+                <div className="relative">
+                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
+                    {year || "Select year..."}
+                    <svg
+                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
+                    {YEARS.map((y) => (
+                      <Listbox.Option
+                        key={y}
+                        value={y}
+                        className={({ active }) =>
+                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
+                        }
+                      >
+                        {y}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              )}
+            </Listbox>
           )}
 
           {/* Part Dropdown - Only visible when make, model, and year are selected */}
           {partActive && (
-            <>
-              <select
-                id="part-select-mobile"
-                aria-label="Select part"
-                className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
-                value={part}
-                onChange={(e) => {
-                  setPart(e.target.value);
-                  setSubCategory("");
-                  setOption("");
-                }}
-                onFocus={() => setFocused("part")}
-                onBlur={() => setFocused(null)}
-                style={arrowStyle}
-              >
-                <option value="" disabled>
-                  Select part...
-                </option>
-                {PARTS.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-              {/* sub-category Dropdown */}
-              {subCategoryActive && (
-                <select
-                  id="subcat-select-mobile"
-                  aria-label="Select sub-category"
-                  className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
-                  value={subCategory}
-                  onChange={(e) => {
-                    setSubCategory(e.target.value);
-                    setOption("");
-                  }}
-                  onFocus={() => setFocused("subCategory")}
-                  onBlur={() => setFocused(null)}
-                  style={arrowStyle}
-                  disabled={!subCategoryActive}
-                >
-                  <option value="" disabled>
-                    Select sub-category...
-                  </option>
-                  {SUBCAT.map((s) => (
-                    <option key={s} value={s}>
-                      {s}
-                    </option>
-                  ))}
-                </select>
+            <Listbox value={part} onChange={(value) => {
+              setPart(value);
+              setSubCategory("");
+              setOption("");
+            }}>
+              {({ open }) => (
+                <div className="relative">
+                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
+                    {part || "Select part..."}
+                    <svg
+                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
+                    {PARTS.map((p) => (
+                      <Listbox.Option
+                        key={p}
+                        value={p}
+                        className={({ active }) =>
+                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
+                        }
+                      >
+                        {p}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
               )}
-              {/* options Dropdown */}
-              {optionActive && (
-                <select
-                  id="option-select-mobile"
-                  aria-label="Select option"
-                  className={`w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer`}
-                  value={option}
-                  onChange={(e) => setOption(e.target.value)}
-                  onFocus={() => setFocused("option")}
-                  onBlur={() => setFocused(null)}
-                  style={arrowStyle}
-                  disabled={!optionActive}
-                >
-                  <option value="" disabled>
-                    Select option...
-                  </option>
-                  {OPTIONS.map((o) => (
-                    <option key={o} value={o}>
-                      {o}
-                    </option>
-                  ))}
-                </select>
+            </Listbox>
+          )}
+
+          {/* Sub-category Dropdown */}
+          {subCategoryActive && (
+            <Listbox value={subCategory} onChange={(value) => {
+              setSubCategory(value);
+              setOption("");
+            }}>
+              {({ open }) => (
+                <div className="relative">
+                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
+                    {subCategory || "Select sub-category..."}
+                    <svg
+                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
+                    {SUBCAT.map((s) => (
+                      <Listbox.Option
+                        key={s}
+                        value={s}
+                        className={({ active }) =>
+                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
+                        }
+                      >
+                        {s}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
               )}
-            </>
+            </Listbox>
+          )}
+
+          {/* Options Dropdown */}
+          {optionActive && (
+            <Listbox value={option} onChange={setOption}>
+              {({ open }) => (
+                <div className="relative">
+                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
+                    {option || "Select option..."}
+                    <svg
+                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
+                    {OPTIONS.map((o) => (
+                      <Listbox.Option
+                        key={o}
+                        value={o}
+                        className={({ active }) =>
+                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
+                        }
+                      >
+                        {o}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </div>
+              )}
+            </Listbox>
           )}
         </div>
+          </div>
+        </div>
       </div>
+      
 
       {/* Screen reader only styling */}
       <style>{`

@@ -42,7 +42,7 @@ export default function Home() {
 
   return (
     <div className="overflow-hidden">
-      <section className="relative w-full h-[250px] md:h-[350px] lg:h-[560px]">
+      <section className="relative w-full h-[250px] md:h-[350px] lg:h-[calc(100vh-185px)]">
         <Image
           src="/Images/img_banner.png"
           alt="Autoparts banner"

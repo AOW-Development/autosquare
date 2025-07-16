@@ -45,6 +45,7 @@ export default function EngineProductPage() {
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const handleAddToCart = () => {
     setShowCartPopup(true);
@@ -161,17 +162,36 @@ export default function EngineProductPage() {
             <span className="text-2xl text-gray-400 line-through">100$</span>
           </div>
           <div className="flex gap-4 mb-4">
-            <button
-              className={`flex-1 py-2 rounded transition ${
-                inCart
-                  ? "bg-[#1d3759] text-white cursor-default"
-                  : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
-              }`}
-              disabled={inCart}
-              onClick={handleAddToCart}
-            >
-              {inCart ? "In cart" : "Add to cart"}
-            </button>
+            {inCart ? (
+              <div className="flex items-center gap-2">
+                <button
+                  className="px-3 py-2 bg-[#1d3759] text-white rounded-l disabled:opacity-50"
+                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                  disabled={quantity === 1}
+                >
+                  -
+                </button>
+                <span className="px-4 py-2 bg-[#12263A]">{quantity}</span>
+                <button
+                  className="px-3 py-2 bg-[#1d3759] text-white rounded-r"
+                  onClick={() => setQuantity(q => q + 1)}
+                >
+                  +
+                </button>
+              </div>
+            ) : (
+              <button
+                className={`flex-1 py-2 rounded transition ${
+                  inCart
+                    ? "bg-[#1d3759] text-white cursor-default"
+                    : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
+                }`}
+                disabled={inCart}
+                onClick={handleAddToCart}
+              >
+                Add to cart
+              </button>
+            )}
             <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition">
               Buy in one click
             </button>

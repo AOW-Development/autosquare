@@ -4,6 +4,7 @@ import { create, StateCreator } from "zustand";
 export type CartItem = {
   id: string;
   name: string;
+  quantity: number;
   expiresAt?: number; // timestamp in ms, optional
 };
 
@@ -11,25 +12,45 @@ type CartState = {
   items: CartItem[];
   addItem: (item: Omit<CartItem, "expiresAt">) => void;
   removeItem: (id: string) => void;
+  updateQuantity: (id: string, quantity: number) => void;
   clear: () => void;
   setItemExpiry: (id: string, expiresAt: number) => void;
 };
 
-export const useCartStore = create<CartState>(((set: Parameters<StateCreator<CartState>>[0]) => ({
+export const useCartStore = create<CartState>((set) => ({
   items: [],
-  addItem: (item: Omit<CartItem, "expiresAt">) =>
-    set((state: CartState) => ({
-      items: [...state.items, { ...item }],
+  addItem: (item) =>
+    set((state) => {
+      const existing = state.items.find((i) => i.id === item.id);
+      if (existing) {
+        return {
+          items: state.items.map((i) =>
+            i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
+          ),
+        };
+      }
+      return { items: [...state.items, { ...item, quantity: 1 }] };
+    }),
+  removeItem: (id) =>
+    set((state) => ({
+      items: state.items.filter((i) => i.id !== id),
     })),
-  removeItem: (id: string) =>
-    set((state: CartState) => ({
-      items: state.items.filter((i: CartItem) => i.id !== id),
-    })),
-  clear: () => set((state: CartState) => ({ ...state, items: [] })),
-  setItemExpiry: (id: string, expiresAt: number) =>
-    set((state: CartState) => ({
-      items: state.items.map((i: CartItem) =>
+  updateQuantity: (id, quantity) =>
+    set((state) => {
+      if (quantity <= 0) {
+        return { items: state.items.filter((i) => i.id !== id) };
+      }
+      return {
+        items: state.items.map((i) =>
+          i.id === id ? { ...i, quantity } : i
+        ),
+      };
+    }),
+  clear: () => set((state) => ({ ...state, items: [] })),
+  setItemExpiry: (id, expiresAt) =>
+    set((state) => ({
+      items: state.items.map((i) =>
         i.id === id ? { ...i, expiresAt } : i
       ),
     })),
-})));
+}));

@@ -157,7 +157,7 @@ export default function Header() {
                 height={22}
               />
               <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-                {useCartStore((s) => s.items.length)}
+                {useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0))}
               </span>
             </Link>
             <Link href="/account/garage">
@@ -219,7 +219,7 @@ export default function Header() {
               height={24}
             />
             <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-              {useCartStore((s) => s.items.length)}
+              {useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0))}
             </span>
           </Link>
           <Link href="/account/garage">

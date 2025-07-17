@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import React from "react";
 
 const testimonials = [
@@ -62,19 +63,26 @@ export default function TestimonialsPage() {
       </div>
 
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 px-10 md:px-25 lg:px-45 py-6">
-        <Image src="/Images/HouseLine.png" alt="Home" width={24} height={24} />
+      <div className="flex items-center gap-2 px-10 md:px-25 lg:px-40 py-6">
+        <Link href="/">
+          <Image
+            src="/Images/HouseLine.png"
+            alt="Home"
+            width={24}
+            height={24}
+          />
+        </Link>
         <Image
           src="/Images/arrows (1).svg"
           alt="Arrow"
           width={16}
           height={16}
         />
-        <span className="text-white text-lg">Testimonials</span>
+        <span className="text-white">Testimonials</span>
       </div>
 
       {/* Category Buttons */}
-      <div className="flex gap-4 px-10 md:px-25 lg:px-45 mb-8 overflow-x-scroll scroll-mb-0 md:overflow-hidden ">
+      <div className="flex gap-4 px-10 md:px-25 lg:px-40 mb-8 overflow-x-scroll scroll-mb-0 md:overflow-hidden ">
         <button className="px-16 md:px-6 md:py-2 rounded-full bg-black text-white/80 hover:bg-black transition cursor-pointer">
           All
         </button>
@@ -89,7 +97,7 @@ export default function TestimonialsPage() {
       </div>
 
       {/* Testimonials Grid */}
-      <div className="relative z-10 px-10 md:px-25 lg:px-45">
+      <div className="relative z-10 px-10 md:px-25 lg:px-40">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-0">
           {testimonials.map((t, i) => {
             // Calculate if this is in the last row

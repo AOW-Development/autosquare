@@ -247,7 +247,7 @@ export default function Header() {
       </div>
       {/* Navbar */}
       <nav className="bg-[#090d15]">
-        {/* Desktop xl/lg */}
+        {/* Desktop xl/lg       DESKTOP -------------- */}
         <div className="hidden lg:flex items-center px-4 h-12 w-full font-exo-2">
           {navLinks.map((link, i) => (
             <React.Fragment key={link.label}>
@@ -283,18 +283,39 @@ export default function Header() {
               >
                 {link.label === "Shop by Categories" && (
                   <button
-                    className="flex items-center justify-center px-2 h-10 ml-2 rounded  hover:text-blue-400 focus:outline-none transition gap-2"
+                    className="flex items-center justify-center px-2 h-10 ml-2 rounded hover:text-blue-400 focus:outline-none transition gap-2"
                     aria-label="Open menu"
                     tabIndex={-1}
                     style={{ minWidth: 40 }}
+                    onMouseEnter={() => setCategoriesOpen(true)}
+                    onMouseLeave={() => setCategoriesOpen(false)}
                   >
-                    <Image
-                      src="/Images/ham.png"
-                      alt="Menu"
-                      width={24}
-                      height={24}
-                      className="mr-2"
-                    />
+                    {categoriesOpen ? (
+                      <svg
+                        width={28}
+                        height={28}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="mr-2"
+                      >
+                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        <line x1="6" y1="18" x2="18" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                      </svg>
+                    ) : (
+                      <svg
+                        width={28}
+                        height={28}
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="mr-2"
+                      >
+                        <rect x="4" y="6" width="16" height="2" rx="1" fill="currentColor" />
+                        <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor" />
+                        <rect x="4" y="16" width="16" height="2" rx="1" fill="currentColor" />
+                      </svg>
+                    )}
                   </button>
                 )}
                 {link.type === "link" ? (
@@ -319,13 +340,27 @@ export default function Header() {
                     {link.label}
                     {(link.type === "categories" ||
                       link.type === "submenu") && (
-                      <Image
-                        src="/header/arrows (4).png"
-                        alt="arrow"
-                        className="w-3 h-3 ml-1"
+                      <svg
+                        className={`w-5 h-5 ml-1 transition-transform duration-200 ${
+                          (link.type === "categories" && categoriesOpen) ||
+                          (link.type === "submenu" && submenuOpen)
+                            ? "rotate-180"
+                            : ""
+                        }`}
                         width={12}
                         height={12}
-                      />
+                        viewBox="0 0 20 20"
+                        fill="none"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          d="M6 8l4 4 4-4"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </svg>
                     )}
                   </button>
                 )}

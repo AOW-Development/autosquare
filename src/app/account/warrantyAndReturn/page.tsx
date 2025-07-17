@@ -5,10 +5,10 @@ import Link from "next/link";
 
 export default function WarrantyAndReturn() {
   return (
-    <div className="min-h-screen bg-[#091B33] text-[#ffffff] pb-22 pt-14">
-      <div className=" mx-auto px-4 md:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
+      <div className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
         {/* Breadcrumb */}
-        <div className="flex items-center space-x-2 text-sm text-[#ffffff] mb-6">
+        <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
           <Link
             href="/"
             className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
@@ -16,30 +16,44 @@ export default function WarrantyAndReturn() {
             <Image
               src="/Images/HouseLine.png"
               alt="Home"
-              width={16}
-              height={16}
-              className="w-4 h-4"
+              width={24}
+              height={24}
+              // className="w-4 h-4"
             />
           </Link>
           <Image
             src="/Images/arrows (1).svg"
             alt="Arrow"
-            width={12}
-            height={12}
-            className="w-3 h-3"
+            width={16}
+            height={16}
+            // className="w-3 h-3"
           />
-          <span className="font-exo2">Warranty and Return Policy</span>
+          <span className="font-exo2 text-white">
+            Warranty and Return Policy
+          </span>
         </div>
 
         {/* Title */}
-        <h1 className="font-audiowide text-4xl lg:text-5xl mb-8 text-left">
+        <h1
+          className="font-audiowide text-white text-wrap text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
+          style={{
+            fontFamily: "Audiowide, sans-serif",
+            letterSpacing: "0.1em",
+          }}
+        >
           WARRANTY AND RETURN POLICY
         </h1>
 
         <div className="space-y-12">
           {/* RETURN POLICY Section */}
           <section>
-            <h2 className="font-audiowide text-2xl lg:text-3xl font-bold mb-4">
+            <h2
+              className="font-audiowide text-lg lg:text-2xl mb-4"
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               RETURN POLICY
             </h2>
             <div className="space-y-6">
@@ -159,7 +173,11 @@ export default function WarrantyAndReturn() {
 
           {/* WARRANTY Section */}
           <section>
-            <h2 className="font-audiowide text-2xl lg:text-3xl font-bold mb-4">
+            <h2 className="font-audiowide text-lg lg:text-2xl mb-4"
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}>
               WARRANTY
             </h2>
             <div className="space-y-6">

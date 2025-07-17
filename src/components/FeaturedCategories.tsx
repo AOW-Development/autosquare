@@ -4,12 +4,12 @@ import React from "react";
 
 const makers = [
   { name: "Acura", logo: "/Images/home/Makers-logos/car_logo (1).png" },
-  { name: "Audi", logo: "/Images/home/Makers-logos/car_logo (2).png" },
-  { name: "BMW", logo: "/Images/home/Makers-logos/car_logo (3).png" },
-  { name: "Buick", logo: "/Images/home/Makers-logos/car_logo (4).png" },
-  { name: "Cadillac", logo: "/Images/home/Makers-logos/car_logo (5).png" },
-  { name: "Chevrolet", logo: "/Images/home/Makers-logos/car_logo (6).png" },
-  { name: "Chrysler", logo: "/Images/home/Makers-logos/car_logo (7).png" },
+  { name: "Cadillac", logo: "/Images/home/Makers-logos/car_logo (2).png" },
+  { name: "Ford", logo: "/Images/home/Makers-logos/car_logo (3).png" },
+  { name: "Infiniti", logo: "/Images/home/Makers-logos/car_logo (4).png" },
+  { name: "Kia", logo: "/Images/home/Makers-logos/car_logo (5).png" },
+  { name: "Mazda", logo: "/Images/home/Makers-logos/car_logo (6).png" },
+  { name: "Pontiac", logo: "/Images/home/Makers-logos/car_logo (7).png" },
   { name: "Dodge", logo: "/Images/home/Makers-logos/car_logo (8).png" },
   { name: "Ford", logo: "/Images/home/Makers-logos/car_logo (9).png" },
   { name: "GMC", logo: "/Images/home/Makers-logos/car_logo (10).png" },

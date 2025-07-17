@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 interface FAQItem {
   question: string;
@@ -90,42 +91,46 @@ export default function PrivacyPolicy() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#091B33] text-white pb-18 pt-8">
+    <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
       {/* Breadcrumb */}
-      <div className="px-3 md:px-4 lg:px-8 pb-6">
-        <div className="flex items-center space-x-2 text-xs md:text-sm">
-          <Image
-            src="/Images/HouseLine.png"
-            alt="Home"
-            width={16}
-            height={16}
-            className="w-4 h-4"
-          />
+      <div className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
+        <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
+          <Link
+            href="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
+            <Image
+              src="/Images/HouseLine.png"
+              alt="Home"
+              width={24}
+              height={24}
+              // className="w-4 h-4"
+            />
+          </Link>
           <Image
             src="/Images/arrows (1).svg"
             alt="Arrow"
-            width={12}
-            height={12}
-            className="w-3 h-3"
+            width={16}
+            height={16}
+            // className="w-3 h-3"
           />
-          <span>Privacy Policy</span>
+          <span className="text-white">Privacy Policy</span>
         </div>
-      </div>
 
-      <div className="px-3 md:px-4 lg:px-8 ">
+        {/* <div className="px-3 md:px-4 lg:px-8 "> */}
         {/* Main Heading */}
         {/* <h1 className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-4 text-left">
           Privacy Policy
         </h1> */}
-        <h2
-          className="font-audiowide text-white text-xl sm:text-3xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
+        <h1
+          className="font-audiowide text-white text-wrap text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
           }}
         >
           Privacy Policy
-        </h2>
+        </h1>
 
         {/* Intro Paragraph */}
         <div className="mb-6 text-left mx-auto">
@@ -155,7 +160,7 @@ export default function PrivacyPolicy() {
         </div>
 
         <h2
-          className="font-audiowide text-white text-xl sm:text-3xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
+          className="font-audiowide text-white text-wrap text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",

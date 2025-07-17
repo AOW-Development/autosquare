@@ -284,7 +284,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="text-center mt-8">
           <p className="text-xs text-[#666D80]">
-            © 2024 Auto Square – All Rights Reserved.
+            © 2024 Parts Central – All Rights Reserved.
           </p>
         </div>
       </div>

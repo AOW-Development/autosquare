@@ -21,40 +21,38 @@ const PARTS = [
   "Tail light",
 ];
 
-const SUBCAT = [
-  "Alternator",
-  "Blower Motor",
-  "Coil / Ignitor",
-  "Engine / Motor Control Module",
-  "Engine Cooling",
-  "Engine Misc",
-  "Engine Parts",
-  "Exhaust Parts",
-];
+// const SUBCAT = [
+//   "Alternator",
+//   "Blower Motor",
+//   "Coil / Ignitor",
+//   "Engine / Motor Control Module",
+//   "Engine Cooling",
+//   "Engine Misc",
+//   "Engine Parts",
+//   "Exhaust Parts",
+// ];
 
-const OPTIONS = [
-  "Air cleaner",
-  "Oil plan",
-  "Throttle body assembly",
-  "Fan Blade",
-  "Fan Clutch",
-];
+// const OPTIONS = [
+//   "Air cleaner",
+//   "Oil plan",
+//   "Throttle body assembly",
+//   "Fan Blade",
+//   "Fan Clutch",
+// ];
 
 const ShopByVehicle: React.FC = () => {
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [part, setPart] = useState("");
-  const [subCategory, setSubCategory] = useState("");
-  const [option, setOption] = useState("");
   const [focused, setFocused] = useState<string | null>(null);
 
   const makeActive = true;
   const modelActive = make !== "";
   const yearActive = make !== "" && model !== "";
   const partActive = make !== "" && model !== "" && year !== "";
-  const subCategoryActive = partActive && part !== "";
-  const optionActive = subCategoryActive && subCategory !== "";
+  // const subCategoryActive = partActive && part !== "";
+  // const optionActive = subCategoryActive && subCategory !== "";
 
   const arrowUrl = "/Images/home/arrows.png";
 
@@ -68,10 +66,10 @@ const ShopByVehicle: React.FC = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (make && model && year && part && subCategory && option) {
+    if (make && model && year && part ) {
       router.push("/catalogue/engine/home");
     }
-  }, [make, model, year, part, subCategory, option, router]);
+  }, [make, model, year, part, router]);
 
   return (
     <div className="relative z-20">
@@ -106,8 +104,6 @@ const ShopByVehicle: React.FC = () => {
               setModel("");
               setYear("");
               setPart("");
-              setSubCategory("");
-              setOption("");
             }}
             onFocus={() => setFocused("make")}
             onBlur={() => setFocused(null)}
@@ -138,8 +134,6 @@ const ShopByVehicle: React.FC = () => {
               setModel(e.target.value);
               setYear("");
               setPart("");
-              setSubCategory("");
-              setOption("");
             }}
             onFocus={() => setFocused("model")}
             onBlur={() => setFocused(null)}
@@ -169,8 +163,6 @@ const ShopByVehicle: React.FC = () => {
             onChange={(e) => {
               setYear(e.target.value);
               setPart("");
-              setSubCategory("");
-              setOption("");
             }}
             onFocus={() => setFocused("year")}
             onBlur={() => setFocused(null)}
@@ -199,8 +191,6 @@ const ShopByVehicle: React.FC = () => {
             value={part}
             onChange={(e) => {
               setPart(e.target.value);
-              setSubCategory("");
-              setOption("");
             }}
             onFocus={() => setFocused("part")}
             onBlur={() => setFocused(null)}
@@ -218,7 +208,7 @@ const ShopByVehicle: React.FC = () => {
           </select>
 
           {/* sub-category Dropdown */}
-          <select
+          {/* <select
             id="subcat-select"
             aria-label="Select sub-category"
             className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
@@ -244,10 +234,10 @@ const ShopByVehicle: React.FC = () => {
                 {s}
               </option>
             ))}
-          </select>
+          </select> */}
 
           {/* options Dropdown */}
-          <select
+          {/* <select
             id="option-select"
             aria-label="Select option"
             className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
@@ -270,7 +260,7 @@ const ShopByVehicle: React.FC = () => {
                 {o}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
       </div>
 
@@ -296,8 +286,6 @@ const ShopByVehicle: React.FC = () => {
             setModel("");
             setYear("");
             setPart("");
-            setSubCategory("");
-            setOption("");
           }}>
             {({ open }) => (
               <div className="relative">
@@ -336,8 +324,6 @@ const ShopByVehicle: React.FC = () => {
               setModel(value);
               setYear("");
               setPart("");
-              setSubCategory("");
-              setOption("");
             }}>
               {({ open }) => (
                 <div className="relative">
@@ -376,8 +362,6 @@ const ShopByVehicle: React.FC = () => {
             <Listbox value={year} onChange={(value) => {
               setYear(value);
               setPart("");
-              setSubCategory("");
-              setOption("");
             }}>
               {({ open }) => (
                 <div className="relative">
@@ -415,8 +399,6 @@ const ShopByVehicle: React.FC = () => {
           {partActive && (
             <Listbox value={part} onChange={(value) => {
               setPart(value);
-              setSubCategory("");
-              setOption("");
             }}>
               {({ open }) => (
                 <div className="relative">
@@ -451,77 +433,7 @@ const ShopByVehicle: React.FC = () => {
           )}
 
           {/* Sub-category Dropdown */}
-          {subCategoryActive && (
-            <Listbox value={subCategory} onChange={(value) => {
-              setSubCategory(value);
-              setOption("");
-            }}>
-              {({ open }) => (
-                <div className="relative">
-                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
-                    {subCategory || "Select sub-category..."}
-                    <svg
-                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                    {SUBCAT.map((s) => (
-                      <Listbox.Option
-                        key={s}
-                        value={s}
-                        className={({ active }) =>
-                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
-                        }
-                      >
-                        {s}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </div>
-              )}
-            </Listbox>
-          )}
-
           {/* Options Dropdown */}
-          {optionActive && (
-            <Listbox value={option} onChange={setOption}>
-              {({ open }) => (
-                <div className="relative">
-                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
-                    {option || "Select option..."}
-                    <svg
-                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                    {OPTIONS.map((o) => (
-                      <Listbox.Option
-                        key={o}
-                        value={o}
-                        className={({ active }) =>
-                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
-                        }
-                      >
-                        {o}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </div>
-              )}
-            </Listbox>
-          )}
         </div>
           </div>
         </div>

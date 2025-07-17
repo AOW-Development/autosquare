@@ -37,8 +37,8 @@ export default function CatalogPage() {
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
-      <div className="px-2 pt-4">
-        <nav className="max-w-6xl ml-4 md:ml-38 text-xs md:text-sm text-gray-300 flex items-center md:space-x-2">
+      <div className="px-2 pt-4 md:py-4">
+        <nav className="max-w-6xl ml-4 md:ml-38 pt-4 text-[15px] text-gray-300 flex items-center md:space-x-2">
           <Link
             href="/"
             className="flex items-center gap-2 hover:text-white transition-colors"
@@ -49,7 +49,7 @@ export default function CatalogPage() {
               width={24}
               height={24}
             />
-            <span>Home</span>
+            {/* <span>Home</span> */}
           </Link>
           <Image
             src="/autoparts/arrows (1).png"
@@ -57,7 +57,7 @@ export default function CatalogPage() {
             width={16}
             height={16}
           />
-          <Link href="/auto-parts" className="hover:underline hover:text-white">
+          <Link href="/autoParts" className="">
             Auto parts
           </Link>
           <Image
@@ -66,7 +66,7 @@ export default function CatalogPage() {
             width={16}
             height={16}
           />
-          <Link href="/engine" className="hover:underline hover:text-white">
+          <Link href="/engine" className="">
             Engine
           </Link>
           <Image
@@ -81,12 +81,12 @@ export default function CatalogPage() {
 
       {/* Main Content Area */}
       <div className="max-w-7xl mx-auto px-2 md:px-6 pb-12">
-        <div className="relative pt-24 pb-8">
+        <div className="relative pt-12 md:pt-24 pb-10 md:pb-20">
           <ShopByVehicle />
         </div>
 
         <h2
-          className="text-xl md:text-3xl  font-audiowide mt-8 mb-2 md:mb-6 pl-3 "
+          className="text-xl md:text-3xl  font-audiowide md:mt-8 mb-2 md:mb-6 pl-3 "
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",

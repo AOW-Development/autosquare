@@ -4,7 +4,7 @@ import Link from "next/link";
 const EngineFilterSidebar = () => (
   <>
     {/* CHOOSE YOUR SPECIFICATION */}
-    <div className="mb-6 bg-[#091627] p-4 rounded-lg">
+    <div className="md:mb-6 bg-[#091627] p-4 rounded-l-lg md:rounded-lg">
       <h3 className=" mb-3">CHOOSE YOUR SPECIFICATION</h3>
       <ul className="space-y-2">
         <li>
@@ -12,7 +12,10 @@ const EngineFilterSidebar = () => (
           <p className="text-xs text-gray-400">
             from 2/3/91 (AIR inner manifold)
           </p>
-          <Link href="/catalogue/engine/selectedSpecification" className="text-sky-400 hover:underline text-xs">
+          <Link
+            href="/catalogue/engine/selectedSpecification"
+            className="text-sky-400 hover:underline text-xs"
+          >
             E40D transmission
           </Link>
           <br />
@@ -41,7 +44,7 @@ const EngineFilterSidebar = () => (
       </ul>
     </div>
     {/* PRICE RANGE */}
-    <div className="mb-6 bg-[#091627] p-4 rounded-lg">
+    <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">PRICE RANGE</h3>
       <div className="flex gap-2 mb-3">
         <input
@@ -60,7 +63,7 @@ const EngineFilterSidebar = () => (
       </button>
     </div>
     {/* STATE */}
-    <div className="mb-6 bg-[#091627] p-4 rounded-lg">
+    <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">STATE</h3>
       <label className="flex items-center mb-2">
         <input
@@ -78,7 +81,7 @@ const EngineFilterSidebar = () => (
       </label>
     </div>
     {/* CAR MILEAGE, MILES */}
-    <div className="mb-6 bg-[#091627] p-4 rounded-lg">
+    <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">CAR MILEAGE, MILES</h3>
       <label className="flex items-center mb-2">
         <input
@@ -110,7 +113,7 @@ const EngineFilterSidebar = () => (
       </label>
     </div>
     {/* CONDITION */}
-    <div className="bg-[#091627] p-4 rounded-lg">
+    <div className="bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">CONDITION</h3>
       <label className="flex items-center mb-2">
         <input

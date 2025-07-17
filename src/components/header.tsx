@@ -111,7 +111,7 @@ export default function Header() {
         <div className="flex items-center justify-between w-full">
           <Link href="/">
             <Image
-             src="/logos/header-3.png"
+              src="/logos/header-3.png"
               alt="Logo"
               width={200}
               height={60}
@@ -119,7 +119,7 @@ export default function Header() {
             />
           </Link>
           <div className="flex flex-col items-end text-xs ">
-            <span className="font-bold">(888) 748-0882</span>
+            <span className="font-bold">(888) 338-2540</span>
             <span>Mon-Fri: 8AM - 7PM EST</span>
           </div>
         </div>
@@ -157,7 +157,9 @@ export default function Header() {
                 height={22}
               />
               <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-                {useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0))}
+                {useCartStore((s) =>
+                  s.items.reduce((sum, i) => sum + i.quantity, 0)
+                )}
               </span>
             </Link>
             <Link href="/account/garage">
@@ -200,7 +202,8 @@ export default function Header() {
             fontFamily: "var(--font-exo-2), sans-serif",
           }}
         >
-          <span className="ml-6 font-exo-2">(888) 748‑0882</span>|
+          {/* <span className="ml-6 font-exo-2">(888) 748‑0882</span>| */}
+          <span className="ml-6 font-exo-2">(888) 338‑2540</span>|
           <span className="border-l-0 pl-0 ml-0">Mon‑Fri: 8AM ‑ 7PM EST</span>
         </div>
         {/* Right: Icons */}
@@ -219,7 +222,9 @@ export default function Header() {
               height={24}
             />
             <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-              {useCartStore((s) => s.items.reduce((sum, i) => sum + i.quantity, 0))}
+              {useCartStore((s) =>
+                s.items.reduce((sum, i) => sum + i.quantity, 0)
+              )}
             </span>
           </Link>
           <Link href="/account/garage">
@@ -361,7 +366,7 @@ export default function Header() {
                 )}
                 {/* Categories Flyout */}
                 {link.type === "categories" && categoriesOpen && (
-                  <div className="absolute left-0 top-full mt-2 w-[600px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in">
+                  <div className="absolute left-0 top-full mt-2 w-[800px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in">
                     {/* Category List */}
                     <div className="w-1/2 h-full border-r border-gray-700">
                       {categories.map((cat) => (
@@ -389,7 +394,7 @@ export default function Header() {
                       ))}
                     </div>
                     {/* Subcategory Panel */}
-                    <div className="w-1/2 p-4">
+                    <div className="w-1/2 px-4 pt-1 bg-[#0D3453]">
                       {(() => {
                         const cat =
                           categories.find((c) => c.name === activeCategory) ||

@@ -19,7 +19,13 @@ export default function GaragePage() {
             <Sidebar activeKey="Garage" />
           </div>
           <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
-            <h1 className="text-2xl md:text-3xl font-bold text-center mb-4">
+            <h1
+              className="text-2xl md:text-3xl font-bold text-center mb-4"
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               GARAGE
             </h1>
             <div className="flex flex-col gap-4">

@@ -84,7 +84,7 @@ function TransmissionFeaturedCategories() {
                 style={{ objectFit: "contain" }}
               />
               <span
-                className="text-white text-[15px] font-normal"
+                className="text-white text-[12px] md:text-[15px] font-normal"
                 style={{ fontFamily: "Audiowide, sans-serif" }}
               >
                 {maker.name + " Transmission"}
@@ -122,64 +122,86 @@ export default function TransmissionPage() {
       </div>
 
       {/* Main content container for px-6 alignment */}
-      <div className="px-6 max-w-6xl mx-auto">
+      <div className="px-6 max-w-6xl mx-auto md:mx-35">
         {/* Transmission Types */}
         <section className="py-8">
           {/* Breadcrumb */}
           <div className="flex items-center gap-2 py-4 mt-8 mb-4">
-            <Image
-              src="/engine/HouseLine.png"
-              alt="Home"
-              width={24}
-              height={24}
-            />
+            <a href="/">
+              <Image
+                src="/engine/HouseLine.png"
+                alt="Home"
+                width={24}
+                height={24}
+              />
+            </a>
             <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-            <span className="text-white text-sm">AutoParts</span>
+            <a href="/autoParts">
+              <span className="text-gray-400 text-sm">AutoParts</span>
+            </a>
             <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-            <span className="text-white text-sm font-semibold">
-              Transmission
-            </span>
+            <span className="text-white text-sm">Transmission</span>
           </div>
-          <h2 className="text-white text-2xl font-bold mb-6">
+          <h2
+            className="text-white text-2xl  mb-6"
+            style={{
+              fontFamily: "Audiowide, sans-serif",
+              letterSpacing: "0.1em",
+            }}
+          >
             Transmission Types
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {/* Manual Transmission */}
-            <div className="relative flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md">
+            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[240px]">
               <Image
                 src="/transmission/images/manual.png"
                 alt="Manual Transmission"
-                width={384}
-                height={240}
-                className="object-cover opacity-70"
+                fill
+                className="object-cover opacity-75"
+                style={{ zIndex: 0 }}
+                priority={false}
               />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div className="absolute inset-0 flex flex-col p-4  z-10">
                 <div>
-                  <h3 className="text-white text-lg font-bold mb-2">
+                  <h3
+                    className="text-white text-lg mb-2"
+                    style={{
+                      fontFamily: "Audiowide, sans-serif",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
                     MANUAL TRANSMISSION
                   </h3>
-                  <p className="text-white text-sm font-normal leading-snug mb-4">
+                  <p className="text-white text-sm font-normal  mb-1">
                     Manual transmission where the driver manually selects gears,
                     providing more control and less energy loss
                   </p>
                 </div>
-                <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
+                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto  hover:bg-[#0086cc] transition">
                   View
                 </button>
               </div>
             </div>
             {/* Automatic Transmission */}
-            <div className="relative flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md">
+            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[240px]">
               <Image
                 src="/transmission/images/automatic.png"
                 alt="Automatic Transmission"
-                width={384}
-                height={240}
-                className="object-cover opacity-70"
+                fill
+                className="object-cover opacity-75"
+                style={{ zIndex: 0 }}
+                priority={false}
               />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div className="absolute inset-0 flex flex-col  p-4  z-10">
                 <div>
-                  <h3 className="text-white text-lg font-bold mb-2">
+                  <h3
+                    className="text-white text-lg mb-2"
+                    style={{
+                      fontFamily: "Audiowide, sans-serif",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
                     AUTOMATIC TRANSMISSION
                   </h3>
                   <p className="text-white text-sm font-normal leading-snug mb-4">
@@ -188,23 +210,30 @@ export default function TransmissionPage() {
                     driving
                   </p>
                 </div>
-                <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
+                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
                   View
                 </button>
               </div>
             </div>
             {/* CVT */}
-            <div className="relative flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md">
+            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[340px]">
               <Image
                 src="/transmission/images/cvt.png"
                 alt="CVT"
-                width={384}
-                height={240}
-                className="object-cover opacity-70"
+                fill
+                className="object-cover opacity-75"
+                style={{ zIndex: 0 }}
+                priority={false}
               />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div className="absolute inset-0 flex flex-col justify-between p-4  z-10">
                 <div>
-                  <h3 className="text-white text-lg font-bold mb-2">
+                  <h3
+                    className="text-white text-lg mb-2"
+                    style={{
+                      fontFamily: "Audiowide, sans-serif",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
                     CONTINUOUSLY VARIABLE TRANSMISSION (CVT)
                   </h3>
                   <p className="text-white text-sm font-normal leading-snug mb-4">
@@ -212,23 +241,30 @@ export default function TransmissionPage() {
                     ensuring smooth transitions and fuel efficiency
                   </p>
                 </div>
-                <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-0 hover:bg-[#0086cc] transition mb-3">
+                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
                   View
                 </button>
               </div>
             </div>
             {/* AMT */}
-            <div className="relative flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md">
+            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[340px]">
               <Image
                 src="/transmission/images/amt.png"
                 alt="AMT"
-                width={384}
-                height={240}
-                className="object-cover opacity-70"
+                fill
+                className="object-cover opacity-75"
+                style={{ zIndex: 0 }}
+                priority={false}
               />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div className="absolute inset-0 flex flex-col justify-between p-4  z-10">
                 <div>
-                  <h3 className="text-white text-lg font-bold mb-2">
+                  <h3
+                    className="text-white text-lg mb-2"
+                    style={{
+                      fontFamily: "Audiowide, sans-serif",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
                     AUTOMATED MANUAL TRANSMISSION (AMT)
                   </h3>
                   <p className="text-white text-sm font-normal leading-snug mb-4">
@@ -236,23 +272,30 @@ export default function TransmissionPage() {
                     auto convenience and manual control.
                   </p>
                 </div>
-                <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
+                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
                   View
                 </button>
               </div>
             </div>
             {/* Electric Transmission */}
-            <div className="relative flex flex-col items-center bg-[#13294b] rounded-lg overflow-hidden shadow-md">
+            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[340px]">
               <Image
                 src="/transmission/images/electric.png"
                 alt="Electric Transmission"
-                width={384}
-                height={240}
-                className="object-cover opacity-70"
+                fill
+                className="object-cover opacity-75"
+                style={{ zIndex: 0 }}
+                priority={false}
               />
-              <div className="absolute inset-0 flex flex-col justify-between p-5">
+              <div className="absolute inset-0 flex flex-col justify-between p-4  z-10">
                 <div>
-                  <h3 className="text-white text-lg font-bold mb-2">
+                  <h3
+                    className="text-white text-lg mb-2"
+                    style={{
+                      fontFamily: "Audiowide, sans-serif",
+                      letterSpacing: "0.1em",
+                    }}
+                  >
                     ELECTRIC TRANSMISSION
                   </h3>
                   <p className="text-white text-sm font-normal leading-snug mb-4">
@@ -261,7 +304,7 @@ export default function TransmissionPage() {
                     efficiency
                   </p>
                 </div>
-                <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
+                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
                   View
                 </button>
               </div>

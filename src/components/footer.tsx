@@ -5,7 +5,7 @@ import Link from "next/link";
 export default function Footer() {
   return (
     //py-[60px] md:py-[40px] sm:py-[32px]
-    <footer className="w-full bg-[#090D15] font-exo2">
+    <footer className="w-full bg-[#090D15] font-exo-2">
       <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-30 md:py-16">
         {/* Top Grid: Stacked on mobile, row on desktop */}
         <div className="flex flex-col md:flex-row md:space-x-4 gap-y-6">
@@ -20,22 +20,28 @@ export default function Footer() {
                 className="mb-[15px] bg-[#090D15]"
               />
               <ul className="space-y-[8px] text-[14px] text-white leading-[1.5]">
-                <li>AutoSquareCo INC DBA AutoSquare</li>
-                <li>Toll Free: (888) 748–0882</li>
+                <li>Parts Central LLC</li>
+                {/* <li>Toll Free: (888) 748–0882</li> */}
+                <li>Toll Free: (888) 338-2540</li>
                 <li>Fax: (312) 845–9711</li>
                 <li>
                   Email:{" "}
-                  <a href="mailto:support@autosquare.us" className="underline">
-                    support@autosquare.us
+                  <a
+                    href="mailto:partscentralus@gmail.com"
+                    className="underline"
+                  >
+                    partscentralus@gmail.com
                   </a>
                 </li>
                 <li>
                   Website:{" "}
-                  <a href="https://www.autosquare.us" className="underline">
-                    www.autosquare.us
+                  <a href="https://partscentral.us/" className="underline">
+                    www.partscentral.us
                   </a>
                 </li>
-                <li>Location: 6335 Contessa Dr Orlando, FL 32829, USA</li>
+                <li>
+                  Location: 76 Imperial Dr Suite E Evanston, WY 82930, USA
+                </li>
               </ul>
               <div className="flex space-x-[16px] mt-[16px]">
                 <div className="flex items-center space-x-1">
@@ -63,7 +69,7 @@ export default function Footer() {
           <div className="w-full md:w-[600px] grid grid-cols-2 md:grid-cols-3 gap-6">
             {/* Column 2: Online Store */}
             <div>
-              <h3 className="text-white uppercase font-exo2 font-bold text-[16px] mb-[16px]">
+              <h3 className="text-white uppercase font-exo-2 font-bold text-[16px] mb-[16px]">
                 Online Store
               </h3>
               <ul className="space-y-[8px] text-[14px] text-[#CCCCCC] leading-[1.6]">
@@ -106,12 +112,18 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/account/shippingPaymentPolicy" className="hover:text-white">
+                  <a
+                    href="/account/shippingPaymentPolicy"
+                    className="hover:text-white"
+                  >
                     Delivery and Payment
                   </a>
                 </li>
                 <li>
-                  <a href="/account/warrantyAndReturn" className="hover:text-white">
+                  <a
+                    href="/account/warrantyAndReturn"
+                    className="hover:text-white"
+                  >
                     Warranty and Returns
                   </a>
                 </li>
@@ -134,19 +146,35 @@ export default function Footer() {
               </h3>
               <ul className="space-y-[8px] text-[14px] text-[#CCCCCC] leading-[1.6]">
                 <li>
-                  <Link href="/account/trackOrder" className="hover:text-white">Track my order</Link>
+                  <Link href="/account/trackOrder" className="hover:text-white">
+                    Track my order
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/account/paymentInfo" className="hover:text-white">Make a payment</Link>
+                  <Link
+                    href="/account/paymentInfo"
+                    className="hover:text-white"
+                  >
+                    Make a payment
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/account/submitTicket" className="hover:text-white">Submit a ticket</Link>
+                  <Link
+                    href="/account/submitTicket"
+                    className="hover:text-white"
+                  >
+                    Submit a ticket
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/Testimonials" className="hover:text-white">Testimonials</Link>
+                  <Link href="/Testimonials" className="hover:text-white">
+                    Testimonials
+                  </Link>
                 </li>
                 <li>
-                  <Link href="/Blog/blogListing" className="hover:text-white">Blogs</Link>
+                  <Link href="/Blog/blogListing" className="hover:text-white">
+                    Blogs
+                  </Link>
                 </li>
               </ul>
             </div>

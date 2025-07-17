@@ -43,8 +43,13 @@ export default function Footer() {
                   Location: 76 Imperial Dr Suite E Evanston, WY 82930, USA
                 </li>
               </ul>
-              <div className="flex space-x-[16px] mt-[16px]">
-                <div className="flex items-center space-x-1">
+              <div className="flex gap-4 mt-4">
+                <a
+                  href="https://www.facebook.com/profile.php?id=61569958892836"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
                   <Image
                     src="/Images/home/social media (5).svg"
                     alt="Facebook"
@@ -52,8 +57,13 @@ export default function Footer() {
                     height={24}
                   />
                   <span className="text-white text-[14px]">Facebook</span>
-                </div>
-                <div className="flex items-center space-x-1">
+                </a>
+                <a
+                  href="https://www.instagram.com/partscentral.us/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
                   <Image
                     src="/Images/home/social media (4).svg"
                     alt="Instagram"
@@ -61,7 +71,7 @@ export default function Footer() {
                     height={24}
                   />
                   <span className="text-white text-[14px]">Instagram</span>
-                </div>
+                </a>
               </div>
             </div>
           </div>
@@ -238,7 +248,7 @@ export default function Footer() {
           </div>
           <div className="flex flex-row md:grid md:grid-cols-2 md:gap-8">
             {/* Member */}
-            <div className="w-[40%] md:w-full flex flex-col items-start mb-6 md:mb-0">
+            <div className="md:w-[40%] flex flex-col items-start mb-6 md:mb-0">
               <span className="uppercase font-exo2 text-[14px] text-white mb-2">
                 Member
               </span>
@@ -251,7 +261,7 @@ export default function Footer() {
               />
             </div>
             {/* Affiliates */}
-            <div className=" md:w-full flex flex-col items-start ">
+            {/* <div className=" md:w-full flex flex-col items-start ">
               <span className="uppercase font-exo2 text-[14px] text-white mb-2">
                 Affiliates
               </span>
@@ -278,13 +288,13 @@ export default function Footer() {
                   className="bg-[#1E2A44] object-contain"
                 />
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         {/* Copyright */}
         <div className="text-center mt-8">
           <p className="text-xs text-[#666D80]">
-            © 2024 Parts Central – All Rights Reserved.
+            © 2025 Parts Central – All Rights Reserved.
           </p>
         </div>
       </div>

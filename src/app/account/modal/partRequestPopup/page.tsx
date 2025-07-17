@@ -1,10 +1,15 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React, { useState } from "react";
 
 export default function PartRequestPopup() {
+  const [close, setClose] = useState(false);
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div
+      className={`${
+        close && "hidden"
+      } fixed inset-0 z-50 flex items-center justify-center`}
+    >
       {/* Blurred background */}
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       {/* Modal */}
@@ -12,11 +17,16 @@ export default function PartRequestPopup() {
         <button
           className="absolute top-6 right-7 text-gray-400 hover:text-white text-4xl"
           aria-label="Close"
+          onClick={() => {
+            setClose(true);
+          }}
           // Add your close logic here
         >
           &times;
         </button>
-        <h2 className="text-white border-b border-gray-600  text-xl font-bold mb-6 tracking-wide pb-2">CONTACT INFORMATION</h2>
+        <h2 className="text-white border-b border-gray-600  text-xl font-bold mb-6 tracking-wide pb-2">
+          CONTACT INFORMATION
+        </h2>
         <form className="flex flex-col gap-4">
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Make*</label>
@@ -40,24 +50,55 @@ export default function PartRequestPopup() {
             </select>
           </div>
           <div>
-            <label className="text-sm text-gray-300 mb-1 block">Full Name*</label>
-            <input className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none" placeholder="Name" />
+            <label className="text-sm text-gray-300 mb-1 block">
+              Full Name*
+            </label>
+            <input
+              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
+              placeholder="Name"
+            />
           </div>
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Email*</label>
-            <input className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none" placeholder="example@gmail.com" type="email" />
+            <input
+              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
+              placeholder="example@gmail.com"
+              type="email"
+            />
           </div>
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Phone*</label>
-            <input className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none" placeholder="(___) ___-____" type="tel" />
+            <input
+              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
+              placeholder="(___) ___-____"
+              type="tel"
+            />
           </div>
           <div>
-            <label className="text-sm text-gray-300 mb-1 block">ZIP Code*</label>
-            <input className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none" placeholder="ZIP Code" />
+            <label className="text-sm text-gray-300 mb-1 block">
+              ZIP Code*
+            </label>
+            <input
+              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
+              placeholder="ZIP Code"
+            />
           </div>
           <div className="flex gap-4 mt-6">
-            <button type="button" className="flex-1 bg-[#091b33] text-white rounded py-2 border border-[#00a3ff] hover:bg-[#22304a] transition">Cancel</button>
-            <button type="submit" className="flex-1 bg-[#00a3ff] text-white rounded py-2 font-semibold hover:bg-[#0d8ddb] transition">Get Quote</button>
+            <button
+              type="button"
+              onClick={() => {
+                setClose(true);
+              }}
+              className="flex-1 bg-[#091b33] text-white rounded py-2 border border-[#00a3ff] hover:bg-[#22304a] transition"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="flex-1 bg-[#00a3ff] text-white rounded py-2 font-semibold hover:bg-[#0d8ddb] transition"
+            >
+              Get Quote
+            </button>
           </div>
         </form>
       </div>

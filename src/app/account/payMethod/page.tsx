@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 
 interface CartItem {
   id: number;
@@ -100,12 +100,34 @@ export default function PayMethod() {
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
     // ... payment logic
-    router.push('/account/thankYou');
+    router.push("/account/thankYou");
   };
 
   return (
-    <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22">
-      <div className="max-w-6xl mx-auto px-4 md:px-6 lg:px-8">
+    <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
+      <div className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
+        <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
+          <Link
+            href="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
+            <Image
+              src="/engine/HouseLine.png"
+              alt="Home"
+              width={24}
+              height={24}
+            />
+          </Link>
+          <Image
+            src="/Images/arrows (1).svg"
+            alt="Arrow"
+            width={16}
+            height={16}
+            // className="w-3 h-3"
+          />
+          {/* <span>&gt;</span> */}
+          <span className="text-white">Make a payment</span>
+        </div>
         {/* Breadcrumb */}
         {/* <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
           <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
@@ -131,20 +153,20 @@ export default function PayMethod() {
         {/* <h1 className="font-audiowide text-3xl lg:text-4xl mb-4 text-left">
           PAYMENT
         </h1> */}
-        <h2
-          className="font-audiowide text-white text-xl sm:text-3xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
+        <h1
+          className="font-audiowide text-white text-wrap text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
           }}
         >
           MAKE A PAYMENT
-        </h2>
+        </h1>
 
         {/* Step Indicator */}
         {/* <div className="flex items-center justify-between mb-8 w-full"> */}
-          {/* Connector 1 */}
-          {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
+        {/* Connector 1 */}
+        {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
               <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
@@ -156,11 +178,11 @@ export default function PayMethod() {
             </span>
           </div> */}
 
-          {/* Connector 2 */}
-          {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div> */}
+        {/* Connector 2 */}
+        {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div> */}
 
-          {/* Step 2 - Completed */}
-          {/* <div className="flex flex-col items-center">
+        {/* Step 2 - Completed */}
+        {/* <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
               <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
                 ✓
@@ -171,11 +193,11 @@ export default function PayMethod() {
             </span>
           </div> */}
 
-          {/* Connector 3 */}
-          {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div> */}
+        {/* Connector 3 */}
+        {/* <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div> */}
 
-          {/* Step 3 - Active */}
-          {/* <div className="flex flex-col items-center">
+        {/* Step 3 - Active */}
+        {/* <div className="flex flex-col items-center">
             <div className="w-10 h-10 bg-[#009AFF] rounded-full flex items-center justify-center">
               <span className="text-white font-exo2 font-semibold text-sm">
                 3
@@ -185,8 +207,8 @@ export default function PayMethod() {
               Payment
             </span>
           </div> */}
-          {/* Connector 4 */}
-          {/* <div className="flex-1 h-0.5 bg-white mb-4"></div>
+        {/* Connector 4 */}
+        {/* <div className="flex-1 h-0.5 bg-white mb-4"></div>
         </div> */}
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -241,11 +263,11 @@ export default function PayMethod() {
             </div>
 
             {/* Payment Method Selector */}
-            <div >
+            <div>
               <h2 className="text-lg font-semibold mb-4 font-exo2">
                 PAYMENT METHOD
               </h2>
-              <div className="space-y-4 border border-white rounded-md">
+              <div className="space-y-4 border p-4 border-blue-500 rounded-md">
                 {/* Credit/Debit Card Option */}
                 <label className="flex items-center space-x-3 cursor-pointer">
                   <input
@@ -264,12 +286,12 @@ export default function PayMethod() {
                     alt="Payment Methods"
                     width={120}
                     height={24}
-                    className="h-6 inline-block ml-4"
+                    className="h-6 inline-block md:ml-80"
                   />
                 </label>
 
                 {paymentMethod === "card" && (
-                  <fieldset className="border border-white rounded-md p-6 space-y-4">
+                  <fieldset className=" rounded-md p-6 space-y-4">
                     {/* Google Pay Button */}
                     <button className="bg-black text-white py-3 rounded-md flex items-center justify-center w-full font-exo2 hover:bg-gray-800 transition-colors">
                       <Image

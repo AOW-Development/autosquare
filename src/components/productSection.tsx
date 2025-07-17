@@ -27,7 +27,7 @@ const viewedProduct = {
 
 export default function ProductSection() {
   return (
-    <section className="bg-[#091b33] text-white w-full py-8 px-2 flex flex-col gap-12">
+    <section className="bg-[#091b33] text-white w-full py-8 md:py-2 px-2 flex flex-col gap-12">
       {/* Top Table */}
       <div className="max-w-6xl mx-auto w-full">
         <h2 className="text-xl font-bold mb-4">DESCRIPTION</h2>

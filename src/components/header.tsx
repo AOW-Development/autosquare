@@ -82,6 +82,17 @@ export default function Header() {
     string | null
   >(null); // for mobile selected category
 
+  // --- Hover logic for menus ---
+  // Categories
+  const categoriesHover = React.useRef(false);
+  const categoriesTimeout = React.useRef<NodeJS.Timeout | null>(null);
+  // Dropdown
+  const dropdownHover = React.useRef(false);
+  const dropdownTimeout = React.useRef<NodeJS.Timeout | null>(null);
+  // Submenu
+  const submenuHover = React.useRef(false);
+  const submenuTimeout = React.useRef<NodeJS.Timeout | null>(null);
+
   // Utility: close all overlays
   const closeAll = () => {
     setMenuOpen(false);
@@ -267,18 +278,54 @@ export default function Header() {
                 </button>
               )} */}
               <div
-                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 font-exo-2 ${
+                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 font-exo-2 transition-all ${
                   link.label === "Shop by Categories" ? "flex-[2]" : "flex-1"
                 }`}
                 onMouseEnter={() => {
-                  if (link.type === "categories") setCategoriesOpen(true);
-                  if (link.type === "dropdown") setDropdownOpen(link.label);
-                  if (link.type === "submenu") setSubmenuOpen(true);
+                  if (link.type === "categories") {
+                    categoriesHover.current = true;
+                    if (categoriesTimeout.current)
+                      clearTimeout(categoriesTimeout.current);
+                    setCategoriesOpen(true);
+                  }
+                  if (link.type === "dropdown") {
+                    dropdownHover.current = true;
+                    if (dropdownTimeout.current)
+                      clearTimeout(dropdownTimeout.current);
+                    setDropdownOpen(link.label);
+                  }
+                  if (link.type === "submenu") {
+                    submenuHover.current = true;
+                    if (submenuTimeout.current)
+                      clearTimeout(submenuTimeout.current);
+                    setSubmenuOpen(true);
+                  }
                 }}
                 onMouseLeave={() => {
-                  if (link.type === "categories") setCategoriesOpen(false);
-                  if (link.type === "dropdown") setDropdownOpen(null);
-                  if (link.type === "submenu") setSubmenuOpen(false);
+                  if (link.type === "categories") {
+                    categoriesHover.current = false;
+                    if (categoriesTimeout.current)
+                      clearTimeout(categoriesTimeout.current);
+                    categoriesTimeout.current = setTimeout(() => {
+                      if (!categoriesHover.current) setCategoriesOpen(false);
+                    }, 200);
+                  }
+                  if (link.type === "dropdown") {
+                    dropdownHover.current = false;
+                    if (dropdownTimeout.current)
+                      clearTimeout(dropdownTimeout.current);
+                    dropdownTimeout.current = setTimeout(() => {
+                      if (!dropdownHover.current) setDropdownOpen(null);
+                    }, 200);
+                  }
+                  if (link.type === "submenu") {
+                    submenuHover.current = false;
+                    if (submenuTimeout.current)
+                      clearTimeout(submenuTimeout.current);
+                    submenuTimeout.current = setTimeout(() => {
+                      if (!submenuHover.current) setSubmenuOpen(false);
+                    }, 200);
+                  }
                 }}
               >
                 {link.label === "Shop by Categories" && (
@@ -299,8 +346,24 @@ export default function Header() {
                         xmlns="http://www.w3.org/2000/svg"
                         className="mr-2"
                       >
-                        <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-                        <line x1="6" y1="18" x2="18" y2="6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                        <line
+                          x1="6"
+                          y1="6"
+                          x2="18"
+                          y2="18"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
+                        <line
+                          x1="6"
+                          y1="18"
+                          x2="18"
+                          y2="6"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                        />
                       </svg>
                     ) : (
                       <svg
@@ -311,9 +374,30 @@ export default function Header() {
                         xmlns="http://www.w3.org/2000/svg"
                         className="mr-2"
                       >
-                        <rect x="4" y="6" width="16" height="2" rx="1" fill="currentColor" />
-                        <rect x="4" y="11" width="16" height="2" rx="1" fill="currentColor" />
-                        <rect x="4" y="16" width="16" height="2" rx="1" fill="currentColor" />
+                        <rect
+                          x="4"
+                          y="6"
+                          width="16"
+                          height="2"
+                          rx="1"
+                          fill="currentColor"
+                        />
+                        <rect
+                          x="4"
+                          y="11"
+                          width="16"
+                          height="2"
+                          rx="1"
+                          fill="currentColor"
+                        />
+                        <rect
+                          x="4"
+                          y="16"
+                          width="16"
+                          height="2"
+                          rx="1"
+                          fill="currentColor"
+                        />
                       </svg>
                     )}
                   </button>
@@ -366,7 +450,23 @@ export default function Header() {
                 )}
                 {/* Categories Flyout */}
                 {link.type === "categories" && categoriesOpen && (
-                  <div className="absolute left-0 top-full mt-2 w-[800px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in">
+                  <div
+                    className="absolute left-0 top-full mt-2 w-[800px] bg-gray-900 border border-gray-700 shadow-xl flex z-30 animate-fade-in"
+                    onMouseEnter={() => {
+                      categoriesHover.current = true;
+                      if (categoriesTimeout.current)
+                        clearTimeout(categoriesTimeout.current);
+                      setCategoriesOpen(true);
+                    }}
+                    onMouseLeave={() => {
+                      categoriesHover.current = false;
+                      if (categoriesTimeout.current)
+                        clearTimeout(categoriesTimeout.current);
+                      categoriesTimeout.current = setTimeout(() => {
+                        if (!categoriesHover.current) setCategoriesOpen(false);
+                      }, 200);
+                    }}
+                  >
                     {/* Category List */}
                     <div className="w-1/2 h-full border-r border-gray-700">
                       {categories.map((cat) => (
@@ -419,7 +519,23 @@ export default function Header() {
                 )}
                 {/* Dropdown Panel */}
                 {link.type === "dropdown" && dropdownOpen === link.label && (
-                  <div className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[200px] z-30 animate-fade-in">
+                  <div
+                    className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[200px] z-30 animate-fade-in"
+                    onMouseEnter={() => {
+                      dropdownHover.current = true;
+                      if (dropdownTimeout.current)
+                        clearTimeout(dropdownTimeout.current);
+                      setDropdownOpen(link.label);
+                    }}
+                    onMouseLeave={() => {
+                      dropdownHover.current = false;
+                      if (dropdownTimeout.current)
+                        clearTimeout(dropdownTimeout.current);
+                      dropdownTimeout.current = setTimeout(() => {
+                        if (!dropdownHover.current) setDropdownOpen(null);
+                      }, 200);
+                    }}
+                  >
                     <ul>
                       {link.sub?.map((item) => (
                         <li
@@ -436,7 +552,23 @@ export default function Header() {
                 )}
                 {/* Info Submenu */}
                 {link.type === "submenu" && submenuOpen && (
-                  <div className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[180px] z-30 animate-fade-in">
+                  <div
+                    className="absolute left-0 top-full mt-2 bg-gray-900 border border-gray-700 shadow-xl min-w-[180px] z-30 animate-fade-in"
+                    onMouseEnter={() => {
+                      submenuHover.current = true;
+                      if (submenuTimeout.current)
+                        clearTimeout(submenuTimeout.current);
+                      setSubmenuOpen(true);
+                    }}
+                    onMouseLeave={() => {
+                      submenuHover.current = false;
+                      if (submenuTimeout.current)
+                        clearTimeout(submenuTimeout.current);
+                      submenuTimeout.current = setTimeout(() => {
+                        if (!submenuHover.current) setSubmenuOpen(false);
+                      }, 200);
+                    }}
+                  >
                     <ul>
                       {link.sub?.map((item) => (
                         <li

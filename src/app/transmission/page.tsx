@@ -1,17 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import FeaturedCategories from "@/components/FeaturedCategories";
 import React from "react";
 import ShopByVehicle from "@/components/shopByVehicle";
-
-const transmissionTypes = [
-  { name: "Manual Reset", img: "/transmission/images/manual.png" },
-  { name: "Automatic", img: "/transmission/images/automatic.png" },
-  { name: "CVT", img: "/transmission/images/cvt.png" },
-  { name: "AMT", img: "/transmission/images/amt.png" },
-  { name: "Electric", img: "/transmission/images/electric.png" },
-];
 
 // Local wrapper for tweaks
 function TransmissionFeaturedCategories() {
@@ -53,39 +44,42 @@ function TransmissionFeaturedCategories() {
   ];
   const arrowIcon = "/Images/home/Makers-logos/arrows.png";
   return (
-    <section className="w-full bg-[#091b33] flex flex-col py-12">
+    <section className="w-full bg-[#091b33] py-8 sm:py-12 md:py-16 px-4"> {/* Adjusted vertical padding */}
       <h2
-        className="text-[32px] font-normal mb-6"
+        className="text-xl sm:text-2xl md:text-[32px] font-normal mb-8 md:mb-12 -ml-0 sm:-ml-4 md:-ml-6 text-white" // Adjusted font size and margin
         style={{
           fontFamily: "Audiowide, sans-serif",
           letterSpacing: "0.04em",
-          color: "#fff",
         }}
       >
-        Transmission FOR YOUR MAKE
+        TRANSMISSION FOR YOUR MAKE
       </h2>
-      <div className="grid grid-cols-2  items-center md:grid-cols-4 gap-x-5 gap-y-6 w-full max-w-6xl">
+
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-2 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-6xl mx-auto"> {/* Adjusted gap-x and gap-y */}
         {makers.slice(0, 32).map((maker) => (
           <div
             key={maker.name}
-            className="flex items-center justify-between border-b"
+            className="flex items-center justify-between px-2 py-2 sm:px-3 sm:py-3 text-white cursor-pointer border-b border-[#00A3FF]
+            hover:bg-[rgba(59,131,246,0.32)] hover:border-0 hover:rounded-md
+            hover:shadow-[0_0_24px_4px_rgba(59,130,246,0.4)]
+            hover:outline-2 hover:outline-blue-500
+            hover:text-blue-400 transition-all"
             style={{
-              borderColor: "#00A3FF",
               paddingBottom: 8,
               marginBottom: 8,
             }}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2"> {/* Simplified gap */}
               <Image
                 src={maker.logo}
                 alt={maker.name}
-                width={24}
-                height={24}
-                style={{ objectFit: "contain" }}
+                width={18} // Adjusted image size for small screens
+                height={18} // Adjusted image size for small screens
+                className="object-contain"
               />
               <span
-                className="text-white text-[12px] md:text-[15px] font-normal"
-                style={{ fontFamily: "Audiowide, sans-serif" }}
+                className="text-xs sm:text-sm md:text-[16px] font-normal" // Adjusted font size
+                style={{ fontFamily: "exo-2, sans-serif" }}
               >
                 {maker.name + " Transmission"}
               </span>
@@ -93,9 +87,9 @@ function TransmissionFeaturedCategories() {
             <Image
               src={arrowIcon}
               alt="arrow"
-              width={18}
-              height={18}
-              style={{ objectFit: "contain" }}
+              width={12} // Adjusted arrow size
+              height={12} // Adjusted arrow size
+              className="object-contain"
             />
           </div>
         ))}
@@ -108,7 +102,7 @@ export default function TransmissionPage() {
   return (
     <div className="bg-[#091b33] min-h-screen">
       {/* Banner */}
-      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
+      <div className="w-full h-[120px] sm:h-[180px] md:h-[240px] lg:h-[320px] relative"> {/* Made banner height more responsive */}
         <Image
           src="/transmission/title_img.png"
           alt="Transmission Banner"
@@ -117,202 +111,104 @@ export default function TransmissionPage() {
           priority
         />
       </div>
-      <div className="mt-6">
+      <div className="mt-4 sm:mt-6"> {/* Adjusted top margin */}
         <ShopByVehicle />
       </div>
 
       {/* Main content container for px-6 alignment */}
-      <div className="px-6 max-w-6xl mx-auto md:mx-35">
+      <div className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto"> {/* Adjusted horizontal padding */}
+
         {/* Transmission Types */}
-        <section className="py-8">
+        <section className="py-6 sm:py-8 mt-2"> {/* Adjusted vertical padding */}
           {/* Breadcrumb */}
-          <div className="flex items-center gap-2 py-4 mt-8 mb-4">
-            <a href="/">
-              <Image
-                src="/engine/HouseLine.png"
-                alt="Home"
-                width={24}
-                height={24}
-              />
-            </a>
-            <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-            <a href="/autoParts">
-              <span className="text-gray-400 text-sm">AutoParts</span>
-            </a>
-            <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-            <span className="text-white text-sm">Transmission</span>
+          <div className="pt-4 sm:pt-6"> {/* Adjusted top padding */}
+            <div className="flex items-center gap-1 sm:gap-2 py-2 sm:py-4 mt-4 sm:mt-8 mb-2 sm:mb-4"> {/* Adjusted gap, vertical padding, and margins */}
+              <a href="/">
+                <Image
+                  src="/engine/HouseLine.png"
+                  alt="Home"
+                  width={20} // Adjusted image size for breadcrumbs
+                  height={20} // Adjusted image size for breadcrumbs
+                />
+              </a>
+              <Image src="/engine/arrows.png" alt=">" width={12} height={12} /> {/* Adjusted arrow size */}
+              <a href="/autoParts">
+                <span className="text-gray-400 text-xs sm:text-sm">AutoParts</span> {/* Adjusted font size */}
+              </a>
+              <Image src="/engine/arrows.png" alt=">" width={12} height={12} /> {/* Adjusted arrow size */}
+              <span className="text-white text-xs sm:text-sm">Transmission</span> {/* Adjusted font size */}
+            </div>
           </div>
           <h2
-            className="text-white text-2xl  mb-6"
+            className="text-xl sm:text-2xl md:text-2xl mb-4 sm:mb-6 text-white" // Adjusted font size
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
             }}
           >
-            Transmission Types
+            TRANSMISSION TYPES
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {/* Manual Transmission */}
-            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[240px]">
-              <Image
-                src="/transmission/images/manual.png"
-                alt="Manual Transmission"
-                fill
-                className="object-cover opacity-75"
-                style={{ zIndex: 0 }}
-                priority={false}
-              />
-              <div className="absolute inset-0 flex flex-col p-4  z-10">
-                <div>
-                  <h3
-                    className="text-white text-lg mb-2"
-                    style={{
-                      fontFamily: "Audiowide, sans-serif",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    MANUAL TRANSMISSION
-                  </h3>
-                  <p className="text-white text-sm font-normal  mb-1">
-                    Manual transmission where the driver manually selects gears,
-                    providing more control and less energy loss
-                  </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 p-2 sm:p-4"> {/* Adjusted grid columns and gap */}
+            {[
+              {
+                title: "MANUAL TRANSMISSION",
+                desc: "Manual transmission where the driver manually selects gears, providing more control and less energy loss.",
+                img: "/transmission/images/manual.png",
+              },
+              {
+                title: "AUTOMATIC TRANSMISSION",
+                desc: "Transmission that automatically shifts gears without driver intervention, offering convenience, especially in urban driving.",
+                img: "/transmission/images/automatic.png",
+              },
+              {
+                title: "CONTINUOUSLY VARIABLE TRANSMISSION (CVT)",
+                desc: "Utilizes belts or chains to smoothly change the gear ratio, ensuring smooth transitions and fuel efficiency.",
+                img: "/transmission/images/cvt.png",
+              },
+              {
+                title: "AUTOMATED MANUAL TRANSMISSION (AMT)",
+                desc: "Automated manual transmission with manual mode, offering auto convenience and manual control.",
+                img: "/transmission/images/amt.png",
+              },
+              {
+                title: "ELECTRIC TRANSMISSION",
+                desc: "Transmission for electric vehicles regulating the electric motor's gears, featuring seamless shifting and high efficiency.",
+                img: "/transmission/images/electric.png",
+              },
+            ].map((item, index) => (
+              <div
+                key={index}
+                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[240px] sm:h-[220px] md:h-[240px] bg-black/50" // Adjusted card height
+              >
+                <Image
+                  src={item.img}
+                  alt={item.title}
+                  fill
+                  className="object-cover opacity-60"
+                  priority={false}
+                />
+                <div className="absolute inset-0 flex flex-col justify-between p-3 sm:p-4 z-10"> {/* Adjusted padding */}
+                  <div>
+                    <h3
+                      className="text-white text-base sm:text-[16px] md:text-base font-semibold mb-1 sm:mb-2 leading-tight mt-2 sm:mt-4" // Adjusted font size and margin
+                      style={{ fontFamily: "exo-2, sans-serif", letterSpacing: "0.08em" }}
+                    >
+                      {item.title}
+                    </h3>
+                    <p className="text-white text-xs sm:text-sm md:text-sm font-light leading-snug mt-2 sm:mt-3 line-clamp-4"> {/* Adjusted font size and margin */}
+                      {item.desc}
+                    </p>
+                  </div>
+                  <button className="bg-[#00A3FF] text-white rounded-md w-[140px] h-[34px] sm:w-[160px] sm:h-[36px] mt-3 sm:mt-4 text-sm hover:bg-[#0086cc] transition"> {/* Adjusted button size */}
+                    View
+                  </button>
                 </div>
-                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto  hover:bg-[#0086cc] transition">
-                  View
-                </button>
               </div>
-            </div>
-            {/* Automatic Transmission */}
-            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[240px]">
-              <Image
-                src="/transmission/images/automatic.png"
-                alt="Automatic Transmission"
-                fill
-                className="object-cover opacity-75"
-                style={{ zIndex: 0 }}
-                priority={false}
-              />
-              <div className="absolute inset-0 flex flex-col  p-4  z-10">
-                <div>
-                  <h3
-                    className="text-white text-lg mb-2"
-                    style={{
-                      fontFamily: "Audiowide, sans-serif",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    AUTOMATIC TRANSMISSION
-                  </h3>
-                  <p className="text-white text-sm font-normal leading-snug mb-4">
-                    Transmission that automatically shifts gears without driver
-                    intervention, offering convenience, especially in urban
-                    driving
-                  </p>
-                </div>
-                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
-                  View
-                </button>
-              </div>
-            </div>
-            {/* CVT */}
-            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[340px]">
-              <Image
-                src="/transmission/images/cvt.png"
-                alt="CVT"
-                fill
-                className="object-cover opacity-75"
-                style={{ zIndex: 0 }}
-                priority={false}
-              />
-              <div className="absolute inset-0 flex flex-col justify-between p-4  z-10">
-                <div>
-                  <h3
-                    className="text-white text-lg mb-2"
-                    style={{
-                      fontFamily: "Audiowide, sans-serif",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    CONTINUOUSLY VARIABLE TRANSMISSION (CVT)
-                  </h3>
-                  <p className="text-white text-sm font-normal leading-snug mb-4">
-                    Utilizes belts or chains to smoothly change the gear ratio,
-                    ensuring smooth transitions and fuel efficiency
-                  </p>
-                </div>
-                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
-                  View
-                </button>
-              </div>
-            </div>
-            {/* AMT */}
-            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[340px]">
-              <Image
-                src="/transmission/images/amt.png"
-                alt="AMT"
-                fill
-                className="object-cover opacity-75"
-                style={{ zIndex: 0 }}
-                priority={false}
-              />
-              <div className="absolute inset-0 flex flex-col justify-between p-4  z-10">
-                <div>
-                  <h3
-                    className="text-white text-lg mb-2"
-                    style={{
-                      fontFamily: "Audiowide, sans-serif",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    AUTOMATED MANUAL TRANSMISSION (AMT)
-                  </h3>
-                  <p className="text-white text-sm font-normal leading-snug mb-4">
-                    Automated manual transmission with manual mode, offering
-                    auto convenience and manual control.
-                  </p>
-                </div>
-                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
-                  View
-                </button>
-              </div>
-            </div>
-            {/* Electric Transmission */}
-            <div className="relative flex flex-col rounded-lg overflow-hidden shadow-md h-full min-h-[340px]">
-              <Image
-                src="/transmission/images/electric.png"
-                alt="Electric Transmission"
-                fill
-                className="object-cover opacity-75"
-                style={{ zIndex: 0 }}
-                priority={false}
-              />
-              <div className="absolute inset-0 flex flex-col justify-between p-4  z-10">
-                <div>
-                  <h3
-                    className="text-white text-lg mb-2"
-                    style={{
-                      fontFamily: "Audiowide, sans-serif",
-                      letterSpacing: "0.1em",
-                    }}
-                  >
-                    ELECTRIC TRANSMISSION
-                  </h3>
-                  <p className="text-white text-sm font-normal leading-snug mb-4">
-                    Transmission for electric vehicles regulating the electric
-                    motor's gears, featuring seamless shifting and high
-                    efficiency
-                  </p>
-                </div>
-                <button className="bg-[#00A3FF] text-white rounded-md py-1 w-full mt-auto hover:bg-[#0086cc] transition">
-                  View
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
         </section>
         {/* Featured Categories (tweaked) */}
-        <div className="max-w-6xl mx-auto w-full">
+        <div className="max-w-6xl mx-auto w-full px-0 sm:px-0 lg:px-0 pt-4 pb-6 mt-2"> {/* Removed px to avoid double padding */}
           <TransmissionFeaturedCategories />
         </div>
       </div>

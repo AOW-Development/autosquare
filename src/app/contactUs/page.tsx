@@ -116,9 +116,13 @@ export default function ContactUsPage() {
                       <span className="text-white text-base font-semibold mb-0.5">
                         Email address
                       </span>
-                      <span className="text-gray-200 text-sm underline">
-                        partscentralus@gmail.com
-                      </span>
+                      <a
+                        href="mailto:partscentralus@gmail.com"
+                        className="underline"
+                      >
+                    partscentralus@gmail.com
+                      </a>
+                
                     </div>
                   </div>
                   <div className="flex items-center gap-4">

@@ -72,12 +72,19 @@ const EngineFilterSidebar = () => (
         />
         Used
       </label>
+      <label className="flex items-center mb-2">
+        <input
+          type="checkbox"
+          className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
+        />
+        Refurbished
+      </label>
       <label className="flex items-center">
         <input
           type="checkbox"
           className="mr-2 h-4 w-4 text-sky-600 rounded focus:ring-sky-500 bg-gray-700 border-gray-600"
         />
-        New
+        Re-Manufactured
       </label>
     </div>
     {/* CAR MILEAGE, MILES */}

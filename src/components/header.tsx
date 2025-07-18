@@ -43,12 +43,8 @@ const navLinks = [
   { label: "Shop by Categories", type: "categories" },
   {
     label: "Auto Parts",
-    type: "dropdown",
-    sub: [
-      { label: "Engine", href: "/engine" },
-      { label: "Transmission", href: "/transmission" },
-      { label: "Brakes", href: "/autoParts" },
-    ],
+    type: "link",href: "/autoParts"
+   
   },
   { label: "Engine", type: "link", href: "/engine" },
   { label: "Transmission", type: "link", href: "/transmission" },

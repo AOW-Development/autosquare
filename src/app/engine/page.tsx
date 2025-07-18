@@ -1,6 +1,5 @@
 "use client";
 import Image from "next/image";
-// import FFeaturedCategories from "@/components/FeaturedCategories.tsx";
 import FeaturedCategories from "@/components/FeaturedCategories";
 import ShopByVehicle from "@/components/shopByVehicle";
 
@@ -17,19 +16,15 @@ export default function EnginePage() {
           priority
         />
       </div>
+
       <ShopByVehicle />
-      {/* Breadcrumb */}
 
       {/* Engine Types Section */}
-      <section className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
-        <div className="flex items-center gap-2  py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
+      <section className="max-w-6xl mx-auto px-4 md:px-6 py-10 ml-16">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-2 py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
           <a href="/">
-            <Image
-              src="/engine/HouseLine.png"
-              alt="Home"
-              width={20}
-              height={20}
-            />
+            <Image src="/engine/HouseLine.png" alt="Home" width={20} height={20} />
           </a>
           <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
           <a href="/autoParts">
@@ -38,8 +33,10 @@ export default function EnginePage() {
           <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
           <span className="text-white">Engine</span>
         </div>
+
+        {/* Title */}
         <h2
-          className="text-2xl font-bold text-white mb-8 uppercase tracking-wide"
+          className="text-2xl font-bold text-white mt-8 mb-8 uppercase tracking-wide"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -47,9 +44,11 @@ export default function EnginePage() {
         >
           Engine Types
         </h2>
+
+        {/* Engine Type Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {/* Gasoline */}
-          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg">
+          {/* GASOLINE */}
+          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg border border-[#1f2e47]">
             <Image
               src="/engine/img-1.png"
               alt="Engine Type 1"
@@ -71,8 +70,9 @@ export default function EnginePage() {
               </button>
             </div>
           </div>
-          {/* Diesel */}
-          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg">
+
+          {/* DIESEL */}
+          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg border border-[#1f2e47]">
             <Image
               src="/engine/desl.png"
               alt="Diesel Engine"
@@ -94,8 +94,9 @@ export default function EnginePage() {
               </button>
             </div>
           </div>
-          {/* Hybrid */}
-          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg">
+
+          {/* HYBRID */}
+          <div className="relative flex flex-col items-center bg-[#11213a] rounded-lg overflow-hidden shadow-lg border border-[#1f2e47]">
             <Image
               src="/engine/hybrid-engine.png"
               alt="Hybrid Engine"
@@ -112,13 +113,14 @@ export default function EnginePage() {
                   emissions, and energy source flexibility
                 </p>
               </div>
-              <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-1 hover:bg-[#0086cc] transition mb-3">
+              <button className="bg-[#00A3FF] text-white font-semibold rounded-md py-1 w-40 mt-2 hover:bg-[#0086cc] transition mb-3">
                 View
               </button>
             </div>
           </div>
         </div>
       </section>
+
       {/* AutoMakes Section */}
       <FeaturedCategories />
     </div>

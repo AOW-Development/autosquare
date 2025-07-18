@@ -230,17 +230,18 @@ export default function Footer() {
             </div>
             {/* Second row of payment icons */}
             <div className="flex space-x-[8px] mt-1">
-              <Image
-                src="/Images/home/authorize-net-seeklogo 1.png"
-                alt="Authorize.Net"
-                width={60}
-                height={48}
-                className="bg-[#1E2A44] object-contain"
-              />
+             
               <Image
                 src="/Images/home/visa-inverted_82058 (1).png"
                 alt="Visa 2"
                 width={80}
+                height={48}
+                className="bg-[#1E2A44] object-contain"
+              />
+               <Image
+                src="/account/venmo-ar21.svg"
+                alt="Authorize.Net"
+                width={60}
                 height={48}
                 className="bg-[#1E2A44] object-contain"
               />

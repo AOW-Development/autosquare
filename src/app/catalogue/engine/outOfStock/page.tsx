@@ -27,7 +27,7 @@ export default function CatalogPage() {
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
       <div className="px-2 pt-4 md:py-4">
-        <nav className="max-w-6xl ml-4 md:ml-38 pt-4 text-[15px] text-gray-300 flex items-center md:space-x-2">
+        <nav className="max-w-6xl ml-4 md:ml-16 pt-4 text-[15px] text-gray-300 flex items-center md:space-x-2">
           <Link
             href="/"
             className="flex items-center gap-2 hover:text-white transition-colors"
@@ -134,20 +134,31 @@ export default function CatalogPage() {
                 Quantity of products:{" "}
                 <span className="font-semibold">{dummyData.length}</span>
               </div>
-              <div className="flex items-center space-x-2">
-                {/* <label htmlFor="sort-by" className="text-sm text-gray-300">
-                  Sort by:
-                </label> */}
+                  <div className="relative flex justify-end items-center w-full">
                 <select
                   id="sort-by"
-                  className=" border bg-[#061c37] border-white  text-white text-sm rounded-md focus:ring-sky-500 focus:border-white px-5 py-2"
+                  className="bg-[#091b33] border border-white text-white text-sm rounded-md shadow-xl focus:outline-none px-4 py-[6px] pr-10 appearance-none"
                 >
                   <option className="text-white">Recommended</option>
                   <option className="text-white">Price: Low to High</option>
                   <option className="text-white">Price: High to Low</option>
                   <option className="text-white">Newest Arrivals</option>
                 </select>
+
+                {/* Custom dropdown arrow */}
+                <div className="absolute right-3 pointer-events-none">
+                  <svg
+                    className="w-4 h-4 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </div>
               </div>
+              
             </div>
             {showMobileFilter && (
               <div className="fixed justify-end inset-0 z-50 backdrop-blur-sm flex items-center  md:hidden h-screen">

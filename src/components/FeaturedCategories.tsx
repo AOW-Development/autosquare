@@ -43,7 +43,8 @@ const arrowIcon = "/Images/home/Makers-logos/arrows.png";
 export default function FeaturedCategories() {
   return (
     <section className="w-full min-h-screen bg-[#091b33] flex flex-col items-center py-12 px-4 md:pr-10 md:px-0">
-      <div className="w-full max-w-6xl mx-auto">
+      <div className="w-full max-w-6xl mx-auto px-2 md:px-14">
+
         <h2
           className="text-xl sm:text-2xl md:text-[32px] font-normal mb-4 md:mb-6  text-left"
           style={{

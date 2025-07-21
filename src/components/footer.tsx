@@ -198,7 +198,8 @@ export default function Footer() {
               Pay securely with
             </span>
             {/* First row of payment icons */}
-            <div className="flex space-x-[8px]">
+             <div className="flex space-x-[8px]">
+            <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/Images/home/visa-inverted_82058.png"
                 alt="Visa"
@@ -206,6 +207,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
+            </a>
+            <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/Images/home/mastercard_82049.png"
                 alt="Mastercard"
@@ -213,6 +216,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
+            </a>
+            <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/Images/home/americanexpress_82060 1.png"
                 alt="Amex"
@@ -220,6 +225,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
+            </a>
+            <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/Images/home/discover_82082.png"
                 alt="Discover"
@@ -227,38 +234,43 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
-            </div>
-            {/* Second row of payment icons */}
-            <div className="flex space-x-[8px] mt-1">
-             
+            </a>
+          </div>
+
+          {/* Second row of payment icons */}
+          <div className="flex space-x-[8px] mt-1">
+            <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
               <Image
                 src="/Images/home/visa-inverted_82058 (1).png"
                 alt="Visa 2"
-                width={80}
-                height={48}
+                width={48}
+                height={30}
                 className="bg-[#1E2A44] object-contain"
               />
-               <Image
+            </a>
+            <a href="https://venmo.com" target="_blank" rel="noopener noreferrer">
+              <Image
                 src="/account/venmo-ar21.svg"
-                alt="Authorize.Net"
-                width={60}
-                height={48}
+                alt="Venmo"
+                width={48}
+                height={35}
                 className="bg-[#1E2A44] object-contain"
               />
-            </div>
+            </a>
           </div>
+        </div>
           <div className="flex flex-row md:grid md:grid-cols-2 md:gap-8">
             {/* Member */}
-            <div className="md:w-[40%] flex flex-col items-start mb-6 md:mb-0">
-              <span className="uppercase font-exo2 text-[14px] text-white mb-2">
+            <div className="w-full flex flex-col items-start mb-6 md:mb-0">
+              <span className="uppercase font-exo2 text-[14px] text-white">
                 Member
               </span>
               <Image
                 src="/Images/home/icon.png"
                 alt="Member Icon"
-                width={64}
-                height={30}
-                className="bg-[#1E2A44] object-contain"
+                width={120}
+                height={100}
+                className=" object-contain w-10 h-10 md:w-12 md:h-12"
               />
             </div>
             {/* Affiliates */}

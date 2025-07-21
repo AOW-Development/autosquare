@@ -19,6 +19,8 @@ interface SubPart {
 interface Product {
   id: number;
   sku: string;
+  title: string;
+  price: number;
   modelYearId: number;
   partTypeId: number;
   inStock: boolean;
@@ -395,75 +397,66 @@ export default function CatalogPage() {
                       </div>
                     </Link>
                     <div className="flex justify-between items-center mt-3 relative z-30">
-                      {item.inStock ? (
-                        <>
-                          <span className="text-xl font-bold text-white">
-                            ${item.actualprice}
+                      <span className="text-xl font-bold text-white">
+                        {item.actualprice}
+                      </span>
+                      {cartItem ? (
+                        <button
+                          className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
+                          style={{ minWidth: 120 }}
+                          tabIndex={0}
+                          onClick={(e) => e.preventDefault()} // prevent card click
+                        >
+                          <span
+                            className="cursor-pointer select-none text-3xl px-1"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (cartItem.quantity <= 1) {
+                                removeItem(cartItem.id);
+                              } else {
+                                updateQuantity(
+                                  cartItem.id,
+                                  cartItem.quantity - 1
+                                );
+                              }
+                            }}
+                          >
+                            -
                           </span>
-                          {cartItem ? (
-                            <button
-                              className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
-                              style={{ minWidth: 120 }}
-                              tabIndex={0}
-                              onClick={(e) => e.preventDefault()} // prevent card click
-                            >
-                              <span
-                                className="cursor-pointer select-none text-3xl px-1"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (cartItem.quantity <= 1) {
-                                    removeItem(cartItem.id);
-                                  } else {
-                                    updateQuantity(
-                                      cartItem.id,
-                                      cartItem.quantity - 1
-                                    );
-                                  }
-                                }}
-                              >
-                                -
-                              </span>
-                              <span className="text-white text-[17px] font-exo-2 text-center select-none">
-                                {cartItem.quantity}
-                              </span>
-                              <span
-                                className="cursor-pointer select-none px-1 text-3xl "
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  updateQuantity(
-                                    cartItem.id,
-                                    cartItem.quantity + 1
-                                  );
-                                }}
-                              >
-                                +
-                              </span>
-                            </button>
-                          ) : (
-                            <button
-                              className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setShowCartPopup(true);
-                                setInCartIdx(indexOfFirstItem + index); // Correct index for popup
-                                addItem({
-                                  id: `engine-${item.id}`, // Use unique ID
-                                  name: part || `Engine ${item.id}`,
-                                  quantity: 1,
-                                });
-                                setTimeout(() => setShowCartPopup(false), 2000);
-                              }}
-                            >
-                              Add to Cart
-                            </button>
-                          )}
-                        </>
+                          <span className="text-white text-[17px] font-exo-2 text-center select-none">
+                            {cartItem.quantity}
+                          </span>
+                          <span
+                            className="cursor-pointer select-none px-1 text-3xl "
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              updateQuantity(
+                                cartItem.id,
+                                cartItem.quantity + 1
+                              );
+                            }}
+                          >
+                            +
+                          </span>
+                        </button>
                       ) : (
-                        <Link href="/account/modal/partRequestPopup" passHref legacyBehavior>
-                          <a className="bg-sky-600 hover:bg-yellow-700 text-white text-sm px-4 py-2 rounded-md transition-colors block text-center w-full mt-5">
-                            Part Request
-                          </a>
-                        </Link>
+                        <button
+                          className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setShowCartPopup(true);
+                            setInCartIdx(indexOfFirstItem + index); // Correct index for popup
+                            addItem({
+                              id: `engine-${indexOfFirstItem + index}`, // Use unique ID
+                              name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+                              quantity: 1,
+                              price: item.actualprice || 0
+                            });
+                            setTimeout(() => setShowCartPopup(false), 2000);
+                          }}
+                        >
+                          Add to Cart
+                        </button>
                       )}
                     </div>
                   </div>

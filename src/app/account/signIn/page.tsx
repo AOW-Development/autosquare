@@ -1,21 +1,19 @@
 "use client";
 import FormField from "@/components/FormField";
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
 
-export default function RegistrationPage() {
+export default function SignInPage() {
   const [fields, setFields] = useState({
     email: "",
     password: "",
-    confirm: "",
   });
   const [errors, setErrors] = useState<{
     email?: string;
     password?: string;
-    confirm?: string;
     general?: string;
   }>({});
   const [loading, setLoading] = useState(false);
@@ -25,12 +23,7 @@ export default function RegistrationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let newErrors: {
-      email?: string;
-      password?: string;
-      confirm?: string;
-      general?: string;
-    } = {};
+    let newErrors: { email?: string; password?: string; general?: string } = {};
 
     if (!fields.email) {
       newErrors.email = "Email is required.";
@@ -44,12 +37,6 @@ export default function RegistrationPage() {
       newErrors.password = "Password must be at least 6 characters.";
     }
 
-    if (!fields.confirm) {
-      newErrors.confirm = "Please confirm your password.";
-    } else if (fields.confirm !== fields.password) {
-      newErrors.confirm = "Passwords do not match.";
-    }
-
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
       return;
@@ -57,25 +44,24 @@ export default function RegistrationPage() {
 
     setLoading(true);
     try {
-      // Simulate API call to register user
-      // const response = await fetch("https://dummy-backend.com/api/register", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     email: fields.email,
-      //     password: fields.password,
-      //   }),
-      // });
+      // Simulate API call to sign in
+    //   const response = await fetch("https://dummy-backend.com/api/login", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({
+    //       email: fields.email,
+    //       password: fields.password,
+    //     }),
+    //   });
 
-      // if (!response.ok) {
-      //   throw new Error("Registration failed");
-      // }
+    //   if (!response.ok) {
+    //     throw new Error("Login failed");
+    //   }
 
-      // const data = await response.json();
-      // Create dummy data for registration
-      const data = {
+    //   const data = await response.json();
+    const data = {
         user: {
           id: "dummy-id-123",
           email: fields.email,
@@ -97,7 +83,43 @@ export default function RegistrationPage() {
       router.push("/account/profile");
     } catch (error) {
       setErrors({
-        general: "Registration failed. Please try again.",
+        general: "Invalid email or password. Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async () => {
+    setLoading(true);
+    try {
+      // Simulate calling a dummy backend endpoint for Google OAuth
+      const response = await fetch(
+        "https://dummy-backend.com/api/auth/google",
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to authenticate with Google");
+
+      const data = await response.json();
+
+      // Store user data and token in Zustand store
+      login(
+        {
+          id: data.user.id,
+          email: data.user.email,
+          name: data.user.name,
+        },
+        data.token
+      );
+
+      router.push("/account/profile");
+    } catch (err) {
+      setErrors({
+        general: "Google login failed. Please try again.",
       });
     } finally {
       setLoading(false);
@@ -105,8 +127,8 @@ export default function RegistrationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#091B33] text-white  pt-8 pb-22">
-      <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
+    <div className="min-h-screen bg-[#091B33] text-white pt-8 pb-22">
+      <div className="mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6 text-left">
           <Link
@@ -123,7 +145,7 @@ export default function RegistrationPage() {
           <Image src="/Images/arrows.png" alt="Arrow" width={16} height={16} />
           <span className="font-exo2">Account</span>
         </div>
-        <main className="bg-[#091B33]  p-4 md:p-6 lg:p-8 w-full flex flex-col gap-6">
+        <main className="bg-[#091B33] p-4 md:p-6 lg:p-8 w-full flex flex-col gap-6">
           <h1
             className="text-2xl md:text-3xl font-bold text-center mb-4"
             style={{
@@ -131,7 +153,7 @@ export default function RegistrationPage() {
               letterSpacing: "0.1em",
             }}
           >
-            REGISTRATION
+            SIGN IN
           </h1>
           <form
             onSubmit={handleSubmit}
@@ -163,20 +185,14 @@ export default function RegistrationPage() {
                 {errors.password}
               </span>
             )}
-            <FormField
-              label="Confirm password*"
-              type="password"
-              placeholder="••••"
-              value={fields.confirm}
-              onChange={(v) => setFields((f) => ({ ...f, confirm: v }))}
-              disabled={loading}
-            />
-            {errors.confirm && (
-              <span className="text-red-400 text-xs mt-[-8px] mb-1">
-                {errors.confirm}
-              </span>
-            )}
-            {/* General error if needed */}
+            <div className="flex justify-end mt-2 mb-4">
+              <Link
+                href="/account/forgotPassword"
+                className="text-blue-400 hover:text-blue-600 text-sm font-medium transition-colors"
+              >
+                Forgot password?
+              </Link>
+            </div>
             {errors.general && (
               <span className="text-red-400 text-xs mb-2">
                 {errors.general}
@@ -184,21 +200,37 @@ export default function RegistrationPage() {
             )}
             <button
               type="submit"
-              className="w-full rounded-lg py-2 cursor-pointer bg-blue-500 hover:bg-blue-600 text-white text-base transition-colors mt-6"
+              className="w-full rounded-lg py-2 bg-blue-500 hover:bg-blue-600 text-white text-base transition-colors mt-2 cursor-pointer"
               disabled={loading}
             >
-              {loading ? "Registering..." : "Register now"}
+              {loading ? "Signing in..." : "Login"}
+            </button>
+          </form>
+          <div className="flex flex-col w-full gap-2 md:w-[75%] items-center md:mx-40">
+            <span className="text-gray-400 text-sm">or sign in with</span>
+            <button
+              onClick={handleGoogleLogin}
+              className="flex cursor-pointer items-center gap-2 w-full justify-center rounded-lg py-2 bg-white hover:bg-gray-100 text-gray-800 text-base font-semibold transition-colors border border-gray-200 mt-2"
+              disabled={loading}
+            >
+              <Image
+                src="/account/google.png"
+                alt="Google"
+                width={24}
+                height={24}
+              />
+              <span>{loading ? "Signing in..." : "Sign in with Google"}</span>
             </button>
             <div className="mt-4 text-center text-sm text-gray-400">
-              Already have an account?{" "}
+              Don't have an account?{" "}
               <Link
-                href="/account/signIn"
-                className="text-blue-400 hover:text-blue-600 font-medium "
+                href="/account/signUp"
+                className="text-blue-400 hover:text-blue-600 font-medium"
               >
-                Sign in
+                Register now
               </Link>
             </div>
-          </form>
+          </div>
         </main>
       </div>
     </div>

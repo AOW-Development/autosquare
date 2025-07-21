@@ -7,7 +7,7 @@ export default function AddedCartPopup() {
   const [open, setOpen] = useState(true);
   if (!open) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-xs md:items-start md:justify-end md:p-6">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30  md:items-start md:justify-end md:p-6">
       <div className="w-[370px] bg-[#091b33] rounded-md shadow-lg text-white font-exo2 animate-fade-in">
         <div className="border-b border-white flex items-center justify-between px-5 pt-4 pb-2">
           <span className="text-lg font-bold tracking-wide">SHOPPING CART</span>

@@ -43,8 +43,8 @@ const navLinks = [
   { label: "Shop by Categories", type: "categories" },
   {
     label: "Auto Parts",
-    type: "link",href: "/autoParts"
-   
+    type: "link",
+    href: "/autoParts",
   },
   { label: "Engine", type: "link", href: "/engine" },
   { label: "Transmission", type: "link", href: "/transmission" },
@@ -169,7 +169,7 @@ export default function Header() {
                 )}
               </span>
             </Link>
-            <Link href="/account/garage">
+            <Link href="/account/garage" className="hover:text-blue-400">
               <Image
                 src="/header/Garage.png"
                 alt="Garage"
@@ -177,7 +177,7 @@ export default function Header() {
                 height={22}
               />
             </Link>
-            <Link href="/account/signUp">
+            <Link href="/account/profile" className="hover:text-blue-400">
               <Image
                 src="/header/User.png"
                 alt="Profile"
@@ -220,8 +220,12 @@ export default function Header() {
             alt="Search"
             width={24}
             height={24}
+            className="hover:text-blue-400 cursor-pointer"
           />
-          <Link href="/account/cart" className="relative">
+          <Link
+            href="/account/cart"
+            className="relative hover:text-blue-400 cursor-pointer"
+          >
             <Image
               src="/header/ShoppingCartSimple.png"
               alt="Cart"
@@ -234,7 +238,7 @@ export default function Header() {
               )}
             </span>
           </Link>
-          <Link href="/account/garage">
+          <Link href="/account/garage" className="hover:text-blue-400">
             <Image
               src="/header/Garage.png"
               alt="Garage"
@@ -242,7 +246,7 @@ export default function Header() {
               height={24}
             />
           </Link>
-          <Link href="/account/signUp">
+          <Link href="/account/profile" className="hover:text-blue-400">
             <Image
               src="/header/User.png"
               alt="Profile"

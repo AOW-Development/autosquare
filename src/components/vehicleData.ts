@@ -1,5 +1,5 @@
 export const MAKES = [
-  "Acura", "Audi", "BMW", "Buick", "Cadillac", "Ford"
+  "Ford"
 ];
 
 export const MODELS: Record<string, string[]> = {
@@ -40,11 +40,11 @@ export const MODELS: Record<string, string[]> = {
     "Thunderbird",
     "Windstar"
   ],
-  Acura: ["ILX", "MDX", "RDX", "TLX"],
-  Audi: ["A3", "A4", "Q5", "Q7"],
-  BMW: ["3 Series", "5 Series", "X3", "X5"],
-  Buick: ["Enclave", "Encore", "LaCrosse", "Regal"],
-  Cadillac: ["ATS", "CT5", "Escalade", "XT5"],
+  // Acura: ["ILX", "MDX", "RDX", "TLX"],
+  // Audi: ["A3", "A4", "Q5", "Q7"],
+  // BMW: ["3 Series", "5 Series", "X3", "X5"],
+  // Buick: ["Enclave", "Encore", "LaCrosse", "Regal"],
+  // Cadillac: ["ATS", "CT5", "Escalade", "XT5"],
 };
 
 export const YEARS = [

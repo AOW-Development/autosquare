@@ -1,31 +1,31 @@
 import Image from "next/image";
 
-const productDetails = [
-  { label: "Make", value: "Volvo" },
-  { label: "Model", value: "XC60" },
-  { label: "Year", value: "2018" },
-  { label: "Part", value: "Engine Assembly" },
-  { label: "Miles", value: "60K" },
-  { label: "Genuine", value: "Genuine Dodge Part" },
-  { label: "Condition", value: "Excellent Condition" },
-  { label: "Warranty", value: "60 Days Warranty" },
-];
+export default function ProductSection({ product }) {
+  const productDetails = [
+    { label: "Make", value: product?.modelYear?.model?.make?.name || "-" },
+    { label: "Model", value: product?.modelYear?.model?.name || "-" },
+    { label: "Year", value: product?.modelYear?.year?.value || "-" },
+    { label: "Part", value: product?.partType?.name || "-" },
+    { label: "Miles", value: product?.miles || "-" },
+    { label: "Genuine", value: "Genuine Used Part" },
+    { label: "Condition", value: product?.status ? product.status : "N/A" },
+    { label: "Warranty", value: product?.warranty ? product.warranty : "N/A" },
+  ];
 
-const featuredProducts = Array(4).fill({
-  title: "Engine assembly",
-  desc: "Ford bronco 1991\n4.9L\nGenuine Used Part\nA Grade Condition\n110k miles\n90 Days Warranty",
-  price: "100$",
-  img: "/pro/cards.png",
-});
+  const featuredProducts = Array(4).fill({
+    title: "Engine assembly",
+    desc: "Ford bronco 1991\n4.9L\nGenuine Used Part\nA Grade Condition\n110k miles\n90 Days Warranty",
+    price: "100$",
+    img: "/pro/cards.png",
+  });
 
-const viewedProduct = {
-  title: "Engine assembly",
-  desc: "Ford bronco 1991\n4.9L\nGenuine Used Part\nA Grade Condition\n110k miles\n90 Days Warranty",
-  price: "100$",
-  img: "/pro/cards.png",
-};
+  const viewedProduct = {
+    title: "Engine assembly",
+    desc: "Ford bronco 1991\n4.9L\nGenuine Used Part\nA Grade Condition\n110k miles\n90 Days Warranty",
+    price: "100$",
+    img: "/pro/cards.png",
+  };
 
-export default function ProductSection() {
   return (
     <section className="bg-[#091b33] text-white w-full py-8 md:py-2 px-2 flex flex-col gap-12">
       {/* Top Table */}

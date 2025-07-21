@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Listbox } from '@headlessui/react' 
 import { MAKES, MODELS, YEARS } from './vehicleData';
+import { useEffect } from "react";
 
 const PARTS = [
   "Engine",
@@ -37,6 +38,7 @@ const ShopByVehicle: React.FC = () => {
   const [year, setYear] = useState("");
   const [part, setPart] = useState("");
   const [focused, setFocused] = useState<string | null>(null);
+  const [availableYears, setAvailableYears] = useState([]);
 
   const makeActive = true;
   const modelActive = make !== "";
@@ -55,6 +57,17 @@ const ShopByVehicle: React.FC = () => {
   };
 
   const router = useRouter();
+
+  useEffect(() => {
+    if (make && model) {
+      fetch(`/api/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
+        .then(res => res.json())
+        .then(data => setAvailableYears(data))
+        .catch(() => setAvailableYears([]));
+    } else {
+      setAvailableYears([]);
+    }
+  }, [make, model]);
 
   React.useEffect(() => {
     if (make && model && year && part) {
@@ -164,7 +177,7 @@ const ShopByVehicle: React.FC = () => {
             <option value="" disabled>
               Select year...
             </option>
-            {YEARS.map((y) => (
+            {availableYears.map((y) => (
               <option key={y} value={y}>
                 {y}
               </option>
@@ -370,7 +383,7 @@ const ShopByVehicle: React.FC = () => {
                     </svg>
                   </Listbox.Button>
                   <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                    {YEARS.map((y) => (
+                    {availableYears.map((y) => (
                       <Listbox.Option
                         key={y}
                         value={y}

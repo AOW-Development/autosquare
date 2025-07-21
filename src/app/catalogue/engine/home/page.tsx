@@ -37,6 +37,24 @@ interface Product {
   subParts: SubPart[];
 }
 
+const accordionData = [
+  {
+    title: "Payment",
+    content:
+      "We accept all major credit cards, PayPal, and bank transfers. Secure checkout is guaranteed.",
+  },
+  {
+    title: "Delivery",
+    content:
+      "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
+  },
+  {
+    title: "Warranty",
+    content:
+      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
+  },
+];
+
 export default function CatalogPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -345,7 +363,7 @@ export default function CatalogPage() {
                     className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
                   >
                     <Link
-                      href="/product/engines"
+                      href={`/product/engines?sku=${encodeURIComponent(item.sku)}`}
                       className="block cursor-pointer"
                       tabIndex={-1}
                     >

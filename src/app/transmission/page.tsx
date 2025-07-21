@@ -119,7 +119,9 @@ export default function TransmissionPage() {
       <div className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto"> {/* Adjusted horizontal padding */}
 
         {/* Transmission Types */}
-        <section className="py-6 sm:py-8 mt-2"> {/* Adjusted vertical padding */}
+        <section className="pt-1 pb-3 sm:pt-14 sm:pb-4 mt-2 px-12">
+
+          {/* Adjusted vertical padding */}
           {/* Breadcrumb */}
           <div className="pt-4 sm:pt-6"> {/* Adjusted top padding */}
             <div className="flex items-center gap-1 sm:gap-2 py-2 sm:py-4 mt-4 sm:mt-8 mb-2 sm:mb-4"> {/* Adjusted gap, vertical padding, and margins */}
@@ -140,15 +142,16 @@ export default function TransmissionPage() {
             </div>
           </div>
           <h2
-            className="text-xl sm:text-2xl md:text-2xl mb-4 sm:mb-6 text-white" // Adjusted font size
+            className="text-xl sm:text-2xl md:text-[32px] mb-4 sm:mb-6 text-white"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
             }}
           >
+
             TRANSMISSION TYPES
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 p-2 sm:p-4"> {/* Adjusted grid columns and gap */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 p-2 sm:p-4 pb-0"> {/* Adjusted grid columns and gap */}
             {[
               {
                 title: "MANUAL TRANSMISSION",
@@ -208,7 +211,7 @@ export default function TransmissionPage() {
           </div>
         </section>
         {/* Featured Categories (tweaked) */}
-        <div className="max-w-6xl mx-auto w-full px-0 sm:px-0 lg:px-0 pt-4 pb-6 mt-2"> {/* Removed px to avoid double padding */}
+        <div className="max-w-6xl mx-auto w-full px-10 pt-0 pb-4 mt-0"> {/* Removed px to avoid double padding */}
           <TransmissionFeaturedCategories />
         </div>
       </div>

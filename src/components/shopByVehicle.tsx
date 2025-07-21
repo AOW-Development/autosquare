@@ -1,17 +1,8 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Listbox } from '@headlessui/react' 
+import { MAKES, MODELS, YEARS } from './vehicleData';
 
-const MAKES = ["Acura", "Audi", "BMW", "Buick", "Cadillac", "Ford"];
-const MODELS: Record<string, string[]> = {
-  Ford: ["Aerostar", "Bronco", "Country Squire", "E-150 Econoline"],
-  Acura: ["ILX", "MDX", "RDX", "TLX"],
-  Audi: ["A3", "A4", "Q5", "Q7"],
-  BMW: ["3 Series", "5 Series", "X3", "X5"],
-  Buick: ["Enclave", "Encore", "LaCrosse", "Regal"],
-  Cadillac: ["ATS", "CT5", "Escalade", "XT5"],
-};
-const YEARS = ["1991", "2020", "2021", "2022", "2023", "2024"];
 const PARTS = [
   "Engine",
   "Transmission",
@@ -66,8 +57,9 @@ const ShopByVehicle: React.FC = () => {
   const router = useRouter();
 
   React.useEffect(() => {
-    if (make && model && year && part ) {
-      router.push("/catalogue/engine/home");
+    if (make && model && year && part) {
+      const query = new URLSearchParams({ make, model, year, part }).toString();
+      router.push(`/catalogue/engine/home?${query}`);
     }
   }, [make, model, year, part, router]);
 

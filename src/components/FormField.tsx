@@ -8,6 +8,7 @@ interface FormFieldProps {
   options?: string[];
   value?: string;
   onChange?: (v: string) => void;
+  disabled?: boolean;
 }
 
 export default function FormField({
@@ -17,6 +18,7 @@ export default function FormField({
   options,
   value,
   onChange,
+  disabled,
 }: FormFieldProps) {
   const [show, setShow] = useState(false);
   if (type === "select" && options) {
@@ -27,6 +29,7 @@ export default function FormField({
           className="bg-[#091627] text-white border border-white rounded-md shadow px-4 py-2 focus:outline-none"
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
+          disabled={disabled}
         >
           {options.map((opt) => (
             <option key={opt} value={opt}>
@@ -46,7 +49,8 @@ export default function FormField({
           placeholder={placeholder}
           value={value}
           onChange={(e) => onChange?.(e.target.value)}
-          className="w-full border border-white bg-[#091627] text-white rounded-lg shadow px-4 py-2 focus:outline-none pr-10"
+          disabled={disabled}
+          className="w-full border border-white bg-[#091627] text-white rounded-lg shadow px-4 py-2 focus:outline-none pr-10 disabled:opacity-50 disabled:cursor-not-allowed"
         />
         {type === "password" && (
           <button
@@ -54,6 +58,7 @@ export default function FormField({
             className="absolute right-2 top-1/2 -translate-y-1/2 text-blue-300 hover:text-blue-500 w-6 h-6"
             tabIndex={-1}
             onClick={() => setShow((s) => !s)}
+            disabled={disabled}
           >
             {!show ? <EyeOff /> : <Eye />}
           </button>

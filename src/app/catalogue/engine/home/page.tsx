@@ -392,10 +392,12 @@ export default function CatalogPage() {
                             setInCartIdx(indexOfFirstItem + index); // Correct index for popup
                             addItem({
                               id: `engine-${indexOfFirstItem + index}`, // Use unique ID
-                              name: item.title || `Engine ${indexOfFirstItem + index + 1}`,
+                              name:
+                                item.title ||
+                                `Engine ${indexOfFirstItem + index + 1}`,
                               quantity: 1,
                             });
-                            setTimeout(() => setShowCartPopup(false), 2000);
+                            setTimeout(() => setShowCartPopup(false), 4000);
                           }}
                         >
                           Add to Cart

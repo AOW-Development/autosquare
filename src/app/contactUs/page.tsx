@@ -1,10 +1,11 @@
 "use client";
-import Banner from "@/components/Banner";
-import Sidebar from "@/components/Sidebar";
-import Link from "next/link";
+// import Banner from "@/components/Banner";
+// import Sidebar from "@/components/Sidebar";
+// import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import EmailSubmittedModal from "@/components/EmailSubmittedModal";
+import Link from "next/link";
 
 export default function ContactUsPage() {
   const [formData, setFormData] = useState({
@@ -16,6 +17,11 @@ export default function ContactUsPage() {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setModalOpen(true);
+    setFormData({
+      name: "",
+      email: "",
+      message: "",
+    });
   };
   return (
     <div>
@@ -35,14 +41,14 @@ export default function ContactUsPage() {
           <div className="max-w-6xl mx-auto w-full">
             {/* Breadcrumb */}
             <div className="w-full max-w-6xl flex items-center gap-2 mb-6">
-              <a href="/">
+              <Link href="/">
                 <Image
                   src="/Images/HouseLine.png"
                   alt="Home"
                   width={20}
                   height={20}
                 />
-              </a>
+              </Link>
               <Image
                 src="/Images/arrows (1).svg"
                 alt=">"
@@ -66,7 +72,7 @@ export default function ContactUsPage() {
                   </h2>
                   <p className="text-base text-gray-200 leading-relaxed">
                     We value your questions, suggestions, and feedback. Please
-                    use the form to get in touch with us. We'll strive to
+                    use the form to get in touch with us. We&apos;ll strive to
                     respond to you as promptly as possible.
                   </p>
                 </div>
@@ -120,10 +126,8 @@ export default function ContactUsPage() {
                         href="mailto:partscentralus@gmail.com"
                         className="underline"
                       >
-                    partscentralus@gmail.com
+                        partscentralus@gmail.com
                       </a>
-              
-              
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
@@ -198,7 +202,7 @@ export default function ContactUsPage() {
                   </div>
                   <button
                     type="submit"
-                    className="w-full bg-[#00a3ff] hover:bg-blue-600 text-white rounded-lg py-2 mt-4 font-semibold transition-colors"
+                    className="w-full cursor-pointer bg-[#00a3ff] hover:bg-blue-600 text-white rounded-lg py-2 mt-4 font-semibold transition-colors"
                   >
                     Submit Now
                   </button>

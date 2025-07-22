@@ -60,7 +60,7 @@ const ShopByVehicle: React.FC = () => {
 
   useEffect(() => {
     if (make && model) {
-      fetch(`/api/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
+      fetch(`http://localhost:3001/api/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
         .then(res => res.json())
         .then(data => setAvailableYears(data))
         .catch(() => setAvailableYears([]));

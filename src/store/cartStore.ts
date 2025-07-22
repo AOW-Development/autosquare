@@ -6,6 +6,7 @@ export type CartItem = {
   name: string;
   quantity: number;
   expiresAt?: number; // timestamp in ms, optional
+  price:number;
 };
 
 type CartState = {

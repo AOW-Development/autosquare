@@ -26,6 +26,9 @@ const audiowide = Audiowide({
 export const metadata: Metadata = {
   title: "Parts Central",
   description: "Parts Central",
+   other: {
+    "google-site-verification": "mOkOiIA-Z0XcSgcmnQZ4nfwfqDWnm8W4UinaW5fpf8I",
+  },
 };
 
 export default function RootLayout({
@@ -38,9 +41,9 @@ export default function RootLayout({
       lang="en"
       className={`${exo2.className} ${inter.variable} ${audiowide.variable}`}
     >
-      <head>
+      <head> 
           {/* Google Tag Manager */}
-       <script
+         <script
           dangerouslySetInnerHTML={{
             __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
             new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],

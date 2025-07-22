@@ -45,9 +45,9 @@ function TransmissionFeaturedCategories() {
   ];
   const arrowIcon = "/Images/home/Makers-logos/arrows.png";
   return (
-    <section className="w-full bg-[#091b33] py-8 sm:py-12 md:py-16 px-4"> {/* Adjusted vertical padding */}
+    <section className="w-full bg-[#091b33] py-8 md:py-16 md:px-2"> {/* Adjusted vertical padding */}
       <h2
-        className="text-xl sm:text-2xl md:text-[32px] font-normal mb-8 md:mb-12 -ml-0 sm:-ml-4 md:-ml-6 text-white" // Adjusted font size and margin
+        className="text-xl sm:text-2xl md:text-[32px] font-normal mb-8 md:mb-12 md:-ml-6 text-white" // Adjusted font size and margin
         style={{
           fontFamily: "Audiowide, sans-serif",
           letterSpacing: "0.04em",
@@ -56,30 +56,23 @@ function TransmissionFeaturedCategories() {
         TRANSMISSION FOR YOUR MAKE
       </h2>
 
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-2 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-6xl mx-auto"> {/* Adjusted gap-x and gap-y */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-6xl mx-auto"> {/* Adjusted gap-x and gap-y */}
         {makers.slice(0, 32).map((maker) => (
-          <div
-            key={maker.name}
-            className="flex items-center justify-between px-2 py-2 sm:px-3 sm:py-3 text-white cursor-pointer border-b border-[#00A3FF]
-            hover:bg-[rgba(59,131,246,0.32)] hover:border-0 hover:rounded-md
-            hover:shadow-[0_0_24px_4px_rgba(59,130,246,0.4)]
-            hover:outline-2 hover:outline-blue-500
-            hover:text-blue-400 transition-all"
-            style={{
-              paddingBottom: 8,
-              marginBottom: 8,
-            }}
-          >
+           <div
+              key={maker.name}
+              className="flex items-center md:p-4 cursor-pointer justify-between text-white border-[#00A3FF] border-b hover:bg-[rgba(59,131,246,0.32)] hover:border-0 hover:rounded-md hover:shadow-[0_0_24px_4px_rgba(59,130,246,0.4)]  hover:outline-2 hover:outline-blue-500  hover:text-blue-400 transition-all"
+              style={{ paddingBottom: 8, marginBottom: 8 }}
+            >
             <div className="flex items-center gap-2"> {/* Simplified gap */}
               <Image
                 src={maker.logo}
                 alt={maker.name}
                 width={18} // Adjusted image size for small screens
                 height={18} // Adjusted image size for small screens
-                className="object-contain"
+                className="object-contain "
               />
               <span
-                className="text-xs sm:text-[16px] font-normal" // Adjusted font size
+                className="text-xs sm:text-[18px]" // Adjusted font size
                 style={{ fontFamily: "exo-2, sans-serif" }}
               >
                 {maker.name + " Transmission"}
@@ -117,21 +110,21 @@ export default function TransmissionPage() {
       </div>
 
       {/* Main content container for px-6 alignment */}
-      <div className="px-4 sm:px-6 md:px-8 lg:px-12 max-w-7xl mx-auto"> {/* Adjusted horizontal padding */}
+      <div className=" md:px-8  max-w-7xl mx-auto"> {/* Adjusted horizontal padding */}
 
         {/* Transmission Types */}
-        <section className="pt-1 pb-3 sm:pt-14 sm:pb-4 mt-2 px-12">
+        <section className=" pb-3 sm:pb-4 px-6 md:px-10">
 
           {/* Adjusted vertical padding */}
           {/* Breadcrumb */}
-          <div className="pt-4 sm:pt-6"> {/* Adjusted top padding */}
-            <div className="flex items-center gap-1 sm:gap-2 py-2 sm:py-4 mt-4 sm:mt-8 mb-2 sm:mb-4"> {/* Adjusted gap, vertical padding, and margins */}
+          <div className="md:mt-30 "> {/* Adjusted top padding */}
+            <div className="flex items-center gap-1 sm:gap-2 py-2 sm:py-4 -mt-2 sm:mt-8 mb-2 sm:mb-4"> {/* Adjusted gap, vertical padding, and margins */}
               <a href="/">
                 <Image
                   src="/engine/HouseLine.png"
                   alt="Home"
-                  width={20} // Adjusted image size for breadcrumbs
-                  height={20} // Adjusted image size for breadcrumbs
+                  width={20} 
+                  height={20} 
                 />
               </a>
               <Image src="/engine/arrows.png" alt=">" width={12} height={12} /> {/* Adjusted arrow size */}
@@ -182,7 +175,7 @@ export default function TransmissionPage() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[240px] sm:h-[220px] md:h-[240px] bg-black/50" // Adjusted card height
+                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[200px] md:h-[240px] bg-black/50" // Adjusted card height
               >
                 <Image
                   src={item.img}
@@ -194,7 +187,7 @@ export default function TransmissionPage() {
                 <div className="absolute inset-0 flex flex-col justify-between p-3 sm:p-4 z-10"> {/* Adjusted padding */}
                   <div>
                     <h3
-                      className="text-white text-base sm:text-[16px] md:text-base font-semibold mb-1 sm:mb-2 leading-tight mt-2 sm:mt-4" // Adjusted font size and margin
+                      className="text-white text-base sm:text-[16px] md:text-base font-semibold  leading-tight mt-4 sm:mt-8" // Adjusted font size and margin
                       style={{ fontFamily: "exo-2, sans-serif", letterSpacing: "0.08em" }}
                     >
                       {item.title}
@@ -203,7 +196,7 @@ export default function TransmissionPage() {
                       {item.desc}
                     </p>
                   </div>
-                  <button className="bg-[#00A3FF] text-white rounded-md w-[140px] h-[34px] sm:w-[160px] sm:h-[36px] mt-3 sm:mt-4 text-sm hover:bg-[#0086cc] transition"> {/* Adjusted button size */}
+                  <button className="bg-[#00A3FF] text-white rounded-md w-[140px] h-[34px] sm:w-[160px] sm:h-[36px] mb-2 md:mb-5 text-sm hover:bg-[#0086cc] transition"> {/* Adjusted button size */}
                     View
                   </button>
                 </div>

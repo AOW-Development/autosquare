@@ -1,4 +1,5 @@
 "use client";
+import { redirect } from "next/navigation";
 import React, { useState } from "react";
 
 export default function TrackOrderPage() {
@@ -13,7 +14,10 @@ export default function TrackOrderPage() {
         {/* Close Button */}
         <button
           className="absolute top-3 md:top-6 right-3 text-gray-400 hover:text-white text-xl"
-          onClick={() => setShow(false)}
+          onClick={() => {
+            redirect("/");
+            // setShow(false);
+          }}
           aria-label="Close"
         >
           &times;

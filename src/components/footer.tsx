@@ -72,6 +72,20 @@ export default function Footer() {
                   />
                   <span className="text-white text-[14px]">Instagram</span>
                 </a>
+                 <a
+                  href="https://www.linkedin.com/company/partscentral/?viewAsMember=true"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2"
+                >
+                  <Image
+                    src="/linkedin.png"
+                    alt="Facebook"
+                    width={24}
+                    height={24}
+                  />
+                  <span className="text-white text-[14px]">Linkedin</span>
+                  </a>
               </div>
             </div>
           </div>
@@ -245,7 +259,7 @@ export default function Footer() {
                 alt="Visa 2"
                 width={48}
                 height={30}
-                className="bg-[#1E2A44] object-contain"
+                className="bg-[#1E2A44]  w-12 h-8 md:w-12 md:h-8  object-contain"
               />
             </a>
             <a href="https://venmo.com" target="_blank" rel="noopener noreferrer">
@@ -254,7 +268,7 @@ export default function Footer() {
                 alt="Venmo"
                 width={48}
                 height={35}
-                className="bg-[#1E2A44] object-contain"
+                className=" bg-[#1E2A44] w-12 h-8 md:w-12 md:h-8 object-contain"
               />
             </a>
           </div>
@@ -270,7 +284,7 @@ export default function Footer() {
                 alt="Member Icon"
                 width={120}
                 height={100}
-                className=" object-contain w-10 h-10 md:w-12 md:h-12"
+                className=" object-contain w-12 h-8 md:w-14 md:h-12"
               />
             </div>
             {/* Affiliates */}

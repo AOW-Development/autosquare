@@ -46,7 +46,7 @@ export default function FeaturedCategories() {
       <div className="w-full max-w-6xl mx-auto px-2 md:px-14">
 
         <h2
-          className="text-xl sm:text-2xl md:text-[32px] font-normal mb-4 md:mb-6  text-left"
+          className="text-xl sm:text-3xl md:text-[32px] font-normal mb-4 md:mb-6  text-left"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.04em",

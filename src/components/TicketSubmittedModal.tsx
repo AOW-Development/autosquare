@@ -1,10 +1,10 @@
 import React from "react";
 
 const TicketSubmittedModal = ({ onClose }: { onClose: () => void }) => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 backdrop-blur-lg">
+  <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-lg">
     <div className="relative bg-gray-900 rounded-md shadow-lg p-6 md:p-8 w-[95%] md:w-[70%] max-w-md flex flex-col gap-4">
       <button
-        className="absolute top-0 right-1 text-white text-4xl leading-none focus:outline-none"
+        className="absolute top-3 right-3 text-white text-4xl leading-none focus:outline-none"
         onClick={onClose}
         aria-label="Close"
         type="button"
@@ -19,7 +19,7 @@ const TicketSubmittedModal = ({ onClose }: { onClose: () => void }) => (
       </div>
       <div className="flex justify-center w-full">
         <button
-          className="w-2/4 bg-[#00a3ff] hover:bg-blue-600 text-white rounded-lg py-2 font-medium mt-2"
+          className="w-2/4 cursor-pointer bg-[#00a3ff] hover:bg-blue-600 text-white rounded-lg py-2 font-medium mt-2"
           onClick={onClose}
           type="button"
         >
@@ -30,4 +30,4 @@ const TicketSubmittedModal = ({ onClose }: { onClose: () => void }) => (
   </div>
 );
 
-export default TicketSubmittedModal; 
+export default TicketSubmittedModal;

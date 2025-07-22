@@ -10,6 +10,7 @@ export default function SubmitTicketPage() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setModalOpen(true);
+    // Reset form fields if needed
   };
   return (
     <ProtectedRoute>
@@ -54,8 +55,8 @@ export default function SubmitTicketPage() {
               </h1>
               <div className="text-base text-gray-200">
                 We value your questions, suggestions, and feedback. Please use
-                the form to get in touch with us. We'll strive to respond to you
-                as promptly as possible.
+                the form to get in touch with us. We&apos;ll strive to respond
+                to you as promptly as possible.
               </div>
               <div className="flex flex-col gap-5 mt-2">
                 <div className="flex items-center gap-4">

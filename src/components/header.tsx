@@ -2,8 +2,8 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Hamburger from "@/public/header/hamburgur-button.png";
-import Arrow from "@/public/header/arrows (4).png";
+// import Hamburger from "@/public/header/hamburgur-button.png";
+// import Arrow from "@/public/header/arrows (4).png";
 import { useCartStore } from "@/store/cartStore";
 
 const categories = [
@@ -62,7 +62,7 @@ const navLinks = [
       { label: "Testimonials", href: "/Testimonials" },
       { label: "Track my order", href: "/account/trackOrder" },
       { label: "Submit a ticket", href: "/account/submitTicket" },
-      { label: "Make a Payment", href: "/account/paymentInfo" },
+      { label: "Make a Payment", href: "/account/paymentDetails" },
     ],
   },
 ];
@@ -77,6 +77,7 @@ export default function Header() {
   const [mobileSelectedCategory, setMobileSelectedCategory] = useState<
     string | null
   >(null); // for mobile selected category
+  const [showSearch, setShowSearch] = useState(false);
 
   // --- Hover logic for menus ---
   // Categories
@@ -150,12 +151,33 @@ export default function Header() {
             <span className="ml-1 font-medium">Menu</span>
           </button>
           <div className="flex items-center gap-4">
-            <Image
-              src="/header/MagnifyingGlass.png"
-              alt="Search"
-              width={22}
-              height={22}
-            />
+            {showSearch ? (
+              <input
+                type="text"
+                autoFocus
+                className="px-1 md:px-2 py-1 md:py-2 rounded-lg bg-gray-800 text-white outline-none  w-40 transition"
+                placeholder="Search..."
+                onBlur={() => setShowSearch(false)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowSearch(false);
+                }}
+              />
+            ) : (
+              <Image
+                src="/header/MagnifyingGlass.png"
+                alt="Search"
+                width={24}
+                height={24}
+                className="hover:text-blue-400 cursor-pointer"
+                onClick={() => setShowSearch(true)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setShowSearch(true);
+                }}
+                role="button"
+                aria-label="Open search"
+              />
+            )}
             <Link href="/account/cart" className="relative">
               <Image
                 src="/header/ShoppingCartSimple.png"
@@ -215,13 +237,33 @@ export default function Header() {
         </div>
         {/* Right: Icons */}
         <div className="flex items-center gap-6 justify-end">
-          <Image
-            src="/header/MagnifyingGlass.png"
-            alt="Search"
-            width={24}
-            height={24}
-            className="hover:text-blue-400 cursor-pointer"
-          />
+          {showSearch ? (
+            <input
+              type="text"
+              autoFocus
+              className="px-1 md:px-2 py-1 md:py-2 bg-gray-800 rounded-lg text-white outline-none border-0 border-blue-400 w-40 md:w-60 transition"
+              placeholder="Search..."
+              onBlur={() => setShowSearch(false)}
+              onKeyDown={(e) => {
+                if (e.key === "Escape") setShowSearch(false);
+              }}
+            />
+          ) : (
+            <Image
+              src="/header/MagnifyingGlass.png"
+              alt="Search"
+              width={24}
+              height={24}
+              className="hover:text-blue-400 cursor-pointer"
+              onClick={() => setShowSearch(true)}
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") setShowSearch(true);
+              }}
+              role="button"
+              aria-label="Open search"
+            />
+          )}
           <Link
             href="/account/cart"
             className="relative hover:text-blue-400 cursor-pointer"
@@ -260,7 +302,7 @@ export default function Header() {
       <nav className="bg-[#090d15]">
         {/* Desktop xl/lg       DESKTOP -------------- */}
         <div className="hidden lg:flex items-center px-4 h-12 w-full font-exo-2">
-          {navLinks.map((link, i) => (
+          {navLinks.map((link) => (
             <React.Fragment key={link.label}>
               {/* {link.label === "Shop by Categories" && (
                 <button

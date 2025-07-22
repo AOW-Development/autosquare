@@ -3,7 +3,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  [key: string]: any;
+  [key: string]:string | number | boolean; // Allow additional properties
 }
 interface AuthState {
   user: User | null;

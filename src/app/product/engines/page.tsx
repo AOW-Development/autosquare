@@ -2,23 +2,15 @@
 import ProductSection from "@/components/productSection";
 import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import AddedCartPopup from "../../account/modal/AddedCartPopup/page";
+import { useSearchParams } from "next/navigation";
 
 const galleryImages = [
   "/Images/var.png",
   "/Images/main.png",
   "/Images/var.png",
-];
-
-const options = [
-  "Select option...",
-  "4.9L (VIN Y, 8th digit) from 2/3/91 (AIR inner manifold) E4OD transmission",
-  "4.9L (VIN Y, 8th digit) from 2/3/91 (AIR inner manifold) w/o E4OD transmission",
-  "4.9L (VIN Y, 8th digit) thru 2/2/91 (AIR inner head) E4OD transmission",
-  "4.9L (VIN Y, 8th digit) thru 2/2/91 (AIR inner head) w/o E4OD transmission",
-  "5.0L (VIN N, 8th digit)",
 ];
 
 const accordionData = [
@@ -41,11 +33,43 @@ const accordionData = [
 
 export default function EngineProductPage() {
   const [selectedImg, setSelectedImg] = useState(1);
-  const [selectedOption, setSelectedOption] = useState(0);
+  const [products, setProducts] = useState([]);
+  const [allSubParts, setAllSubParts] = useState([]);
+  const [selectedSubPartId, setSelectedSubPartId] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const searchParams = useSearchParams();
+  const sku = searchParams.get("sku");
+
+  useEffect(() => {
+    // TODO: Replace with dynamic make/model/year/part if available
+    fetch("http://localhost:3001/api/products/with-subparts?make=Ford&model=Explorer&year=2004&part=Engine")
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data);
+        // Dedupe all subParts
+        const subParts = Array.from(
+          new Map(
+            data.flatMap(p => p.subParts).map(sp => [sp.id, sp])
+          ).values()
+        );
+        setAllSubParts(subParts);
+        // Find product by sku
+        let initialProduct = data.find(p => p.sku === sku) || data[0];
+        let initialSubPartId = initialProduct?.subParts[0]?.id || subParts[0]?.id;
+        setSelectedSubPartId(initialSubPartId);
+        setSelectedProduct(initialProduct);
+      });
+  }, [sku]);
+
+  useEffect(() => {
+    if (!selectedSubPartId || products.length === 0) return;
+    const prod = products.find(p => p.subParts.some(sp => sp.id === selectedSubPartId));
+    setSelectedProduct(prod);
+  }, [selectedSubPartId, products]);
 
   const handleAddToCart = () => {
     setShowCartPopup(true);
@@ -132,34 +156,36 @@ export default function EngineProductPage() {
               letterSpacing: "0.1em",
             }}
           >
-            NAME ENGINE ASSEMBLY
+            {selectedProduct
+              ? `${selectedProduct.modelYear?.model?.make?.name || ''} ${selectedProduct.modelYear?.model?.name || ''} ${selectedProduct.modelYear?.year?.value || ''} ${selectedProduct.partType?.name || ''}`.trim()
+              : "ENGINE ASSEMBLY"}
           </h1>
           <div className="text-base text-gray-400 mb-2">
             Option:{" "}
             <span className="text-gray-400">
-              4.9L | from 2/3/91 (AIR inner manifold) | E4OD transmission
+              {allSubParts.find(sp => sp.id === selectedSubPartId)?.name || ""}
             </span>
           </div>
           <div className="mb-2">
             <select
               className="w-full bg-[#12263A] border  border-[#1a2a44] rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={selectedOption}
-              onChange={(e) => setSelectedOption(Number(e.target.value))}
+              value={selectedSubPartId || ""}
+              onChange={e => setSelectedSubPartId(Number(e.target.value))}
             >
-              {options.map((opt, i) => (
-                <option key={i} value={i}>
-                  {opt}
-                </option>
+              {allSubParts.map(sp => (
+                <option key={sp.id} value={sp.id}>{sp.name}</option>
               ))}
             </select>
           </div>
           <div className="text-sm text-white mb-2">
-            Availability:{" "}
-            <span className="text-gray-400">2 parts in stock</span>
+            Availability: {" "}
+            <span className="text-gray-400">{selectedProduct?.inStock ? "In stock" : "Out of stock"}</span>
           </div>
           <div className="flex items-end gap-4 mb-2">
-            <span className="text-4xl font-bold">100$</span>
-            <span className="text-2xl text-gray-400 line-through">100$</span>
+            <span className="text-4xl font-bold">{selectedProduct?.discountedPrice ? `$${selectedProduct.discountedPrice}` : "N/A"}</span>
+            {selectedProduct?.actualprice && selectedProduct.discountedPrice && selectedProduct.actualprice !== selectedProduct.discountedPrice && (
+              <span className="text-2xl text-gray-400 line-through">${selectedProduct.actualprice}</span>
+            )}
           </div>
           <div className="flex gap-4 mb-4">
             {inCart ? (
@@ -222,7 +248,7 @@ export default function EngineProductPage() {
           </div>
         </div>
       </div>
-      <ProductSection />
+      <ProductSection product={selectedProduct} />
     </>
   );
 }

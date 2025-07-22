@@ -42,11 +42,15 @@ export default function EngineProductPage() {
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const searchParams = useSearchParams();
-  const sku = searchParams.get("sku");
+  const make = searchParams.get("make");
+  const model = searchParams.get("model");
+  const year = searchParams.get("year");
+  const part = searchParams.get("part");
+  const sku = searchParams.get("sku"); // optional
 
   useEffect(() => {
-    // TODO: Replace with dynamic make/model/year/part if available
-    fetch("http://localhost:3001/api/products/with-subparts?make=Ford&model=Explorer&year=2004&part=Engine")
+    if (!make || !model || !year || !part) return;
+    fetch(`http://localhost:3001/api/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`)
       .then(res => res.json())
       .then(data => {
         setProducts(data);
@@ -63,7 +67,7 @@ export default function EngineProductPage() {
         setSelectedSubPartId(initialSubPartId);
         setSelectedProduct(initialProduct);
       });
-  }, [sku]);
+  }, [make, model, year, part, sku]);
 
   useEffect(() => {
     if (!selectedSubPartId || products.length === 0) return;
@@ -181,47 +185,59 @@ export default function EngineProductPage() {
             Availability: {" "}
             <span className="text-gray-400">{selectedProduct?.inStock ? "In stock" : "Out of stock"}</span>
           </div>
-          <div className="flex items-end gap-4 mb-2">
-            <span className="text-4xl font-bold">{selectedProduct?.discountedPrice ? `$${selectedProduct.discountedPrice}` : "N/A"}</span>
-            {selectedProduct?.actualprice && selectedProduct.discountedPrice && selectedProduct.actualprice !== selectedProduct.discountedPrice && (
-              <span className="text-2xl text-gray-400 line-through">${selectedProduct.actualprice}</span>
-            )}
-          </div>
-          <div className="flex gap-4 mb-4">
-            {inCart ? (
-              <div className="flex items-center gap-2">
-                <button
-                  className="px-3 py-2 bg-[#1d3759] text-white rounded-l disabled:opacity-50"
-                  onClick={() => setQuantity(q => Math.max(1, q - 1))}
-                  disabled={quantity === 1}
-                >
-                  -
-                </button>
-                <span className="px-4 py-2 bg-[#12263A]">{quantity}</span>
-                <button
-                  className="px-3 py-2 bg-[#1d3759] text-white rounded-r"
-                  onClick={() => setQuantity(q => q + 1)}
-                >
-                  +
+          {selectedProduct?.inStock ? (
+            <>
+              <div className="flex items-end gap-4 mb-2">
+                <span className="text-4xl font-bold">{selectedProduct?.discountedPrice ? `$${selectedProduct.discountedPrice}` : "N/A"}</span>
+                {selectedProduct?.actualprice && selectedProduct.discountedPrice && selectedProduct.actualprice !== selectedProduct.discountedPrice && (
+                  <span className="text-2xl text-gray-400 line-through">${selectedProduct.actualprice}</span>
+                )}
+              </div>
+              <div className="flex gap-4 mb-4">
+                {inCart ? (
+                  <div className="flex items-center gap-2">
+                    <button
+                      className="px-3 py-2 bg-[#1d3759] text-white rounded-l disabled:opacity-50"
+                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                      disabled={quantity === 1}
+                    >
+                      -
+                    </button>
+                    <span className="px-4 py-2 bg-[#12263A]">{quantity}</span>
+                    <button
+                      className="px-3 py-2 bg-[#1d3759] text-white rounded-r"
+                      onClick={() => setQuantity(q => q + 1)}
+                    >
+                      +
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    className={`flex-1 py-2 rounded transition ${
+                      inCart
+                        ? "bg-[#1d3759] text-white cursor-default"
+                        : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
+                    }`}
+                    disabled={inCart}
+                    onClick={handleAddToCart}
+                  >
+                    Add to cart
+                  </button>
+                )}
+                <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition">
+                  Buy in one click
                 </button>
               </div>
-            ) : (
-              <button
-                className={`flex-1 py-2 rounded transition ${
-                  inCart
-                    ? "bg-[#1d3759] text-white cursor-default"
-                    : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
-                }`}
-                disabled={inCart}
-                onClick={handleAddToCart}
-              >
-                Add to cart
-              </button>
-            )}
-            <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition">
-              Buy in one click
-            </button>
-          </div>
+            </>
+          ) : (
+            <Link
+              href="/account/modal/partRequestPopup"
+              className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-1/3 block mb-6"
+              tabIndex={0}
+            >
+              Part Request
+            </Link>
+          )}
           {showCartPopup && <AddedCartPopup />}
           {/* Accordion */}
           <div className=" w-full">

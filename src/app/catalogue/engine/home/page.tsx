@@ -363,7 +363,10 @@ export default function CatalogPage() {
                     className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
                   >
                     <Link
-                      href={`/product/engines?sku=${encodeURIComponent(item.sku)}`}
+                      href={{
+                        pathname: "/product/engines",
+                        query: { make, model, year, part, sku: item.sku }
+                      }}
                       className="block cursor-pointer"
                       tabIndex={-1}
                     >
@@ -415,66 +418,78 @@ export default function CatalogPage() {
                       </div>
                     </Link>
                     <div className="flex justify-between items-center mt-3 relative z-30">
-                      <span className="text-xl font-bold text-white">
-                        {item.actualprice}
-                      </span>
-                      {cartItem ? (
-                        <button
-                          className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
-                          style={{ minWidth: 120 }}
-                          tabIndex={0}
-                          onClick={(e) => e.preventDefault()} // prevent card click
-                        >
-                          <span
-                            className="cursor-pointer select-none text-3xl px-1"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              if (cartItem.quantity <= 1) {
-                                removeItem(cartItem.id);
-                              } else {
-                                updateQuantity(
-                                  cartItem.id,
-                                  cartItem.quantity - 1
-                                );
-                              }
-                            }}
-                          >
-                            -
+                      {item.inStock ? (
+                        <>
+                          <span className="text-xl font-bold text-white">
+                            {item.actualprice}
                           </span>
-                          <span className="text-white text-[17px] font-exo-2 text-center select-none">
-                            {cartItem.quantity}
-                          </span>
-                          <span
-                            className="cursor-pointer select-none px-1 text-3xl "
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              updateQuantity(
-                                cartItem.id,
-                                cartItem.quantity + 1
-                              );
-                            }}
-                          >
-                            +
-                          </span>
-                        </button>
+                          {cartItem ? (
+                            <button
+                              className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
+                              style={{ minWidth: 120 }}
+                              tabIndex={0}
+                              onClick={(e) => e.preventDefault()} // prevent card click
+                            >
+                              <span
+                                className="cursor-pointer select-none text-3xl px-1"
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (cartItem.quantity <= 1) {
+                                    removeItem(cartItem.id);
+                                  } else {
+                                    updateQuantity(
+                                      cartItem.id,
+                                      cartItem.quantity - 1
+                                    );
+                                  }
+                                }}
+                              >
+                                -
+                              </span>
+                              <span className="text-white text-[17px] font-exo-2 text-center select-none">
+                                {cartItem.quantity}
+                              </span>
+                              <span
+                                className="cursor-pointer select-none px-1 text-3xl "
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  updateQuantity(
+                                    cartItem.id,
+                                    cartItem.quantity + 1
+                                  );
+                                }}
+                              >
+                                +
+                              </span>
+                            </button>
+                          ) : (
+                            <button
+                              className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setShowCartPopup(true);
+                                setInCartIdx(indexOfFirstItem + index);
+                                addItem({
+                                  id: `engine-${indexOfFirstItem + index}`,
+                                  name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+                                  quantity: 1,
+                                  price: item.actualprice || 0
+                                });
+                                setTimeout(() => setShowCartPopup(false), 2000);
+                              }}
+                            >
+                              Add to Cart
+                            </button>
+                          )}
+                        </>
                       ) : (
-                        <button
-                          className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setShowCartPopup(true);
-                            setInCartIdx(indexOfFirstItem + index); // Correct index for popup
-                            addItem({
-                              id: `engine-${indexOfFirstItem + index}`, // Use unique ID
-                              name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
-                              quantity: 1,
-                              price: item.actualprice || 0
-                            });
-                            setTimeout(() => setShowCartPopup(false), 2000);
-                          }}
+                        <Link
+                          href="/account/modal/partRequestPopup"
+                          className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-full block mt-6"
+                          tabIndex={0}
                         >
-                          Add to Cart
-                        </button>
+                          Part Request
+                        </Link>
                       )}
                     </div>
                   </div>

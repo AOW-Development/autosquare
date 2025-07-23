@@ -1,15 +1,53 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-// import ProtectedRoute from "@/components/ProtectedRoute";
 import useAuthStore from "@/store/authStore";
+import useBillingStore from "@/store/billingStore"; // <-- Import billing store
+import { useState, useEffect } from "react";
 
 export default function PaymentInfoPage() {
   const { isLoggedIn } = useAuthStore();
-  // console.log(isLoggedIn);
+  const { billingInfo, setBillingInfo } = useBillingStore();
+
+  // Local state for form fields, initialized from billingInfo
+  const [fields, setFields] = useState(
+    billingInfo || {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phone: "",
+      company: "",
+      country: "",
+      address: "",
+      apartment: "",
+      city: "",
+      state: "",
+      zipCode: "",
+    }
+  );
+
+  useEffect(() => {
+    if (billingInfo) {
+      setFields({
+        ...fields,
+        ...billingInfo,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [billingInfo]);
+
+  // Handle field changes
+  const handleChange = (field: string, value: string) => {
+    setFields((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Save billing info to store
+  const handleSave = (e: React.FormEvent) => {
+    e.preventDefault();
+    setBillingInfo(fields);
+  };
 
   return (
-    // <ProtectedRoute>
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
       <div className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
         {/* Breadcrumb */}
@@ -46,7 +84,7 @@ export default function PaymentInfoPage() {
         </h1>
         <div className="flex flex-col md:flex-row gap-8">
           {/* Form */}
-          <form className="flex-1 bg-transparent">
+          <form className="flex-1 bg-transparent" onSubmit={handleSave}>
             <div className="flex items-center justify-between mb-4">
               <span className="font-semibold text-sm uppercase tracking-wide">
                 Recipient Details
@@ -68,43 +106,59 @@ export default function PaymentInfoPage() {
                 <label className="block text-xs mb-1">First Name*</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  defaultValue="Ksenia"
+                  value={fields.firstName}
+                  onChange={(e) => handleChange("firstName", e.target.value)}
+                  required
                 />
               </div>
               <div>
                 <label className="block text-xs mb-1">Last Name*</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  defaultValue="Melnyk"
+                  value={fields.lastName}
+                  onChange={(e) => handleChange("lastName", e.target.value)}
+                  required
                 />
               </div>
-              <div>
+              {/* <div>
                 <label className="block text-xs mb-1">Email*</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  defaultValue="example@gmail.com"
+                  value={fields.email}
+                  onChange={(e) => handleChange("email", e.target.value)}
+                  required
                 />
-              </div>
+              </div> */}
               <div>
                 <label className="block text-xs mb-1">Phone*</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  defaultValue="(888) 748-0882"
+                  value={fields.phone}
+                  onChange={(e) => handleChange("phone", e.target.value)}
+                  required
                 />
               </div>
-              <div className="md:col-span-2">
+              {/* <div className="md:col-span-2">
                 <label className="block text-xs mb-1">Company</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                  value={fields.company}
+                  onChange={(e) => handleChange("company", e.target.value)}
                   placeholder="Company name (optional)"
                 />
-              </div>
+              </div> */}
               <div className="md:col-span-2">
                 <label className="block text-xs mb-1">Country*</label>
-                <select className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none">
-                  <option>United States</option>
-                  <option>Canada</option>
-                  <option>Other</option>
+                <select
+                  className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                  value={fields.country}
+                  onChange={(e) => handleChange("country", e.target.value)}
+                  required
+                >
+                  <option value="Choose country…">Choose Country…</option>
+                  <option value="USA">USA</option>
+                  <option value="Canada">Canada</option>
+                  <option value="UK">UK</option>
                 </select>
               </div>
               <div className="md:col-span-2 flex gap-4">
@@ -112,13 +166,17 @@ export default function PaymentInfoPage() {
                   <label className="block text-xs mb-1">Street address*</label>
                   <input
                     className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                    placeholder="Address"
+                    value={fields.address}
+                    onChange={(e) => handleChange("address", e.target.value)}
+                    required
                   />
                 </div>
                 <div className="flex-1">
                   <label className="block text-xs mb-1">&nbsp;</label>
                   <input
                     className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    value={fields.apartment}
+                    onChange={(e) => handleChange("apartment", e.target.value)}
                     placeholder="Apartment, etc. (optional)"
                   />
                 </div>
@@ -127,25 +185,41 @@ export default function PaymentInfoPage() {
                 <label className="block text-xs mb-1">City*</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  defaultValue="Beverly Hills"
+                  value={fields.city}
+                  onChange={(e) => handleChange("city", e.target.value)}
+                  required
                 />
               </div>
               <div>
                 <label className="block text-xs mb-1">State*</label>
-                <select className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none">
-                  <option>California</option>
-                  <option>Texas</option>
-                  <option>Other</option>
+                <select
+                  className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                  value={fields.state}
+                  onChange={(e) => handleChange("state", e.target.value)}
+                  required
+                >
+                  <option value="Choose state…">Choose state…</option>
+                  <option value="California">California</option>
+                  <option value="Texas">Texas</option>
+                  <option value="Florida">Florida</option>
                 </select>
               </div>
               <div>
                 <label className="block text-xs mb-1">ZIP Code*</label>
                 <input
                   className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  defaultValue="90210"
+                  value={fields.zipCode}
+                  onChange={(e) => handleChange("zipCode", e.target.value)}
+                  required
                 />
               </div>
             </div>
+            <button
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
+            >
+              Save Billing Info
+            </button>
           </form>
           {/* Order Summary */}
           <aside className="w-full md:w-[350px] flex-shrink-0">

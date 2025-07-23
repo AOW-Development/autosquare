@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import useBillingStore from "@/store/billingStore"; // <-- Add this import
 
 interface CartItem {
   id: number;
@@ -16,20 +17,58 @@ interface CartItem {
 }
 
 export default function Checkout() {
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    company: "",
-    country: "",
-    streetAddress: "",
-    apartment: "",
-    city: "",
-    state: "",
-    zipCode: "",
-    orderNotes: "",
-  });
+  const { billingInfo, setBillingInfo } = useBillingStore(); // <-- Use billing store
+
+  const [formData, setFormData] = useState(
+    billingInfo || {
+      firstName: "",
+      lastName: "",
+      // email: "",
+      phone: "",
+      // company: "",
+      country: "",
+      address: "",
+      apartment: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      // orderNotes: "",
+    }
+  );
+
+  // Sync billingInfo to formData if it changes
+  useEffect(() => {
+    if (billingInfo) {
+      setFormData((prev) => ({
+        ...prev,
+        ...billingInfo,
+      }));
+    }
+  }, [billingInfo]);
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  // Save billing info to store when continuing to payment
+  const handleContinue = () => {
+    setBillingInfo(formData);
+  };
+
+  const isFormValid = () => {
+    return (
+      formData.firstName &&
+      formData.lastName &&
+      formData.phone &&
+      formData.country &&
+      formData.address &&
+      formData.city &&
+      formData.state &&
+      formData.zipCode &&
+      termsAccepted
+    );
+  };
+
   const [couponCode, setCouponCode] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
 
@@ -68,25 +107,6 @@ export default function Checkout() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const isFormValid = () => {
-    return (
-      formData.firstName &&
-      formData.lastName &&
-      formData.email &&
-      formData.phone &&
-      formData.country &&
-      formData.streetAddress &&
-      formData.city &&
-      formData.state &&
-      formData.zipCode &&
-      termsAccepted
-    );
-  };
 
   return (
     <ProtectedRoute>
@@ -226,7 +246,7 @@ export default function Checkout() {
 
                 {/* Contact Fields */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  <div>
+                  {/* <div>
                     <label className="block font-exo2 mb-2">Email *</label>
                     <input
                       type="email"
@@ -238,12 +258,12 @@ export default function Checkout() {
                       className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
-                  </div>
+                  </div> */}
                   <div>
                     <label className="block font-exo2 mb-2">Phone *</label>
                     <input
                       type="tel"
-                      placeholder="(    )   -    "
+                      placeholder="(888) 000-0000"
                       value={formData.phone}
                       onChange={(e) =>
                         handleInputChange("phone", e.target.value)
@@ -255,7 +275,7 @@ export default function Checkout() {
                 </div>
 
                 {/* Company */}
-                <div>
+                {/* <div>
                   <label className="block font-exo2 mb-2">Company</label>
                   <input
                     type="text"
@@ -266,7 +286,7 @@ export default function Checkout() {
                     }
                     className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                   />
-                </div>
+                </div> */}
 
                 {/* Country */}
                 <div>
@@ -279,9 +299,10 @@ export default function Checkout() {
                     className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                     required
                   >
-                    <option value="">Choose country…</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
+                    <option value="Choose country…">Choose country…</option>
+                    <option value="USA">USA</option>
+                    <option value="Canada">Canada</option>
+                    <option value="UK">UK</option>
                   </select>
                 </div>
 
@@ -294,9 +315,9 @@ export default function Checkout() {
                     <input
                       type="text"
                       placeholder="Address"
-                      value={formData.streetAddress}
+                      value={formData.address}
                       onChange={(e) =>
-                        handleInputChange("streetAddress", e.target.value)
+                        handleInputChange("address", e.target.value)
                       }
                       className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
@@ -344,10 +365,10 @@ export default function Checkout() {
                       className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     >
-                      <option value="">Choose state…</option>
-                      <option value="FL">Florida</option>
-                      <option value="CA">California</option>
-                      <option value="TX">Texas</option>
+                      <option value="Choose state…">Choose state…</option>
+                      <option value="Florida">Florida</option>
+                      <option value="California">California</option>
+                      <option value="Texas">Texas</option>
                     </select>
                   </div>
                   <div>
@@ -366,7 +387,7 @@ export default function Checkout() {
                 </div>
 
                 {/* Order Notes */}
-                <div>
+                {/* <div>
                   <label className="block font-exo2 mb-2">Order notes</label>
                   <textarea
                     placeholder="Notes about your order, e.g. special notes for delivery"
@@ -377,7 +398,7 @@ export default function Checkout() {
                     rows={4}
                     className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                   />
-                </div>
+                </div> */}
               </form>
             </div>
 
@@ -514,7 +535,10 @@ export default function Checkout() {
                 {/* Continue Button */}
                 {isFormValid() ? (
                   <Link href="/account/payMethod">
-                    <button className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500">
+                    <button
+                      className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
+                      onClick={handleContinue} // <-- Save billing info before navigating
+                    >
                       Continue to payment
                     </button>
                   </Link>

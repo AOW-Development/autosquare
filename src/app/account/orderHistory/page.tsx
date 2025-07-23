@@ -2,6 +2,7 @@
 import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
 import Image from "next/image";
+import Link from "next/link";
 
 const filters = ["All", "This month", "Last month", "This year", "Last year"];
 const orders = [
@@ -51,7 +52,7 @@ export default function OrderHistoryPage() {
               ))}
             </div>
             <div className="flex flex-col gap-6 w-full border-2 rounded-md border-blue-600 overflow-hidden">
-              {orders.map((order, i) => (
+              {orders.map((order) => (
                 <div
                   key={order.id}
                   className="bg-[#091627] rounded-lg shadow p-4 flex flex-col md:flex-row md:items-center gap-4"
@@ -100,8 +101,8 @@ export default function OrderHistoryPage() {
                         )}
                       </div>
                     </div>
-                    <button className="border border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-1 px-3 font-semibold transition-colors self-start  md:self-center">
-                      Details
+                    <button className="border border-blue-600 cursor-pointer text-blue-100 hover:bg-blue-600 rounded-lg py-1 px-3 font-semibold transition-colors self-start  md:self-center">
+                      <Link href={"/account/trackOrder"}>Details</Link>
                     </button>
                   </div>
                 </div>

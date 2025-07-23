@@ -300,7 +300,7 @@ export default function Cart() {
           <div className="flex flex-col lg:flex-row lg:justify-end lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="text-lg font-bold font-exo2">TOTAL: ${total}</div>
             <Link href="/account/checkout">
-              <button className="bg-[#009AFF] text-white px-8 py-2 rounded-md hover:bg-blue-600 transition-colors font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300">
+              <button className="bg-[#009AFF] cursor-pointer text-white px-8 py-2 rounded-md hover:bg-blue-600 transition-colors font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300">
                 Proceed to Checkout
               </button>
             </Link>

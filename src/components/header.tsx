@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 // import Hamburger from "@/public/header/hamburgur-button.png";
 // import Arrow from "@/public/header/arrows (4).png";
 import { useCartStore } from "@/store/cartStore";
+import { useState, useRef } from 'react';
 
 const categories = [
   {
@@ -79,6 +80,9 @@ export default function Header() {
   >(null); // for mobile selected category
   const [showSearch, setShowSearch] = useState(false);
 
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+
   // --- Hover logic for menus ---
   // Categories
   const categoriesHover = React.useRef(false);
@@ -100,6 +104,18 @@ export default function Header() {
     setMobileCategoriesOpen(false);
     setMobileSelectedCategory(null);
   };
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setMenuOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setMenuOpen(false);
+    }, 300); // 300ms delay before closing
+  };
+
 
   // Keyboard nav stub (expand as needed)
   React.useEffect(() => {
@@ -132,24 +148,34 @@ export default function Header() {
           </div>
         </div>
         {/* Row 2: Menu button left, icons right */}
-        <div className="flex items-center justify-between w-full mt-2">
-          <button
-            className="flex items-center py-1"
-            aria-label="Open menu"
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
-              <path
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M4 6h16M4 12h16M4 18h16"
-              />
-            </svg>
-            <span className="ml-1 font-medium">Menu</span>
-          </button>
+        <div
+      className="relative inline-block text-left"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      {/* Toggle Button */}
+      <button
+        className="flex items-center py-1"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d={
+              menuOpen
+                ? 'M6 18L18 6M6 6l12 12' // X icon
+                : 'M4 6h16M4 12h16M4 18h16' // Hamburger
+            }
+          />
+        </svg>
+        <span className="ml-1 font-medium">{menuOpen ? 'Close' : 'Menu'}</span>
+      </button>
+
           <div className="flex items-center gap-4">
             {showSearch ? (
               <input

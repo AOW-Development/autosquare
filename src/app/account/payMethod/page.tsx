@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import useBillingStore from "@/store/billingStore";
 
 interface CartItem {
   id: number;
@@ -19,18 +20,22 @@ interface CartItem {
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [billingAddressExpanded, setBillingAddressExpanded] = useState(false);
-  const [billingFormData, setBillingFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    country: "",
-    streetAddress: "",
-    apartment: "",
-    city: "",
-    state: "",
-    zipCode: "",
-  });
+  const { billingInfo } = useBillingStore();
+
+  const [billingFormData, setBillingFormData] = useState(
+    billingInfo || {
+      firstName: "",
+      lastName: "",
+      // email: "",
+      phone: "",
+      country: "",
+      address: "",
+      apartment: "",
+      city: "",
+      state: "",
+      zipCode: "",
+    }
+  );
   const [cardData, setCardData] = useState({
     cardNumber: "",
     cardholderName: "",
@@ -453,7 +458,7 @@ export default function PayMethod() {
                     </div>
 
                     <div className="grid md:grid-cols-2 gap-4">
-                      <div>
+                      {/* <div>
                         <label className="block font-exo2 mb-2">Email *</label>
                         <input
                           type="email"
@@ -464,7 +469,7 @@ export default function PayMethod() {
                           }
                           className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         />
-                      </div>
+                      </div> */}
                       <div>
                         <label className="block font-exo2 mb-2">Phone *</label>
                         <input
@@ -489,8 +494,8 @@ export default function PayMethod() {
                         className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       >
                         <option value="">Choose country…</option>
-                        <option value="US">United States</option>
-                        <option value="CA">Canada</option>
+                        <option value="USA">USA</option>
+                        <option value="Canada">Canada</option>
                       </select>
                     </div>
 
@@ -502,7 +507,7 @@ export default function PayMethod() {
                         <input
                           type="text"
                           placeholder="Address"
-                          value={billingFormData.streetAddress}
+                          value={billingFormData.address}
                           onChange={(e) =>
                             handleBillingInputChange(
                               "streetAddress",
@@ -554,9 +559,9 @@ export default function PayMethod() {
                           className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         >
                           <option value="">Choose state…</option>
-                          <option value="FL">Florida</option>
-                          <option value="CA">California</option>
-                          <option value="TX">Texas</option>
+                          <option value="Florida">Florida</option>
+                          <option value="California">California</option>
+                          <option value="Texas">Texas</option>
                         </select>
                       </div>
                       <div>

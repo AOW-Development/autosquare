@@ -45,7 +45,7 @@ function TransmissionFeaturedCategories() {
   ];
   const arrowIcon = "/Images/home/Makers-logos/arrows.png";
   return (
-    <section className="w-full bg-[#091b33] py-8 md:py-16 md:px-2"> {/* Adjusted vertical padding */}
+    <section className="w-full bg-[#091b33] py-8 md:py-16"> {/* Adjusted vertical padding */}
       <h2
         className="text-xl sm:text-2xl md:text-[32px] font-normal mb-8 md:mb-12 md:-ml-6 text-white" // Adjusted font size and margin
         style={{
@@ -110,7 +110,7 @@ export default function TransmissionPage() {
       </div>
 
       {/* Main content container for px-6 alignment */}
-      <div className=" md:px-8  max-w-7xl mx-auto"> {/* Adjusted horizontal padding */}
+      <div className=" md:px-2  max-w-7xl mx-auto"> {/* Adjusted horizontal padding */}
 
         {/* Transmission Types */}
         <section className=" pb-3 sm:pb-4 px-6 md:px-10">

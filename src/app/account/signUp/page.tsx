@@ -25,7 +25,7 @@ export default function RegistrationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let newErrors: {
+    const newErrors: {
       email?: string;
       password?: string;
       confirm?: string;
@@ -81,7 +81,7 @@ export default function RegistrationPage() {
           email: fields.email,
           name: "", // You can set a default or use fields.name if available
         },
-        token: "dummy-token-abc123"
+        token: "dummy-token-abc123",
       };
 
       // Store user data and token in Zustand store
@@ -94,8 +94,10 @@ export default function RegistrationPage() {
         data.token
       );
 
-      router.push("/account/profile");
+      router.push("/account/verifyOtp");
     } catch (error) {
+      console.log(error);
+
       setErrors({
         general: "Registration failed. Please try again.",
       });

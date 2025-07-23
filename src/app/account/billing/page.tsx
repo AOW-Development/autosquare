@@ -2,20 +2,58 @@
 import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
 import FormField from "@/components/FormField";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import useBillingStore from "@/store/billingStore";
 
 export default function BillingPage() {
-  const [fields, setFields] = useState({
-    firstName: "",
-    lastName: "",
-    phone: "",
-    country: "",
-    street: "",
-    apartment: "",
-    city: "",
-    state: "",
-    zip: "",
-  });
+  const { setBillingInfo, billingInfo } = useBillingStore();
+  const [fields, setFields] = useState(
+    billingInfo || {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      country: "",
+      address: "",
+      apartment: "",
+      city: "",
+      state: "",
+      zipCode: "",
+    }
+  );
+  useEffect(() => {
+    console.log(billingInfo);
+
+    if (billingInfo) {
+      setFields({
+        // ...fields,
+        // ...billingInfo,
+        firstName: billingInfo.firstName,
+        lastName: billingInfo.lastName,
+        phone: billingInfo.phone,
+        country: billingInfo.country,
+        address: billingInfo.address,
+        apartment: billingInfo.apartment || "",
+        city: billingInfo.city,
+        state: billingInfo.state,
+        zipCode: billingInfo.zipCode,
+      });
+    }
+  }, [billingInfo]);
+  const handleSave = (event: React.FormEvent) => {
+    event.preventDefault();
+    setBillingInfo({
+      firstName: fields.firstName,
+      lastName: fields.lastName,
+      phone: fields.phone,
+      country: fields.country,
+      address: fields.address,
+      apartment: fields.apartment,
+      city: fields.city,
+      state: fields.state,
+      zipCode: fields.zipCode,
+    } as const);
+    // console.log("Billing info saved:", billingInfo);
+  };
   return (
     <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row">
       {/* <div className="md:w-1/4">
@@ -23,7 +61,11 @@ export default function BillingPage() {
       </div> */}
       <div className="flex-1 flex flex-col gap-6">
         <Banner />
-        <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto">
+        <form
+          onSubmit={(e) => handleSave(e)}
+          autoComplete="off"
+          className="flex flex-col md:flex-row w-full max-w-4xl mx-auto"
+        >
           {/* <h1 className="text-2xl md:text-3xl font-bold text-center mb-4">
             BILLING ADDRESS
           </h1> */}
@@ -66,7 +108,7 @@ export default function BillingPage() {
             <FormField
               label="Country*"
               type="select"
-              options={["Choose Country…"]}
+              options={["Choose Country…", "USA", "Canada", "UK"]}
               value={fields.country}
               onChange={(v) => setFields((f) => ({ ...f, country: v }))}
             />
@@ -75,8 +117,8 @@ export default function BillingPage() {
                 label="Street address*"
                 type="text"
                 placeholder="Address"
-                value={fields.street}
-                onChange={(v) => setFields((f) => ({ ...f, street: v }))}
+                value={fields.address}
+                onChange={(v) => setFields((f) => ({ ...f, address: v }))}
               />
               <FormField
                 label="Apartment, etc. (optional)"
@@ -97,7 +139,7 @@ export default function BillingPage() {
               <FormField
                 label="State*"
                 type="select"
-                options={["Choose state…"]}
+                options={["Choose state…", "California", "Texas", "Florida"]}
                 value={fields.state}
                 onChange={(v) => setFields((f) => ({ ...f, state: v }))}
               />
@@ -105,15 +147,15 @@ export default function BillingPage() {
                 label="ZIP Code*"
                 type="text"
                 placeholder="ZIP Code"
-                value={fields.zip}
-                onChange={(v) => setFields((f) => ({ ...f, zip: v }))}
+                value={fields.zipCode}
+                onChange={(v) => setFields((f) => ({ ...f, zipCode: v }))}
               />
             </div>
-            <button className="mt-6 border border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-2 px-6 font-semibold transition-colors">
+            <button className="mt-6 cursor-pointer border border-blue-600 text-blue-100 hover:bg-blue-600 rounded-lg py-2 px-6 font-semibold transition-colors">
               Save Changes
             </button>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

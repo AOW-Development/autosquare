@@ -85,7 +85,7 @@ export default function EngineProductPage() {
     <>
       {/* Breadcrumb at the very top */}
       <div className="w-full bg-[#091b33] overflow-hidden">
-        <div className="max-w-6xl mx-auto md:mx-40 px-4 md:px-0 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
+        <div className="max-w-6xl mx-auto md:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
           <Link href="/" className="flex items-center">
             <Image
               src="/engine/HouseLine.png"
@@ -108,12 +108,12 @@ export default function EngineProductPage() {
       </div>
       <div className="w-full bg-[#091b33]">
         <div className="max-w-6xl mx-auto px-4 ">
-          <div className="py-22">
+          <div className="pt-18 pb-4">
             <ShopByVehicle />
           </div>
         </div>
       </div>
-      <div className="px-6  md:pl-40 md:mx-auto w-full bg-[#091b33] flex flex-col md:flex-row gap-10 min-h-screen text-white py-10">
+      <div className="px-6 md:pl-40 md:mx-auto w-full bg-[#091b33] flex flex-col md:flex-row gap-10 min-h-screen text-white -py-4 md:py-28">
         {/* Left: Image Gallery */}
         <div className="flex flex-row items-start">
           {/* Thumbnails column */}
@@ -250,8 +250,12 @@ export default function EngineProductPage() {
                   }
                 >
                   {item.title}
-                  <span className="ml-2 text-2xl">
-                    {openAccordion === i ? "-" : "^"}
+                 <span
+                    className={`ml-2 text-2xl inline-block transition-transform duration-300 ${
+                      openAccordion === i ? 'rotate-180' : 'rotate-0'
+                    }`}
+                  >
+                    ^
                   </span>
                 </button>
                 {openAccordion === i && (

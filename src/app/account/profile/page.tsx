@@ -1,7 +1,7 @@
 "use client";
 import { useRequireAuth } from "@/hooks/useAuth";
-import Link from "next/link";
-import Image from "next/image";
+// import Link from "next/link";
+// import Image from "next/image";
 import FormField from "@/components/FormField";
 import { useState } from "react";
 import Banner from "@/components/Banner";
@@ -79,7 +79,9 @@ export default function ProfilePage() {
 
       // Show success message
       setErrors({ general: "Profile updated successfully!" });
-    } catch (error) {
+    } catch (err) {
+      console.log(err);
+
       setErrors({ general: "Failed to update profile. Please try again." });
     } finally {
       setLoading(false);

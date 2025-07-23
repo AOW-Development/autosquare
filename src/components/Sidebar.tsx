@@ -2,11 +2,11 @@ import Link from "next/link";
 
 const navLinks = [
   { key: "Profile", label: "Profile", href: "/account/profile" },
-  {
-    key: "Shipping Address",
-    label: "Shipping Address",
-    href: "/account/shipping",
-  },
+  // {
+  //   key: "Shipping Address",
+  //   label: "Shipping Address",
+  //   href: "/account/shipping",
+  // },
   {
     key: "Billing Address",
     label: "Billing Address",

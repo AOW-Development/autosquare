@@ -5,7 +5,29 @@ const api = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
+  withCredentials: true
 });
+
+// Add interceptor for auth token
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// Auth related API calls
+export const auth = {
+  login: (credentials: { email: string; password: string; otp?: string }) =>
+    api.post('/auth/login', credentials),
+  register: (data: { email: string; password: string; full_name: string }) =>
+    api.post('/auth/register', data),
+  verifyOTP: (data: { email: string; otp: string }) =>
+    api.post('/auth/verify-otp', data),
+  googleAuth: (token: string) =>
+    api.post('/auth/google', { token })
+};
 
 export const getGroupedProducts = (params: { make: string; model: string; year: string; part: string }) => {
   return api.get('/products/with-subparts', { params });

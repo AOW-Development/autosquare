@@ -8,11 +8,15 @@ import useAuthStore from "@/store/authStore";
 
 export default function RegistrationPage() {
   const [fields, setFields] = useState({
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
     confirm: "",
   });
   const [errors, setErrors] = useState<{
+    firstName?: string;
+    lastName?: string;
     email?: string;
     password?: string;
     confirm?: string;
@@ -25,25 +29,32 @@ export default function RegistrationPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
     const newErrors: {
+      firstName?: string;
+      lastName?: string;
       email?: string;
       password?: string;
       confirm?: string;
       general?: string;
     } = {};
 
+    if (!fields.firstName) {
+      newErrors.firstName = "First name is required.";
+    }
+    if (!fields.lastName) {
+      newErrors.lastName = "Last name is required.";
+    }
     if (!fields.email) {
       newErrors.email = "Email is required.";
     } else if (!emailRegex.test(fields.email)) {
       newErrors.email = "Please enter a valid email address.";
     }
-
     if (!fields.password) {
       newErrors.password = "Password is required.";
     } else if (fields.password.length < 6) {
       newErrors.password = "Password must be at least 6 characters.";
     }
-
     if (!fields.confirm) {
       newErrors.confirm = "Please confirm your password.";
     } else if (fields.confirm !== fields.password) {
@@ -79,7 +90,9 @@ export default function RegistrationPage() {
         user: {
           id: "dummy-id-123",
           email: fields.email,
-          name: "", // You can set a default or use fields.name if available
+          name: `${fields.firstName} ${fields.lastName}`.trim(),
+          firstName: fields.firstName,
+          lastName: fields.lastName,
         },
         token: "dummy-token-abc123",
       };
@@ -90,6 +103,8 @@ export default function RegistrationPage() {
           id: data.user.id,
           email: fields.email,
           name: data.user.name || "",
+          firstName: fields.firstName,
+          lastName: fields.lastName,
         },
         data.token
       );
@@ -139,6 +154,32 @@ export default function RegistrationPage() {
             onSubmit={handleSubmit}
             className="grid w-full gap-2 md:w-[75%] items-center md:mx-40"
           >
+            <FormField
+              label="First Name*"
+              type="text"
+              placeholder="First Name"
+              value={fields.firstName}
+              onChange={(v) => setFields((f) => ({ ...f, firstName: v }))}
+              disabled={loading}
+            />
+            {errors.firstName && (
+              <span className="text-red-400 text-xs mt-[-8px] mb-1">
+                {errors.firstName}
+              </span>
+            )}
+            <FormField
+              label="Last Name*"
+              type="text"
+              placeholder="Last Name"
+              value={fields.lastName}
+              onChange={(v) => setFields((f) => ({ ...f, lastName: v }))}
+              disabled={loading}
+            />
+            {errors.lastName && (
+              <span className="text-red-400 text-xs mt-[-8px] mb-1">
+                {errors.lastName}
+              </span>
+            )}
             <FormField
               label="Email*"
               type="email"
@@ -190,6 +231,22 @@ export default function RegistrationPage() {
               disabled={loading}
             >
               {loading ? "Registering..." : "Register now"}
+            </button>
+            <span className="text-gray-400 text-sm flex justify-center items-center pt-2">
+              or sign in with
+            </span>
+            <button
+              // onClick={}
+              className="flex cursor-pointer items-center gap-2 w-full justify-center rounded-lg py-2 bg-white hover:bg-gray-100 text-gray-800 text-base font-semibold transition-colors border border-gray-200 mt-2"
+              disabled={loading}
+            >
+              <Image
+                src="/account/google.png"
+                alt="Google"
+                width={24}
+                height={24}
+              />
+              <span>{loading ? "Signing in..." : "Sign in with Google"}</span>
             </button>
             <div className="mt-4 text-center text-sm text-gray-400">
               Already have an account?{" "}

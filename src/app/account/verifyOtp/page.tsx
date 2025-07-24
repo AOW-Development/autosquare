@@ -3,14 +3,16 @@ import { useState, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import useAuthStore from "@/store/authStore";
+// import useAuthStore from "@/store/authStore";
+// import { useRequireAuth } from "@/hooks/useAuth";
 
 export default function VerifyOtpPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState(false);
   const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const { login } = useAuthStore();
+  // const { login } = useAuthStore();
+  // const { id,fir } = useRequireAuth();
 
   const handleChange = (index: number, value: string) => {
     if (!/^\d?$/.test(value)) return; // Only allow single digit
@@ -51,7 +53,7 @@ export default function VerifyOtpPage() {
       setSubmitted(true);
     }, 500);
 
-    login({ id: "1", email: "s@gmail.com", name: "S" }, "11223344");
+    // login({ id:user.id, email: "s@gmail.com", name: "S" }, "11223344");
     setTimeout(() => {
       redirect("/account/profile");
     }, 2000);

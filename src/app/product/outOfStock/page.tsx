@@ -1,27 +1,3 @@
-// "use client";
-// import { useRouter } from "next/navigation";
-// import TicketSubmittedModal from "@/app/account/modal/ticketSubmitted/page";
-
-// export default function Page() {
-//   const router = useRouter();
-//   return (
-//     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-//       <div className="bg-white p-8 rounded shadow text-center">
-//         <h1 className="text-2xl font-bold mb-4 text-red-600">Out of Stock</h1>
-//         <p className="mb-6 text-gray-700">
-//           Sorry, this product is currently unavailable.
-//         </p>
-//         <button
-//           className="px-6 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-//           onClick={() => router.back()}
-//         >
-//           Go Back
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
 "use client";
 import ProductSection from "@/components/productSection";
 import ShopByVehicle from "@/components/shopByVehicle";
@@ -65,11 +41,12 @@ const accordionData = [
 ];
 
 export default function Page() {
-  const [selectedImg, setSelectedImg] = useState(1);
+  // const [selectedImg, setSelectedImg] = useState(1);
+  const selectedImg = 1; // Default selected image index
   // const [selectedOption, setSelectedOption] = useState(0);
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
   // const [showCartPopup, setShowCartPopup] = useState(false);
-  const [inCart, setInCart] = useState(false);
+  // const [inCart, setInCart] = useState(false);
   // const [quantity, setQuantity] = useState(1);
   const [dialog, setDialog] = useState(false);
 
@@ -227,7 +204,19 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <ProductSection />
+      <ProductSection
+        product={
+          {
+            // Replace these fields with actual product data as per your Product type
+            // id: 1,
+            // name: "NAME ENGINE ASSEMBLY",
+            // description: "4.9L | from 2/3/91 (AIR inner manifold) | E4OD transmission",
+            // price: 100,
+            // image: galleryImages[1],
+            // Add any other required fields for Product type here
+          }
+        }
+      />
     </>
   );
 }

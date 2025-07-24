@@ -3,7 +3,9 @@ interface User {
   id: string;
   name: string;
   email: string;
-  [key: string]:string | number | boolean; // Allow additional properties
+  firstName: string;
+  lastName: string;
+  [key: string]: string | number | boolean; // Allow additional properties
 }
 interface AuthState {
   user: User | null;
@@ -24,12 +26,16 @@ const useAuthStore = create<AuthState>((set) => ({
       user,
       token,
       isLoggedIn: true,
+      // firstName: user.firstName, // Assuming user has a name field
+      // lastName: user.lastName, // Assuming user has a name field
     }),
   logout: () =>
     set({
       user: null,
       token: null,
       isLoggedIn: false,
+      // firstName: "",
+      // lastName: "",
     }),
 
   setToken: (token) => set({ token }),

@@ -10,6 +10,8 @@ export default function SignInPage() {
   const [fields, setFields] = useState({
     email: "",
     password: "",
+    firstName: "",
+    lastName: "",
   });
   const [errors, setErrors] = useState<{
     email?: string;
@@ -23,7 +25,8 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let newErrors: { email?: string; password?: string; general?: string } = {};
+    const newErrors: { email?: string; password?: string; general?: string } =
+      {};
 
     if (!fields.email) {
       newErrors.email = "Email is required.";
@@ -45,37 +48,40 @@ export default function SignInPage() {
     setLoading(true);
     try {
       // Simulate API call to sign in
-    //   const response = await fetch("https://dummy-backend.com/api/login", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       email: fields.email,
-    //       password: fields.password,
-    //     }),
-    //   });
+      //   const response = await fetch("https://dummy-backend.com/api/login", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       email: fields.email,
+      //       password: fields.password,
+      //     }),
+      //   });
 
-    //   if (!response.ok) {
-    //     throw new Error("Login failed");
-    //   }
+      //   if (!response.ok) {
+      //     throw new Error("Login failed");
+      //   }
 
-    //   const data = await response.json();
-    const data = {
+      //   const data = await response.json();
+      const data = {
         user: {
           id: "dummy-id-123",
           email: fields.email,
-          name: "", // You can set a default or use fields.name if available
+          firstName: fields.firstName || "",
+          lastName: fields.lastName || "",
         },
-        token: "dummy-token-abc123"
+        token: "dummy-token-abc123",
       };
 
       // Store user data and token in Zustand store
       login(
         {
-          id: data.user.id,
+          id: "1234",
           email: fields.email,
-          name: data.user.name || "",
+          name: `${data.user.firstName} ${data.user.lastName}`.trim(),
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
         },
         data.token
       );
@@ -111,7 +117,9 @@ export default function SignInPage() {
         {
           id: data.user.id,
           email: data.user.email,
-          name: data.user.name,
+          name: `${data.user.firstName} ${data.user.lastName}`.trim(),
+          firstName: data.user.firstName,
+          lastName: data.user.lastName,
         },
         data.token
       );
@@ -222,7 +230,7 @@ export default function SignInPage() {
               <span>{loading ? "Signing in..." : "Sign in with Google"}</span>
             </button>
             <div className="mt-4 text-center text-sm text-gray-400">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/account/signUp"
                 className="text-blue-400 hover:text-blue-600 font-medium"

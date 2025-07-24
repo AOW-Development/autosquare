@@ -1,15 +1,54 @@
 import Image from "next/image";
 
-export default function ProductSection({ product }) {
+// interface Product {
+//   modelYear?: {
+//     model?: {
+//       make?: { name?: string };
+//       name?: string;
+//     };
+//     year?: { value?: string | number };
+//   };
+//   partType?: { name?: string };
+//   miles?: string | number;
+//   status?: string;
+//   warranty?: string;
+// }
+interface SubPart {
+  id: number;
+  name: string;
+  // add more fields if needed
+}
+interface Product {
+  sku?: string;
+  subParts?: SubPart[];
+  modelYear?: {
+    model?: {
+      make?: { name?: string };
+      name?: string;
+    };
+    year?: { value?: string };
+  };
+  partType?: { name?: string };
+  inStock?: boolean;
+  discountedPrice?: number;
+  actualprice?: number;
+  // add more fields if needed
+}
+
+interface ProductSectionProps {
+  product: Product;
+}
+
+export default function ProductSection({ product }: ProductSectionProps) {
   const productDetails = [
     { label: "Make", value: product?.modelYear?.model?.make?.name || "-" },
     { label: "Model", value: product?.modelYear?.model?.name || "-" },
     { label: "Year", value: product?.modelYear?.year?.value || "-" },
     { label: "Part", value: product?.partType?.name || "-" },
-    { label: "Miles", value: product?.miles || "-" },
+    // { label: "Miles", value: product?.miles || "-" },
     { label: "Genuine", value: "Genuine Used Part" },
-    { label: "Condition", value: product?.status ? product.status : "N/A" },
-    { label: "Warranty", value: product?.warranty ? product.warranty : "N/A" },
+    // { label: "Condition", value: product?.status ? product.status : "N/A" },
+    // { label: "Warranty", value: product?.warranty ? product.warranty : "N/A" },
   ];
 
   const featuredProducts = Array(4).fill({

@@ -11,6 +11,8 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 export default function ProfilePage() {
   const { user } = useRequireAuth();
   const [fields, setFields] = useState({
+    firstName: user?.firstName || "",
+    lastName: user?.lastName || "",
     email: user?.email || "",
     currentPassword: "",
     newPassword: "",
@@ -111,7 +113,7 @@ export default function ProfilePage() {
               >
                 PROFILE
               </h1>
-              <form onSubmit={handleSubmit} className="space-y-4">
+              {/* <form onSubmit={handleSubmit} className="space-y-4">
                 <FormField
                   label="Email*"
                   type="email"
@@ -193,7 +195,33 @@ export default function ProfilePage() {
                 >
                   {loading ? "Saving Changes..." : "Save Changes"}
                 </button>
-              </form>
+              </form> */}
+              <div className="flex flex-col items-center justify-center gap-4 bg-[#091627] rounded-lg p-6 mt-4 shadow-md">
+                <div className="flex items-center gap-2 w-full max-w-xs">
+                  <span className="font-semibold text-blue-400 w-32 text-right">
+                    First Name:
+                  </span>
+                  <span className="text-white bg-[#0a2342] px-3 py-1 rounded w-full">
+                    {fields.firstName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 w-full max-w-xs">
+                  <span className="font-semibold text-blue-400 w-32 text-right">
+                    Last Name:
+                  </span>
+                  <span className="text-white bg-[#0a2342] px-3 py-1 rounded w-full">
+                    {fields.lastName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 w-full max-w-xs">
+                  <span className="font-semibold text-blue-400 w-32 text-right">
+                    Email:
+                  </span>
+                  <span className="text-white bg-[#0a2342] px-3 py-1 rounded w-full">
+                    {fields.email}
+                  </span>
+                </div>
+              </div>
             </div>
           </div>
         </div>

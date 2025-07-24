@@ -5,7 +5,13 @@ interface User {
   id: string;
   name: string;
   email: string;
+<<<<<<< HEAD
   [key: string]: string | number | boolean;
+=======
+  firstName: string;
+  lastName: string;
+  [key: string]: string | number | boolean; // Allow additional properties
+>>>>>>> 45fea3993186afa428764c11a8e04c60ee5b19b1
 }
 
 interface AuthState {
@@ -17,12 +23,36 @@ interface AuthState {
   setToken: (token: string) => void;
 }
 
+<<<<<<< HEAD
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
       token: null,
       isLoggedIn: false,
+=======
+const useAuthStore = create<AuthState>((set) => ({
+  user: null,
+  token: null,
+  isLoggedIn: false,
+
+  login: (user, token) =>
+    set({
+      user,
+      token,
+      isLoggedIn: true,
+      // firstName: user.firstName, // Assuming user has a name field
+      // lastName: user.lastName, // Assuming user has a name field
+    }),
+  logout: () =>
+    set({
+      user: null,
+      token: null,
+      isLoggedIn: false,
+      // firstName: "",
+      // lastName: "",
+    }),
+>>>>>>> 45fea3993186afa428764c11a8e04c60ee5b19b1
 
       login: (user, token) => {
         localStorage.setItem('token', token);

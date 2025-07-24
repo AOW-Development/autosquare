@@ -11,6 +11,8 @@ export default function SignInPage() {
   const [fields, setFields] = useState({
     email: "",
     password: "",
+    firstName: "",
+    lastName: "",
   });
   const [errors, setErrors] = useState<{
     email?: string;
@@ -24,7 +26,8 @@ export default function SignInPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    let newErrors: { email?: string; password?: string; general?: string } = {};
+    const newErrors: { email?: string; password?: string; general?: string } =
+      {};
 
     if (!fields.email) {
       newErrors.email = "Email is required.";
@@ -177,7 +180,7 @@ export default function SignInPage() {
               <span>{loading ? "Signing in..." : "Sign in with Google"}</span>
             </button>
             <div className="mt-4 text-center text-sm text-gray-400">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link
                 href="/account/signUp"
                 className="text-blue-400 hover:text-blue-600 font-medium"

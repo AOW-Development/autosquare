@@ -31,12 +31,37 @@ const accordionData = [
   },
 ];
 
+interface SubPart {
+  id: number;
+  name: string;
+  // add more fields if needed
+}
+
+interface Product {
+  sku: string;
+  subParts: SubPart[];
+  modelYear?: {
+    model?: {
+      make?: { name?: string };
+      name?: string;
+    };
+    year?: { value?: string };
+  };
+  partType?: { name?: string };
+  inStock?: boolean;
+  discountedPrice?: number;
+  actualprice?: number;
+  // add more fields if needed
+}
+
 export default function EngineProductPage() {
   const [selectedImg, setSelectedImg] = useState(1);
-  const [products, setProducts] = useState([]);
-  const [allSubParts, setAllSubParts] = useState([]);
-  const [selectedSubPartId, setSelectedSubPartId] = useState(null);
-  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
+  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(
+    null
+  );
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
@@ -50,20 +75,26 @@ export default function EngineProductPage() {
 
   useEffect(() => {
     if (!make || !model || !year || !part) return;
-    fetch(`http://localhost:3001/api/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`)
-      .then(res => res.json())
-      .then(data => {
+    fetch(
+      `http://localhost:3001/api/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
         setProducts(data);
         // Dedupe all subParts
         const subParts = Array.from(
           new Map(
-            data.flatMap(p => p.subParts).map(sp => [sp.id, sp])
+            data
+              .flatMap((p: Product) => p.subParts)
+              .map((sp: SubPart) => [sp.id, sp])
           ).values()
-        );
+        ) as SubPart[];
         setAllSubParts(subParts);
         // Find product by sku
-        let initialProduct = data.find(p => p.sku === sku) || data[0];
-        let initialSubPartId = initialProduct?.subParts[0]?.id || subParts[0]?.id;
+        const initialProduct =
+          data.find((p: Product) => p.sku === sku) || data[0];
+        const initialSubPartId =
+          initialProduct?.subParts[0]?.id || subParts[0]?.id;
         setSelectedSubPartId(initialSubPartId);
         setSelectedProduct(initialProduct);
       });
@@ -71,8 +102,10 @@ export default function EngineProductPage() {
 
   useEffect(() => {
     if (!selectedSubPartId || products.length === 0) return;
-    const prod = products.find(p => p.subParts.some(sp => sp.id === selectedSubPartId));
-    setSelectedProduct(prod);
+    const prod = products.find((p) =>
+      p.subParts.some((sp) => sp.id === selectedSubPartId)
+    );
+    setSelectedProduct(prod || null);
   }, [selectedSubPartId, products]);
 
   const handleAddToCart = () => {
@@ -161,44 +194,62 @@ export default function EngineProductPage() {
             }}
           >
             {selectedProduct
-              ? `${selectedProduct.modelYear?.model?.make?.name || ''} ${selectedProduct.modelYear?.model?.name || ''} ${selectedProduct.modelYear?.year?.value || ''} ${selectedProduct.partType?.name || ''}`.trim()
+              ? `${selectedProduct.modelYear?.model?.make?.name || ""} ${
+                  selectedProduct.modelYear?.model?.name || ""
+                } ${selectedProduct.modelYear?.year?.value || ""} ${
+                  selectedProduct.partType?.name || ""
+                }`.trim()
               : "ENGINE ASSEMBLY"}
           </h1>
           <div className="text-base text-gray-400 mb-2">
             Option:{" "}
             <span className="text-gray-400">
-              {allSubParts.find(sp => sp.id === selectedSubPartId)?.name || ""}
+              {allSubParts.find((sp) => sp.id === selectedSubPartId)?.name ||
+                ""}
             </span>
           </div>
           <div className="mb-2">
             <select
               className="w-full bg-[#12263A] border  border-[#1a2a44] rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={selectedSubPartId || ""}
-              onChange={e => setSelectedSubPartId(Number(e.target.value))}
+              onChange={(e) => setSelectedSubPartId(Number(e.target.value))}
             >
-              {allSubParts.map(sp => (
-                <option key={sp.id} value={sp.id}>{sp.name}</option>
+              {allSubParts.map((sp) => (
+                <option key={sp.id} value={sp.id}>
+                  {sp.name}
+                </option>
               ))}
             </select>
           </div>
           <div className="text-sm text-white mb-2">
-            Availability: {" "}
-            <span className="text-gray-400">{selectedProduct?.inStock ? "In stock" : "Out of stock"}</span>
+            Availability:{" "}
+            <span className="text-gray-400">
+              {selectedProduct?.inStock ? "In stock" : "Out of stock"}
+            </span>
           </div>
           {selectedProduct?.inStock ? (
             <>
               <div className="flex items-end gap-4 mb-2">
-                <span className="text-4xl font-bold">{selectedProduct?.discountedPrice ? `$${selectedProduct.discountedPrice}` : "N/A"}</span>
-                {selectedProduct?.actualprice && selectedProduct.discountedPrice && selectedProduct.actualprice !== selectedProduct.discountedPrice && (
-                  <span className="text-2xl text-gray-400 line-through">${selectedProduct.actualprice}</span>
-                )}
+                <span className="text-4xl font-bold">
+                  {selectedProduct?.discountedPrice
+                    ? `$${selectedProduct.discountedPrice}`
+                    : "N/A"}
+                </span>
+                {selectedProduct?.actualprice &&
+                  selectedProduct.discountedPrice &&
+                  selectedProduct.actualprice !==
+                    selectedProduct.discountedPrice && (
+                    <span className="text-2xl text-gray-400 line-through">
+                      ${selectedProduct.actualprice}
+                    </span>
+                  )}
               </div>
               <div className="flex gap-4 mb-4">
                 {inCart ? (
                   <div className="flex items-center gap-2">
                     <button
                       className="px-3 py-2 bg-[#1d3759] text-white rounded-l disabled:opacity-50"
-                      onClick={() => setQuantity(q => Math.max(1, q - 1))}
+                      onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       disabled={quantity === 1}
                     >
                       -
@@ -206,7 +257,7 @@ export default function EngineProductPage() {
                     <span className="px-4 py-2 bg-[#12263A]">{quantity}</span>
                     <button
                       className="px-3 py-2 bg-[#1d3759] text-white rounded-r"
-                      onClick={() => setQuantity(q => q + 1)}
+                      onClick={() => setQuantity((q) => q + 1)}
                     >
                       +
                     </button>
@@ -250,9 +301,9 @@ export default function EngineProductPage() {
                   }
                 >
                   {item.title}
-                 <span
+                  <span
                     className={`ml-2 text-2xl inline-block transition-transform duration-300 ${
-                      openAccordion === i ? 'rotate-180' : 'rotate-0'
+                      openAccordion === i ? "rotate-180" : "rotate-0"
                     }`}
                   >
                     ^
@@ -268,7 +319,7 @@ export default function EngineProductPage() {
           </div>
         </div>
       </div>
-      <ProductSection product={selectedProduct} />
+      {selectedProduct && <ProductSection product={selectedProduct} />}
     </>
   );
 }

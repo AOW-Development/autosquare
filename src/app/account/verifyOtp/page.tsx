@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import useAuthStore from "@/store/authStore";
+import { auth } from "@/utils/api";
 
 export default function VerifyOtpPage() {
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
@@ -39,22 +40,45 @@ export default function VerifyOtpPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    
     if (otp.some((digit) => digit === "")) {
       setError("Please enter all 6 digits.");
       return;
     }
-    // Simulate OTP verification
-    setTimeout(() => {
-      setSubmitted(true);
-    }, 500);
 
-    login({ id: "1", email: "s@gmail.com", name: "S" }, "11223344");
-    setTimeout(() => {
-      redirect("/account/profile");
-    }, 2000);
+    const email = localStorage.getItem('tempEmail');
+    if (!email) {
+      setError("Session expired. Please try again.");
+      return;
+    }
+
+    try {
+      const { data } = await auth.verifyOTP({
+        email,
+        otp: otp.join('')
+      });
+
+      setSubmitted(true);
+      localStorage.removeItem('tempEmail');
+
+      // If verification successful, log the user in
+      if (data.token) {
+        login(
+          {
+            id: data.user.id,
+            email: data.user.email,
+            name: data.user.full_name || "",
+          },
+          data.token
+        );
+        redirect("/account/profile");
+      }
+    } catch (error: any) {
+      setError(error.response?.data?.message || "Verification failed. Please try again.");
+    }
   };
 
   return (

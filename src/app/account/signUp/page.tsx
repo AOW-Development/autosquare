@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
-
+import { auth } from "@/utils/api";
 export default function RegistrationPage() {
   const [fields, setFields] = useState({
     email: "",
@@ -57,42 +57,14 @@ export default function RegistrationPage() {
 
     setLoading(true);
     try {
-      // Simulate API call to register user
-      // const response = await fetch("https://dummy-backend.com/api/register", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify({
-      //     email: fields.email,
-      //     password: fields.password,
-      //   }),
-      // });
+      const { data } = await auth.register({
+        email: fields.email,
+        password: fields.password,
+        full_name: "", // You might want to add a name field to your form
+      });
 
-      // if (!response.ok) {
-      //   throw new Error("Registration failed");
-      // }
-
-      // const data = await response.json();
-      // Create dummy data for registration
-      const data = {
-        user: {
-          id: "dummy-id-123",
-          email: fields.email,
-          name: "", // You can set a default or use fields.name if available
-        },
-        token: "dummy-token-abc123",
-      };
-
-      // Store user data and token in Zustand store
-      login(
-        {
-          id: data.user.id,
-          email: fields.email,
-          name: data.user.name || "",
-        },
-        data.token
-      );
+      // Store user data temporarily (they'll need to verify OTP first)
+      localStorage.setItem('tempEmail', fields.email);
 
       router.push("/account/verifyOtp");
     } catch (error) {

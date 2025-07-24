@@ -5,6 +5,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
+import { auth } from "@/utils/api";
 
 export default function SignInPage() {
   const [fields, setFields] = useState({
@@ -44,43 +45,25 @@ export default function SignInPage() {
 
     setLoading(true);
     try {
-      // Simulate API call to sign in
-    //   const response = await fetch("https://dummy-backend.com/api/login", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({
-    //       email: fields.email,
-    //       password: fields.password,
-    //     }),
-    //   });
+      const { data } = await auth.login({
+        email: fields.email,
+        password: fields.password,
+      });
 
-    //   if (!response.ok) {
-    //     throw new Error("Login failed");
-    //   }
-
-    //   const data = await response.json();
-    const data = {
-        user: {
-          id: "dummy-id-123",
-          email: fields.email,
-          name: "", // You can set a default or use fields.name if available
-        },
-        token: "dummy-token-abc123"
-      };
-
-      // Store user data and token in Zustand store
       login(
         {
           id: data.user.id,
-          email: fields.email,
-          name: data.user.name || "",
+          email: data.user.email,
+          name: data.user.full_name || "",
         },
         data.token
       );
 
-      router.push("/account/profile");
+      if (data.requiresOTP) {
+        router.push("/account/verifyOtp");
+      } else {
+        router.push("/account/profile");
+      }
     } catch (error) {
       setErrors({
         general: "Invalid email or password. Please try again.",
@@ -90,40 +73,12 @@ export default function SignInPage() {
     }
   };
 
-  const handleGoogleLogin = async () => {
+  const handleGoogleLogin = () => {
     setLoading(true);
-    try {
-      // Simulate calling a dummy backend endpoint for Google OAuth
-      const response = await fetch(
-        "https://dummy-backend.com/api/auth/google",
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-
-      if (!response.ok) throw new Error("Failed to authenticate with Google");
-
-      const data = await response.json();
-
-      // Store user data and token in Zustand store
-      login(
-        {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.name,
-        },
-        data.token
-      );
-
-      router.push("/account/profile");
-    } catch (err) {
-      setErrors({
-        general: "Google login failed. Please try again.",
-      });
-    } finally {
-      setLoading(false);
-    }
+    // Store current URL as redirect URL
+    localStorage.setItem('redirectUrl', window.location.pathname);
+    // Redirect to backend Google OAuth endpoint
+    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
   };
 
   return (

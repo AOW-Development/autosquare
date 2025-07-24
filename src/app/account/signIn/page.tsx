@@ -55,9 +55,11 @@ export default function SignInPage() {
 
       login(
         {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.full_name || "",
+             id: data.user.id,
+    email: data.user.email,
+    name: data.user.full_name || "",
+    firstName: data.user.first_name || "",
+    lastName: data.user.last_name || "",
         },
         data.token
       );

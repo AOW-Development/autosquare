@@ -25,6 +25,8 @@ export default function AuthCallback() {
         id: '1', // This should come from decoded token
         email: '', // This should come from decoded token
         name: '', // This should come from decoded token
+        firstName: '', // This should come from decoded token
+        lastName: '', // This should come from decoded token
       };
       
       login(user, token);

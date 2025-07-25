@@ -99,8 +99,8 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col gap-6">
           <Banner />
-          <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto">
-            <div className="mb-6 md:mb-0">
+          <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto md:mx-28">
+            <div className="mb-6 md:mb-8">
               <Sidebar activeKey="Profile" />
             </div>
             <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
@@ -201,7 +201,7 @@ export default function ProfilePage() {
                   <span className="font-semibold text-blue-400 w-32 text-right">
                     First Name:
                   </span>
-                  <span className="text-white bg-[#0a2342] px-3 py-1 rounded w-full">
+                  <span className="text-white bg-[#0a2342] px-3 py-4 rounded w-full">
                     {fields.firstName}
                   </span>
                 </div>
@@ -209,7 +209,7 @@ export default function ProfilePage() {
                   <span className="font-semibold text-blue-400 w-32 text-right">
                     Last Name:
                   </span>
-                  <span className="text-white bg-[#0a2342] px-3 py-1 rounded w-full">
+                  <span className="text-white bg-[#0a2342] px-3 py-4 rounded w-full">
                     {fields.lastName}
                   </span>
                 </div>

@@ -57,7 +57,7 @@ function TransmissionFeaturedCategories() {
       >
         TRANSMISSION FOR YOUR MAKE
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-6xl mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-6xl md:mx-2 mx-auto">
         {" "}
         {/* Adjusted gap-x and gap-y */}
         {makers.slice(0, 32).map((maker) => (
@@ -119,11 +119,11 @@ export default function TransmissionPage() {
       </div>
 
       {/* Main content container for px-6 alignment */}
-      <div className=" md:px-2  max-w-7xl mx-auto">
+      <div className=" max-w-7xl mx-auto">
         {" "}
         {/* Adjusted horizontal padding */}
         {/* Transmission Types */}
-        <section className=" pb-3 sm:pb-4 px-6 md:px-10">
+        <section className=" pb-3 sm:pb-4 px-6 md:px-20">
           {/* Adjusted vertical padding */}
           {/* Breadcrumb */}
           <div className="md:mt-30 ">
@@ -236,7 +236,7 @@ export default function TransmissionPage() {
           </div>
         </section>
         {/* Featured Categories (tweaked) */}
-        <div className="max-w-6xl mx-auto w-full px-10 pt-0 pb-4 mt-0">
+        <div className="max-w-6xl mx-auto px-6 md:px-2 w-full md:mx-20 pt-0 pb-4 mt-0">
           {" "}
           {/* Removed px to avoid double padding */}
           <TransmissionFeaturedCategories />

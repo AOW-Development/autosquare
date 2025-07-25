@@ -64,12 +64,12 @@ export default function BillingPage() {
         <form
           onSubmit={(e) => handleSave(e)}
           autoComplete="off"
-          className="flex flex-col md:flex-row w-full max-w-4xl mx-auto"
+          className="flex flex-col md:flex-row w-full max-w-4xl mx-auto md:mx-28"
         >
           {/* <h1 className="text-2xl md:text-3xl font-bold text-center mb-4">
             BILLING ADDRESS
           </h1> */}
-          <div className="mb-6 md:mb-0">
+          <div className="mb-6 md:mb-8">
             <Sidebar activeKey="Billing Address" />
           </div>
           <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
@@ -82,7 +82,7 @@ export default function BillingPage() {
             >
               BILLING ADDRESS
             </h1>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
               <FormField
                 label="First Name*"
                 type="text"

@@ -24,7 +24,7 @@ export default function OrderHistoryPage() {
       <div className="flex-1 flex flex-col gap-6">
         <Banner />
         <div className="flex flex-col md:flex-row w-full max-w-4xl lg:max-w-6xl mx-auto">
-          <div className="mb-6 md:mb-0">
+          <div className="mb-6 md:mb-8">
             <Sidebar activeKey="Order History" />
           </div>
           <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
@@ -82,7 +82,7 @@ export default function OrderHistoryPage() {
                   <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 min-w-[300px] justify-between">
                     <div className="flex flex-row  md:justify-center md:items-center">
                       <div className="font-bold">Total: {order.total}</div>
-                      <div className="flex gap-2 mt-2 items-start md:items-center md:justify-end justify-start">
+                      <div className="flex gap-2 -mt-1 pl-2 items-start md:items-center md:justify-end justify-start">
                         {order.items.map((img, j) =>
                           typeof img === "string" && img.startsWith("+") ? (
                             <span key={j} className="text-gray-400 font-bold">

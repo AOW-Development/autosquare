@@ -20,7 +20,7 @@ export default function EnginePage() {
       <ShopByVehicle />
 
       {/* Engine Types Section */}
-     <section className="max-w-6xl mx-auto px-4 md:px-6 -py-2 md:py-12 mt-4 md:mt-6">
+     <section className="max-w-6xl mx-auto md:mx:20 px-4 -py-2 md:py-12 mt-4 md:mt-6">
 
         {/* Breadcrumb */}
         <div className="flex flex-wrap items-center px-2 sm:px-4 md:px-6 lg:px-3 xl:px-3 2xl:px-3 gap-2 md:py-6 bg-[#091b33] text-[#0F1E35] text-sm sm:text-[15px] font-medium">

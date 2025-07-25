@@ -20,8 +20,8 @@ export default function GaragePage() {
         </div> */}
         <div className="flex-1 flex flex-col gap-6">
           <Banner />
-          <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto">
-            <div className="mb-6 md:mb-0">
+          <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto md:mx-28">
+            <div className="mb-6 md:mb-8">
               <Sidebar activeKey="Garage" />
             </div>
             <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">

@@ -17,12 +17,12 @@ export default function AboutUsPage() {
           />
         </div>
 
-      <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-8 p-4 md:p-6 lg:p-8">
+      <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-8 p-4 lg:p-8">
         {/* <div className="md:w-1/4">
         <Sidebar activeKey="" />
       </div> */}
         <div className="flex-1 flex flex-col gap-6">
-          <div className="max-w-6xl mx-auto w-full">
+          <div className="max-w-6xl mx-auto md:mx-20 w-full">
             {/* Breadcrumb */}
             <div className="flex items-center space-x-2 text-base text-white mb-6">
               <Link

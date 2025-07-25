@@ -29,7 +29,7 @@ export default function Sidebar({ activeKey }: { activeKey: string }) {
           <Link
             key={link.key}
             href={link.href}
-            className={`px-4 py-2 rounded-lg font-semibold transition-colors ${
+            className={`px-4 py-2 rounded-lg font-normal text-[18px] transition-colors ${
               activeKey === link.key
                 ? " text-blue-600"
                 : "hover:bg-[#112244] text-blue-100"

@@ -73,7 +73,7 @@ export default function ShippingPaymentPolicy() {
 
         {/* Title */}
         <h1
-          className="font-audiowide text-white text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
+          className="font-audiowide text-white overflow-hidden text-l md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 tracking-wide uppercase text-left w-full whitespace-nowrap"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",

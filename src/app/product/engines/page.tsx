@@ -72,11 +72,12 @@ export default function EngineProductPage() {
   const year = searchParams.get("year");
   const part = searchParams.get("part");
   const sku = searchParams.get("sku"); // optional
+  const API_BASE = process.env.NEXT_PUBLIC_API_BASE; 
 
   useEffect(() => {
     if (!make || !model || !year || !part) return;
     fetch(
-      `http://localhost:3001/api/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
+      `${API_BASE}/api/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
     )
       .then((res) => res.json())
       .then((data) => {

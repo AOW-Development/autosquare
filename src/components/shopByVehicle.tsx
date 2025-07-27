@@ -39,7 +39,7 @@ const ShopByVehicle: React.FC = () => {
   const [part, setPart] = useState("");
   const [focused, setFocused] = useState<string | null>(null);
   const [availableYears, setAvailableYears] = useState([]);
-  const API_BASE = process.env.NEXT_PUBLIC_API_BASE; 
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL; 
   const makeActive = true;
   const modelActive = make !== "";
   const yearActive = make !== "" && model !== "";
@@ -60,7 +60,7 @@ const ShopByVehicle: React.FC = () => {
 
   useEffect(() => {
     if (make && model) {
-      fetch(`${API_BASE}/api/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
+      fetch(`${API_BASE}/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
         .then(res => res.json())
         .then(data => setAvailableYears(data))
         .catch(() => setAvailableYears([]));

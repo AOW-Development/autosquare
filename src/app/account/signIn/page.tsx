@@ -78,12 +78,14 @@ export default function SignInPage() {
     }
   };
 
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+
   const handleGoogleLogin = () => {
     setLoading(true);
     // Store current URL as redirect URL
     localStorage.setItem('redirectUrl', window.location.pathname);
     // Redirect to backend Google OAuth endpoint
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    window.location.href = `${API_BASE}/auth/google`;
   };
 
   return (

@@ -3,21 +3,72 @@ import { useRequireAuth } from "@/hooks/useAuth";
 // import Link from "next/link";
 // import Image from "next/image";
 import FormField from "@/components/FormField";
-import { useState } from "react";
+import { use, useState, useEffect } from "react";
 import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import useAuthStore from "@/store/authStore";
 
 export default function ProfilePage() {
-  const { user } = useRequireAuth();
+  const token = useAuthStore((state) => state.token);
+  const { isLoggedIn, user } = useRequireAuth();
+  if (!isLoggedIn) return null; // or a loading spinner
+  const setUser = useAuthStore((state) => (user: any) => state.login(user, token!));
   const [fields, setFields] = useState({
     firstName: user?.firstName || "",
     lastName: user?.lastName || "",
     email: user?.email || "",
     currentPassword: "",
     newPassword: "",
-    confirmNewPassword: "",
+    confirmNewPassword:
+     "",
   });
+
+  // Fetch profile from backend on mount
+  useEffect(() => {
+    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+    if (!token) return;
+    fetch(`${API_BASE}/auth/profile`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch profile");
+        return res.json();
+      })
+      .then((profile) => {
+        // Map backend fields to frontend fields
+        setFields((f) => ({
+          ...f,
+          firstName: profile.full_name?.split(" ")[0] || "",
+          lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
+          email: profile.email || "",
+        }));
+        // setUser({
+        //   ...user,
+        //   firstName: profile.full_name?.split(" ")[0] || "",
+        //   lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
+        //   email: profile.email || "",
+        // });
+      })
+      .catch((err) => {
+        // Optionally handle error
+        console.error(err);
+      });
+  }, [token]);
+
+  useEffect(() => {
+    setFields((f) => ({
+      ...f,
+      firstName: user?.firstName || "",
+      lastName: user?.lastName || "",
+      email: user?.email || "",
+    }));
+  }, [user]);
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
@@ -55,15 +106,17 @@ export default function ProfilePage() {
     }
 
     try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL;
       // Simulate API call to update profile
       const response = await fetch(
-        "https://dummy-backend.com/api/profile/update",
+        `${API_BASE}/auth/profile`,
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify(fields),
+          // no body for GET
         }
       );
 

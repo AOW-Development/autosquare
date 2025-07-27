@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { useCartStore } from "@/store/cartStore";
 
 interface CartItem {
   id: number;
@@ -14,38 +15,9 @@ interface CartItem {
 }
 
 export default function Cart() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      title: "Title name of part",
-      subtitle:
-        "Ford Bronco 1991 | 4.9L | from 2/3/91 (AIR inner manifold) | E4OD transmission",
-      price: 800,
-      quantity: 1,
-      image: "/Images/photo-1.png",
-    },
-    {
-      id: 2,
-      title: "Title name of part",
-      subtitle: "Ford Bronco 1991",
-      price: 800,
-      quantity: 1,
-      image: "/Images/photo-1.png",
-    },
-  ]);
-
-  const updateQuantity = (id: number, newQuantity: number) => {
-    if (newQuantity < 1) return;
-    setCartItems((prev) =>
-      prev.map((item) =>
-        item.id === id ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const removeItem = (id: number) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
-  };
+  const cartItems = useCartStore((s) => s.items);
+  const updateQuantity = useCartStore((s) => s.updateQuantity);
+  const removeItem = useCartStore((s) => s.removeItem);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,

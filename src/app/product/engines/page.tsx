@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import AddedCartPopup from "../../account/modal/AddedCartPopup/page";
 import { useSearchParams } from "next/navigation";
+import { useCartStore } from "@/store/cartStore";
 
 const galleryImages = [
   "/Images/var.png",
@@ -73,6 +74,7 @@ export default function EngineProductPage() {
   const part = searchParams.get("part");
   const sku = searchParams.get("sku"); // optional
   const API_BASE = process.env.NEXT_PUBLIC_API_URL; 
+  const addItem = useCartStore((s) => s.addItem);
 
   useEffect(() => {
     if (!make || !model || !year || !part) return;
@@ -110,6 +112,14 @@ export default function EngineProductPage() {
   }, [selectedSubPartId, products]);
 
   const handleAddToCart = () => {
+    if (!selectedProduct) return;
+    const price = selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0;
+    addItem({
+      id: selectedProduct.sku,
+      name: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
+      price,
+      quantity,
+    });
     setShowCartPopup(true);
     setInCart(true);
     setTimeout(() => setShowCartPopup(false), 2000);

@@ -472,6 +472,9 @@ export default function CatalogPage() {
                                 addItem({
                                   id: `engine-${indexOfFirstItem + index}`,
                                   name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+                                  title: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+                                  subtitle: item.subParts && item.subParts.length > 0 ? item.subParts.map(subPart => subPart.name).join(', ') : 'N/A',
+                                  image: item.images && item.images.length > 0 ? item.images[0] : '/Images/default-engine.png',
                                   quantity: 1,
                                   price: item.actualprice || 0
                                 });

@@ -117,6 +117,9 @@ export default function EngineProductPage() {
     addItem({
       id: selectedProduct.sku,
       name: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
+      title: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
+      subtitle: selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A',
+      image: galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png',
       price,
       quantity,
     });

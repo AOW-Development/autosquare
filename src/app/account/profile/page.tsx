@@ -3,21 +3,82 @@ import { useRequireAuth } from "@/hooks/useAuth";
 // import Link from "next/link";
 // import Image from "next/image";
 import FormField from "@/components/FormField";
-import { useState } from "react";
+import { use, useState, useEffect, useCallback } from "react";
 import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import useAuthStore from "@/store/authStore";
 
 export default function ProfilePage() {
-  const { user } = useRequireAuth();
+  const token = useAuthStore((state) => state.token);
+  const { isLoggedIn, user } = useRequireAuth();
+  
+  if (!isLoggedIn) return null; // or a loading spinner
+  
   const [fields, setFields] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
+    firstName: "",
+    lastName: "",
+    email: "",
     currentPassword: "",
     newPassword: "",
     confirmNewPassword: "",
   });
+
+  const [profileLoaded, setProfileLoaded] = useState(false);
+
+  // Consolidated useEffect to handle profile data
+  useEffect(() => {
+    const initializeProfile = async () => {
+      if (!token) return;
+      
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${API_BASE}/auth/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const profile = await response.json();
+          // Use API data if available
+          setFields(prev => ({
+            ...prev,
+            firstName: profile.full_name?.split(" ")[0] || "",
+            lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
+            email: profile.email || "",
+          }));
+        } else {
+          // Fallback to user data from auth store if API fails
+          setFields(prev => ({
+            ...prev,
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            email: user?.email || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        // Fallback to user data from auth store
+        setFields(prev => ({
+          ...prev,
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+          email: user?.email || "",
+        }));
+      } finally {
+        setProfileLoaded(true);
+      }
+    };
+
+    // Only initialize once when component mounts and token is available
+    if (token && !profileLoaded) {
+      initializeProfile();
+    }
+  }, [token, user, profileLoaded]);
+
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{
     email?: string;
@@ -55,15 +116,17 @@ export default function ProfilePage() {
     }
 
     try {
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL;
       // Simulate API call to update profile
       const response = await fetch(
-        "https://dummy-backend.com/api/profile/update",
+        `${API_BASE}/auth/profile`,
         {
-          method: "POST",
+          method: "GET",
           headers: {
             "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify(fields),
+          // no body for GET
         }
       );
 

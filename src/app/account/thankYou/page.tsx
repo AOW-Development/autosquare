@@ -1,7 +1,53 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import useBillingStore from "@/store/billingStore";
+import { useCartStore } from "@/store/cartStore";
+import { generateOrderNumber } from "@/utils/order";
 
 export default function ThankYouPage() {
+  const { billingInfo } = useBillingStore();
+  const cartItems = useCartStore((s) => s.items);
+  const [orderNumber, setOrderNumber] = useState("");
+  const [orderDate, setOrderDate] = useState("");
+  const [paymentInfo, setPaymentInfo] = useState<{
+    method: string;
+    lastFour?: string;
+  }>({ method: "card" });
+
+  useEffect(() => {
+    // Generate order number and date
+    setOrderNumber(generateOrderNumber());
+    setOrderDate(new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }));
+
+    // Get payment info from localStorage (set during payment process)
+    const storedPaymentMethod = localStorage.getItem('paymentMethod') || 'card';
+    const storedCardData = localStorage.getItem('cardData');
+    
+    if (storedPaymentMethod === 'card' && storedCardData) {
+      try {
+        const cardData = JSON.parse(storedCardData);
+        const lastFour = cardData.cardNumber?.slice(-4) || '****';
+        setPaymentInfo({ method: 'card', lastFour });
+      } catch {
+        setPaymentInfo({ method: 'card', lastFour: '****' });
+      }
+    } else {
+      setPaymentInfo({ method: storedPaymentMethod });
+    }
+  }, []);
+
+  // Calculate totals
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
+  const total = subtotal + salesTax;
+
   return (
    <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
   {/* Background Car Image */}
@@ -44,11 +90,29 @@ export default function ThankYouPage() {
                   Deliver To
                 </div>
                 <div className="text-white text-sm mt-1 leading-tight">
-                  Kseniia Melnyk
-                  <br />
-                  Street, 1, City, State, ZIP code, Country
-                  <br />
-                  (888) 000-0000
+                  {billingInfo ? (
+                    <>
+                      {billingInfo.firstName} {billingInfo.lastName}
+                      <br />
+                      {billingInfo.address}
+                      {billingInfo.apartment && (
+                        <>
+                          <br />
+                          {billingInfo.apartment}
+                        </>
+                      )}
+                      <br />
+                      {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
+                      <br />
+                      {billingInfo.phone}
+                    </>
+                  ) : (
+                    <>
+                      No billing information available
+                      <br />
+                      Please contact support
+                    </>
+                  )}
                 </div>
               </div>
               <div className="flex flex-col items-start md:items-center">
@@ -56,15 +120,23 @@ export default function ThankYouPage() {
                   Payment Method
                 </div>
                 <div className="flex items-center gap-3 mt-1">
-                  <span className="text-white text-sm tracking-widest">
-                    **** **** **** 8888
-                  </span>
-                  <Image
-                    src="/Images/mcard.png"
-                    alt="Mastercard"
-                    width={32}
-                    height={20}
-                  />
+                  {paymentInfo.method === 'card' ? (
+                    <>
+                      <span className="text-white text-sm tracking-widest">
+                        **** **** **** {paymentInfo.lastFour || '****'}
+                      </span>
+                      <Image
+                        src="/Images/mcard.png"
+                        alt="Card"
+                        width={32}
+                        height={20}
+                      />
+                    </>
+                  ) : (
+                    <span className="text-white text-sm">
+                      PayPal
+                    </span>
+                  )}
                 </div>
               </div>
             </div>
@@ -73,62 +145,46 @@ export default function ThankYouPage() {
             {/* Order Details */}
             <div className="flex flex-row justify-between items-center mb-2">
               <div className="uppercase text-sm text-white font-semibold">
-                Order Details <span className="font-normal"> #12345</span>
+                Order Details <span className="font-normal">#{orderNumber}</span>
               </div>
-              <div className="text-sm text-white">21 July 2024</div>
+              <div className="text-sm text-white">{orderDate}</div>
             </div>
-            {/* Item 1 */}
-            <div className="flex flex-row items-start gap-4 py-2">
-              <Image
-                src="/Images/photo-1.png"
-                alt="Part"
-                width={64}
-                height={64}
-                className="rounded-lg"
-              />
-              <div className="flex-1">
-                <div className="text-base text-white font-semibold">
-                  Title name of part
+            {/* Cart Items */}
+            {cartItems.length > 0 ? (
+              cartItems.map((item) => (
+                <div key={item.id} className="flex flex-row items-start gap-4 py-2">
+                  <Image
+                    src={item.image}
+                    alt={item.title}
+                    width={64}
+                    height={64}
+                    className="rounded-lg"
+                  />
+                  <div className="flex-1">
+                    <div className="text-base text-white font-semibold">
+                      {item.title}
+                    </div>
+                    <div className="text-sm text-gray-300">{item.subtitle}</div>
+                    <div className="text-sm text-gray-300">{item.quantity} pc{item.quantity > 1 ? 's' : ''}.</div>
+                  </div>
+                  <div className="text-base text-white font-semibold min-w-[60px] text-right">
+                    ${item.price * item.quantity}
+                  </div>
                 </div>
-                <div className="text-sm text-gray-300">Ford Bronco 1991</div>
-                <div className="text-sm text-gray-300">4.9L</div>
-                <div className="text-sm text-gray-300">
-                  from 2/3/91 (AIR inner manifold)
+              ))
+            ) : (
+              <div className="flex flex-row items-start gap-4 py-2">
+                <div className="text-white text-center w-full">
+                  No items in cart
                 </div>
-                <div className="text-sm text-gray-300">E4OD transmission</div>
-                <div className="text-sm text-gray-300">1 pc.</div>
               </div>
-              <div className="text-base text-white font-semibold min-w-[60px] text-right">
-                $800
-              </div>
-            </div>
-            {/* <div className="border-t border-gray-700 my-3" /> */}
-            {/* Item 2 */}
-            <div className="flex flex-row items-start gap-4 py-2">
-              <Image
-                src="/Images/photo-1.png"
-                alt="Part"
-                width={64}
-                height={64}
-                className="rounded-lg"
-              />
-              <div className="flex-1">
-                <div className="text-base text-white font-semibold">
-                  Title name of part
-                </div>
-                <div className="text-sm text-gray-300">Ford Bronco 1991</div>
-                <div className="text-sm text-gray-300">1 pc.</div>
-              </div>
-              <div className="text-base text-white font-semibold min-w-[60px] text-right">
-                $800
-              </div>
-            </div>
+            )}
             <div className="border-t border-white my-3" />
             {/* Summary Totals */}
             <div className="flex flex-col gap-1 text-base text-white mt-2">
               <div className="flex justify-between">
                 <span>Cart total:</span>
-                <span>$1600</span>
+                <span>${subtotal}</span>
               </div>
               <div className="flex justify-between">
                 <span>Shipping:</span>
@@ -136,13 +192,13 @@ export default function ThankYouPage() {
               </div>
               <div className="flex justify-between">
                 <span>Sales Tax:</span>
-                <span>$46</span>
+                <span>${salesTax}</span>
               </div>
             </div>
             <div className="border-t border-white my-4" />
             <div className="flex justify-between items-center text-lg font-semibold text-white uppercase">
               <span>Total:</span>
-              <span>$1646</span>
+              <span>${total}</span>
             </div>
             {/* Actions */}
             <div className="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">

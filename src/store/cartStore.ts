@@ -4,6 +4,9 @@ import { create, StateCreator } from "zustand";
 export type CartItem = {
   id: string;
   name: string;
+  title: string;
+  subtitle: string;
+  image: string;
   quantity: number;
   expiresAt?: number; // timestamp in ms, optional
   price:number;

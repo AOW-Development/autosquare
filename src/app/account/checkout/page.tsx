@@ -4,20 +4,12 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import ProtectedRoute from "@/components/ProtectedRoute";
-import useBillingStore from "@/store/billingStore"; // <-- Add this import
-
-interface CartItem {
-  id: number;
-  title: string;
-  subtitle: string;
-  details: string[];
-  price: number;
-  quantity: number;
-  image: string;
-}
+import useBillingStore from "@/store/billingStore";
+import { useCartStore, CartItem } from "@/store/cartStore";
 
 export default function Checkout() {
-  const { billingInfo, setBillingInfo } = useBillingStore(); // <-- Use billing store
+  const { billingInfo, setBillingInfo } = useBillingStore();
+  const { items } = useCartStore();
 
   const [formData, setFormData] = useState(
     billingInfo || {
@@ -72,36 +64,8 @@ export default function Checkout() {
   const [couponCode, setCouponCode] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
 
-  const cartItems: CartItem[] = [
-    {
-      id: 1,
-      title: "Title name of part",
-      subtitle: "Ford Bronco 1991",
-      details: [
-        "4.9L",
-        "from 2/3/91 (AIR inner manifold)",
-        "E4OD transmission",
-        "1 pc.",
-      ],
-      price: 800,
-      quantity: 1,
-      image: "/Images/photo-1.png",
-    },
-    {
-      id: 2,
-      title: "Title name of part",
-      subtitle: "Ford Bronco 1991",
-      details: [
-        "4.9L",
-        "from 2/3/91 (AIR inner manifold)",
-        "E4OD transmission",
-        "1 pc.",
-      ],
-      price: 800,
-      quantity: 1,
-      image: "/Images/photo-1.png",
-    },
-  ];
+  // Get first 2 items from cart store
+  const cartItems = items.slice(0, 2);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -439,14 +403,14 @@ export default function Checkout() {
                               {item.subtitle}
                             </p>
                             <div className="mt-1 space-y-1">
-                              {item.details.map((detail, index) => (
+                              {/* /{item.details.map((detail, index) => ( */}
                                 <p
-                                  key={index}
+                                  // key={index}
                                   className="font-exo2 text-xs text-gray-400"
                                 >
-                                  {detail}
+                                  {item.id}
                                 </p>
-                              ))}
+                              {/* ))} */}
                             </div>
                           </div>
                           <p className="font-exo2 font-semibold">

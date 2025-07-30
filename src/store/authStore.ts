@@ -7,9 +7,7 @@ interface User {
   email: string;
   firstName: string;
   lastName: string;
-   [key: string]: string | number | boolean;
-  // [key: string]: string | number | boolean; // Allow additional properties
-// >>>>>>> 45fea3993186afa428764c11a8e04c60ee5b19b1
+  [key: string]: string | number | boolean;
 }
 
 interface AuthState {
@@ -21,55 +19,38 @@ interface AuthState {
   setToken: (token: string) => void;
 }
 
-// <<<<<<< HEAD
 const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
       token: null,
       isLoggedIn: false,
-// // =======
-// const useAuthStore = create<AuthState>((set) => ({
-//   user: null,
-//   token: null,
-//   isLoggedIn: false,
 
-  login: (user, token) =>
-    set({
-      user,
-      token,
-      isLoggedIn: true,
-      // firstName: user.firstName, // Assuming user has a name field
-      // lastName: user.lastName, // Assuming user has a name field
-    }),
-  logout: () =>
-    set({
-      user: null,
-      token: null,
-      isLoggedIn: false,
-      // firstName: "",
-      // lastName: "",
-    }),
-// >>>>>>> 45fea3993186afa428764c11a8e04c60ee5b19b1
-
-      // login: (user, token) => {
-      //   localStorage.setItem('token', token);
-      //   set({
-      //     user,
-      //     token,
-      //     isLoggedIn: true,
-      //   });
-      // },
-      // logout: () => {
-      //   localStorage.removeItem('token');
-      //   localStorage.removeItem('tempEmail');
-      //   set({
-      //     user: null,
-      //     token: null,
-      //     isLoggedIn: false,
-      //   });
-      // },
-      setToken: (token) => set({ token }),
+      login: (user, token) => {
+        // Also set in localStorage for backward compatibility
+        localStorage.setItem('token', token);
+        set({
+          user,
+          token,
+          isLoggedIn: true,
+        });
+      },
+      
+      logout: () => {
+        // Clean up localStorage
+        localStorage.removeItem('token');
+        localStorage.removeItem('tempEmail');
+        set({
+          user: null,
+          token: null,
+          isLoggedIn: false,
+        });
+      },
+      
+      setToken: (token) => {
+        localStorage.setItem('token', token);
+        set({ token });
+      },
     }),
     {
       name: 'auth-storage',

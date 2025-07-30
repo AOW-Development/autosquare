@@ -52,7 +52,7 @@ export default function TestimonialsPage() {
   return (
     <div className="relative min-h-screen bg-[#0A1621] pb-32">
       {/* Banner */}
-      <div className="w-full h-50 md:h-84 relative">
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
         <Image
           src="/Images/banner.png"
           alt="Banner"
@@ -98,7 +98,8 @@ export default function TestimonialsPage() {
 
       {/* Testimonials Grid */}
       <div className="relative z-10 px-10 md:px-25 lg:px-40">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-0">
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0  gap-y-4">
+
           {testimonials.map((t, i) => {
             // Calculate if this is in the last row
             const itemsPerRow = 3;

@@ -112,7 +112,7 @@ export default function PayMethod() {
   return (
     <ProtectedRoute>
       <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
-        <div className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
             <Link
               href="/"
@@ -285,16 +285,48 @@ export default function PayMethod() {
                       onChange={(e) => setPaymentMethod(e.target.value)}
                       className="form-radio text-[#009AFF] focus:ring-blue-300"
                     />
-                    <span className="font-exo2">
-                      Pay with Credit or Debit card
-                    </span>
-                    <Image
-                      src="/Images/payment.png"
-                      alt="Payment Methods"
-                      width={120}
-                      height={24}
-                      className="h-6 inline-block md:ml-80"
-                    />
+                 <div className="flex items-center justify-between w-full">
+                    <span className="font-exo2">Pay with Credit or Debit card</span>
+
+                    <div className="flex space-x-[8px]">
+                      <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/visa-inverted_82058.png"
+                          alt="Visa"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                      <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/mastercard_82049.png"
+                          alt="Mastercard"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                      <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/americanexpress_82060 1.png"
+                          alt="Amex"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                      <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/discover_82082.png"
+                          alt="Discover"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                    </div>
+                    </div>
                   </label>
 
                   {paymentMethod === "card" && (

@@ -3,31 +3,37 @@ import Link from "next/link";
 
 export default function ThankYouPage() {
   return (
-    <div className="min-h-screen w-full bg-[#0B1422] flex flex-col items-center justify-center relative overflow-x-hidden">
-      {/* Side-by-side layout for md+ */}
-      <div className="w-full flex items-center justify-center min-h-screen relative">
-        {/* Car image full width */}
-        <div className="absolute inset-0 w-full h-full">
-          <div className="relative w-full h-full">
-            <Image
-              src="/Images/thx_car.png"
-              alt="Car background"
-              fill
-              className="object-cover object-center"
-              priority
-            />
-          </div>
-        </div>
-        {/* Content card centered */}
-        <main className="relative z-10 w-full flex flex-col items-center justify-center px-4 py-8">
-          <div className="mx-auto w-full max-w-lg lg:max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
+   <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
+  {/* Background Car Image */}
+  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+    <div className="w-[700px] h-[624px] relative">
+      <Image
+        src="/Images/thx_car.png"
+        alt="Car background"
+        fill
+        className="object-contain object-center"
+        priority
+      />
+    </div>
+  </div>
+
+  {/* Thank You Content */}
+  <main className="relative z-10 w-full flex justify-center md:justify-end md:pr-100 px-4">
+
+    <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
             {/* Logo and Title */}
             <div className="flex flex-col items-center mb-6">
               {/* <Image src="/Images/logo.svg" alt="Brand Logo" width={80} height={80} className="mb-2" priority /> */}
-              <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide">
+              <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide " style={{
+              fontFamily: "Audiowide, sans-serif",
+              letterSpacing: "0.1em",
+            }}>
                 Thank you
               </h1>
-              <div className="text-white text-xl md:text-2xl lg:text-3xl font-normal italic text-center mt-1">
+              <div className="text-white text-xl md:text-2xl lg:text-3xl font-normal text-center mt-1" style={{
+              fontFamily: "Audiowide, sans-serif",
+              letterSpacing: "0.1em",
+            }}>
                 for shopping with us!
               </div>
             </div>
@@ -154,7 +160,8 @@ export default function ThankYouPage() {
             </div>
           </div>
         </main>
-      </div>
-    </div>
+        </div>
+     
+   
   );
 }

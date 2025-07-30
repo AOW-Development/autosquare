@@ -4,6 +4,11 @@ import Image from "next/image";
 
 const cards = [
   {
+    icon: "/Images/home/whychooseus/Vector.png",
+    title: "Shipping's on Us",
+    desc: "Get your ordered parts delivered expeditiously. Initial shipping on All Orders is FREE! (*T&C Apply)",
+  },
+  {
     icon: "/Images/home/whychooseus/easy-replacement-logo.png",
     title: "Easy Replacements",
     desc: "Enjoy peace of mind with easy returns and replacements",
@@ -24,23 +29,21 @@ const cards = [
     desc: "We strive and fulfill all our customer orders in a timely manner",
   },
   {
-    icon: "/Images/home/whychooseus/Vector.png",
+    icon: "/Images/home/whychooseus/Why Us.png",
     title: "Competitive Pricing",
     desc: "We provide competitive pricing on all our products with multiple options to meet your budget",
   },
-  {
-    icon: "/Images/home/whychooseus/easy-replacement-logo.png",
-    title: "Shipping's on Us",
-    desc: "Get your ordered parts delivered expeditiously. Initial shipping on All Orders is FREE! (*T&C Apply)",
-  },
+  
 ];
 
 export default function WhyChooseUs() {
   return (
-    <section className="bg-[#091b33] py-8 px-2 md:py-16 md:px-0">
-      <div className="max-w-6xl mx-auto md:mx-40">
+     <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 py-2 md:px-0">
+
+      <div className="max-w-6xl mx-auto px-0">
+
         <h2
-          className="text-2xl md:text-4xl font-audiowide text-white mb-4"
+          className="font-audiowide text-white text-2xl sm:text-4xl mt-10 md:mt-10 mb-6 md:mb-10 tracking-wide uppercase text-left w-full pl-0"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.04em",
@@ -49,6 +52,7 @@ export default function WhyChooseUs() {
         >
           WHY CHOOSE US
         </h2>
+
         <p className="text-white font-exo2 mb-6 md:mb-10">
           Our goal is to make the buying process as seamless and worry free as
           possible for our customers and to provide after sales service in a
@@ -69,7 +73,7 @@ export default function WhyChooseUs() {
                 className="mb-4"
               />
               <h3
-                className="font-audiowide text-base md:text-lg text-white mb-2"
+                className="font-audiowide text-base md:text-lg font-bold text-white mb-2"
                 // style={{
                 //   fontFamily: "Audiowide, sans-serif",
                 //   letterSpacing: "0.04em",
@@ -77,7 +81,7 @@ export default function WhyChooseUs() {
               >
                 {card.title}
               </h3>
-              <p className=" text-white text-xs">{card.desc}</p>
+              <p className=" text-white md:text-lg text-sm">{card.desc}</p>
             </div>
           ))}
         </div>

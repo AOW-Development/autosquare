@@ -9,39 +9,40 @@ import Link from "next/link";
 function TransmissionFeaturedCategories() {
   // Copy makers array from FeaturedCategories
   const makers = [
-    { name: "Acura", logo: "/Images/home/Makers-logos/car_logo (1).png" },
-    { name: "Cadillac", logo: "/Images/home/Makers-logos/car_logo (2).png" },
-    { name: "Ford", logo: "/Images/home/Makers-logos/car_logo (3).png" },
-    { name: "Infiniti", logo: "/Images/home/Makers-logos/car_logo (4).png" },
-    { name: "Kia", logo: "/Images/home/Makers-logos/car_logo (5).png" },
-    { name: "Mazda", logo: "/Images/home/Makers-logos/car_logo (6).png" },
-    { name: "Pontiac", logo: "/Images/home/Makers-logos/car_logo (7).png" },
-    { name: "Subaru", logo: "/Images/home/Makers-logos/car_logo (8).png" },
-    { name: "Volvo", logo: "/Images/home/Makers-logos/car_logo (9).png" },
-    { name: "Suzuki", logo: "/Images/home/Makers-logos/car_logo (10).png" },
-    { name: "Porsche", logo: "/Images/home/Makers-logos/car_logo (11).png" },
-    // { name: "Hyundai", logo: "/Images/home/Makers-logos/car_logo (12).png" },
-    { name: "mercedes", logo: "/Images/home/Makers-logos/car_logo (13).png" },
-    { name: "Landrover", logo: "/Images/home/Makers-logos/car_logo (14).png" },
-    { name: "Isuzu", logo: "/Images/home/Makers-logos/car_logo (15).png" },
-    { name: "Toyota", logo: "/Images/home/Makers-logos/car_logo (16).png" },
-    { name: "Saab", logo: "/Images/home/Makers-logos/car_logo (17).png" },
-    { name: "Lexus", logo: "/Images/home/Makers-logos/car_logo (18).png" },
-    { name: "Jaguar", logo: "/Images/home/Makers-logos/car_logo (19).png" },
-    { name: "Honda", logo: "/Images/home/Makers-logos/car_logo (20).png" },
-    { name: "BMW", logo: "/Images/home/Makers-logos/car_logo (21).png" },
-    { name: "Volkswagen", logo: "/Images/home/Makers-logos/car_logo (22).png" },
-    { name: "Saturn", logo: "/Images/home/Makers-logos/car_logo (23).png" },
-    { name: "Nissan", logo: "/Images/home/Makers-logos/car_logo (24).png" },
-    { name: "Lincoln", logo: "/Images/home/Makers-logos/car_logo (25).png" },
-    { name: "Jeep", logo: "/Images/home/Makers-logos/car_logo (26).png" },
-    { name: "Hyundai", logo: "/Images/home/Makers-logos/car_logo (27).png" },
-    { name: "Dodge", logo: "/Images/home/Makers-logos/car_logo (28).png" },
-    // { name: "Buick", logo: "/Images/home/Makers-logos/car_logo (29).png" },
-    // { name: "Suzuki", logo: "/Images/home/Makers-logos/car_logo (30).png" },
-    // { name: "Toyota", logo: "/Images/home/Makers-logos/car_logo (31).png" },
-    // { name: "Volkswagen", logo: "/Images/home/Makers-logos/car_logo (32).png" },
-    { name: "Audi", logo: "/Images/home/Makers-logos/car_logo.png" },
+  { name: "Acura", logo: "/Images/home/Makers-logos/car_logo (1).png" },
+  { name: "Audi", logo: "/Images/home/Makers-logos/audi.png" },
+  { name: "BMW", logo: "/Images/home/Makers-logos/car_logo (21).png" },
+  { name: "Buick", logo: "/Images/home/Makers-logos/car_logo (29).png" },
+  { name: "Cadillac", logo: "/Images/home/Makers-logos/car_logo (2).png" },
+  { name: "Chevrolet", logo: "/Images/home/Makers-logos/chevrolet.png" },
+  { name: "Chrysler", logo: "/Images/home/Makers-logos/car_logo (31).png" },
+  { name: "Dodge", logo: "/Images/home/Makers-logos/car_logo (28).png" },
+  { name: "Ford", logo: "/Images/home/Makers-logos/car_logo (3).png" },
+  { name: "GMC", logo: "/Images/home/Makers-logos/car_logo (27).png" },
+  { name: "Honda", logo: "/Images/home/Makers-logos/car_logo (20).png" },
+  { name: "Hyundai", logo: "/Images/home/Makers-logos/car_logo (27).png" },
+  { name: "Infiniti", logo: "/Images/home/Makers-logos/car_logo (4).png" },
+  { name: "Isuzu", logo: "/Images/home/Makers-logos/car_logo (15).png" },
+  { name: "Jaguar", logo: "/Images/home/Makers-logos/car_logo (19).png" },
+  { name: "Jeep", logo: "/Images/home/Makers-logos/car_logo (26).png" },
+  { name: "Kia", logo: "/Images/home/Makers-logos/car_logo (5).png" },
+  { name: "Land Rover", logo: "/Images/home/Makers-logos/car_logo (14).png" },
+  { name: "Lexus", logo: "/Images/home/Makers-logos/car_logo (18).png" },
+  { name: "Lincoln", logo: "/Images/home/Makers-logos/car_logo (25).png" },
+  { name: "Mazda", logo: "/Images/home/Makers-logos/car_logo (6).png" },
+  { name: "Mercedes-Benz", logo: "/Images/home/Makers-logos/car_logo (13).png" },
+  { name: "Mitsubishi", logo: "/Images/home/Makers-logos/car_logo.png" },
+  { name: "Nissan", logo: "/Images/home/Makers-logos/car_logo (24).png" },
+  { name: "Pontiac", logo: "/Images/home/Makers-logos/car_logo (7).png" },
+  { name: "Porsche", logo: "/Images/home/Makers-logos/car_logo (11).png" },
+  { name: "Saab", logo: "/Images/home/Makers-logos/car_logo (17).png" },
+  { name: "Saturn", logo: "/Images/home/Makers-logos/car_logo (23).png" },
+  { name: "Subaru", logo: "/Images/home/Makers-logos/car_logo (8).png" },
+  { name: "Suzuki", logo: "/Images/home/Makers-logos/car_logo (10).png" },
+  { name: "Toyota", logo: "/Images/home/Makers-logos/car_logo (16).png" },
+  { name: "Volkswagen", logo: "/Images/home/Makers-logos/car_logo (22).png" },
+  { name: "Volvo", logo: "/Images/home/Makers-logos/car_logo (9).png" },
+
   ];
   const arrowIcon = "/Images/home/Makers-logos/arrows.png";
   return (
@@ -57,10 +58,10 @@ function TransmissionFeaturedCategories() {
       >
         TRANSMISSION FOR YOUR MAKE
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-6xl md:mx-2 mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-7xl md:mx-2 mx-auto">
         {" "}
         {/* Adjusted gap-x and gap-y */}
-        {makers.slice(0, 32).map((maker) => (
+        {makers.slice(0, 33).map((maker) => (
           <div
             key={maker.name}
             className="flex items-center md:p-4 cursor-pointer justify-between text-white border-[#00A3FF] border-b hover:bg-[rgba(59,131,246,0.32)] hover:border-0 hover:rounded-md hover:shadow-[0_0_24px_4px_rgba(59,130,246,0.4)]  hover:outline-2 hover:outline-blue-500  hover:text-blue-400 transition-all"
@@ -99,9 +100,9 @@ function TransmissionFeaturedCategories() {
 
 export default function TransmissionPage() {
   return (
-    <div className="bg-[#091b33] min-h-screen">
+    <div className="bg-[#091b33] min-h-screen overflow-hidden">
       {/* Banner */}
-      <div className="w-full h-[120px] sm:h-[180px] md:h-[240px] lg:h-[320px] relative">
+      <div className="w-full h-[120px] sm:h-[180px] md:h-[240px] lg:h-[320px] relative ">
         {" "}
         {/* Made banner height more responsive */}
         <Image
@@ -112,18 +113,18 @@ export default function TransmissionPage() {
           priority
         />
       </div>
-      <div className="mt-4 sm:mt-6">
+      <div className="mt-4 sm:mt-6 pl-4">
         {" "}
         {/* Adjusted top margin */}
         <ShopByVehicle />
       </div>
 
       {/* Main content container for px-6 alignment */}
-      <div className=" max-w-7xl mx-auto">
+      <div className=" max-w-7xl mx-auto px-4">
         {" "}
         {/* Adjusted horizontal padding */}
         {/* Transmission Types */}
-        <section className=" pb-3 sm:pb-4 px-6 md:px-20">
+         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-12 md:pt-2">
           {/* Adjusted vertical padding */}
           {/* Breadcrumb */}
           <div className="md:mt-30 ">
@@ -143,14 +144,14 @@ export default function TransmissionPage() {
               <Image src="/engine/arrows.png" alt=">" width={12} height={12} />{" "}
               {/* Adjusted arrow size */}
               <a href="/autoParts">
-                <span className="text-gray-400 text-xs sm:text-sm">
+                <span className="text-gray-400 text-xs sm:text-lg">
                   AutoParts
                 </span>{" "}
                 {/* Adjusted font size */}
               </a>
               <Image src="/engine/arrows.png" alt=">" width={12} height={12} />{" "}
               {/* Adjusted arrow size */}
-              <span className="text-white text-xs sm:text-sm">
+              <span className="text-white text-xs sm:text-lg">
                 Transmission
               </span>{" "}
               {/* Adjusted font size */}
@@ -197,7 +198,7 @@ export default function TransmissionPage() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[200px] md:h-[240px] bg-black/50" // Adjusted card height
+                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[200px] md:h-[270px] bg-black/50" // Adjusted card height
               >
                 <Image
                   src={item.img}
@@ -211,7 +212,7 @@ export default function TransmissionPage() {
                   {/* Adjusted padding */}
                   <div>
                     <h3
-                      className="text-white text-base sm:text-[16px] md:text-base font-semibold  leading-tight mt-4 sm:mt-8" // Adjusted font size and margin
+                      className="text-white text-base sm:text-[16px] md:text-[18px] font-extrabold leading-tight mt-4 sm:mt-8" // Adjusted font size and margin
                       style={{
                         fontFamily: "exo-2, sans-serif",
                         letterSpacing: "0.08em",
@@ -219,7 +220,7 @@ export default function TransmissionPage() {
                     >
                       {item.title}
                     </h3>
-                    <p className="text-white text-xs sm:text-sm md:text-sm font-light leading-snug mt-2 sm:mt-3 line-clamp-4">
+                    <p className="text-white text-xs sm:text-sm md:text-lg font-light leading-snug mt-2 sm:mt-3 line-clamp-4">
                       {" "}
                       {/* Adjusted font size and margin */}
                       {item.desc}
@@ -236,7 +237,7 @@ export default function TransmissionPage() {
           </div>
         </section>
         {/* Featured Categories (tweaked) */}
-        <div className="max-w-6xl mx-auto px-6 md:px-2 w-full md:mx-20 pt-0 pb-4 mt-0">
+        <div className="max-w-6xl mx-auto px-6 md:px-2 w-full md:mx-15 pt-0 pb-4 mt-0">
           {" "}
           {/* Removed px to avoid double padding */}
           <TransmissionFeaturedCategories />

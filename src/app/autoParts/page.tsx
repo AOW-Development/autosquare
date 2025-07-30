@@ -8,59 +8,63 @@ const PARTS = [
   {
     name: "air and fuel",
     images: [
-      "carddfds (1).png",
-      "carddfs.png",
+      "cards.png",
       "cards-1.png",
       "cards-2.png",
+      "carddfds (1).png",
       "cards-3.png",
+      "carddfs.png",
       "cards-4.png",
-      "cards.png",
+
+      
     ],
   },
   {
     name: "axel",
     images: [
-      "cards32.png",
-      "cards-123.png",
-      "cards-frontaxl.png",
-      "cards (1).png",
+      "cards.png",
       "cards-1.png",
       "cards-2.png",
       "cards-3.png",
-      "cards-4.png",
-      "cards.png",
+      "cards-frontaxl.png",
+      "front-drive.png",
+       "cards-123.png",
+      "cards (1).png",
+      "cards32.png",
+     
+      
     ],
   },
   {
     name: "brakes",
     images: [
+       "cards.png",
       "cards-1.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
       "cards-5.png",
-      "cards.png",
+     
     ],
   },
   {
     name: "center body",
     images: [
       "cards-1.png",
+      "cards.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
       "cards-5.png",
       "cards-6.png",
-      "cards.png",
+      
     ],
   },
   {
     name: "cooling and heating",
     images: [
       "cards-1.png",
-      "cards-10.png",
-      "cards-11.png",
-      "cards-12.png",
+      "cards.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -69,17 +73,18 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
+      "cards-10.png",
+      "cards-11.png",
+      "cards-12.png",
+      
+      
     ],
   },
   {
     name: "doors",
     images: [
+      "cards.png",
       "cards-1.png",
-      "cards-10.png",
-      "cards-11.png",
-      "cards-12.png",
-      "cards-13.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -88,13 +93,27 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
+      "cards-10.png",
+      "cards-11.png",
+      "cards-12.png",
+      "cards-13.png",
+      
+      
     ],
   },
   {
     name: "electrical",
     images: [
+      "cards.png",
       "cards-1.png",
+      "cards-2.png",
+      "cards-3.png",
+      "cards-4.png",
+      "cards-5.png",
+      "cards-6.png",
+      "cards-7.png",
+      "cards-8.png",
+      "cards-9.png",
       "cards-10.png",
       "cards-11.png",
       "cards-12.png",
@@ -105,7 +124,6 @@ const PARTS = [
       "cards-17.png",
       "cards-18.png",
       "cards-19.png",
-      "cards-2.png",
       "cards-20.png",
       "cards-21.png",
       "cards-22.png",
@@ -116,7 +134,6 @@ const PARTS = [
       "cards-27.png",
       "cards-28.png",
       "cards-29.png",
-      "cards-3.png",
       "cards-30.png",
       "cards-31.png",
       "cards-32.png",
@@ -124,20 +141,15 @@ const PARTS = [
       "cards-34.png",
       "cards-35.png",
       "cards-36.png",
-      "cards-4.png",
-      "cards-5.png",
-      "cards-6.png",
-      "cards-7.png",
-      "cards-8.png",
-      "cards-9.png",
-      "cards.png",
+      
+      
     ],
   },
   {
     name: "engine",
     images: [
+      "cards.png",
       "cards-1.png",
-      "cards-10.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -146,13 +158,24 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
+      "cards-10.png",
+      
+      
     ],
   },
   {
     name: "Engine_Accessories",
     images: [
+      "cards.png",
       "cards-1.png",
+       "cards-2.png",
+      "cards-3.png",
+      "cards-4.png",
+      "cards-5.png",
+      "cards-6.png",
+      "cards-7.png",
+      "cards-8.png",
+      "cards-9.png",
       "cards-10.png",
       "cards-11.png",
       "cards-12.png",
@@ -163,6 +186,19 @@ const PARTS = [
       "cards-17.png",
       "cards-18.png",
       "cards-19.png",
+     
+      
+    ],
+  },
+  {
+    name: "entertainment",
+    images: ["cards.png","cards-1.png", "cards-2.png", "cards-3.png"],
+  },
+  {
+    name: "front body",
+    images: [
+      "cards.png",
+      "cards-1.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -171,39 +207,21 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
-    ],
-  },
-  {
-    name: "entertainment",
-    images: ["cards-1.png", "cards-2.png", "cards-3.png", "cards.png"],
-  },
-  {
-    name: "front body",
-    images: [
-      "cards-1.png",
       "cards-10.png",
       "cards-11.png",
       "cards-12.png",
       "cards-13.png",
       "cards-14.png",
       "cards-15.png",
-      "cards-2.png",
-      "cards-3.png",
-      "cards-4.png",
-      "cards-5.png",
-      "cards-6.png",
-      "cards-7.png",
-      "cards-8.png",
-      "cards-9.png",
-      "cards.png",
+      
+      
     ],
   },
   {
     name: "glass and mirrors",
     images: [
+      "cards.png",
       "cards-1.png",
-      "cards-10.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -212,21 +230,15 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
+      "cards-10.png",
+    
     ],
   },
   {
     name: "interior",
     images: [
+      "cards.png",
       "cards-1.png",
-      "cards-10.png",
-      "cards-11.png",
-      "cards-12.png",
-      "cards-13.png",
-      "cards-14.png",
-      "cards-15.png",
-      "cards-16.png",
-      "cards-17.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -235,12 +247,20 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
+      "cards-10.png",
+      "cards-11.png",
+      "cards-12.png",
+      "cards-13.png",
+      "cards-14.png",
+      "cards-15.png",
+      "cards-16.png",
+      "cards-17.png",
     ],
   },
   {
     name: "lights",
     images: [
+      "cards.png",
       "cards-1.png",
       "cards-2.png",
       "cards-3.png",
@@ -248,13 +268,22 @@ const PARTS = [
       "cards-5.png",
       "cards-6.png",
       "cards-7.png",
-      "cards.png",
+      
     ],
   },
   {
     name: "rear body",
     images: [
+      "cards.png",
       "cards-1.png",
+      "cards-2.png",
+      "cards-3.png",
+      "cards-4.png",
+      "cards-5.png",
+      "cards-6.png",
+      "cards-7.png",
+      "cards-8.png",
+      "cards-9.png",
       "cards-10.png",
       "cards-11.png",
       "cards-12.png",
@@ -265,31 +294,34 @@ const PARTS = [
       "cards-17.png",
       "cards-18.png",
       "cards-19.png",
-      "cards-2.png",
-      "cards-3.png",
-      "cards-4.png",
-      "cards-5.png",
-      "cards-6.png",
-      "cards-7.png",
-      "cards-8.png",
-      "cards-9.png",
-      "cards.png",
+     
+      
     ],
   },
   {
     name: "safety",
     images: [
+      "cards.png",
       "cards-1.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
-      "cards.png",
+      
     ],
   },
   {
     name: "suspension or steering",
     images: [
+      "cards.png",
       "cards-1.png",
+      "cards-2.png",
+      "cards-3.png",
+      "cards-4.png",
+      "cards-5.png",
+      "cards-6.png",
+      "cards-7.png",
+      "cards-8.png",
+      "cards-9.png",
       "cards-10.png",
       "cards-11.png",
       "cards-12.png",
@@ -300,27 +332,18 @@ const PARTS = [
       "cards-17.png",
       "cards-18.png",
       "cards-19.png",
-      "cards-2.png",
       "cards-20.png",
       "cards-21.png",
       "cards-22.png",
       "cards-23.png",
-      "cards-3.png",
-      "cards-4.png",
-      "cards-5.png",
-      "cards-6.png",
-      "cards-7.png",
-      "cards-8.png",
-      "cards-9.png",
-      "cards.png",
+      
     ],
   },
   {
     name: "transmission",
     images: [
+      "cards.png",
       "cards-1.png",
-      "cards-10.png",
-      "cards-11.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
@@ -329,18 +352,21 @@ const PARTS = [
       "cards-7.png",
       "cards-8.png",
       "cards-9.png",
-      "cards.png",
+      "cards-10.png",
+      "cards-11.png",
+      
     ],
   },
   {
     name: "wheels",
     images: [
+      "cards.png",
       "cards-1.png",
       "cards-2.png",
       "cards-3.png",
       "cards-4.png",
       "cards-5.png",
-      "cards.png",
+      
     ],
   },
 ];
@@ -402,7 +428,8 @@ export default function AutoPartsPage() {
       </div>
       <ShopByVehicle />
       {/* <div className="min-h-screen bg-[#091B33] pb-12"> */}
-      <section className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-10 sm:py-8">
+
         {/* Breadcrumb */}
         <div className="">
           {/* <div className="flex items-center gap-2 px-6 py-8 ">
@@ -417,7 +444,7 @@ export default function AutoPartsPage() {
               Auto parts
             </span>
           </div> */}
-          <div className="flex items-center gap-2  py-6 mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
+          <div className="flex items-center gap-2 md:py-8  mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
             <a href="/">
               <Image
                 src="/autoparts/HouseLine.png"
@@ -431,17 +458,18 @@ export default function AutoPartsPage() {
           </div>
         </div>
         {/* Grids */}
-        <div className="flex flex-col gap-y-4 md:gap-y-12">
+        <div className="flex flex-col gap-y-4 md:gap-y-12 mt-4">
           {PARTS.map((part, idx) => (
             <div key={part.name} className="p-2 md:p-1 w-full">
               {/* Collapsible header for mobile */}
               <div
-                className="mb-2 md:mb-4 text-white text-xl md:text-[32px] font-audiowide capitalize flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
+                className="mb-2 md:mb-4 text-white text-xl md:text-[32px] font-audiowide  flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
                 onClick={() => handleToggle(idx)}
               >
                 <span
+                className=" uppercase"
                   style={{
-                    fontFamily: "Audiowide, sans-serif",
+                    fontFamily: "Audiowide, sans-serif ",
                     letterSpacing: "0.1em",
                   }}
                 >

@@ -46,7 +46,7 @@ export default function ShippingPaymentPolicy() {
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
-      <div className=" max-w-6xl mx-auto md:mx-35 px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
           <Link

@@ -23,7 +23,7 @@ export default function CatalogPage() {
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
      <div className="px-2 pt-4 md:py-4">
-        <nav className="max-w-6xl ml-4 md:ml-16 pt-4 text-[15px] text-gray-300 flex items-center md:space-x-2">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 pt-4 text-sm text-gray-300 flex items-center space-x-2">
           <Link
             href="/"
             className="flex items-center gap-2 hover:text-white transition-colors"

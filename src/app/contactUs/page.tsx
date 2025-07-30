@@ -24,8 +24,8 @@ export default function ContactUsPage() {
     });
   };
   return (
-    <div>
-      <div className="w-full h-[220px] md:h-[320px] relative bg-[#091B33]   overflow-hidden flex items-center justify-center">
+    <div className="bg-[#091b33] min-h-screen">
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
         <Image
           src="/about/car-1.png"
           alt="Account Banner"
@@ -33,14 +33,15 @@ export default function ContactUsPage() {
           className="object-cover object-center "
         />
       </div>
-      <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-8 p-4 md:p-6 lg:p-8">
+      <div className="bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-4 py-6 p-4">
+
         {/* <div className="md:w-1/4">
         <Sidebar activeKey="" />
       </div> */}
-        <div className="flex-1 flex flex-col gap-6">
+        <div className="flex-1 flex-col gap-6">
           <div className="max-w-6xl mx-auto w-full">
             {/* Breadcrumb */}
-            <div className="w-full max-w-6xl flex items-center gap-2 mb-6">
+            <div className="w-full max-w-6xl flex items-center gap-2 mb-6 md:mt-8">
               <Link href="/">
                 <Image
                   src="/Images/HouseLine.png"
@@ -60,9 +61,9 @@ export default function ContactUsPage() {
               </span>
             </div>
 
-            <main className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <main className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-0 mb-0">
               {/* Left Column - Info */}
-              <div className="flex flex-col gap-6">
+              <div className="flex flex-col gap-4 pb-0 mb-0">
                 <div>
                   <p className="text-white font-semibold uppercase text-sm mb-2">
                     Have a question?
@@ -150,7 +151,7 @@ export default function ContactUsPage() {
               </div>
 
               {/* Right Column - Form */}
-              <div className="bg-[#091627] rounded-md shadow-sm p-6 mt-6">
+              <div className="bg-[#091627] rounded-md shadow-sm p-6 mt-6 md:mt-2">
                 <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
                   <div>
                     <label className="block font-semibold mb-2">Name*</label>

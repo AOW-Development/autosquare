@@ -7,7 +7,8 @@ import Image from "next/image";
 export default function AboutUsPage() {
   return (
      <div className="mt-0 pt-0">
-        <div className="w-full  h-[150px] md:h-[320px] relative bg-[#091B33] overflow-hidden">
+        <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[400px] relative">
+
           <Image
             src="/autoparts/banner.png"
             alt="Account Banner"
@@ -22,9 +23,11 @@ export default function AboutUsPage() {
         <Sidebar activeKey="" />
       </div> */}
         <div className="flex-1 flex flex-col gap-6">
-          <div className="max-w-6xl mx-auto md:mx-20 w-full">
+          <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
+
             {/* Breadcrumb */}
-            <div className="flex items-center space-x-2 text-base text-white mb-6">
+            <div className="flex items-center space-x-2 text-base text-white mb-6 px-2 sm:px-4 md:px-0">
+
               <Link
                 href="/"
                 className="flex items-center gap-2 hover:text-white transition-colors"

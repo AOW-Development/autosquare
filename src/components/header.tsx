@@ -403,7 +403,7 @@ export default function Header() {
                     tabIndex={-1}
                     style={{ minWidth: 40 }}
                     onMouseEnter={() => setCategoriesOpen(true)}
-                    onMouseLeave={() => setCategoriesOpen(false)}
+                    onMouseLeave={() => setCategoriesOpen(true)}
                   >
                     {categoriesOpen ? (
                       <svg

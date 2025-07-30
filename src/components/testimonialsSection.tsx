@@ -161,49 +161,55 @@ export default function TestimonialsSection() {
   const canRight = start + visibleCount < testimonials.length;
 
   return (
-    <section className="bg-[#091b33] py-12 px-2 md:px-0">
+     <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 py-6 ">
+
       <div>
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
-            <h2
-              className="text-white text-2xl md:text-4xl px-2  md:pl-10"
-              style={{
-                fontFamily: "Audiowide, sans-serif",
-                letterSpacing: "0.1em",
-              }}
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 md:px-6 lg:px-8">
+
+
+        {/* Heading + Arrows Row */}
+        <div className="flex items-center justify-between mt-10 mb-8 md:mb-14">
+          <h2
+            className="font-audiowide text-white text-2xl sm:text-4xl tracking-wide uppercase"
+            style={{
+              fontFamily: "Audiowide, sans-serif",
+              letterSpacing: "0.04em",
+            }}
+          >
+            TESTIMONIALS
+          </h2>
+
+          <div className="flex gap-4">
+            <button
+              onClick={() => canLeft && handleManualNav(start - 1)}
+              disabled={!canLeft}
+              className={`p-1 sm:p-2 ${!canLeft ? "cursor-not-allowed" : ""}`}
+              aria-label="Previous"
             >
-              TESTIMONIALS
-            </h2>
-            <div className="flex gap-0 mr-1 md:mr-10">
-              <button
-                onClick={() => canLeft && handleManualNav(start - 1)}
-                disabled={!canLeft}
-                className={`md:p-2 ${!canLeft ? " cursor-not-allowed" : ""}`}
-                aria-label="Previous"
-              >
-                <Image
-                  src="/Images/arrows (1).png"
-                  alt="Left"
-                  width={32}
-                  height={32}
-                />
-              </button>
-              <button
-                onClick={() => canRight && handleManualNav(start + 1)}
-                disabled={!canRight}
-                className={`md:p-2 ${!canRight ? " cursor-not-allowed" : ""}`}
-                aria-label="Next"
-              >
-                <Image
-                  src="/Images/arrows.png"
-                  alt="Right"
-                  width={32}
-                  height={32}
-                />
-              </button>
-            </div>
+              <Image
+                src="/Images/arrows (1).png"
+                alt="Left"
+                width={32}
+                height={32}
+              />
+            </button>
+            <button
+              onClick={() => canRight && handleManualNav(start + 1)}
+              disabled={!canRight}
+              className={`p-1 sm:p-2 ${!canRight ? "cursor-not-allowed" : ""}`}
+              aria-label="Next"
+            >
+              <Image
+                src="/Images/arrows.png"
+                alt="Right"
+                width={32}
+                height={32}
+              />
+            </button>
           </div>
-          <div className="flex w-full justify-center px-2 lg:mx-3 sm:px-8 transition-all duration-300">
+        </div>
+
+          <div className="flex w-full justify-center px-2 lg:mx-3 gap-6 sm:px-8 transition-all duration-300">
             {visible.map((t, i) => (
               <div
                 key={t.name + i}

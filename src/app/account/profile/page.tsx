@@ -3,7 +3,7 @@ import { useRequireAuth } from "@/hooks/useAuth";
 // import Link from "next/link";
 // import Image from "next/image";
 import FormField from "@/components/FormField";
-import { use, useState, useEffect } from "react";
+import { use, useState, useEffect, useCallback } from "react";
 import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
 import ProtectedRoute from "@/components/ProtectedRoute";
@@ -12,62 +12,72 @@ import useAuthStore from "@/store/authStore";
 export default function ProfilePage() {
   const token = useAuthStore((state) => state.token);
   const { isLoggedIn, user } = useRequireAuth();
+  
   if (!isLoggedIn) return null; // or a loading spinner
-  const setUser = useAuthStore((state) => (user: any) => state.login(user, token!));
+  
   const [fields, setFields] = useState({
-    firstName: user?.firstName || "",
-    lastName: user?.lastName || "",
-    email: user?.email || "",
+    firstName: "",
+    lastName: "",
+    email: "",
     currentPassword: "",
     newPassword: "",
-    confirmNewPassword:
-     "",
+    confirmNewPassword: "",
   });
 
-  // Fetch profile from backend on mount
-  useEffect(() => {
-    const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-    if (!token) return;
-    fetch(`${API_BASE}/auth/profile`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
-    })
-      .then((res) => {
-        if (!res.ok) throw new Error("Failed to fetch profile");
-        return res.json();
-      })
-      .then((profile) => {
-        // Map backend fields to frontend fields
-        setFields((f) => ({
-          ...f,
-          firstName: profile.full_name?.split(" ")[0] || "",
-          lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
-          email: profile.email || "",
-        }));
-        // setUser({
-        //   ...user,
-        //   firstName: profile.full_name?.split(" ")[0] || "",
-        //   lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
-        //   email: profile.email || "",
-        // });
-      })
-      .catch((err) => {
-        // Optionally handle error
-        console.error(err);
-      });
-  }, [token]);
+  const [profileLoaded, setProfileLoaded] = useState(false);
 
+  // Consolidated useEffect to handle profile data
   useEffect(() => {
-    setFields((f) => ({
-      ...f,
-      firstName: user?.firstName || "",
-      lastName: user?.lastName || "",
-      email: user?.email || "",
-    }));
-  }, [user]);
+    const initializeProfile = async () => {
+      if (!token) return;
+      
+      try {
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${API_BASE}/auth/profile`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
+          },
+        });
+
+        if (response.ok) {
+          const profile = await response.json();
+          // Use API data if available
+          setFields(prev => ({
+            ...prev,
+            firstName: profile.full_name?.split(" ")[0] || "",
+            lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
+            email: profile.email || "",
+          }));
+        } else {
+          // Fallback to user data from auth store if API fails
+          setFields(prev => ({
+            ...prev,
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            email: user?.email || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Failed to fetch profile:", err);
+        // Fallback to user data from auth store
+        setFields(prev => ({
+          ...prev,
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+          email: user?.email || "",
+        }));
+      } finally {
+        setProfileLoaded(true);
+      }
+    };
+
+    // Only initialize once when component mounts and token is available
+    if (token && !profileLoaded) {
+      initializeProfile();
+    }
+  }, [token, user, profileLoaded]);
 
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{

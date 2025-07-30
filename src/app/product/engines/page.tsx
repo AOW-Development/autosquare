@@ -4,7 +4,7 @@ import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AddedCartPopup from "../../account/modal/AddedCartPopup/page";
+import AddedCartPopup from "../../account/modal/AddedCartPopup/AddedCartPopup";
 import { useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 
@@ -303,7 +303,14 @@ export default function EngineProductPage() {
               Part Request
             </Link>
           )}
-          {showCartPopup && <AddedCartPopup />}
+          {showCartPopup && selectedProduct && (
+  <AddedCartPopup
+    title={`${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`}
+    subtitle={selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A'}
+    price={selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}
+    image={galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png'}
+  />
+)}
           {/* Accordion */}
           <div className=" w-full">
             {accordionData.map((item, i) => (

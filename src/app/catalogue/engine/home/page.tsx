@@ -1,6 +1,6 @@
 "use client";
 
-import AddedCartPopup from "../../../account/modal/AddedCartPopup/page";
+import AddedCartPopup from "../../../account/modal/AddedCartPopup/AddedCartPopup";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -498,7 +498,14 @@ export default function CatalogPage() {
                   </div>
                 );
               })}
-              {showCartPopup && <AddedCartPopup />}
+              {showCartPopup && inCartIdx !== null && currentItems[inCartIdx] && (
+  <AddedCartPopup
+    title={`${make} ${model} ${year} ${part || 'Engine assembly'}`}
+    subtitle={currentItems[inCartIdx].subParts && currentItems[inCartIdx].subParts.length > 0 ? currentItems[inCartIdx].subParts.map((subPart: any) => subPart.name).join(', ') : 'N/A'}
+    price={currentItems[inCartIdx].actualprice || 0}
+    image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/Images/default-engine.png'}
+  />
+)}
             </div>
 
             {/* Pagination Controls */}

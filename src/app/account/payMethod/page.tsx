@@ -71,6 +71,13 @@ export default function PayMethod() {
 
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Store payment info in localStorage for thank you page
+    localStorage.setItem('paymentMethod', paymentMethod);
+    if (paymentMethod === 'card') {
+      localStorage.setItem('cardData', JSON.stringify(cardData));
+    }
+    
     // Build payment info
     const payment = {
       paymentMethod: paymentMethod as "card" | "paypal",
@@ -216,7 +223,13 @@ export default function PayMethod() {
                       Contact
                     </span>
                     <span className="font-exo2 font-exo2 flex-1 text-center">
-                      example@gmail.com
+                    {(() => {
+                        const billing = useBillingStore.getState().billingInfo;
+                        if (!billing) return "No address on file";
+                        let addr = billing.phone;
+                        // if (billing.apartment) addr += ", " + billing.apartment;
+                        return `${addr}`;
+                      })()}
                     </span>
                     <Link
                       href="/account/checkout"
@@ -230,7 +243,13 @@ export default function PayMethod() {
                       Ship to
                     </span>
                     <span className="font-exo2 font-exo2 flex-1 text-center">
-                      Street 1, City, State, ZIP code, Country
+                      {(() => {
+                        const billing = useBillingStore.getState().billingInfo;
+                        if (!billing) return "No address on file";
+                        let addr = billing.address;
+                        if (billing.apartment) addr += ", " + billing.apartment;
+                        return `${addr}, ${billing.city}, ${billing.state}, ${billing.zipCode}, ${billing.country}`;
+                      })()}
                     </span>
                     <Link
                       href="/account/checkout"
@@ -247,7 +266,7 @@ export default function PayMethod() {
                       Free
                     </span>
                     <Link
-                      href="/account/checkout"
+                      href=""
                       className="text-white hover:underline text-base font-exo2 w-1/3 text-right"
                     >
                       Change

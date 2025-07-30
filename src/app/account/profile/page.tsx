@@ -1,5 +1,4 @@
 "use client";
-import { useRequireAuth } from "@/hooks/useAuth";
 // import Link from "next/link";
 // import Image from "next/image";
 import FormField from "@/components/FormField";
@@ -10,10 +9,10 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import useAuthStore from "@/store/authStore";
 
 export default function ProfilePage() {
-  const token = useAuthStore((state) => state.token);
-  const { isLoggedIn, user } = useRequireAuth();
+  const { token, user } = useAuthStore();
   
-  if (!isLoggedIn) return null; // or a loading spinner
+  // Remove the early return - let ProtectedRoute handle authentication
+  // if (!isLoggedIn) return null; // This was causing the hook error!
   
   const [fields, setFields] = useState({
     firstName: "",
@@ -43,6 +42,7 @@ export default function ProfilePage() {
 
         if (response.ok) {
           const profile = await response.json();
+          console.log('Profile data received:', profile);
           // Use API data if available
           setFields(prev => ({
             ...prev,
@@ -51,6 +51,7 @@ export default function ProfilePage() {
             email: profile.email || "",
           }));
         } else {
+          console.error('Profile API failed:', response.status, response.statusText);
           // Fallback to user data from auth store if API fails
           setFields(prev => ({
             ...prev,

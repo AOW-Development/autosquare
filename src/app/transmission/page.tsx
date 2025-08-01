@@ -79,7 +79,7 @@ function TransmissionFeaturedCategories() {
               />
               <span
                 className="text-xs sm:text-[18px]" // Adjusted font size
-                style={{ fontFamily: "exo-2, sans-serif" }}
+               
               >
                 {maker.name + " Transmission"}
               </span>

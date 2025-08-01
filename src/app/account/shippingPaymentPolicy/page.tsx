@@ -177,7 +177,7 @@ export default function ShippingPaymentPolicy() {
                 <div key={index} className="border-b border-[#ffffff] ">
                   <button
                     onClick={() => toggleItem(index)}
-                    className="w-full  py-4 text-left font-exo2 font-medium flex justify-between items-center hover:bg-gray-800 transition-colors duration-200"
+                    className="w-full py-4 text-left font-exo2 font-medium flex justify-between items-center hover:bg-gray-800 transition-colors duration-200"
                   >
                     <span>{item.question}</span>
                     <svg
@@ -203,7 +203,7 @@ export default function ShippingPaymentPolicy() {
                         : "max-h-0 opacity-0"
                     }`}
                   >
-                    <div className="text-left   pb-4 font-exo2 text-sm leading-relaxed">
+                    <div className="text-left pb-4 font-exo2 text-sm leading-relaxed">
                       {item.answer}
                     </div>
                   </div>

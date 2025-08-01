@@ -10,7 +10,10 @@ import useAuthStore from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
 import { formatOrderData } from "@/lib/mail";
 import type { PaymentInfo } from "@/store/paymentStore";
+import { FaApple } from "react-icons/fa";
 // Remove local CartItem interface entirely, use global type
+import { getCardType, isValidCardNumber } from "@/utils/cardUtil"
+
 
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -18,6 +21,8 @@ export default function PayMethod() {
   const { billingInfo } = useBillingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
+
+
 
   const [billingFormData, setBillingFormData] = useState(
     billingInfo || {
@@ -39,6 +44,11 @@ export default function PayMethod() {
     expirationDate: "",
     securityCode: "",
   });
+  
+  const [cardErrors, setCardErrors] = useState({
+  cardNumber: "",
+  securityCode: "",
+});
 
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -51,21 +61,82 @@ export default function PayMethod() {
     setBillingFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleCardInputChange = (field: string, value: string) => {
-    setCardData((prev) => ({ ...prev, [field]: value }));
-  };
+ const handleCardInputChange = (field: string, value: string) => {
+  // Handle expirationDate formatting without affecting existing logic
+  if (field === "expirationDate") {
+    const cleaned = value.replace(/\D/g, ""); // remove non-digit
+    let formatted = cleaned;
 
-  const isFormValid = () => {
-    if (paymentMethod === "card") {
-      return (
-        cardData.cardNumber &&
-        cardData.cardholderName &&
-        cardData.expirationDate &&
-        cardData.securityCode
-      );
+    if (cleaned.length >= 3) {
+      formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
     }
-    return true; // PayPal doesn't require additional fields
-  };
+
+    if (formatted.length > 5) return;
+
+    setCardData((prev) => ({ ...prev, expirationDate: formatted }));
+    return;
+  }
+
+  // Set value for other fields
+  setCardData((prev) => ({ ...prev, [field]: value }));
+
+  if (field === "cardNumber") {
+    const cleanValue = value.replace(/\D/g, "");
+    const cardType = getCardType(cleanValue);
+    const isValid = isValidCardNumber(cleanValue);
+
+    if (!cardType) {
+      setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
+    } else if (!isValid && cleanValue.length >= 13) {
+      setCardErrors((prev) => ({ ...prev, cardNumber: "Invalid card number" }));
+    } else {
+      setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
+    }
+  }
+
+  if (field === "securityCode") {
+    const cardType = getCardType(cardData.cardNumber.replace(/\D/g, ""));
+    const expectedLength = cardType === "American Express" ? 4 : 3;
+
+    if (value.length > 0 && value.length !== expectedLength) {
+      setCardErrors((prev) => ({
+        ...prev,
+        securityCode: `CVV must be ${expectedLength} digits`,
+      }));
+    } else {
+      setCardErrors((prev) => ({ ...prev, securityCode: "" }));
+    }
+  }
+};
+
+ const isFormValid = () => {
+  if (paymentMethod === "card") {
+    const cardType = getCardType(cardData.cardNumber);
+    const validLuhn = isValidCardNumber(cardData.cardNumber);
+
+    if (!cardType || !validLuhn) return false;
+
+    const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length;
+    const cvvLength = cardData.securityCode.length;
+
+    if (
+      (cardType === "Visa" || cardType === "MasterCard" || cardType === "Discover") &&
+      (cardNumberLength !== 16 || cvvLength !== 3)
+    ) return false;
+
+    if (
+      cardType === "American Express" &&
+      (cardNumberLength !== 15 || cvvLength !== 4)
+    ) return false;
+
+    return (
+      cardData.cardholderName &&
+      cardData.expirationDate
+    );
+  }
+
+  return true;
+};
 
   const router = useRouter();
 
@@ -260,7 +331,7 @@ export default function PayMethod() {
                   </div>
                   <div className="flex w-full items-center p-2">
                     <span className="font-exo2 font-ex02 w-1/3 text-left">
-                      Shipping method
+                      Shipping
                     </span>
                     <span className="font-exo2 font-exo2 flex-1 text-center">
                       Free
@@ -334,22 +405,8 @@ export default function PayMethod() {
                     </div>
                     </div>
                   </label>
-
-                  {paymentMethod === "card" && (
-                    <fieldset className=" rounded-md p-6 space-y-4">
-                      {/* Google Pay Button */}
-                      <button className="bg-black text-white py-3 rounded-md flex items-center justify-center w-full font-exo2 hover:bg-gray-800 transition-colors">
-                        <Image
-                          src="/Images/google.png"
-                          alt="Google Pay"
-                          width={24}
-                          height={24}
-                          className="mr-2 text-2xl"
-                        />
-                        Pay
-                      </button>
-
                       {/* Card Number */}
+                      
                       <div>
                         <input
                           type="text"
@@ -358,8 +415,13 @@ export default function PayMethod() {
                           onChange={(e) =>
                             handleCardInputChange("cardNumber", e.target.value)
                           }
-                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                          className={`w-full bg-[#091627] border ${
+                            cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
+                          } text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300`}
                         />
+                        {cardErrors.cardNumber && (
+                          <p className="text-red-500 text-xs mt-1">{cardErrors.cardNumber}</p>
+                        )}
                       </div>
 
                       {/* Cardholder Name */}
@@ -393,19 +455,29 @@ export default function PayMethod() {
                           className="bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         />
                         <input
-                          type="text"
-                          placeholder="CVV"
-                          value={cardData.securityCode}
-                          onChange={(e) =>
-                            handleCardInputChange(
-                              "securityCode",
-                              e.target.value
-                            )
-                          }
-                          className="bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                        />
+                              type="text"
+                              placeholder="CVV"
+                              value={cardData.securityCode}
+                              onChange={(e) =>
+                                handleCardInputChange("securityCode", e.target.value)
+                              }
+                              className={`bg-[#091627] border ${
+                                cardErrors.securityCode ? "border-red-500" : "border-gray-700"
+                              } text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                            />
+                            {cardErrors.securityCode && (
+                              <p className="text-red-500 text-xs mt-1">{cardErrors.securityCode}</p>
+                            )}
                       </div>
+                      {paymentMethod === "card" && (
+                    <fieldset className=" rounded-md p-6 space-y-4">
+                      {/* Google Pay Button */}
+                     <button className="bg-black text-white py-3 rounded-md flex items-center justify-center w-full font-exo2 hover:bg-gray-800 transition-colors">
+                        <FaApple className="text-xl mr-2" />
+                        Apple Pay
+                      </button>
                     </fieldset>
+                    
                   )}
 
                   {/* PayPal Option */}
@@ -708,7 +780,7 @@ export default function PayMethod() {
                         : "bg-gray-600 text-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    Payment
+                    Confirm
                   </button>
                 </form>
 

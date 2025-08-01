@@ -163,8 +163,9 @@ export default function ProfilePage() {
       <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row">
         <div className="flex-1 flex flex-col gap-6">
           <Banner />
-          <div className="flex flex-col md:flex-row w-full max-w-4xl mx-auto md:mx-28">
-            <div className="mb-6 md:mb-8">
+          <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto px-4 md:px-6 lg:px-6 mt-4">
+
+            <div className="mb-6 md:mb-6">
               <Sidebar activeKey="Profile" />
             </div>
             <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">

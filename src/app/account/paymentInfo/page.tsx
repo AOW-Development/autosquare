@@ -4,10 +4,29 @@ import Link from "next/link";
 import useAuthStore from "@/store/authStore";
 import useBillingStore from "@/store/billingStore"; // <-- Import billing store
 import { useState, useEffect } from "react";
+import { State } from "country-state-city"; 
+
+
+import { useRouter } from 'next/navigation';
+
+
+
 
 export default function PaymentInfoPage() {
   const { isLoggedIn } = useAuthStore();
   const { billingInfo, setBillingInfo } = useBillingStore();
+  const [isAccepted, setIsAccepted] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const router = useRouter();
+
+  const handleContinue = () => {
+    if (!isAccepted) {
+      setShowError(true);
+      return;
+    }
+    setShowError(false);
+    router.push('/account/payMethod');
+  };
 
   // Local state for form fields, initialized from billingInfo
   const [fields, setFields] = useState(
@@ -38,8 +57,20 @@ export default function PaymentInfoPage() {
 
   // Handle field changes
   const handleChange = (field: string, value: string) => {
-    setFields((prev) => ({ ...prev, [field]: value }));
+    if (field === "country") {
+      setFields((prev) => ({
+        ...prev,
+        country: value,
+        state: "", // reset state when country changes
+      }));
+    } else {
+      setFields((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
   };
+
 
   // Save billing info to store
   const handleSave = (e: React.FormEvent) => {
@@ -47,9 +78,26 @@ export default function PaymentInfoPage() {
     setBillingInfo(fields);
   };
 
+  
+  const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
+
+
+useEffect(() => {
+  if (fields.country) {
+    const fetchedStates = State.getStatesOfCountry(fields.country);
+    console.log("Fetched States:", fetchedStates);
+    setStates(fetchedStates || []);
+  } else {
+    setStates([]);
+  }
+}, [fields.country]);
+
+
+
+   
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
-      <div className="max-w-6xl mx-auto md:mx-35 px-6 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
           <Link
@@ -87,7 +135,7 @@ export default function PaymentInfoPage() {
           <form className="flex-1 bg-transparent" onSubmit={handleSave}>
             <div className="flex items-center justify-between mb-4">
               <span className="font-semibold text-sm uppercase tracking-wide">
-                Recipient Details
+                Shipping Details
               </span>
               {!isLoggedIn && (
                 <span className="text-sm text-white/60">
@@ -156,9 +204,9 @@ export default function PaymentInfoPage() {
                   required
                 >
                   <option value="Choose country…">Choose Country…</option>
-                  <option value="USA">USA</option>
-                  <option value="Canada">Canada</option>
-                  <option value="UK">UK</option>
+                 <option value="US">United States</option>
+                 <option value="CA">Canada</option>
+                  
                 </select>
               </div>
               <div className="md:col-span-2 flex gap-4">
@@ -190,20 +238,27 @@ export default function PaymentInfoPage() {
                   required
                 />
               </div>
-              <div>
-                <label className="block text-xs mb-1">State*</label>
-                <select
-                  className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
-                  value={fields.state}
-                  onChange={(e) => handleChange("state", e.target.value)}
-                  required
-                >
-                  <option value="Choose state…">Choose state…</option>
-                  <option value="California">California</option>
-                  <option value="Texas">Texas</option>
-                  <option value="Florida">Florida</option>
-                </select>
-              </div>
+              <div className="md:col-span-2">
+                 <label className="block text-xs mb-1">State*</label>
+                  <select
+                    className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    value={fields.state}
+                    onChange={(e) => handleChange("state", e.target.value)}
+                    disabled={!states.length}
+                    required
+                  >
+                    <option value="">Choose State…</option>
+                    {states.map((state) => (
+                      <option
+                        key={state.isoCode}
+                        value={state.isoCode}
+                        className="text-white" // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
+                      >
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               <div>
                 <label className="block text-xs mb-1">ZIP Code*</label>
                 <input
@@ -261,16 +316,7 @@ export default function PaymentInfoPage() {
                   </div>
                 ))}
               </div>
-              <div className="flex gap-2 mb-4">
-                <input
-                  type="text"
-                  placeholder="Coupon Code"
-                  className="flex-1 bg-[#091b33] rounded-lg px-3 py-2 text-white border border-white/10 focus:outline-none text-xs"
-                />
-                <button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs">
-                  Apply
-                </button>
-              </div>
+             
               <div className="flex justify-between text-sm mb-1">
                 <span>Cart total:</span>
                 <span>$1600</span>
@@ -283,31 +329,40 @@ export default function PaymentInfoPage() {
                 <span>TOTAL:</span>
                 <span className="text-white">$1600</span>
               </div>
-              <div className="flex items-start gap-2 mb-4">
-                <input
-                  type="checkbox"
-                  id="accept"
-                  className="mt-1 accent-blue-600"
-                />
-                <label
-                  htmlFor="accept"
-                  className="text-xs text-white/70 select-none"
-                >
-                  I have Read and Accept the{" "}
-                  <a href="#" className="text-blue-400 underline">
-                    terms and conditions
-                  </a>
-                  , return policy and the{" "}
-                  <a href="#" className="text-blue-400 underline">
-                    Privacy Policy
-                  </a>{" "}
-                  of autosquare.us *
-                </label>
-              </div>
-              <button className="w-full cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg text-base transition-colors disabled:opacity-60">
-                <Link href={"/account/payMethod"}>Continue to payment</Link>
-              </button>
-            </div>
+             <div className="flex items-start gap-2 mb-1">
+            <input
+              type="checkbox"
+              id="accept"
+              checked={isAccepted}
+              onChange={(e) => {
+                setIsAccepted(e.target.checked);
+                if (e.target.checked) setShowError(false);
+              }}
+              className="mt-1 accent-blue-600"
+            />
+            <label htmlFor="accept" className="text-xs text-white/70 select-none">
+              I have Read and Accept the{" "}
+              <a href="#" className="text-blue-400 underline">terms and conditions</a>, return policy and the{" "}
+              <a href="#" className="text-blue-400 underline">Privacy Policy</a> of autosquare.us *
+            </label>
+          </div>
+
+          {showError && (
+            <p className="text-red-500 text-xs mb-3">You must accept the terms and conditions to continue.</p>
+          )}
+
+          <button
+            onClick={handleContinue}
+            disabled={!isAccepted}
+            className={`w-full cursor-pointer font-semibold py-3 rounded-lg text-base transition-colors ${
+              isAccepted
+                ? 'bg-blue-600 hover:bg-blue-700 text-white'
+                : 'bg-gray-500 text-white cursor-not-allowed'
+            }`}
+          >
+            Continue to payment
+          </button>
+        </div>
           </aside>
         </div>
       </div>

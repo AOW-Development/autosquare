@@ -204,7 +204,10 @@ export default function RegistrationPage() {
               or sign in with
             </span>
             <button
-              // onClick={}
+              onClick={() => {
+                const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+                window.location.href = `${API_BASE}/auth/google`;
+              }}
               className="flex cursor-pointer items-center gap-2 w-full justify-center rounded-lg py-2 bg-white hover:bg-gray-100 text-gray-800 text-base font-semibold transition-colors border border-gray-200 mt-2"
               disabled={loading}
             >

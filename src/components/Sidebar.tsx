@@ -28,10 +28,8 @@ export default function Sidebar({ activeKey }: { activeKey: string }) {
   const logout = useAuthStore((state) => state.logout);
 
   const handleLogout = () => {
-    // Clear auth state and localStorage
     logout();
-    // Redirect to sign in page
-    router.push("/account/signIn");
+    // The ProtectedRoute will handle the redirect gracefully now
   };
 
   return (

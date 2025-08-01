@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import useAuthStore from "@/store/authStore";
 
@@ -10,15 +10,20 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
   const { isLoggedIn } = useAuthStore();
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn) {
-      router.push("/account/signIn");
+    if (!isLoggedIn && !isRedirecting) {
+      setIsRedirecting(true);
+      // Use setTimeout to avoid the hook error during logout
+      setTimeout(() => {
+        router.push("/account/signIn");
+      }, 0);
     }
-  }, [isLoggedIn, router]);
+  }, [isLoggedIn, router, isRedirecting]);
 
-  // Show loading or nothing while checking authentication
-  if (!isLoggedIn) {
+  // Don't show loading state if we're in the process of redirecting
+  if (!isLoggedIn && !isRedirecting) {
     return (
       <div className="min-h-screen bg-[#091B33] text-white flex items-center justify-center">
         <div className="text-center">

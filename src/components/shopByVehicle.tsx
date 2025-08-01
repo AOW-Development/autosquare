@@ -7,10 +7,6 @@ import { useEffect } from "react";
 const PARTS = [
   "Engine",
   "Transmission",
-  "Axel assembly",
-  "Transfer case",
-  "Head light",
-  "Tail light",
 ];
 
 // const SUBCAT = [
@@ -62,7 +58,7 @@ const ShopByVehicle: React.FC = () => {
     if (make && model) {
       fetch(`${API_BASE}/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
         .then(res => res.json())
-        .then(data => setAvailableYears(data))
+        .then(data => setAvailableYears(data.sort((a:number,b:number) => Number(b) - Number(a))))
         .catch(() => setAvailableYears([]));
     } else {
       setAvailableYears([]);

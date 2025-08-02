@@ -165,7 +165,7 @@ export default function PayMethod() {
         cartItems: cartItems.length ? cartItems : (cartItems as any)
       };
       
-      await fetch('/api/send-order-email', {
+      await fetch('/api-2/send-order-email', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)

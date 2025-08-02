@@ -29,7 +29,7 @@ export const MAKES = [
   "suzuki",
   "Toyota",
   "Volvo",
-  "volkswagan"
+  "Volkswagen"
 ];
 
 export const MODELS: Record<string, string[]> = {
@@ -137,7 +137,7 @@ export const MODELS: Record<string, string[]> = {
     "Truck i370 (Pickup)",
     "Vehicross"
   ],
-  jaguar: [
+  Jaguar: [
     "F Pace",
     "F Type",
     "S Type",
@@ -155,7 +155,7 @@ export const MODELS: Record<string, string[]> = {
     "XK8",
     "XKR"
   ],
-  volkswagan: [
+  Volkswagen: [
     "Beetle/Bug",
     "Cabrio",
     "Cabriolet",

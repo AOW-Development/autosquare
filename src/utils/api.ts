@@ -39,7 +39,7 @@ export const auth = {
 };
 
 export const getGroupedProducts = (params: { make: string; model: string; year: string; part: string }) => {
-  return api.get('/products/with-subparts', { params });
+  return api.get('/products/v2/grouped-with-subparts', { params });
 };
 
 export default api; 

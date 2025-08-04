@@ -5,8 +5,9 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import AddedCartPopup from "../../account/modal/AddedCartPopup/AddedCartPopup";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
+
 
 const galleryImages = [
   "/Images/var.png",
@@ -76,7 +77,13 @@ export default function EngineProductPage() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL; 
   const addItem = useCartStore((s) => s.addItem);
 
+
+ const handleBuyNow = () => {
+      redirect('/account/payMethod'); 
+    };
+
   useEffect(() => {
+    console.log(make)
     if (!make || !model || !year || !part) return;
     fetch(
       `${API_BASE}/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
@@ -119,7 +126,8 @@ export default function EngineProductPage() {
       name: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
       title: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
       subtitle: selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A',
-      image: galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png',
+       image :galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png',
+
       price,
       quantity,
     });
@@ -162,29 +170,21 @@ export default function EngineProductPage() {
       </div>
       <div className="px-6 md:pl-40 md:mx-auto w-full bg-[#091b33] flex flex-col md:flex-row gap-10 min-h-screen text-white -py-4 md:py-28">
         {/* Left: Image Gallery */}
-        <div className="flex flex-row items-start">
+        {/* <div className="flex flex-row items-start"> */}
           {/* Thumbnails column */}
-          <div className="flex flex-col gap-2">
-            {galleryImages.map((img, i) => (
-              <div
-                key={i}
-                className={`w-16 h-16 rounded-md overflow-hidden border ${
-                  selectedImg === i ? "border-blue-400" : "border-transparent"
-                } cursor-pointer`}
-                onClick={() => setSelectedImg(i)}
-              >
-                <Image
-                  src={img}
-                  alt="thumb"
-                  width={64}
-                  height={64}
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
-          </div>
+          {/* <div className="w-full max-w-md rounded-md overflow-hidden border border-blue-400">
+            <Image
+              src={galleryImages[0]} // Or directly use a static path like "/images/example.jpg"
+              alt="Image"
+              width={500}
+              height={500}
+              className="object-cover w-full h-full"
+            />
+          </div> */}
+
+
           {/* Main image column */}
-          <div className="ml-6">
+          <div className="ml-6 md:ml-20">
             <div className="relative w-[200px] h-[200px] gap-2 md:w-[280px] md:h-[280px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
               <Image
                 src={galleryImages[selectedImg]}
@@ -197,7 +197,7 @@ export default function EngineProductPage() {
               </span>
             </div>
           </div>
-        </div>
+     
         {/* Right: Details */}
         <div className="flex-1 flex flex-col gap-1 max-w-xl">
           <h1
@@ -289,7 +289,10 @@ export default function EngineProductPage() {
                     Add to cart
                   </button>
                 )}
-                <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition">
+                <button
+                  onClick={handleBuyNow}
+                  className="flex-1 cursor-pointer bg-[#00a3ff] text-white py-2 rounded border border-sky-400 hover:bg-[#1558b0] transition"
+                >
                   Buy in one click
                 </button>
               </div>
@@ -304,13 +307,13 @@ export default function EngineProductPage() {
             </Link>
           )}
           {showCartPopup && selectedProduct && (
-  <AddedCartPopup
-    title={`${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`}
-    subtitle={selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A'}
-    price={selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}
-    image={galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png'}
-  />
-)}
+          <AddedCartPopup
+            title={`${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`}
+            subtitle={selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A'}
+            price={selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}
+            image={galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png'}
+          />
+        )}
           {/* Accordion */}
           <div className=" w-full">
             {accordionData.map((item, i) => (

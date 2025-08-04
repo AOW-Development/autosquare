@@ -6,6 +6,7 @@ import Link from "next/link";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore, CartItem } from "@/store/cartStore";
+import { State } from "country-state-city"; 
 
 export default function Checkout() {
   const { billingInfo, setBillingInfo } = useBillingStore();
@@ -17,7 +18,7 @@ export default function Checkout() {
       lastName: "",
       // email: "",
       phone: "",
-      // company: "",
+      company: "",
       country: "",
       address: "",
       apartment: "",
@@ -27,6 +28,7 @@ export default function Checkout() {
       // orderNotes: "",
     }
   );
+ const [userType, setUserType] = useState("Individual");
 
   // Sync billingInfo to formData if it changes
   useEffect(() => {
@@ -47,6 +49,36 @@ export default function Checkout() {
     setBillingInfo(formData);
   };
 
+
+   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
+
+
+useEffect(() => {
+  if (formData.country) {
+    const fetchedStates = State.getStatesOfCountry(formData.country);
+    console.log("Fetched States:", fetchedStates);
+    setStates(fetchedStates || []);
+  } else {
+    setStates([]);
+  }
+}, [formData.country]);
+
+ // Handle field changes
+  const handleChange = (field: string, value: string) => {
+    if (field === "country") {
+      setFormData((prev) => ({
+        ...prev,
+        country: value,
+        state: "", // reset state when country changes
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
+  };
+  
   const isFormValid = () => {
     return (
       formData.firstName &&
@@ -72,9 +104,14 @@ export default function Checkout() {
     0
   );
 
+  const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
+  setUserType(type);
+  setFormData((prev) => ({ ...prev, customerType: type }));
+};
+
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22">
+      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22 overflow-hidden">
         <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
@@ -163,7 +200,7 @@ export default function Checkout() {
             {/* Left Column: Recipient Details Form */}
             <div className="lg:col-span-2">
               {/* Login Link */}
-              <div className="text-right mt-2">
+              <div className="text-right mt-2 pr-6">
                 <Link
                   href="/login"
                   className="text-sm text-[#FFFFFF] hover:underline font-exo2"
@@ -176,6 +213,30 @@ export default function Checkout() {
               <h2 className="text-base font-semibold mb-6 font-exo2">
                 RECIPIENT DETAILS
               </h2>
+              <div className="flex gap-4 mb-4">
+              <button
+                type="button"
+                onClick={() => handleUserTypeChange("Individual")}
+                className={`md:w-full w-auto px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
+                  userType === "Individual"
+                    ? "bg-blue-600 text-white"
+                    : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
+                }`}
+              >
+                Individual
+              </button>
+              <button
+                type="button"
+                onClick={() => handleUserTypeChange("Commercial")}
+                className={`md:w-full px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
+                  userType === "Commercial"
+                    ? "bg-blue-600 text-white"
+                    : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
+                }`}
+              >
+                Commercial
+              </button>
+            </div>
 
               <form className="space-y-6">
                 {/* Name Fields */}
@@ -189,7 +250,7 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("firstName", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full w-auto bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -202,7 +263,7 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("lastName", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -232,11 +293,22 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("phone", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
                 </div>
+                {userType === 'Commercial' && (
+                <div className="">
+                  <label className="block text-xs mb-1">Company*</label>
+                  <input
+                    className="md:w-full max-w-[450px] bg-[#091627] rounded-lg px-5 py-3 text-white border border-white/10 focus:outline-none"
+                    value={formData.company}
+                    onChange={(e) => handleChange("company", e.target.value)}
+                    placeholder="Company name"
+                  />
+                </div>
+              )}
 
                 {/* Company */}
                 {/* <div>
@@ -254,20 +326,18 @@ export default function Checkout() {
 
                 {/* Country */}
                 <div>
-                  <label className="block font-exo2 mb-2">Country *</label>
-                  <select
-                    value={formData.country}
-                    onChange={(e) =>
-                      handleInputChange("country", e.target.value)
-                    }
-                    className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                    required
-                  >
-                    <option value="Choose country…">Choose country…</option>
-                    <option value="USA">USA</option>
-                    <option value="Canada">Canada</option>
-                    <option value="UK">UK</option>
-                  </select>
+                  <label className="block text-xs mb-1">Country*</label>
+                <select
+                  className="md:w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                  value={formData.country}
+                  onChange={(e) => handleChange("country", e.target.value)}
+                  required
+                >
+                  <option value="Choose country…">Choose Country…</option>
+                 <option value="US">United States</option>
+                 <option value="CA">Canada</option>
+                  
+                </select>
                 </div>
 
                 <div className="grid md:grid-cols-2 gap-4">
@@ -283,7 +353,7 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("address", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -300,7 +370,7 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("apartment", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
                   </div>
                 </div>
@@ -315,26 +385,31 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("city", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
-                  <div>
-                    <label className="block font-exo2 mb-2">State *</label>
-                    <select
-                      value={formData.state}
-                      onChange={(e) =>
-                        handleInputChange("state", e.target.value)
-                      }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      required
-                    >
-                      <option value="Choose state…">Choose state…</option>
-                      <option value="Florida">Florida</option>
-                      <option value="California">California</option>
-                      <option value="Texas">Texas</option>
-                    </select>
-                  </div>
+                   <div className="md:col-span-2">
+                 <label className="block text-xs mb-4">State*</label>
+                  <select
+                    className="md:w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    value={formData.state}
+                    onChange={(e) => handleChange("state", e.target.value)}
+                    disabled={!states.length}
+                    required
+                  >
+                    <option value="">Choose State…</option>
+                    {states.map((state) => (
+                      <option
+                        key={state.isoCode}
+                        value={state.isoCode}
+                        className="text-white" // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
+                      >
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                   <div>
                     <label className="block font-exo2 mb-2">ZIP Code *</label>
                     <input
@@ -344,7 +419,7 @@ export default function Checkout() {
                       onChange={(e) =>
                         handleInputChange("zipCode", e.target.value)
                       }
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -367,10 +442,10 @@ export default function Checkout() {
             </div>
 
             {/* Right Column: Products & Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-[#091627] rounded-lg p-4 space-y-6">
+            <div className="lg:col-span-1 ">
+              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 md:p-4">
                 {/* Card Header */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center ">
                   <h3 className="text-base font-semibold font-exo2">
                     PRODUCTS IN CART
                   </h3>

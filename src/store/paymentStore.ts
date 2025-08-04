@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type PaymentMethod = "card" | "paypal";
+export type PaymentMethod = "card" | "paypal" | "apple" | "google";
 
 export type CardData = {
   cardNumber: string;

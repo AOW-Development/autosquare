@@ -6,6 +6,27 @@ const EngineFilterSidebar = () => (
     {/* CHOOSE YOUR SPECIFICATION */}
     <div className="md:mb-6 bg-[#091627] p-4 rounded-l-lg md:rounded-lg">
       <h3 className=" mb-3">CHOOSE YOUR SPECIFICATION</h3>
+
+       {/* Dropdown for specification selection */}
+        <div className="mb-4">
+          <label htmlFor="specification" className="block text-sm text-gray-300 mb-1">
+            Select Specification
+          </label>
+          <select
+            id="specification"
+            name="specification"
+            className="w-full bg-[#1C2A3A] text-white border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            onChange={(e) => console.log("Selected:", e.target.value)}
+          >
+            <option value="">-- Select --</option>
+            <option value="4.9L_E40D">4.9L with E40D transmission</option>
+            <option value="4.9L_no_E40D">4.9L without E40D transmission</option>
+            <option value="5.8L">5.8L V8 (from 4/10/91)</option>
+            <option value="7.5L">7.5L V8 EFI (Heavy Duty)</option>
+          </select>
+        </div>
+
+
       <ul className="space-y-2">
         <li>
           <p className="text-white">4.9L</p>

@@ -35,6 +35,7 @@ interface Product {
   images: any[]; 
   inventory: any | null;
   subParts: SubPart[];
+  product: Product; // parent product info
 }
 
 const accordionData = [

@@ -2,7 +2,7 @@ export const MAKES = [
   "Acura",
   "Audi",
   "BMW",
-  "Buik",
+  "Buick",
   "cadillac",
   "chevy",
   "Chrysler",
@@ -523,7 +523,7 @@ export const MODELS: Record<string, string[]> = {
     "XT",
     "XV Crosstrek"
   ],
-  Buik: [
+  Buick: [
     "Allure",
     "Cascada",
     "Century",

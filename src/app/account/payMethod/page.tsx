@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -13,6 +13,8 @@ import type { PaymentInfo } from "@/store/paymentStore";
 import { FaApple } from "react-icons/fa";
 // Remove local CartItem interface entirely, use global type
 import { getCardType, isValidCardNumber } from "@/utils/cardUtil"
+import { FcGoogle } from "react-icons/fc";
+import { State } from "country-state-city"; 
 
 
 export default function PayMethod() {
@@ -21,8 +23,8 @@ export default function PayMethod() {
   const { billingInfo } = useBillingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
-
-
+  const [userType, setUserType] = useState("Individual");
+  // default to Apple Pay
 
   const [billingFormData, setBillingFormData] = useState(
     billingInfo || {
@@ -30,6 +32,7 @@ export default function PayMethod() {
       lastName: "",
       // email: "",
       phone: "",
+      company:"",
       country: "",
       address: "",
       apartment: "",
@@ -62,16 +65,36 @@ export default function PayMethod() {
   };
 
  const handleCardInputChange = (field: string, value: string) => {
-  // Handle expirationDate formatting without affecting existing logic
   if (field === "expirationDate") {
-    const cleaned = value.replace(/\D/g, ""); // remove non-digit
+    const cleaned = value.replace(/\D/g, ""); // remove non-digits
     let formatted = cleaned;
 
     if (cleaned.length >= 3) {
       formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
     }
 
-    if (formatted.length > 5) return;
+    if (formatted.length > 5) return; // restrict to MM/YY
+
+    // Validate if input is complete
+    if (formatted.length === 5) {
+      const [monthStr, yearStr] = formatted.split("/");
+      const month = parseInt(monthStr, 10);
+      const year = parseInt(`20${yearStr}`, 10); // YY -> YYYY
+
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth() + 1; // Jan = 0
+      const currentYear = currentDate.getFullYear();
+
+      if (month < 1 || month > 12) {
+        alert("Please enter a valid month between 01 and 12.");
+        return;
+      }
+
+      if (year < currentYear || (year === currentYear && month < currentMonth)) {
+        alert("The expiration date must be in the future.");
+        return;
+      }
+    }
 
     setCardData((prev) => ({ ...prev, expirationDate: formatted }));
     return;
@@ -151,7 +174,7 @@ export default function PayMethod() {
     
     // Build payment info
     const payment = {
-      paymentMethod: paymentMethod as "card" | "paypal",
+      paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
       cardData,
       billingData: billingFormData,
       billingAddressExpanded,
@@ -172,6 +195,40 @@ export default function PayMethod() {
       });
     }
     router.push("/account/thankYou");
+  };
+
+   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
+  
+  
+  useEffect(() => {
+    if (billingFormData.country) {
+      const fetchedStates = State.getStatesOfCountry(billingFormData.country);
+      console.log("Fetched States:", fetchedStates);
+      setStates(fetchedStates || []);
+    } else {
+      setStates([]);
+    }
+  }, [billingFormData.country]);
+  
+  
+  const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
+    setUserType(type);
+    setBillingFormData((prev) => ({ ...prev, customerType: type }));
+  };
+
+  const handleChange = (field: string, value: string) => {
+    if (field === "country") {
+      setBillingFormData((prev) => ({
+        ...prev,
+        country: value,
+        state: "", // reset state when country changes
+      }));
+    } else {
+      setBillingFormData((prev) => ({
+        ...prev,
+        [field]: value,
+      }));
+    }
   };
 
   return (
@@ -405,8 +462,9 @@ export default function PayMethod() {
                     </div>
                     </div>
                   </label>
-                      {/* Card Number */}
-                      
+                  {/* Card Number */}
+                  {paymentMethod === "card" && (
+                    <>
                       <div>
                         <input
                           type="text"
@@ -469,16 +527,50 @@ export default function PayMethod() {
                               <p className="text-red-500 text-xs mt-1">{cardErrors.securityCode}</p>
                             )}
                       </div>
-                      {paymentMethod === "card" && (
-                    <fieldset className=" rounded-md p-6 space-y-4">
-                      {/* Google Pay Button */}
-                     <button className="bg-black text-white py-3 rounded-md flex items-center justify-center w-full font-exo2 hover:bg-gray-800 transition-colors">
-                        <FaApple className="text-xl mr-2" />
-                        Apple Pay
-                      </button>
-                    </fieldset>
-                    
-                  )}
+                       </>
+                      )}
+                     <label className="flex items-center gap-4 cursor-pointer w-full">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="apple"
+                      checked={paymentMethod === "apple"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="form-radio text-blue-600 shrink-0"
+                    />
+                    <div
+                      className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                        paymentMethod === "apple"
+                          ? "bg-black text-white ring-2 ring-blue-500"
+                          : "bg-black text-white hover:bg-gray-800"
+                      }`}
+                    >
+                      <FaApple className="text-2xl mr-2" />
+                      Apple Pay
+                    </div>
+                  </label>
+
+                  {/* Google Pay */}
+                  <label className="flex items-center gap-4 cursor-pointer w-full">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="google"
+                      checked={paymentMethod === "google"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="form-radio text-blue-600 shrink-0"
+                    />
+                    <div
+                      className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                        paymentMethod === "google"
+                          ? "bg-white text-black ring-2 ring-blue-500"
+                          : "bg-white text-black hover:bg-gray-200"
+                      }`}
+                    >
+                      <FcGoogle className="text-2xl mr-2" />
+                      Google Pay
+                    </div>
+                  </label>
 
                   {/* PayPal Option */}
                   <label className="flex items-center justify-between cursor-pointer">
@@ -491,7 +583,7 @@ export default function PayMethod() {
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="form-radio text-[#009AFF] focus:ring-blue-300"
                       />
-                      <span className="font-exo2">Paypal</span>
+                      <span className="font-exo2">PayPal</span>
                     </div>
                     <Image
                       src="/Images/paypal.png"
@@ -504,12 +596,18 @@ export default function PayMethod() {
               </div>
 
               {/* Billing Address Accordion */}
-              <div>
+              <div className="flex items-center mb-4">
+                <input
+                  type="radio"
+                  name="billingAddressAccordion"
+                  checked={billingAddressExpanded}
+                  onChange={() => setBillingAddressExpanded(!billingAddressExpanded)}
+                  className="form-radio text-blue-600 mr-2"
+                />
                 <button
-                  onClick={() =>
-                    setBillingAddressExpanded(!billingAddressExpanded)
-                  }
+                  onClick={() => setBillingAddressExpanded(!billingAddressExpanded)}
                   className="font-exo2 font-semibold cursor-pointer flex justify-between items-center w-full text-left"
+                  type="button"
                 >
                   <span>
                     billing address (where you receive your credit card bills)
@@ -530,31 +628,53 @@ export default function PayMethod() {
                     />
                   </svg>
                 </button>
+              </div>
+              <div>
+              
 
                 {billingAddressExpanded && (
                   <div className="space-y-6 mt-4">
+                    {/* Individual/Commercial Row */}
+                    <div className="flex gap-4 mb-2 md:mb-0 md:py-2">
+                      <button
+                        type="button"
+                        onClick={() => handleUserTypeChange("Individual")}
+                        className={`w-full px-4 py-1 md:py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
+                          userType === "Individual"
+                            ? "bg-blue-600 text-white"
+                            : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
+                        }`}
+                      >
+                        Individual
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleUserTypeChange("Commercial")}
+                        className={`w-full px-4 py-1 md:py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
+                          userType === "Commercial"
+                            ? "bg-blue-600 text-white"
+                            : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
+                        }`}
+                      >
+                        Commercial
+                      </button>
+                    </div>
+                    {/* First and Last Name Row */}
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
-                        <label className="block font-exo2 mb-2">
-                          First Name *
-                        </label>
+                        <label className="block font-exo2 mb-2">First Name *</label>
                         <input
                           type="text"
                           placeholder="Name"
                           value={billingFormData.firstName}
                           onChange={(e) =>
-                            handleBillingInputChange(
-                              "firstName",
-                              e.target.value
-                            )
+                            handleBillingInputChange("firstName", e.target.value)
                           }
                           className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                         />
                       </div>
                       <div>
-                        <label className="block font-exo2 mb-2">
-                          Last Name *
-                        </label>
+                        <label className="block font-exo2 mb-2">Last Name *</label>
                         <input
                           type="text"
                           placeholder="Name"
@@ -593,22 +713,31 @@ export default function PayMethod() {
                         />
                       </div>
                     </div>
-
-                    <div>
-                      <label className="block font-exo2 mb-2">Country *</label>
-                      <select
-                        value={billingFormData.country}
-                        onChange={(e) =>
-                          handleBillingInputChange("country", e.target.value)
-                        }
-                        className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      >
-                        <option value="">Choose country…</option>
-                        <option value="USA">USA</option>
-                        <option value="Canada">Canada</option>
-                      </select>
-                    </div>
-
+                    {userType === 'Commercial' && (
+                      <div className="md:col-span-2">
+                        <label className="block text-xs mb-1">Company</label>
+                        <input
+                          className="w-full md:w-[400px] max-w-[700px] bg-[#091627] rounded-lg px-5 py-3 text-white border border-white/10 focus:outline-none"
+                          value={billingFormData.company}
+                          onChange={(e) => handleChange("company", e.target.value)}
+                          placeholder="Company name "
+                        />
+                      </div>
+                    )}
+                     <div className="md:col-span-2">
+                  <label className="block text-xs mb-1">Country*</label>
+                  <select
+                    className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    value={billingFormData.country}
+                    onChange={(e) => handleChange("country", e.target.value)}
+                    required
+                  >
+                    <option value="Choose country…">Choose Country…</option>
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                    
+                  </select>
+                </div>
                     <div className="grid md:grid-cols-2 gap-4">
                       <div>
                         <label className="block font-exo2 mb-2">
@@ -780,7 +909,7 @@ export default function PayMethod() {
                         : "bg-gray-600 text-gray-400 cursor-not-allowed"
                     }`}
                   >
-                    Confirm
+                    Confirm Order
                   </button>
                 </form>
 

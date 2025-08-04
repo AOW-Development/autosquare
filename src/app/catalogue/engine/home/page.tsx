@@ -423,7 +423,7 @@ export default function CatalogPage() {
                       {item.inStock ? (
                         <>
                           <span className="text-xl font-bold text-white">
-                            {item.actualprice}
+                           ${item.actualprice}
                           </span>
                           {cartItem ? (
                             <button

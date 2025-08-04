@@ -3,6 +3,7 @@ interface BillingInfo {
   firstName: string;
   lastName: string;
   phone: string;
+  company:string;
   country: string;
   address: string;
   apartment?: string; // Optional

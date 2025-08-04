@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { Listbox } from '@headlessui/react' 
 import { MAKES, MODELS, YEARS } from './vehicleData';
 import { useEffect } from "react";
+import { usePathname } from "next/navigation";
+import { Yaldevi } from "next/font/google";
 
 const PARTS = [
   "Engine",
@@ -29,6 +31,38 @@ const PARTS = [
 // ];
 
 const ShopByVehicle: React.FC = () => {
+    const router = useRouter();
+    const path=usePathname();
+  // Get localStorage details if available
+  useEffect(() => {
+    if(path=="/"){
+      setMake("")
+      setModel("")
+      setYear("")
+      setPart("")
+      
+    }else if(path=="/product/engines") {
+       setMake("")
+      setModel("")
+      setYear("")
+      setPart("")
+     
+    }else{
+      const stored = localStorage.getItem("shopByVehicle");
+      if (stored) {
+        try {
+          const { make: storedMake, model: storedModel, year: storedYear, part: storedPart } = JSON.parse(stored);
+          if (storedMake) setMake(storedMake);
+          if (storedModel) setModel(storedModel);
+          if (storedYear) setYear(storedYear);
+          if (storedPart) setPart(storedPart);
+        } catch {
+          // Ignore parse errors
+        }
+      }
+    }
+  }, [router]);
+  
   const [make, setMake] = useState("");
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
@@ -52,8 +86,6 @@ const ShopByVehicle: React.FC = () => {
     backgroundSize: "20px 20px",
   };
 
-  const router = useRouter();
-
   useEffect(() => {
     if (make && model) {
       fetch(`${API_BASE}/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
@@ -68,9 +100,19 @@ const ShopByVehicle: React.FC = () => {
   React.useEffect(() => {
     if (make && model && year && part) {
       const query = new URLSearchParams({ make, model, year, part }).toString();
+      localStorage.setItem("shopByVehicle", JSON.stringify({
+        make,
+        model,
+        year,
+        part
+      }));
+      // setMake(make)
+      // setModel(model)
+      // setYear(year)
+      // setPart(part)
       router.push(`/catalogue/engine/home?${query}`);
     }
-  }, [make, model, year, part, router]);
+  }, [make, model, year, part]);
 
   return (
     <div className="relative z-20">
@@ -91,7 +133,7 @@ const ShopByVehicle: React.FC = () => {
 
         <div className="flex flex-row gap-4 justify-center items-center">
           {/* Make Dropdown */}
-          <select
+           <select
             id="make-select"
             aria-label="Select make"
             className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${

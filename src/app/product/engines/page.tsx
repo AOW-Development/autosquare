@@ -60,10 +60,10 @@ export default function EngineProductPage() {
   const [selectedImg, setSelectedImg] = useState(1);
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
-  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(
-    null
-  );
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  // NEW: State for all variants and selected product (variant)
+  const [allVariants, setAllVariants] = useState<any[]>([]); // any for now, can type
+  const [selectedProductSku, setSelectedProductSku] = useState<string>("");
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
@@ -83,51 +83,54 @@ export default function EngineProductPage() {
     };
 
   useEffect(() => {
-    console.log(make)
     if (!make || !model || !year || !part) return;
     fetch(
-      `${API_BASE}/products/with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
+      `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
     )
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
-        // Dedupe all subParts
-        const subParts = Array.from(
-          new Map(
-            data
-              .flatMap((p: Product) => p.subParts)
-              .map((sp: SubPart) => [sp.id, sp])
-          ).values()
-        ) as SubPart[];
-        setAllSubParts(subParts);
-        // Find product by sku
-        const initialProduct =
-          data.find((p: Product) => p.sku === sku) || data[0];
-        const initialSubPartId =
-          initialProduct?.subParts[0]?.id || subParts[0]?.id;
-        setSelectedSubPartId(initialSubPartId);
-        setSelectedProduct(initialProduct);
+        // Flatten all variants from groupedVariants
+        let variants: any[] = [];
+        if (data.groupedVariants) {
+          data.groupedVariants.forEach((group: any) => {
+            group.variants.forEach((variant: any) => {
+  variants.push({
+    ...variant,
+    subPart: group.subPart,
+    // Ensure modelYear, partType, product, etc. are present on each variant for UI/cart
+    modelYear: variant.modelYear || group.modelYear || group.product?.modelYear || null,
+    partType: variant.partType || group.partType || group.product?.partType || null,
+    product: variant.product || group.product || null,
+  });
+});
+          });
+        }
+        setAllVariants(variants);
+        // Set initial selected product (variant)
+        const initialProduct = sku
+          ? variants.find((v) => v.sku === sku)
+          : variants[0];
+        setSelectedProductSku(initialProduct?.sku || "");
+        setSelectedProduct(initialProduct || null);
       });
   }, [make, model, year, part, sku]);
 
+  // When selectedProductSku changes, update selectedProduct
   useEffect(() => {
-    if (!selectedSubPartId || products.length === 0) return;
-    const prod = products.find((p) =>
-      p.subParts.some((sp) => sp.id === selectedSubPartId)
-    );
-    setSelectedProduct(prod || null);
-  }, [selectedSubPartId, products]);
+    if (!selectedProductSku || allVariants.length === 0) return;
+    const product = allVariants.find((v) => v.sku === selectedProductSku);
+    setSelectedProduct(product || null);
+  }, [selectedProductSku, allVariants]);
 
   const handleAddToCart = () => {
     if (!selectedProduct) return;
     const price = selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0;
     addItem({
       id: selectedProduct.sku,
-      name: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
-      title: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`,
-      subtitle: selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A',
-       image :galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png',
-
+      name: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`.trim(),
+      title: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`.trim(),
+      subtitle: selectedProduct.subPart?.name || selectedProduct.subtitle || 'N/A',
+      image: selectedProduct.product?.images && selectedProduct.product.images.length > 0 ? selectedProduct.product.images[0] : '/Images/default-engine.png',
       price,
       quantity,
     });
@@ -135,6 +138,7 @@ export default function EngineProductPage() {
     setInCart(true);
     setTimeout(() => setShowCartPopup(false), 2000);
   };
+
 
   return (
     <>
@@ -218,19 +222,18 @@ export default function EngineProductPage() {
           <div className="text-base text-gray-400 mb-2">
             Option:{" "}
             <span className="text-gray-400">
-              {allSubParts.find((sp) => sp.id === selectedSubPartId)?.name ||
-                ""}
+              {selectedProduct ? selectedProduct.sku : ""}
             </span>
           </div>
           <div className="mb-2">
             <select
               className="w-full bg-[#12263A] border  border-[#1a2a44] rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={selectedSubPartId || ""}
-              onChange={(e) => setSelectedSubPartId(Number(e.target.value))}
+              value={selectedProductSku}
+              onChange={(e) => setSelectedProductSku(e.target.value)}
             >
-              {allSubParts.map((sp) => (
-                <option key={sp.id} value={sp.id}>
-                  {sp.name}
+              {allVariants.map((variant) => (
+                <option key={variant.sku} value={variant.sku}>
+                  {variant.sku} {variant.miles ? `(${variant.miles})` : ""}
                 </option>
               ))}
             </select>
@@ -238,7 +241,11 @@ export default function EngineProductPage() {
           <div className="text-sm text-white mb-2">
             Availability:{" "}
             <span className="text-gray-400">
-              {selectedProduct?.inStock ? "In stock" : "Out of stock"}
+              {selectedProduct?.inStock === undefined
+                ? ""
+                : selectedProduct.inStock
+                ? "In stock"
+                : "Out of stock"}
             </span>
           </div>
           {selectedProduct?.inStock ? (
@@ -247,6 +254,8 @@ export default function EngineProductPage() {
                 <span className="text-4xl font-bold">
                   {selectedProduct?.discountedPrice
                     ? `$${selectedProduct.discountedPrice}`
+                    : selectedProduct?.actualprice
+                    ? `$${selectedProduct.actualprice}`
                     : "N/A"}
                 </span>
                 {selectedProduct?.actualprice &&
@@ -308,10 +317,10 @@ export default function EngineProductPage() {
           )}
           {showCartPopup && selectedProduct && (
           <AddedCartPopup
-            title={`${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`}
-            subtitle={selectedProduct.subParts && selectedProduct.subParts.length > 0 ? selectedProduct.subParts.map(subPart => subPart.name).join(', ') : 'N/A'}
+            title={`${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`.trim()}
+            subtitle={selectedProduct.sku || 'N/A'}
             price={selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}
-            image={galleryImages && galleryImages.length > 0 ? galleryImages[0] : '/Images/default-engine.png'}
+            image={selectedProduct.product?.images && selectedProduct.product.images.length > 0 ? selectedProduct.product.images[0] : '/Images/default-engine.png'}
           />
         )}
           {/* Accordion */}

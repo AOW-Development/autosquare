@@ -35,6 +35,7 @@ interface Product {
   images: any[]; 
   inventory: any | null;
   subParts: SubPart[];
+  product: Product; // parent product info
 }
 
 const accordionData = [
@@ -85,7 +86,39 @@ export default function CatalogPage() {
         try {
           setLoading(true);
           const response = await getGroupedProducts({ make, model, year, part });
-          setProducts(response.data);
+
+          // Define interfaces for explicit typing to prevent type errors.
+          interface IVariant {
+            id: number;
+            sku: string;
+            miles: string | null;
+            actualprice: number | null;
+            inStock: boolean;
+            product: { images: any[]; description: string | null; };
+          }
+
+          interface IGroupedVariant {
+            subPart: SubPart;
+            variants: IVariant[];
+          }
+
+          // The API returns data grouped by sub-parts. We need to flatten this structure
+          // into a single list of products for rendering.
+          const flattenedProducts = response.data.groupedVariants.flatMap((group: IGroupedVariant) => 
+            group.variants.map((variant: IVariant) => ({
+              // Combine variant data with parent product and sub-part info
+              ...variant,
+              ...variant.product,
+              id: variant.id,
+              sku: variant.sku,
+              subParts: [group.subPart], 
+            }))
+          );
+          
+          // console.log("Flattened products:", flattenedProducts); // For debugging
+
+          // setProducts(response.data); // Old method, commented out as it doesn't handle the new data structure.
+          setProducts(flattenedProducts); // New method with transformed data
           setError(null);
         } catch (err) {
           setError('Failed to fetch products. Please try again later.');

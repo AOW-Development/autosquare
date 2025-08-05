@@ -1,94 +1,86 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import ThankYouPopupPartRequestform from '../thankYouPopupPartRequestform/page';
 
-export default function PartRequestPopup() {
+interface Props {
+  make: string;
+  model: string;
+  year: string;
+}
+
+export default function PartRequestPopup({ make, model, year }: Props) {
+  const [showThankYou, setShowThankYou] = useState(false);
   const [close, setClose] = useState(false);
+
+  if (close) return null;
+  if (showThankYou) return <ThankYouPopupPartRequestform onClose={() => setClose(true)} />;
+
   return (
-    <div
-      className={`${
-        close && "hidden"
-      } fixed inset-0 z-50 flex items-center justify-center`}
-    >
-      {/* Blurred background */}
-      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
-      {/* Modal */}
-      <div className="relative z-10 w-full max-w-md mx-auto bg-[#091b33] rounded-md  p-8">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 sm:px-6">
+      <div className="relative bg-[#11213A] rounded-lg shadow-xl p-8 w-full max-w-lg md:max-w-2xl mx-4">
+        {/* Close Button */}
         <button
-          className="absolute top-6 right-7 text-gray-400 hover:text-white text-4xl"
+          className="absolute top-3 md:top-6 right-3 text-gray-400 hover:text-white text-xl"
+          onClick={() => setClose(true)}
           aria-label="Close"
-          onClick={() => {
-            setClose(true);
-          }}
-          // Add your close logic here
         >
           &times;
         </button>
-        <h2 className="text-white border-b border-gray-600  text-xl font-bold mb-6 tracking-wide pb-2">
-          CONTACT INFORMATION
-        </h2>
-        <form className="flex flex-col gap-4">
+
+        {/* Title */}
+        <h2 className="text-xl font-audiowide mb-2 tracking-wide text-white">CONTACT INFORMATION</h2>
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setShowThankYou(true);
+          }}
+          className="flex flex-col gap-3 mt-4"
+        >
+          {/* Autofilled Fields */}
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Make*</label>
-            <select className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none">
-              <option>Ford</option>
-              {/* Add more options */}
-            </select>
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={make} />
           </div>
+
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Model*</label>
-            <select className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none">
-              <option>Bronco</option>
-              {/* Add more options */}
-            </select>
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={model} />
           </div>
+
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Year*</label>
-            <select className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none">
-              <option>1991</option>
-              {/* Add more options */}
-            </select>
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={year} />
           </div>
+
+          {/* User Info */}
           <div>
-            <label className="text-sm text-gray-300 mb-1 block">
-              Full Name*
-            </label>
-            <input
-              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
-              placeholder="Name"
-            />
+            <label className="text-sm text-gray-300 mb-1 block">Full Name*</label>
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" placeholder="Name" />
           </div>
+
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Email*</label>
-            <input
-              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
-              placeholder="example@gmail.com"
-              type="email"
-            />
+            <input type="email" className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" placeholder="example@gmail.com" />
           </div>
+
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Phone*</label>
-            <input
-              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
-              placeholder="(___) ___-____"
-              type="tel"
-            />
+            <input type="tel" className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" placeholder="(___) ___-____" />
           </div>
+
           <div>
-            <label className="text-sm text-gray-300 mb-1 block">
-              ZIP Code*
-            </label>
-            <input
-              className="w-full bg-[#1b2942] text-white rounded px-3 py-2 focus:outline-none"
-              placeholder="ZIP Code"
-            />
+            <label className="text-sm text-gray-300 mb-1 block">ZIP Code*</label>
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" placeholder="ZIP Code" />
           </div>
-          <div className="flex gap-4 mt-6">
+
+          {/* Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 mt-5">
             <button
               type="button"
-              onClick={() => {
-                setClose(true);
-              }}
+              onClick={() => setClose(true)}
               className="flex-1 bg-[#091b33] text-white rounded py-2 border border-[#00a3ff] hover:bg-[#22304a] transition"
             >
               Cancel

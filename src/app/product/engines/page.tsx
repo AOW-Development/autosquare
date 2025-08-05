@@ -261,7 +261,7 @@ export default function EngineProductPage() {
               <div className="flex gap-4 mb-4">
                 {inCart ? (
                   <div className="flex items-center gap-2">
-                    <button
+                    {/* <button
                       className="px-3 py-2 bg-[#1d3759] text-white rounded-l disabled:opacity-50"
                       onClick={() => setQuantity((q) => Math.max(1, q - 1))}
                       disabled={quantity === 1}
@@ -274,7 +274,7 @@ export default function EngineProductPage() {
                       onClick={() => setQuantity((q) => q + 1)}
                     >
                       +
-                    </button>
+                    </button> */}
                   </div>
                 ) : (
                   <button

@@ -19,15 +19,16 @@ import { State } from "country-state-city";
 
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
-  const [billingAddressExpanded, setBillingAddressExpanded] = useState(false);
+  const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
   const { billingInfo } = useBillingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
   const [userType, setUserType] = useState("Individual");
+  const [sameAsShipping, setSameAsShipping] = useState(false);
   // default to Apple Pay
 
   const [billingFormData, setBillingFormData] = useState(
-    billingInfo || {
+     {
       firstName: "",
       lastName: "",
       // email: "",
@@ -41,6 +42,29 @@ export default function PayMethod() {
       zipCode: "",
     }
   );
+  useEffect(() => {
+    if (sameAsShipping && billingInfo) {
+      setBillingFormData({
+        ...billingInfo,
+        apartment: billingInfo.apartment ?? "",
+      });
+    } else if (!sameAsShipping) {
+      setBillingFormData({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        company: "",
+        country: "",
+        address: "",
+        apartment: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      });
+    }
+  }, [sameAsShipping, billingInfo]);
+
+
   const [cardData, setCardData] = useState({
     cardNumber: "",
     cardholderName: "",
@@ -50,6 +74,8 @@ export default function PayMethod() {
   
   const [cardErrors, setCardErrors] = useState({
   cardNumber: "",
+  cardholderName:"",
+  expiartionDate:"",
   securityCode: "",
 });
 
@@ -65,63 +91,107 @@ export default function PayMethod() {
   };
 
  const handleCardInputChange = (field: string, value: string) => {
+  if (field === "cardholderName") {
+    const onlyLetters = /^[A-Za-z\s]*$/;
+    if (!onlyLetters.test(value)) {
+      setCardErrors((prev) => ({
+        ...prev,
+        cardholderName: "Only letters and spaces are allowed",
+      }));
+      return;
+    } else {
+      setCardErrors((prev) => ({ ...prev, cardholderName: "" }));
+    }
+    setCardData((prev) => ({ ...prev, cardholderName: value }));
+    return;
+  }
+
+  if (field === "cardNumber") {
+    const cleanValue = value.replace(/\D/g, ""); // Remove all non-digits
+    const cardType = getCardType(cleanValue);
+
+    let formatted = cleanValue;
+    let maxLength = 16; // Default
+
+    // Apply format and max length based on card type
+    if (cardType === "American Express") {
+      maxLength = 15;
+      formatted = cleanValue
+        .slice(0, maxLength)
+        .replace(/^(\d{0,4})(\d{0,6})(\d{0,5})/, (_m, p1, p2, p3) =>
+          [p1, p2, p3].filter(Boolean).join(" ")
+        );
+    } else {
+      // Visa, Mastercard, Discover default
+      maxLength = 16;
+      formatted = cleanValue
+        .slice(0, maxLength)
+        .replace(/(\d{4})(?=\d)/g, "$1 ")
+        .trim();
+    }
+
+    const isValid = isValidCardNumber(cleanValue);
+
+    if (!cardType && cleanValue.length > 0) {
+      setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
+    } else if (!isValid && cleanValue.length === maxLength) {
+      setCardErrors((prev) => ({ ...prev, cardNumber: "Invalid card number" }));
+    } else {
+      setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
+    }
+
+    setCardData((prev) => ({ ...prev, cardNumber: formatted }));
+    return;
+  }
+
   if (field === "expirationDate") {
-    const cleaned = value.replace(/\D/g, ""); // remove non-digits
+    const cleaned = value.replace(/\D/g, "").slice(0, 4); // MMYY
     let formatted = cleaned;
 
     if (cleaned.length >= 3) {
       formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
     }
 
-    if (formatted.length > 5) return; // restrict to MM/YY
+    if (formatted.length > 5) return;
 
-    // Validate if input is complete
     if (formatted.length === 5) {
       const [monthStr, yearStr] = formatted.split("/");
       const month = parseInt(monthStr, 10);
-      const year = parseInt(`20${yearStr}`, 10); // YY -> YYYY
+      const year = parseInt(`20${yearStr}`, 10);
 
       const currentDate = new Date();
-      const currentMonth = currentDate.getMonth() + 1; // Jan = 0
+      const currentMonth = currentDate.getMonth() + 1;
       const currentYear = currentDate.getFullYear();
 
       if (month < 1 || month > 12) {
-        alert("Please enter a valid month between 01 and 12.");
+        setCardErrors((prev) => ({
+          ...prev,
+          expirationDate: "Month must be between 01 and 12",
+        }));
         return;
       }
 
       if (year < currentYear || (year === currentYear && month < currentMonth)) {
-        alert("The expiration date must be in the future.");
+        setCardErrors((prev) => ({
+          ...prev,
+          expirationDate: "Expiration date must be in the future",
+        }));
         return;
       }
+
+      setCardErrors((prev) => ({ ...prev, expirationDate: "" }));
     }
 
     setCardData((prev) => ({ ...prev, expirationDate: formatted }));
     return;
   }
 
-  // Set value for other fields
-  setCardData((prev) => ({ ...prev, [field]: value }));
-
-  if (field === "cardNumber") {
-    const cleanValue = value.replace(/\D/g, "");
-    const cardType = getCardType(cleanValue);
-    const isValid = isValidCardNumber(cleanValue);
-
-    if (!cardType) {
-      setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
-    } else if (!isValid && cleanValue.length >= 13) {
-      setCardErrors((prev) => ({ ...prev, cardNumber: "Invalid card number" }));
-    } else {
-      setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
-    }
-  }
-
   if (field === "securityCode") {
     const cardType = getCardType(cardData.cardNumber.replace(/\D/g, ""));
     const expectedLength = cardType === "American Express" ? 4 : 3;
+    const cleaned = value.replace(/\D/g, "").slice(0, expectedLength);
 
-    if (value.length > 0 && value.length !== expectedLength) {
+    if (cleaned.length > 0 && cleaned.length !== expectedLength) {
       setCardErrors((prev) => ({
         ...prev,
         securityCode: `CVV must be ${expectedLength} digits`,
@@ -129,7 +199,13 @@ export default function PayMethod() {
     } else {
       setCardErrors((prev) => ({ ...prev, securityCode: "" }));
     }
+
+    setCardData((prev) => ({ ...prev, securityCode: cleaned }));
+    return;
   }
+
+  // Fallback
+  setCardData((prev) => ({ ...prev, [field]: value }));
 };
 
  const isFormValid = () => {
@@ -596,41 +672,29 @@ export default function PayMethod() {
               </div>
 
               {/* Billing Address Accordion */}
-              <div className="flex items-center mb-4">
-                <input
-                  type="radio"
-                  name="billingAddressAccordion"
-                  checked={billingAddressExpanded}
-                  onChange={() => setBillingAddressExpanded(!billingAddressExpanded)}
-                  className="form-radio text-blue-600 mr-2"
-                />
-                <button
-                  onClick={() => setBillingAddressExpanded(!billingAddressExpanded)}
-                  className="font-exo2 font-semibold cursor-pointer flex justify-between items-center w-full text-left"
-                  type="button"
-                >
-                  <span>
+             
+             {/* Title */}
+             <div>
+                <div className="mb-2">
+                  <label className="font-exo2 font-semibold text-lg">
                     billing address (where you receive your credit card bills)
-                  </span>
-                  <svg
-                    className={`w-5 h-5 transform transition-transform duration-200 ${
-                      billingAddressExpanded ? "rotate-180" : ""
-                    }`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </button>
-              </div>
-              <div>
-              
+                  </label>
+                </div>
+
+                {/* Checkbox */}
+                <div className="flex items-center mb-4">
+                  <input
+                    type="checkbox"
+                    id="sameAsShipping"
+                    name="sameAsShipping"
+                    checked={sameAsShipping}
+                    onChange={() => setSameAsShipping(!sameAsShipping)}
+                    className="form-checkbox text-blue-600 mr-2"
+                  />
+                  <label htmlFor="sameAsShipping" className="font-exo2">
+                    Same as shipping address
+                  </label>
+                  </div>
 
                 {billingAddressExpanded && (
                   <div className="space-y-6 mt-4">
@@ -789,19 +853,25 @@ export default function PayMethod() {
                         />
                       </div>
                       <div>
-                        <label className="block font-exo2 mb-2">State *</label>
-                        <select
-                          value={billingFormData.state}
-                          onChange={(e) =>
-                            handleBillingInputChange("state", e.target.value)
-                          }
-                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                        >
-                          <option value="">Choose state…</option>
-                          <option value="Florida">Florida</option>
-                          <option value="California">California</option>
-                          <option value="Texas">Texas</option>
-                        </select>
+                 <label className="block text-xs mb-1">State*</label>
+                  <select
+                    className="w-full bg-[#091627] rounded-lg px-4 py-2 md:mt-3 text-white border border-white/10 focus:outline-none"
+                    value={billingFormData.state}
+                    onChange={(e) => handleChange("state", e.target.value)}
+                    disabled={!states.length}
+                    required
+                  >
+                    <option value="">Choose State…</option>
+                    {states.map((state) => (
+                      <option
+                        key={state.isoCode}
+                        value={state.isoCode}
+                        className="text-white" // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
+                      >
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
                       </div>
                       <div>
                         <label className="block font-exo2 mb-2">

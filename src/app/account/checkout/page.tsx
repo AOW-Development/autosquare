@@ -211,7 +211,7 @@ useEffect(() => {
 
               {/* Form Header */}
               <h2 className="text-base font-semibold mb-6 font-exo2">
-                RECIPIENT DETAILS
+                SHIPPING DETAILS
               </h2>
               <div className="flex gap-4 mb-4">
               <button
@@ -456,49 +456,54 @@ useEffect(() => {
                     Edit cart
                   </Link>
                 </div>
-
                 {/* Product Items */}
+                <div className="space-y-2 border-b border-white"></div>
                 <div className="space-y-2 border-b border-white">
-                  {cartItems.map((item) => (
+                   
+                    {cartItems.map((item) => (
                     <div key={item.id} className="flex space-x-3 pb-4 ">
                       <Image
-                        src={item.image}
-                        alt={item.title}
-                        width={56}
-                        height={56}
-                        className="w-14 h-14 object-cover rounded"
+                      src={item.image}
+                      alt={item.title}
+                      width={56}
+                      height={56}
+                      className="w-14 h-14 object-cover rounded"
                       />
                       <div className="flex-1">
-                        <div className="flex justify-between items-start">
-                          <div className="flex-1">
-                            <h4 className="font-exo2 font-semibold">
-                              {item.title}
-                            </h4>
-                            <p className="font-exo2 text-sm text-gray-400">
-                              {item.subtitle}
-                            </p>
-                            <div className="mt-1 space-y-1">
-                              {/* /{item.details.map((detail, index) => ( */}
-                                <p
-                                  // key={index}
-                                  className="font-exo2 text-xs text-gray-400"
-                                >
-                                  {item.id}
-                                </p>
-                              {/* ))} */}
-                            </div>
-                          </div>
-                          <p className="font-exo2 font-semibold">
-                            ${item.price}
+                      <div className="flex justify-between items-start">
+                        <div className="flex-1">
+                        <h4 className="font-exo2 font-semibold">
+                          {item.title}
+                        </h4>
+                        <p className="font-exo2 text-sm text-gray-400">
+                          {item.subtitle}
+                        </p>
+                        <div className="mt-1 space-y-1">
+                          <p className="font-exo2 text-xs text-gray-400">
+                          {item.id}
                           </p>
                         </div>
+                        </div>
+                        <p className="font-exo2 font-semibold">
+                        ${item.price}
+                        </p>
                       </div>
+                      </div>
+                      
                     </div>
-                  ))}
+                    ))}
                 </div>
-
+                  {/* Total number of products */}
+                    <div className="flex justify-between items-center pb-0">
+                    <span className="font-exo2 text-sm md:text-lg text-gray-300">
+                      Total products:
+                    </span>
+                    <span className="font-exo2 text-sm text-white">
+                      {items.length}
+                    </span>
+                    </div>   
                 {/* Coupon Code */}
-                <div className="border-b border-white pb-4">
+                {/* <div className="border-b border-white pb-4">
                   <label className="block font-exo2 mb-2">
                     Have a coupon code?
                   </label>
@@ -514,7 +519,7 @@ useEffect(() => {
                       Apply
                     </button>
                   </div>
-                </div>
+                </div> */}
 
                 {/* Totals */}
                 <div className="space-y-2">

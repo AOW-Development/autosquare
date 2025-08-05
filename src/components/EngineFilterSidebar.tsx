@@ -65,7 +65,7 @@ const EngineFilterSidebar = () => (
       </ul>
     </div>
     {/* PRICE RANGE */}
-    <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
+    {/* <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">PRICE RANGE</h3>
       <div className="flex gap-2 mb-3">
         <input
@@ -82,7 +82,7 @@ const EngineFilterSidebar = () => (
       <button className="w-full border-1 border-sky-700 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors">
         Filter
       </button>
-    </div>
+    </div> */}
     {/* STATE */}
     <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">STATE</h3>
@@ -109,7 +109,7 @@ const EngineFilterSidebar = () => (
       </label>
     </div>
     {/* CAR MILEAGE, MILES */}
-    <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
+    {/* <div className="md:mb-6 bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">CAR MILEAGE, MILES</h3>
       <label className="flex items-center mb-2">
         <input
@@ -139,9 +139,9 @@ const EngineFilterSidebar = () => (
         />
         150-200 thousand
       </label>
-    </div>
+    </div> */}
     {/* CONDITION */}
-    <div className="bg-[#091627] p-4 md:rounded-lg">
+    {/* <div className="bg-[#091627] p-4 md:rounded-lg">
       <h3 className=" mb-3">CONDITION</h3>
       <label className="flex items-center mb-2">
         <input
@@ -157,7 +157,7 @@ const EngineFilterSidebar = () => (
         />
         Very Good
       </label>
-    </div>
+    </div> */}
   </>
 );
 

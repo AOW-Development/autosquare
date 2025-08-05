@@ -38,5 +38,9 @@
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.11",
     "typescript": "^5"
-  }
+  },
+  "description": "=======",
+  "main": "postcss.config.js",
+  "author": "",
+  "license": "ISC"
 }

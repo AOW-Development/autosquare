@@ -93,6 +93,9 @@ export default function Header() {
   // Submenu
   const submenuHover = React.useRef(false);
   const submenuTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const cartCount = useCartStore((s) => 
+    s.items.reduce((sum, i) => sum + i.quantity, 0)
+  );
 
   // Utility: close all overlays
   const closeAll = () => {
@@ -211,11 +214,11 @@ export default function Header() {
                 width={22}
                 height={22}
               />
+                         {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-                {useCartStore((s) =>
-                  s.items.reduce((sum, i) => sum + i.quantity, 0)
-                )}
+                {cartCount}
               </span>
+            )}
             </Link>
             <Link href="/account/garage" className="hover:text-blue-400">
               <Image
@@ -300,11 +303,11 @@ export default function Header() {
               width={24}
               height={24}
             />
-            <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-              {useCartStore((s) =>
-                s.items.reduce((sum, i) => sum + i.quantity, 0)
-              )}
-            </span>
+   {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
           <Link href="/account/garage" className="hover:text-blue-400">
             <Image

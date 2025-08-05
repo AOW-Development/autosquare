@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useCartStore } from "@/store/cartStore";
 import Image from "next/image";
 import Link from "next/link";
-import { useCartStore } from "@/store/cartStore";
+import { useState } from "react";
 
 interface CartItem {
   id: number;
@@ -15,6 +16,8 @@ interface CartItem {
 }
 
 export default function Cart() {
+  const router = useRouter();
+  const [error, setError] = useState("");
   const cartItems = useCartStore((s) => s.items);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
@@ -23,6 +26,16 @@ export default function Cart() {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
+  const handleCheckout = () =>{
+    if(cartItems.length === 0){
+      setError("No Products in the cart")
+      setTimeout(()=>{
+        setError("")
+      }, 2000)
+    }else{
+      router.push("/account/checkout");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-8 pb-22">
@@ -266,16 +279,24 @@ export default function Cart() {
             </div>
           ))}
         </div>
-
+        
         {/* Footer */}
         <div className="mt-8 pt-4">
           <div className="flex flex-col lg:flex-row lg:justify-end lg:items-center space-y-4 lg:space-y-0 lg:space-x-4">
             <div className="text-lg font-bold font-exo2">TOTAL: ${total}</div>
-            <Link href="/account/checkout">
-              <button className="bg-[#009AFF] cursor-pointer text-white px-8 py-2 rounded-md hover:bg-blue-600 transition-colors font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300">
-                Proceed to Checkout
-              </button>
-            </Link>
+            <button
+                onClick={handleCheckout}
+                className="bg-[#009AFF] text-white px-8 py-2 rounded-md hover:bg-blue-600 transition-colors font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+            >
+            Proceed to Checkout
+          </button>
+          </div>
+          <div>
+            {error && (
+              <p className="mt-2 text-red-500 font-exo2 font-semibold text-center lg:text-right">
+                {error}
+              </p>
+            )}
           </div>
         </div>
       </div>

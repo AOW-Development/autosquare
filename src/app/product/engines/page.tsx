@@ -7,8 +7,7 @@ import Link from "next/link";
 import AddedCartPopup from "../../account/modal/AddedCartPopup/AddedCartPopup";
 import { redirect, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
-
-
+import PartRequestPopup from "@/components/partRequestPopup";
 const galleryImages = [
   "/Images/var.png",
   "/Images/main.png",
@@ -60,6 +59,7 @@ export default function EngineProductPage() {
   const [selectedImg, setSelectedImg] = useState(1);
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
+  const [open,setOpen]=useState(false)
   // NEW: State for all variants and selected product (variant)
   const [allVariants, setAllVariants] = useState<any[]>([]); // any for now, can type
   const [selectedProductSku, setSelectedProductSku] = useState<string>("");
@@ -307,13 +307,13 @@ export default function EngineProductPage() {
               </div>
             </>
           ) : (
-            <Link
-              href="/account/modal/partRequestPopup"
+            <button
+              onClick={()=>setOpen(!open)}
               className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-1/3 block mb-6"
               tabIndex={0}
             >
               Part Request
-            </Link>
+            </button>
           )}
           {showCartPopup && selectedProduct && (
           <AddedCartPopup
@@ -353,6 +353,7 @@ export default function EngineProductPage() {
         </div>
       </div>
       {selectedProduct && <ProductSection product={selectedProduct} />}
+      {open && <PartRequestPopup/>}
     </>
   );
 }

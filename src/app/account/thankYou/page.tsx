@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore } from "@/store/cartStore";
 import { generateOrderNumber } from "@/utils/order";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 export default function ThankYouPage() {
   const { billingInfo } = useBillingStore();
@@ -49,6 +50,7 @@ export default function ThankYouPage() {
   const total = subtotal + salesTax;
 
   return (
+    <ProtectedRoute>
    <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
   {/* Background Car Image */}
   <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -218,6 +220,6 @@ export default function ThankYouPage() {
         </main>
         </div>
      
-   
+   </ProtectedRoute>
   );
 }

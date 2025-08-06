@@ -5,11 +5,13 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 
-interface Props {
-      onClose: () => void;
-    }
+// import PropTypes from 'prop-types';
 
-export default function ThankYouPopupPartRequestform({ onClose }: Props) {
+interface ThankYouPopupPartRequestformProps {
+  onClose: () => void;
+}
+
+export default function ThankYouPopupPartRequestform({ onClose }: ThankYouPopupPartRequestformProps) {
   const router = useRouter();
 
     const handleClose = () => {

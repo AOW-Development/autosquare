@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import ProtectedRoute from "@/components/ProtectedRoute";
+
 import useBillingStore from "@/store/billingStore";
 import { useCartStore, CartItem } from "@/store/cartStore";
 import { State } from "country-state-city"; 
@@ -110,7 +110,7 @@ useEffect(() => {
 };
 
   return (
-    <ProtectedRoute>
+   
       <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22 overflow-hidden">
         <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
           {/* Breadcrumb */}
@@ -599,6 +599,6 @@ useEffect(() => {
           </div>
         </div>
       </div>
-    </ProtectedRoute>
+
   );
 }

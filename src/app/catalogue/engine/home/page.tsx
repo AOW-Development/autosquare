@@ -479,7 +479,7 @@ export default function CatalogPage() {
                                   quantity: 1,
                                   price: item.actualprice || 0
                                 });
-                                setTimeout(() => setShowCartPopup(false), 2000);
+                                setTimeout(() => setShowCartPopup(false), 5000);
                               }}
                             >
                               Add to Cart

@@ -308,7 +308,7 @@ export default function PayMethod() {
   };
 
   return (
-    <ProtectedRoute>
+    
       <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
@@ -969,6 +969,7 @@ export default function PayMethod() {
                 </div>
 
                 {/* Payment Button */}
+           
                 <form onSubmit={handlePayment}>
                   <button
                     type="submit"
@@ -982,6 +983,7 @@ export default function PayMethod() {
                     Confirm Order
                   </button>
                 </form>
+          
 
                 {/* Back Link */}
                 <div className="text-center">
@@ -997,6 +999,6 @@ export default function PayMethod() {
           </div>
         </div>
       </div>
-    </ProtectedRoute>
+   
   );
 }

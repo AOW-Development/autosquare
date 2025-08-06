@@ -473,6 +473,7 @@ const ShopByVehicle: React.FC = () => {
           </div>
         </div>
       </div> */}
+        </div>
 
       {/* Mobile Layout */}
       <div className="w-full lg:hidden" style={{ position: "relative" }}>
@@ -620,7 +621,7 @@ const ShopByVehicle: React.FC = () => {
                     onFocus={() => setShowSubCategoryDropdown(true)}
                     className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none"
                   />
-                  {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
+                  {/* {showSubCategoryDropdown && filteredSubCategories.length > 0 && (
                     <div className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto border">
                       {filteredSubCategories.map((s) => (
                         <div
@@ -632,9 +633,9 @@ const ShopByVehicle: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                  )}
+                  )} */}
                 </div>
-              
+              )}
 
               {/* Options Search - Only visible when sub-category is selected */}
               {/* {optionActive && (
@@ -694,6 +695,6 @@ const ShopByVehicle: React.FC = () => {
       `}</style>
     </div>
   );
-};
+}
 
-export default ShopByVehicle;
+export default ShopByVehicle

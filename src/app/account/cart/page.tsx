@@ -6,6 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 interface CartItem {
   id: number;
   title: string;

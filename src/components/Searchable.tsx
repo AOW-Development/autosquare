@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 interface SearchableDropdownProps {
   options: string[];
@@ -26,53 +26,85 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
         !wrapperRef.current.contains(event.target as Node)
       ) {
         setShowOptions(false);
+        setSearch(""); // Clear search when clicking outside
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  // Clear search when value changes externally (e.g., when resetting form)
+  useEffect(() => {
+    if (!value) {
+      setSearch("");
+    }
+  }, [value]);
 
   const filteredOptions = options.filter((opt) =>
     opt.toLowerCase().includes(search.toLowerCase())
   );
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const input = e.target.value
+    setSearch(input);
+    setShowOptions(true);
+    if(input === ""){
+      onChange("");
+    }
+  };
+
+  const handleOptionSelect = (opt: string) => {
+    onChange(opt);
+    setSearch("");
+    setShowOptions(false);
+  };
+
+  const handleInputFocus = () => {
+    setShowOptions(true);
+    // If there's a value, show it in the search field for editing
+    if (value && !search) {
+      setSearch(value);
+    }
+  };
+
+  const displayValue = search || value;
+
   return (
     <div ref={wrapperRef} className="relative w-[368px]">
       <input
         type="text"
-        value={search || value}
-        onChange={(e) => {
-          setSearch(e.target.value);
-          setShowOptions(true);
-        }}
-        onFocus={() => setShowOptions(true)}
+        value={displayValue}
+        onChange={handleInputChange}
+        onFocus={handleInputFocus}
         placeholder={placeholder}
         disabled={disabled}
         className={`w-full h-[38px] px-4 text-sm rounded-md border-2 transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
           disabled
             ? "bg-gray-200 border-gray-200 text-black opacity-50 cursor-not-allowed"
-            : "bg-white border-gray-200 text-black opacity-100 cursor-pointer"
+            : "bg-white border-gray-200 text-gray-900 opacity-100 cursor-text"
         }`}
       />
-      {showOptions && !disabled && (
-        <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md border bg-white text-sm shadow-lg">
-          {filteredOptions.length > 0 ? (
-            filteredOptions.map((opt) => (
-              <li
-                key={opt}
-                onClick={() => {
-                  onChange(opt);
-                  setSearch("");
-                  setShowOptions(false);
-                }}
-                className="cursor-pointer px-4 py-2 hover:bg-blue-100"
-              >
-                {opt}
-              </li>
-            ))
-          ) : (
-            <li className="px-4 py-2 text-gray-500">No matches found</li>
-          )}
+      
+      {showOptions && !disabled && filteredOptions.length > 0 && (
+        <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white text-sm shadow-lg">
+          {filteredOptions.map((opt) => (
+            <li
+              key={opt}
+              onClick={() => handleOptionSelect(opt)}
+              className={`cursor-pointer px-4 py-2 hover:bg-blue-100 hover:text-blue-900 ${
+                opt === value ? 'bg-blue-50 text-blue-900 font-medium' : ''
+              }`}
+            >
+              {opt}
+            </li>
+          ))}
+        </ul>
+      )}
+      
+      {showOptions && !disabled && search && filteredOptions.length === 0 && (
+        <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white text-sm shadow-lg">
+          <li className="px-4 py-2 text-gray-500">No matches found</li>
         </ul>
       )}
     </div>

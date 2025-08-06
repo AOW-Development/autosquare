@@ -1,6 +1,7 @@
+
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCartStore } from "@/store/cartStore";
@@ -18,6 +19,20 @@ export default function Cart() {
   const cartItems = useCartStore((s) => s.items);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
+
+  // useEffect(() => {
+  //   const handleStorageChange = (event: StorageEvent) => {
+  //     if (event.key === 'cart-storage') {
+  //       useCartStore.persist.rehydrate();
+  //     }
+  //   };
+
+  //   window.addEventListener('storage', handleStorageChange);
+
+  //   return () => {
+  //     window.removeEventListener('storage', handleStorageChange);
+  //   };
+  // }, []);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -275,3 +290,5 @@ export default function Cart() {
     </div>
   );
 }
+
+

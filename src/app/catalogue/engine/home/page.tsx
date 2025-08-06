@@ -93,8 +93,21 @@ export default function CatalogPage() {
             sku: string;
             miles: string | null;
             actualprice: number | null;
+            discountedPrice?: number | null;
             inStock: boolean;
-            product: { images: any[]; description: string | null; };
+            productId?: number;
+            product: { images: any[]; description: string | null; id: number; sku: string };
+            // Add these fields:
+            make: string;
+            model: string;
+            modelYear: string;
+            part: string;
+            partType: string | null;
+            subPart: {
+              id: number;
+              name: string;
+              partTypeId: number;
+            };
           }
 
           interface IGroupedVariant {
@@ -106,12 +119,15 @@ export default function CatalogPage() {
           // into a single list of products for rendering.
           const flattenedProducts = response.data.groupedVariants.flatMap((group: IGroupedVariant) => 
             group.variants.map((variant: IVariant) => ({
-              // Combine variant data with parent product and sub-part info
               ...variant,
-              ...variant.product,
-              id: variant.id,
-              sku: variant.sku,
-              subParts: [group.subPart], 
+              make: response.data.make,
+              model: response.data.model,
+              modelYear: response.data.year,
+              part: response.data.part,
+              partType: group.subPart?.name || null,
+              subPart: group.subPart,
+              miles: variant.miles,
+              // add any other fields you want to pass
             }))
           );
           
@@ -310,7 +326,9 @@ export default function CatalogPage() {
             letterSpacing: "0.1em",
           }}
         >
-          {make && model && year ? `${make.toUpperCase()} ${model.toUpperCase()} ${year}` : 'ENGINES'}
+          {year && make && model && part
+            ? `${year.toUpperCase()} ${make.toUpperCase()} ${model.toUpperCase()} USED ${part.toUpperCase()}S`
+             : "USED ENGINES"}
         </h2>
 
         {/* Filters + Cards Section */}
@@ -381,7 +399,7 @@ export default function CatalogPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
               {currentItems.map((item, index) => {
                 const cartItem = cartItems.find(
-                  (i) => i.id === `engine-${item.id}` // Use unique ID for item
+                  (i) => i.id === item.sku // Use unique ID for item
                 );
                 
                 const getEngineSpecs = (subParts: SubPart[]) => {
@@ -429,10 +447,10 @@ export default function CatalogPage() {
                       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
                       <div className="relative z-20 pt-2">
                         <h3 className="text-white text-base mb-1">
-                          {part || 'Engine assembly'}
+                        {year}  {make} {model} 
                         </h3>
                         <p className="text-sm text-gray-300 mb-1">
-                          {make} {model} {year}
+                       {'USED'} {part || 'Engine/Transmission assembly'} 
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
                           {getEngineSpecs(item.subParts)}
@@ -441,10 +459,10 @@ export default function CatalogPage() {
                           Genuine Used Part
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
-                          A Grade Condition
+                          {/* {subPart[0].name} */}
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
-                          {item.miles}
+                          {item.miles} {'miles'}
                         </p>
                         <p className="text-xs text-gray-400 mb-2">
                           {item.warranty || '90 Days Warranty'}
@@ -504,10 +522,10 @@ export default function CatalogPage() {
                                 setShowCartPopup(true);
                                 setInCartIdx(indexOfFirstItem + index);
                                 addItem({
-                                  id: `engine-${indexOfFirstItem + index}`,
+                                  id: item.sku,
                                   name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
                                   title: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
-                                  subtitle: item.subParts && item.subParts.length > 0 ? item.subParts.map(subPart => subPart.name).join(', ') : 'N/A',
+                                  subtitle: item.sku,
                                   image: item.images && item.images.length > 0 ? item.images[0] : '/Images/default-engine.png',
                                   quantity: 1,
                                   price: item.actualprice || 0
@@ -533,12 +551,12 @@ export default function CatalogPage() {
                 );
               })}
               {showCartPopup && inCartIdx !== null && currentItems[inCartIdx] && (
-  <AddedCartPopup
-    title={`${make} ${model} ${year} ${part || 'Engine assembly'}`}
-    subtitle={currentItems[inCartIdx].subParts && currentItems[inCartIdx].subParts.length > 0 ? currentItems[inCartIdx].subParts.map((subPart: any) => subPart.name).join(', ') : 'N/A'}
-    price={currentItems[inCartIdx].actualprice || 0}
-    image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/Images/default-engine.png'}
-  />
+                <AddedCartPopup
+                  title={`${make} ${model} ${year} ${part || 'Engine assembly'}`}
+                  subtitle={currentItems[inCartIdx].sku}
+                  price={currentItems[inCartIdx].actualprice || 0}
+                  image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/Images/default-engine.png'}
+                />
 )}
             </div>
 

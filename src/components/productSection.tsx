@@ -37,14 +37,18 @@ interface Product {
 
 interface ProductSectionProps {
   product: Product;
+  make: string;
+  model: string;
+  year: string;
+  part: string;
 }
 
-export default function ProductSection({ product }: ProductSectionProps) {
+export default function ProductSection({ product, make, model, year, part }: ProductSectionProps) {
   const productDetails = [
-    { label: "Make", value: product?.modelYear?.model?.make?.name || "-" },
-    { label: "Model", value: product?.modelYear?.model?.name || "-" },
-    { label: "Year", value: product?.modelYear?.year?.value || "-" },
-    { label: "Part", value: product?.partType?.name || "-" },
+    { label: "Make", value: make || "-" },
+    { label: "Model", value: model || "-" },
+    { label: "Year", value: year || "-" },
+    { label: "Part", value: part || "-" },
     // { label: "Miles", value: product?.miles || "-" },
     { label: "Genuine", value: "Genuine Used Part" },
     // { label: "Condition", value: product?.status ? product.status : "N/A" },

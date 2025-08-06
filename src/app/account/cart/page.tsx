@@ -119,7 +119,7 @@ export default function Cart() {
             {cartItems.map((item) => (
               <div key={item.id} className="border-b border-[#FFFFFF] pb-4">
                 {/* Desktop Layout */}
-                <div className="hidden lg:grid grid-cols-12 gap-4 items-center">
+                <div className="hidden lg:grid grid-cols-11 gap-4 items-center">
                   <div className="col-span-6 flex items-center space-x-4">
                     <Image
                       src={item.image}

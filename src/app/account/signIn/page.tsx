@@ -55,7 +55,7 @@ export default function SignInPage() {
 
       login(
         {
-             id: data.user.id,
+    id: data.user.id,
     email: data.user.email,
     name: data.user.full_name || "",
     firstName: data.user.first_name || "",

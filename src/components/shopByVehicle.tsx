@@ -5,6 +5,7 @@ import { MAKES, MODELS, YEARS } from './vehicleData';
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import { Yaldevi } from "next/font/google";
+import SearchableDropdown from "./Searchable";
 
 const PARTS = [
   "Engine",
@@ -132,123 +133,54 @@ const ShopByVehicle: React.FC = () => {
         </div>
 
         <div className="flex flex-row gap-4 justify-center items-center">
-          {/* Make Dropdown */}
-           <select
-            id="make-select"
-            aria-label="Select make"
-            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              makeActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={make}
-            onChange={(e) => {
-              setMake(e.target.value);
-              setModel("");
-              setYear("");
-              setPart("");
-            }}
-            onFocus={() => setFocused("make")}
-            onBlur={() => setFocused(null)}
-            disabled={!makeActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select make...
-            </option>
-            {MAKES.map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
-            ))}
-          </select>
+        
+            <SearchableDropdown
+              options={MAKES}
+              value={make}
+              onChange={(selectedMake) => {
+                setMake(selectedMake);
+                setModel("");
+                setYear("");
+                setPart("");
+              }}
+              placeholder="Select make..."
+              disabled={!makeActive}
+            />
 
-          {/* Model Dropdown */}
-          <select
-            id="model-select-desktop"
-            aria-label="Select model"
-            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              modelActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={model}
-            onChange={(e) => {
-              setModel(e.target.value);
-              setYear("");
-              setPart("");
-            }}
-            onFocus={() => setFocused("model")}
-            onBlur={() => setFocused(null)}
-            disabled={!modelActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select model...
-            </option>
-            {(MODELS[make] || []).map((mo) => (
-              <option key={mo} value={mo}>
-                {mo}
-              </option>
-            ))}
-          </select>
+            <SearchableDropdown
+              options={make ? MODELS[make] || [] : []}
+              value={model}
+              onChange={(selectedModel) => {
+                setModel(selectedModel);
+                setYear("");
+                setPart("");
+              }}
+              placeholder="Select model..."
+              disabled={!modelActive}
+            />
 
-          {/* Year Dropdown */}
-          <select
-            id="year-select-desktop"
-            aria-label="Select year"
-            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              yearActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={year}
-            onChange={(e) => {
-              setYear(e.target.value);
-              setPart("");
-            }}
-            onFocus={() => setFocused("year")}
-            onBlur={() => setFocused(null)}
-            disabled={!yearActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select year...
-            </option>
-            {availableYears.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+            <SearchableDropdown
+              options={availableYears}
+              value={year}
+              onChange={(selectedYear) => {
+                setYear(selectedYear);
+                setPart("");
+              }}
+              placeholder="Select year..."
+              disabled={!yearActive}
+            />
 
-          {/* Part Dropdown */}
-          <select
-            id="part-select"
-            aria-label="Select part"
-            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              partActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={part}
-            onChange={(e) => {
-              setPart(e.target.value);
-            }}
-            onFocus={() => setFocused("part")}
-            onBlur={() => setFocused(null)}
-            disabled={!partActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select part...
-            </option>
-            {PARTS.map((p) => (
-              <option key={p} value={p}>
-                {p}
-              </option>
-            ))}
-          </select>
+            <SearchableDropdown
+              options={PARTS}
+              value={part}
+              onChange={(selectedPart) => {
+                setPart(selectedPart);
+              }}
+              placeholder="Select part..."
+              disabled={!partActive}
+            />
+         
+
 
           {/* sub-category Dropdown */}
           {/* <select

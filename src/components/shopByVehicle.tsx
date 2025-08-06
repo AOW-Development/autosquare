@@ -246,7 +246,7 @@ const ShopByVehicle: React.FC = () => {
 <div className="w-full lg:hidden" style={{ position: "relative" }}>
   <div className="bg-[#091B33] pt-12 sm:pt-20">
     <div
-      className="relative -mt-12 sm:-mt-20 mx-auto w-[92%] max-w-[400px] rounded-md shadow-lg px-4 py-4 sm:py-5 flex flex-col justify-center mobile-shop-container"
+      className="relative -mt-12 sm:-mt-20 mx-auto w-[92%] max-w-[400px] rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container"
       style={{ background: "#00A3FF80" }}
     >
       <div

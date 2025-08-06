@@ -93,6 +93,9 @@ export default function Header() {
   // Submenu
   const submenuHover = React.useRef(false);
   const submenuTimeout = React.useRef<NodeJS.Timeout | null>(null);
+    const cartCount = useCartStore((s) => 
+    s.items.reduce((sum, i) => sum + i.quantity, 0)
+  );
 
   // Utility: close all overlays
   const closeAll = () => {
@@ -105,11 +108,13 @@ export default function Header() {
     setMobileSelectedCategory(null);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
     setMenuOpen(true);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleMouseLeave = () => {
     timeoutRef.current = setTimeout(() => {
       setMenuOpen(false);
@@ -130,30 +135,34 @@ export default function Header() {
   return (
     <header className="w-full bg-[#091B33] text-white ">
       {/* Mobile Header */}
-      <div className="md:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
-        {/* Row 1: Logo left, contact info right */}
-        <div className="flex items-center justify-between w-full">
-          <Link href="/">
-            <Image
-              src="/logos/header-3.png"
-              alt="Logo"
-              width={200}
-              height={60}
-              className="w-[160px] h-[28px] md:w-[110px] md:h-[28px]"
-            />
-          </Link>
-          <div className="flex flex-col items-end text-xs ">
-            <span className="font-bold">(888) 338-2540</span>
-            <span>Mon-Fri: 8AM - 7PM EST</span>
-          </div>
-        </div>
-        {/* Row 2: Menu button left, icons right */}
-        <div
+  <div className="md:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
+  {/* Row 1: Logo left, contact info right */}
+  <div className="flex items-center justify-between w-full">
+    <Link href="/">
+      <Image
+        src="/logos/header-3.png"
+        alt="Logo"
+        width={200}
+        height={60}
+        className="w-[160px] h-[28px] md:w-[110px] md:h-[28px]"
+      />
+    </Link>
+    <div className="flex flex-col items-end text-xs ">
+      <span className="font-bold">(888) 338-2540</span>
+      <span>Mon-Fri: 8AM - 7PM EST</span>
+    </div>
+  </div>
+
+  {/* Row 2: Menu button left, icons right */}
+  <div className="flex items-center justify-between w-full mt-2">
+    {/* Menu Toggle */}
+    {/* <div
       className="relative inline-block text-left"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
-    >
-      {/* Toggle Button */}
+    > */}
+    <div className="relative inline-block text-left">
+
       <button
         className="flex items-center py-1"
         aria-label={menuOpen ? 'Close menu' : 'Open menu'}
@@ -175,67 +184,73 @@ export default function Header() {
         </svg>
         <span className="ml-1 font-medium">{menuOpen ? 'Close' : 'Menu'}</span>
       </button>
+    </div>
 
-          <div className="flex items-center gap-4">
-            {showSearch ? (
-              <input
-                type="text"
-                autoFocus
-                className="px-1 md:px-2 py-1 md:py-2 rounded-lg bg-gray-800 text-white outline-none  w-40 transition"
-                placeholder="Search..."
-                onBlur={() => setShowSearch(false)}
-                onKeyDown={(e) => {
-                  if (e.key === "Escape") setShowSearch(false);
-                }}
-              />
-            ) : (
-              <Image
-                src="/header/MagnifyingGlass.png"
-                alt="Search"
-                width={24}
-                height={24}
-                className="hover:text-blue-400 cursor-pointer"
-                onClick={() => setShowSearch(true)}
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") setShowSearch(true);
-                }}
-                role="button"
-                aria-label="Open search"
-              />
-            )}
-            <Link href="/account/cart" className="relative">
-              <Image
-                src="/header/ShoppingCartSimple.png"
-                alt="Cart"
-                width={22}
-                height={22}
-              />
-              <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-                {useCartStore((s) =>
-                  s.items.reduce((sum, i) => sum + i.quantity, 0)
-                )}
-              </span>
-            </Link>
-            <Link href="/account/garage" className="hover:text-blue-400">
-              <Image
-                src="/header/Garage.png"
-                alt="Garage"
-                width={22}
-                height={22}
-              />
-            </Link>
-            <Link href="/account/profile" className="hover:text-blue-400">
-              <Image
-                src="/header/User.png"
-                alt="Profile"
-                width={22}
-                height={22}
-              />
-            </Link>
-          </div>
-        </div>
-      </div>
+    {/* Right Side: Search and Icons */}
+    <div className="flex items-center gap-4">
+      {showSearch ? (
+        <input
+          type="text"
+          autoFocus
+          className="px-1 py-1 rounded-lg bg-gray-800 text-white outline-none w-40 transition"
+          placeholder="Search..."
+          onBlur={() => setShowSearch(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setShowSearch(false);
+          }}
+        />
+      ) : (
+        <Image
+          src="/header/MagnifyingGlass.png"
+          alt="Search"
+          width={24}
+          height={24}
+          className="hover:text-blue-400 cursor-pointer"
+          onClick={() => setShowSearch(true)}
+          tabIndex={0}
+          onKeyDown={(e) => {
+            if (e.key === "Enter" || e.key === " ") setShowSearch(true);
+          }}
+          role="button"
+          aria-label="Open search"
+        />
+      )}
+
+      <Link href="/account/cart" className="relative">
+        <Image
+          src="/header/ShoppingCartSimple.png"
+          alt="Cart"
+          width={22}
+          height={22}
+        />
+        {cartCount > 0 && (
+          <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
+            {cartCount}
+          </span>
+        )}
+      </Link>
+
+      <Link href="/account/garage" className="hover:text-blue-400">
+        <Image
+          src="/header/Garage.png"
+          alt="Garage"
+          width={22}
+          height={22}
+        />
+      </Link>
+
+      <Link href="/account/profile" className="hover:text-blue-400">
+        <Image
+          src="/header/User.png"
+          alt="Profile"
+          width={22}
+          height={22}
+        />
+      </Link>
+    </div>
+  </div>
+</div>
+
       {/* Desktop/Tablet Header */}
       <div className="hidden md:grid grid-cols-3 items-center px-4 py-4 text-sm font-medium gap-2 md:gap-0">
         {/* Left: Logo */}
@@ -300,11 +315,11 @@ export default function Header() {
               width={24}
               height={24}
             />
-            <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-              {useCartStore((s) =>
-                s.items.reduce((sum, i) => sum + i.quantity, 0)
-              )}
-            </span>
+   {cartCount > 0 && (
+              <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
+                {cartCount}
+              </span>
+            )}
           </Link>
           <Link href="/account/garage" className="hover:text-blue-400">
             <Image

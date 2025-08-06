@@ -35,7 +35,6 @@ interface Product {
   images: any[]; 
   inventory: any | null;
   subParts: SubPart[];
-  product: Product; // parent product info
 }
 
 const accordionData = [
@@ -86,34 +85,32 @@ export default function CatalogPage() {
         try {
           setLoading(true);
           const response = await getGroupedProducts({ make, model, year, part });
+// Define interfaces for explicit typing to prevent type errors.
+interface IVariant {
+  id: number;
+  sku: string;
+  miles: string | null;
+  actualprice: number | null;
+  discountedPrice?: number | null;
+  inStock: boolean;
+  productId?: number;
+  product: { images: any[]; description: string | null; id: number; sku: string };
+  make: string;
+  model: string;
+  modelYear: string;
+  part: string;
+  partType: string | null;
+  subPart: {
+    id: number;
+    name: string;
+    partTypeId: number;
+  };
+}
 
-          // Define interfaces for explicit typing to prevent type errors.
-          interface IVariant {
-            id: number;
-            sku: string;
-            miles: string | null;
-            actualprice: number | null;
-            discountedPrice?: number | null;
-            inStock: boolean;
-            productId?: number;
-            product: { images: any[]; description: string | null; id: number; sku: string };
-            // Add these fields:
-            make: string;
-            model: string;
-            modelYear: string;
-            part: string;
-            partType: string | null;
-            subPart: {
-              id: number;
-              name: string;
-              partTypeId: number;
-            };
-          }
-
-          interface IGroupedVariant {
-            subPart: SubPart;
-            variants: IVariant[];
-          }
+interface IGroupedVariant {
+  subPart: SubPart;
+  variants: IVariant[];
+}
 
           // The API returns data grouped by sub-parts. We need to flatten this structure
           // into a single list of products for rendering.
@@ -135,6 +132,9 @@ export default function CatalogPage() {
 
           // setProducts(response.data); // Old method, commented out as it doesn't handle the new data structure.
           setProducts(flattenedProducts); // New method with transformed data
+// =======
+          // setProducts(response.data);
+// >>>>>>> d799a38ba15935a24589f9c41519dde472ec5bd1
           setError(null);
         } catch (err) {
           setError('Failed to fetch products. Please try again later.');
@@ -557,12 +557,14 @@ export default function CatalogPage() {
                   price={currentItems[inCartIdx].actualprice || 0}
                   image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/Images/default-engine.png'}
                 />
-)}
+              )}
             </div>
+          {/* )} */}
+        </div>
 
             {/* Pagination Controls */}
             {totalPages > 1 && renderPaginationButtons()}
-          </main>
+          {/* </main> */}
         </div>
       </div>
     </div>

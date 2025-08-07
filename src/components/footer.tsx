@@ -213,7 +213,7 @@ export default function Footer() {
             </span>
             {/* First row of payment icons */}
              <div className="flex space-x-[8px]">
-            <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
+            {/* <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer"> */}
               <Image
                 src="/Images/home/visa-inverted_82058.png"
                 alt="Visa"
@@ -221,8 +221,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
-            </a>
-            <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer">
+            {/* </a> */}
+            {/* <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer"> */}
               <Image
                 src="/Images/home/mastercard_82049.png"
                 alt="Mastercard"
@@ -230,8 +230,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
-            </a>
-            <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer">
+            {/* </a> */}
+            {/* <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer"> */}
               <Image
                 src="/Images/home/americanexpress_82060 1.png"
                 alt="Amex"
@@ -239,8 +239,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
-            </a>
-            <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer">
+            {/* </a> */}
+            {/* <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer"> */}
               <Image
                 src="/Images/home/discover_82082.png"
                 alt="Discover"
@@ -248,12 +248,12 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44] object-contain"
               />
-            </a>
+            {/* </a> */}
           </div>
 
           {/* Second row of payment icons */}
           <div className="flex space-x-[8px] mt-1">
-            <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
+            {/* <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer"> */}
               <Image
                 src="/Images/home/visa-inverted_82058 (1).png"
                 alt="Visa 2"
@@ -261,8 +261,8 @@ export default function Footer() {
                 height={30}
                 className="bg-[#1E2A44]  w-12 h-8 md:w-12 md:h-8  object-contain"
               />
-            </a>
-            <a href="https://venmo.com" target="_blank" rel="noopener noreferrer">
+            {/* </a> */}
+            {/* <a href="https://venmo.com" target="_blank" rel="noopener noreferrer"> */}
               <Image
                 src="/account/venmo-ar21.svg"
                 alt="Venmo"
@@ -270,7 +270,7 @@ export default function Footer() {
                 height={35}
                 className=" bg-[#1E2A44] w-12 h-8 md:w-12 md:h-8 object-contain"
               />
-            </a>
+            {/* </a> */}
           </div>
         </div>
           <div className="flex flex-row md:grid md:grid-cols-2 md:gap-8">

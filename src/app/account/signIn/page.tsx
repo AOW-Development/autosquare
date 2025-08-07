@@ -55,7 +55,7 @@ export default function SignInPage() {
 
       login(
         {
-             id: data.user.id,
+    id: data.user.id,
     email: data.user.email,
     name: data.user.full_name || "",
     firstName: data.user.first_name || "",
@@ -64,19 +64,25 @@ export default function SignInPage() {
         data.token
       );
 
-      if (data.requiresOTP) {
-        router.push("/account/verifyOtp");
+      const previousPath = sessionStorage.getItem("previousPath");
+
+    if (data.requiresOTP) {
+      router.push("/account/verifyOtp");
+    } else {
+      if (previousPath === "/account/payMethod") {
+        router.push("/account/payMethod");
       } else {
         router.push("/account/profile");
       }
-    } catch (error) {
-      setErrors({
-        general: "Invalid email or password. Please try again.",
-      });
-    } finally {
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    setErrors({
+      general: "Invalid email or password. Please try again.",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
 

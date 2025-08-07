@@ -14,6 +14,8 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isLoggedIn: boolean;
+  hasHydrated: boolean; // ✅ NEW
+  setHasHydrated: (value: boolean) => void; // ✅ NEW
   login: (user: User, token: string) => void;
   logout: () => void;
   setToken: (token: string) => void;
@@ -25,6 +27,9 @@ const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isLoggedIn: false,
+      hasHydrated: false, // ✅ NEW
+      setHasHydrated: (value) => set({ hasHydrated: value }), // ✅ NEW
+
 
       login: (user, token) => {
         // Also set in localStorage for backward compatibility
@@ -38,18 +43,23 @@ const useAuthStore = create<AuthState>()(
       
       logout: () => {
         // Clean up localStorage
+        if (typeof window !== 'undefined'){
         localStorage.removeItem('token');
         localStorage.removeItem('tempEmail');
+        // sessionStorage.removeItem('redirectAfterLogin')
         set({
           user: null,
           token: null,
           isLoggedIn: false,
         });
-      },
+      }
+    },
       
       setToken: (token) => {
+         if (typeof window !== 'undefined'){
         localStorage.setItem('token', token);
         set({ token });
+         }
       },
     }),
     {
@@ -59,6 +69,9 @@ const useAuthStore = create<AuthState>()(
         token: state.token,
         isLoggedIn: state.isLoggedIn,
       }),
+      onRehydrateStorage: () => (state) => {
+        state?.setHasHydrated(true); // ✅
+      },
     }
   )
 );

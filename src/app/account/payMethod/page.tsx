@@ -270,7 +270,13 @@ export default function PayMethod() {
         body: JSON.stringify(orderData)
       });
     }
-    router.push("/account/thankYou");
+    if(user){
+      router.push("/account/thankYou");
+    }else{
+      sessionStorage.setItem("redirectAfterLogin","/account/thankYou");
+      
+      router.push("/account/signIn");
+    }
   };
 
    const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);

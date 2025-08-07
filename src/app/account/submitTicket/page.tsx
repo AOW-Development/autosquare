@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Image from "next/image";
 import TicketSubmittedModal from "@/components/TicketSubmittedModal";
 import Link from "next/link";
-import ProtectedRoute from "@/components/ProtectedRoute";
+
 
 export default function SubmitTicketPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -13,7 +13,7 @@ export default function SubmitTicketPage() {
     // Reset form fields if needed
   };
   return (
-    <ProtectedRoute>
+
       <div className="min-h-screen bg-[#0B1422] ">
         {/* Breadcrumb */}
 
@@ -224,6 +224,6 @@ export default function SubmitTicketPage() {
           )}
         </div>
       </div>
-    </ProtectedRoute>
+
   );
 }

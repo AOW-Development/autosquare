@@ -4,7 +4,8 @@ import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
-import PartRequestPopup from "@/app/account/modal/partRequestPopup/page";
+import PartRequestPopup from "@/components/partRequestPopup";
+
 // import AddedCartPopup from "../../account/modal/AddedCartPopup/page";
 
 const galleryImages = [

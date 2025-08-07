@@ -16,6 +16,7 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     if (!isLoggedIn && !isRedirecting) {
       setIsRedirecting(true);
       // Use setTimeout to avoid the hook error during logout
+      sessionStorage.setItem("previousPath", window.location.pathname);
       setTimeout(() => {
         router.push("/account/signIn");
       }, 0);

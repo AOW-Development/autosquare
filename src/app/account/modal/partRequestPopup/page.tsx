@@ -1,16 +1,15 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import ThankYouPopupPartRequestform from '../thankYouPopupPartRequestform/page';
 
 interface Props {
-  make: string;
-  model: string;
-  year: string;
+  make?: string;
+  model?: string;
+  year?: string;
 }
 
-export default function PartRequestPopup({ make, model, year }: Props) {
+export default function PartRequestPopup({ make = "", model = "", year = "" }: Props) {
   const [showThankYou, setShowThankYou] = useState(false);
   const [close, setClose] = useState(false);
 
@@ -42,17 +41,17 @@ export default function PartRequestPopup({ make, model, year }: Props) {
           {/* Autofilled Fields */}
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Make*</label>
-            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={make} />
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={make} readOnly />
           </div>
 
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Model*</label>
-            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={model} />
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={model} readOnly />
           </div>
 
           <div>
             <label className="text-sm text-gray-300 mb-1 block">Year*</label>
-            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={year} />
+            <input className="w-full bg-[#1A2B47] text-white rounded px-3 py-2" value={year} readOnly />
           </div>
 
           {/* User Info */}

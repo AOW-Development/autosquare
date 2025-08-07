@@ -453,7 +453,7 @@ interface IGroupedVariant {
                        {'USED'} {part || 'Engine/Transmission assembly'} 
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
-                          {getEngineSpecs(item.subParts)}
+                            {item.sku}
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
                           Genuine Used Part
@@ -559,12 +559,8 @@ interface IGroupedVariant {
                 />
               )}
             </div>
-          {/* )} */}
-        </div>
-
-            {/* Pagination Controls */}
-            {totalPages > 1 && renderPaginationButtons()}
-          {/* </main> */}
+           {totalPages > 1 && renderPaginationButtons()}
+          </main>
         </div>
       </div>
     </div>

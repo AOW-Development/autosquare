@@ -1,0 +1,124 @@
+intern777@DESKTOP-AEOD4OS:~$ curl "http://localhost:3001/api/products/v2/grouped-with-subparts?make=Dodge&model=Charger&year=2010&part=Transmission"  -H "Acc
+ept: application/json" | jq
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+100  4975  100  4975    0     0  82661      0 --:--:-- --:--:-- --:--:-- 84322
+{
+  "make": "Dodge",
+  "model": "Charger",
+  "year": "2010",
+  "part": "Transmission",
+  "subParts": [
+    {
+      "id": 6310,
+      "name": "AT, 5.7L (5 speed), AWD",
+      "partTypeId": 2
+    },
+    {
+      "id": 6312,
+      "name": "AT, 5.7L (5 speed), RWD",
+      "partTypeId": 2
+    },
+    {
+      "id": 6311,
+      "name": "AT, 6.1L (5 speed)",
+      "partTypeId": 2
+    },
+    {
+      "id": 6313,
+      "name": "AT, 2.7L (4 speed)",
+      "partTypeId": 2
+    },
+    {
+      "id": 6316,
+      "name": "AT, 3.5L, AWD (5 speed)",
+      "partTypeId": 2
+    },
+    {
+      "id": 6621,
+      "name": "AT, 3.5L, RWD, 4 speed",
+      "partTypeId": 2
+    },
+    {
+      "id": 6622,
+      "name": "AT, 3.5L, RWD, 5 speed",
+      "partTypeId": 2
+    }
+  ],
+  "groupedVariants": [
+    {
+      "subPart": {
+        "id": 6310,
+        "name": "AT, 5.7L (5 speed), AWD",
+        "partTypeId": 2
+      },
+      "variants": [
+        {
+          "id": 14788,
+          "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),AWD-121K",
+          "productId": 16605,
+          "miles": "121k",
+          "actualprice": 1050,
+          "discountedPrice": 950,
+          "inStock": true,
+          "product": {
+            "id": 16605,
+            "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),AWD",
+            "images": [],
+            "description": null
+          }
+        },
+        {
+          "id": 14789,
+          "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),AWD-99K",
+          "productId": 16605,
+          "miles": "99k",
+          "actualprice": 1150,
+          "discountedPrice": 1050,
+          "inStock": true,
+          "product": {
+            "id": 16605,
+            "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),AWD",
+            "images": [],
+            "description": null
+          }
+        }
+      ]
+    },
+    {
+      "subPart": {
+        "id": 6312,
+        "name": "AT, 5.7L (5 speed), RWD",
+        "partTypeId": 2
+      },
+      "variants": [
+        {
+          "id": 14790,
+          "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),RWD-121K",
+          "productId": 16606,
+          "miles": "121k",
+          "actualprice": 900,
+          "discountedPrice": 800,
+          "inStock": true,
+          "product": {
+            "id": 16606,
+            "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),RWD",
+            "images": [],
+            "description": null
+          }
+        },
+        {
+          "id": 14791,
+          "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),RWD-99K",
+          "productId": 16606,
+          "miles": "99k",
+          "actualprice": 1000,
+          "discountedPrice": 900,
+          "inStock": true,
+          "product": {
+            "id": 16606,
+            "sku": "DODGE-CHARGER-2010-TRANSMISSION-AT,5.7L(5SPEED),RWD",
+            "images": [],
+            "description": null
+          }
+        }

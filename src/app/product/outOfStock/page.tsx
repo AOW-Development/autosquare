@@ -1,11 +1,10 @@
 "use client";
-import ProductSection from "@/components/productSection";
+// import ProductSection from "@/components/productSection";
 import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import { useState } from "react";
 import Link from "next/link";
 import PartRequestPopup from "@/components/partRequestPopup";
-
 // import AddedCartPopup from "../../account/modal/AddedCartPopup/page";
 
 const galleryImages = [
@@ -205,7 +204,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <ProductSection
+      {/* <ProductSection
         product={
           {
             // Replace these fields with actual product data as per your Product type
@@ -217,7 +216,7 @@ export default function Page() {
             // Add any other required fields for Product type here
           }
         }
-      />
+      /> */}
     </>
   );
 }

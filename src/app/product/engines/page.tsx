@@ -1,13 +1,15 @@
+
 "use client";
 import ProductSection from "@/components/productSection";
 import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AddedCartPopup from "../../account/modal/AddedCartPopup/AddedCartPopup";
+import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup";
 import { redirect, useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import PartRequestPopup from "@/components/partRequestPopup";
+
 const galleryImages = [
   "/Images/var.png",
   "/Images/main.png",
@@ -59,7 +61,6 @@ export default function EngineProductPage() {
   const [selectedImg, setSelectedImg] = useState(1);
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
-  const [open,setOpen]=useState(false)
   // NEW: State for all variants and selected product (variant)
   const [allVariants, setAllVariants] = useState<any[]>([]); // any for now, can type
   const [selectedProductSku, setSelectedProductSku] = useState<string>("");
@@ -74,13 +75,13 @@ export default function EngineProductPage() {
   const year = searchParams.get("year");
   const part = searchParams.get("part");
   const sku = searchParams.get("sku"); // optional
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL; 
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
   const addItem = useCartStore((s) => s.addItem);
+  const [showPopup, setShowPopup] = useState(false);
 
-
- const handleBuyNow = () => {
-      redirect('/account/payMethod'); 
-    };
+  const handleBuyNow = () => {
+    redirect("/account/payMethod");
+  };
 
   useEffect(() => {
     if (!make || !model || !year || !part) return;
@@ -94,15 +95,17 @@ export default function EngineProductPage() {
         if (data.groupedVariants) {
           data.groupedVariants.forEach((group: any) => {
             group.variants.forEach((variant: any) => {
-  variants.push({
-    ...variant,
-    subPart: group.subPart,
-    // Ensure modelYear, partType, product, etc. are present on each variant for UI/cart
-    modelYear: variant.modelYear || group.modelYear || group.product?.modelYear || null,
-    partType: variant.partType || group.partType || group.product?.partType || null,
-    product: variant.product || group.product || null,
-  });
-});
+              variants.push({
+                ...variant,
+                // Add top-level info to each variant
+                make: data.make,
+                model: data.model,
+                year: data.year,
+                part: data.part,
+                subPart: group.subPart,
+                product: variant.product || group.product || null,
+              });
+            });
           });
         }
         setAllVariants(variants);
@@ -113,7 +116,7 @@ export default function EngineProductPage() {
         setSelectedProductSku(initialProduct?.sku || "");
         setSelectedProduct(initialProduct || null);
       });
-  }, [make, model, year, part, sku]);
+  }, [make, model, year, part, sku, API_BASE]);
 
   // When selectedProductSku changes, update selectedProduct
   useEffect(() => {
@@ -124,13 +127,22 @@ export default function EngineProductPage() {
 
   const handleAddToCart = () => {
     if (!selectedProduct) return;
-    const price = selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0;
+    const price =
+      selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0;
     addItem({
       id: selectedProduct.sku,
-      name: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`.trim(),
-      title: `${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`.trim(),
-      subtitle: selectedProduct.subPart?.name || selectedProduct.subtitle || 'N/A',
-      image: selectedProduct.product?.images && selectedProduct.product.images.length > 0 ? selectedProduct.product.images[0] : '/Images/default-engine.png',
+      name: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
+        selectedProduct.year || ""
+      } ${selectedProduct.part || ""}`.trim(),
+      title: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
+        selectedProduct.year || ""
+      } ${selectedProduct.part || ""}`.trim(),
+      subtitle: selectedProduct.sku,
+      image:
+        selectedProduct.product?.images &&
+        selectedProduct.product.images.length > 0
+          ? selectedProduct.product.images[0]
+          : "/Images/default-engine.png",
       price,
       quantity,
     });
@@ -138,7 +150,6 @@ export default function EngineProductPage() {
     setInCart(true);
     setTimeout(() => setShowCartPopup(false), 2000);
   };
-
 
   return (
     <>
@@ -175,8 +186,8 @@ export default function EngineProductPage() {
       <div className="px-6 md:pl-40 md:mx-auto w-full bg-[#091b33] flex flex-col md:flex-row gap-10 min-h-screen text-white -py-4 md:py-28">
         {/* Left: Image Gallery */}
         {/* <div className="flex flex-row items-start"> */}
-          {/* Thumbnails column */}
-          {/* <div className="w-full max-w-md rounded-md overflow-hidden border border-blue-400">
+        {/* Thumbnails column */}
+        {/* <div className="w-full max-w-md rounded-md overflow-hidden border border-blue-400">
             <Image
               src={galleryImages[0]} // Or directly use a static path like "/images/example.jpg"
               alt="Image"
@@ -186,22 +197,21 @@ export default function EngineProductPage() {
             />
           </div> */}
 
-
-          {/* Main image column */}
-          <div className="ml-6 md:ml-20">
-            <div className="relative w-[200px] h-[200px] gap-2 md:w-[280px] md:h-[280px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
-              <Image
-                src={galleryImages[selectedImg]}
-                alt="main"
-                fill
-                className="object-contain"
-              />
-              <span className="absolute bottom-2 right-2 text-xs text-gray-300">
-                *Stock image
-              </span>
-            </div>
+        {/* Main image column */}
+        <div className="ml-6 md:ml-20">
+          <div className="relative w-[200px] h-[200px] gap-2 md:w-[280px] md:h-[280px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
+            <Image
+              src={galleryImages[selectedImg]}
+              alt="main"
+              fill
+              className="object-contain"
+            />
+            <span className="absolute bottom-2 right-2 text-xs text-gray-300">
+              *Stock image
+            </span>
           </div>
-     
+        </div>
+
         {/* Right: Details */}
         <div className="flex-1 flex flex-col gap-1 max-w-xl">
           <h1
@@ -212,11 +222,9 @@ export default function EngineProductPage() {
             }}
           >
             {selectedProduct
-              ? `${selectedProduct.modelYear?.model?.make?.name || ""} ${
-                  selectedProduct.modelYear?.model?.name || ""
-                } ${selectedProduct.modelYear?.year?.value || ""} ${
-                  selectedProduct.partType?.name || ""
-                }`.trim()
+              ? `${selectedProduct.year || ""} ${selectedProduct.make || ""} ${
+                  selectedProduct.model || ""
+                } Used ${ selectedProduct.part || ""}`.trim()
               : "ENGINE ASSEMBLY"}
           </h1>
           <div className="text-base text-gray-400 mb-2">
@@ -233,7 +241,8 @@ export default function EngineProductPage() {
             >
               {allVariants.map((variant) => (
                 <option key={variant.sku} value={variant.sku}>
-                  {variant.sku} {variant.miles ? `(${variant.miles})` : ""}
+                  {variant.sku} 
+                  {/* // // {variant.miles ? `(${variant.miles})` : "" */}
                 </option>
               ))}
             </select>
@@ -247,15 +256,22 @@ export default function EngineProductPage() {
                 ? "In stock"
                 : "Out of stock"}
             </span>
+            {" "}
+            Miles:{" "}
+            <span className="text-gray-400">
+            {selectedProduct?.miles}
+            </span>
+          
+            
           </div>
           {selectedProduct?.inStock ? (
             <>
               <div className="flex items-end gap-4 mb-2">
                 <span className="text-4xl font-bold">
-                  {selectedProduct?.discountedPrice
-                    ? `$${selectedProduct.discountedPrice}`
+                  ${selectedProduct?.discountedPrice
+                    ? `${selectedProduct.discountedPrice}`
                     : selectedProduct?.actualprice
-                    ? `$${selectedProduct.actualprice}`
+                    ? `${selectedProduct.actualprice}`
                     : "N/A"}
                 </span>
                 {selectedProduct?.actualprice &&
@@ -307,22 +323,19 @@ export default function EngineProductPage() {
               </div>
             </>
           ) : (
-            <button
-              onClick={()=>setOpen(!open)}
-              className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-1/3 block mb-6"
-              tabIndex={0}
-            >
-              Part Request
-            </button>
-          )}
-          {showCartPopup && selectedProduct && (
-          <AddedCartPopup
-            title={`${selectedProduct.modelYear?.model?.make?.name || ""} ${selectedProduct.modelYear?.model?.name || ""} ${selectedProduct.modelYear?.year?.value || ""} ${selectedProduct.partType?.name || ""}`.trim()}
-            subtitle={selectedProduct.sku || 'N/A'}
-            price={selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}
-            image={selectedProduct.product?.images && selectedProduct.product.images.length > 0 ? selectedProduct.product.images[0] : '/Images/default-engine.png'}
-          />
-        )}
+  <>
+    <button
+          onClick={() => setShowPopup(true)}
+          className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-1/3 block mb-6"
+        >
+          Part Request
+        </button>
+
+        {showPopup && <PartRequestPopup />}
+      </>
+    )}
+    
+      
           {/* Accordion */}
           <div className=" w-full">
             {accordionData.map((item, i) => (
@@ -352,8 +365,15 @@ export default function EngineProductPage() {
           </div>
         </div>
       </div>
-      {selectedProduct && <ProductSection product={selectedProduct} />}
-      {open && <PartRequestPopup/>}
+      {selectedProduct && (
+  <ProductSection
+    product={selectedProduct}
+    make={selectedProduct.make}
+    model={selectedProduct.model}
+    year={selectedProduct.year}
+    part={selectedProduct.part}
+  />
+)}
     </>
   );
 }

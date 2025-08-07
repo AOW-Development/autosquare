@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Listbox } from '@headlessui/react' 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MAKES, MODELS, YEARS } from './vehicleData';
 import { useEffect } from "react";
 import { usePathname } from "next/navigation";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Yaldevi } from "next/font/google";
 import SearchableDropdown from "./Searchable";
 
@@ -68,6 +71,7 @@ const ShopByVehicle: React.FC = () => {
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [part, setPart] = useState("");
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [focused, setFocused] = useState<string | null>(null);
   const [availableYears, setAvailableYears] = useState([]);
   const API_BASE = process.env.NEXT_PUBLIC_API_URL; 
@@ -80,6 +84,7 @@ const ShopByVehicle: React.FC = () => {
 
   const arrowUrl = "/Images/home/arrows.png";
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const arrowStyle = {
     backgroundImage: `url('${arrowUrl}')`,
     backgroundRepeat: "no-repeat",
@@ -179,9 +184,6 @@ const ShopByVehicle: React.FC = () => {
               placeholder="Select part..."
               disabled={!partActive}
             />
-         
-
-
           {/* sub-category Dropdown */}
           {/* <select
             id="subcat-select"
@@ -240,179 +242,81 @@ const ShopByVehicle: React.FC = () => {
       </div>
 
       {/* Mobile Layout */}
-      <div className="w-full lg:hidden" style={{ position: "relative" }}>
-        {/* This wrapper gives the background color only below the overlap */}
-        <div className="bg-[#091B33] pt-12 sm:pt-20">
+{/* Mobile Layout */}
+<div className="w-full lg:hidden" style={{ position: "relative" }}>
+  <div className="bg-[#091B33] pt-12 sm:pt-20">
+    <div
+      className="relative -mt-12 sm:-mt-20 mx-auto w-[92%] max-w-[400px] rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container"
+      style={{ background: "#00A3FF80" }}
+    >
       <div
-            className="relative -mt-12 sm:-mt-20 mx-auto  w-[92%] max-w-[400px]  rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container"
-            style={{ background: "#00A3FF80" }}
+        className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
+        id="shop-by-vehicle-title-mobile"
       >
-        <div
-              className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
-          id="shop-by-vehicle-title-mobile"
-        >
-          SHOP BY VEHICLE
-        </div>
+        SHOP BY VEHICLE
+      </div>
 
-        <div className="flex flex-col gap-2 sm:gap-3">
-          {/* Make Dropdown - Always visible */}
-          <Listbox value={make} onChange={(value) => {
-            setMake(value);
+      <div className="flex flex-col gap-2 sm:gap-3">
+        {/* Make Dropdown */}
+        <SearchableDropdown
+          options={MAKES}
+          value={make}
+          onChange={(selectedMake) => {
+            setMake(selectedMake);
             setModel("");
             setYear("");
             setPart("");
-          }}>
-            {({ open }) => (
-              <div className="relative">
-                <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
-                  {make || "Select make..."}
-                  <svg
-                    className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
-                </Listbox.Button>
-                <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                  {MAKES.map((m) => (
-                    <Listbox.Option
-                      key={m}
-                      value={m}
-                      className={({ active }) =>
-                        `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
-                      }
-                    >
-                      {m}
-                    </Listbox.Option>
-                  ))}
-                </Listbox.Options>
-              </div>
-            )}
-          </Listbox>
+          }}
+          placeholder="Select make..."
+          disabled={!makeActive}
+        />
 
-          {/* Model Dropdown - Only visible when make is selected */}
-          {modelActive && (
-            <Listbox value={model} onChange={(value) => {
-              setModel(value);
+        {/* Model Dropdown */}
+        {modelActive && (
+          <SearchableDropdown
+            options={make ? MODELS[make] || [] : []}
+            value={model}
+            onChange={(selectedModel) => {
+              setModel(selectedModel);
               setYear("");
               setPart("");
-            }}>
-              {({ open }) => (
-                <div className="relative">
-                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
-                    {model || "Select model..."}
-                    <svg
-                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                    {(MODELS[make] || []).map((mo) => (
-                      <Listbox.Option
-                        key={mo}
-                        value={mo}
-                        className={({ active }) =>
-                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
-                        }
-                      >
-                        {mo}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </div>
-              )}
-            </Listbox>
-          )}
+            }}
+            placeholder="Select model..."
+            disabled={!modelActive}
+          />
+        )}
 
-          {/* Year Dropdown - Only visible when make and model are selected */}
-          {yearActive && (
-            <Listbox value={year} onChange={(value) => {
-              setYear(value);
+        {/* Year Dropdown */}
+        {yearActive && (
+          <SearchableDropdown
+            options={availableYears}
+            value={year}
+            onChange={(selectedYear) => {
+              setYear(selectedYear);
               setPart("");
-            }}>
-              {({ open }) => (
-                <div className="relative">
-                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
-                    {year || "Select year..."}
-                    <svg
-                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                    {availableYears.map((y) => (
-                      <Listbox.Option
-                        key={y}
-                        value={y}
-                        className={({ active }) =>
-                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
-                        }
-                      >
-                        {y}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </div>
-              )}
-            </Listbox>
-          )}
+            }}
+            placeholder="Select year..."
+            disabled={!yearActive}
+          />
+        )}
 
-          {/* Part Dropdown - Only visible when make, model, and year are selected */}
-          {partActive && (
-            <Listbox value={part} onChange={(value) => {
-              setPart(value);
-            }}>
-              {({ open }) => (
-                <div className="relative">
-                  <Listbox.Button className="w-full h-[40px] sm:h-[44px] px-3 sm:px-4 text-sm rounded-md border-2 bg-white border-gray-200 text-gray-900 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none flex items-center justify-between">
-                    {part || "Select part..."}
-                    <svg
-                      className={`ml-2 h-4 w-4 transition-transform duration-200 ${open ? 'rotate-180' : ''}`}
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-1 w-full bg-white shadow-lg rounded-md z-50 max-h-60 overflow-auto">
-                    {PARTS.map((p) => (
-                      <Listbox.Option
-                        key={p}
-                        value={p}
-                        className={({ active }) =>
-                          `cursor-pointer select-none px-4 py-2 ${active ? 'bg-blue-100 text-blue-900' : 'text-gray-900'}`
-                        }
-                      >
-                        {p}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </div>
-              )}
-            </Listbox>
-          )}
-
-          {/* Sub-category Dropdown */}
-          {/* Options Dropdown */}
-        </div>
-          </div>
-        </div>
+        {/* Part Dropdown */}
+        {partActive && (
+          <SearchableDropdown
+            options={PARTS}
+            value={part}
+            onChange={(selectedPart) => {
+              setPart(selectedPart);
+            }}
+            placeholder="Select part..."
+            disabled={!partActive}
+          />
+        )}
       </div>
+    </div>
+  </div>
+</div>
+
       
 
       {/* Screen reader only styling */}

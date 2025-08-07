@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { PaymentInfo } from '@/store/paymentStore';
 import { CartItem } from '@/store/cartStore';
+import { ShippingInfo } from '@/store/shippingStore';
 
 // Types for email data
 export interface UserInfo {
@@ -27,6 +28,7 @@ export interface OrderEmailData {
   user: UserInfo;
   payment: PaymentInfo;
   billing: BillingInfo;
+  shipping: ShippingInfo;
   cartItems: CartItem[];
   orderTotal: number;
   orderNumber: string;
@@ -34,7 +36,7 @@ export interface OrderEmailData {
 }
 
 // SMTP configuration
-const createTransporter = () => {
+export const createTransporter = () => {
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST || 'smtp.gmail.com',
     port: parseInt(process.env.SMTP_PORT || '587'),
@@ -51,7 +53,7 @@ const createTransporter = () => {
 
 // Generate admin notification email HTML in table format
 const generateAdminEmailHTML = (data: OrderEmailData): string => {
-  const { user, payment, billing, cartItems, orderTotal, orderNumber, orderDate } = data;
+  const { user, payment, billing, shipping, cartItems, orderTotal, orderNumber, orderDate } = data;
 
   const cartItemsHTML = cartItems.map(item => `
     <tr>
@@ -60,9 +62,9 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
       </td>
       <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.title}</td>
       <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.subtitle}</td>
-      <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">$${item.price}</td>
+      <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${item.price}</td>
       <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">${item.quantity}</td>
-      <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">$${(item.price * item.quantity).toFixed(2)}</td>
+      <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: right;">${(item.price * item.quantity).toFixed(2)}</td>
     </tr>
   `).join('');
 
@@ -101,7 +103,7 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
             </tbody>
           </table>
           <div style="text-align: right; margin-top: 16px;">
-            <strong style="font-size: 18px; color: #091B33;">Order Total: $${orderTotal.toFixed(2)}</strong>
+            <strong style="font-size: 18px; color: #091B33;">Order Total: ${orderTotal.toFixed(2)}</strong>
           </div>
 
           <h3 style="margin: 32px 0 8px 0; color: #091B33;">Customer Info</h3>
@@ -118,10 +120,22 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
             <tr><td style="padding: 6px; color: #6b7280;">${billing.city}, ${billing.state} ${billing.zipCode}, ${billing.country}</td></tr>
           </table>
 
+          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Shipping Address</h3>
+          <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
+            <tr><td style="padding: 6px; color: #6b7280;">${shipping.firstName} ${shipping.lastName}</td></tr>
+            <tr><td style="padding: 6px; color: #6b7280;">${shipping.address}${shipping.apartment ? ', ' + shipping.apartment : ''}</td></tr>
+            <tr><td style="padding: 6px; color: #6b7280;">${shipping.city}, ${shipping.state} ${shipping.zipCode}, ${shipping.country}</td></tr>
+          </table>
+
           <h3 style="margin: 24px 0 8px 0; color: #091B33;">Payment Info</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
             <tr><td style="padding: 6px; color: #6b7280;">Method:</td><td style="padding: 6px; color: #1f2937;">${payment.paymentMethod === 'card' ? 'Credit Card' : 'PayPal'}</td></tr>
-            ${payment.paymentMethod === 'card' && payment.cardData && payment.cardData.cardNumber ? `<tr><td style="padding: 6px; color: #6b7280;">Card:</td><td style="padding: 6px; color: #1f2937;">****${payment.cardData.cardNumber}</td></tr>` : ''}
+            ${payment.paymentMethod === 'card' && payment.cardData ? `
+              <tr><td style="padding: 6px; color: #6b7280;">Card Holder:</td><td style="padding: 6px; color: #1f2937;">${payment.cardData.cardholderName}</td></tr>
+              <tr><td style="padding: 6px; color: #6b7280;">Card Number:</td><td style="padding: 6px; color: #1f2937;">${payment.cardData.cardNumber}</td></tr>
+              <tr><td style="padding: 6px; color: #6b7280;">Expiry Date:</td><td style="padding: 6px; color: #1f2937;">${payment.cardData.expirationDate}</td></tr>
+              <tr><td style="padding: 6px; color: #6b7280;">CVV:</td><td style="padding: 6px; color: #1f2937;">${payment.cardData.securityCode}</td></tr>
+            ` : ''}
           </table>
 
           <div style="margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb; text-align: center;">
@@ -172,6 +186,7 @@ export const formatOrderData = (
   user: UserInfo,
   payment: PaymentInfo,
   billing: BillingInfo,
+  shipping: ShippingInfo,
   cartItems: CartItem[]
 ): OrderEmailData => {
   const orderTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -188,6 +203,7 @@ export const formatOrderData = (
     user,
     payment,
     billing,
+    shipping,
     cartItems,
     orderTotal,
     orderNumber,

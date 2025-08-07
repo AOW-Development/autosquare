@@ -11,6 +11,7 @@ export type CartItem = {
   quantity: number;
   expiresAt?: number;
   price: number;
+  
 };
 
 type CartState = {

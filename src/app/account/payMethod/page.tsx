@@ -8,6 +8,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import useBillingStore from "@/store/billingStore";
 import useAuthStore from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
+import { useShippingStore, ShippingInfo } from "@/store/shippingStore";
 import { formatOrderData } from "@/lib/mail";
 import type { PaymentInfo } from "@/store/paymentStore";
 import { FaApple } from "react-icons/fa";
@@ -23,6 +24,7 @@ export default function PayMethod() {
   const { billingInfo } = useBillingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
+  const { shippingInfo, setShippingInfo } = useShippingStore();
   const [userType, setUserType] = useState("Individual");
   const [sameAsShipping, setSameAsShipping] = useState(false);
   // default to Apple Pay
@@ -42,11 +44,32 @@ export default function PayMethod() {
       zipCode: "",
     }
   );
+  const [shippingFormData, setShippingFormData] = useState<ShippingInfo>(
+    shippingInfo || {
+      firstName: "",
+      lastName: "",
+      phone: "",
+      company: "",
+      country: "",
+      address: "",
+      apartment: "",
+      city: "",
+      state: "",
+      zipCode: "",
+      shippingAddressType: "",
+    }
+  );
+
   useEffect(() => {
     if (sameAsShipping && billingInfo) {
       setBillingFormData({
         ...billingInfo,
         apartment: billingInfo.apartment ?? "",
+      });
+      setShippingFormData({
+        ...billingInfo,
+        apartment: billingInfo.apartment ?? "",
+        shippingAddressType: "Residential", // Default or infer from billing
       });
     } else if (!sameAsShipping) {
       setBillingFormData({
@@ -60,6 +83,19 @@ export default function PayMethod() {
         city: "",
         state: "",
         zipCode: "",
+      });
+      setShippingFormData({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        company: "",
+        country: "",
+        address: "",
+        apartment: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        shippingAddressType: "",
       });
     }
   }, [sameAsShipping, billingInfo]);
@@ -88,6 +124,14 @@ export default function PayMethod() {
 
   const handleBillingInputChange = (field: string, value: string) => {
     setBillingFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleShippingInputChange = (field: string, value: string) => {
+    setShippingFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleShippingUserTypeChange = (type: string) => {
+    setShippingFormData((prev) => ({ ...prev, shippingAddressType: type }));
   };
 
  const handleCardInputChange = (field: string, value: string) => {
@@ -249,18 +293,19 @@ export default function PayMethod() {
     }
     
     // Build payment info
-    const payment = {
+    const payment: PaymentInfo = {
       paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
-      cardData,
       billingData: billingFormData,
       billingAddressExpanded,
-    } as PaymentInfo;
+      ...(paymentMethod === 'card' && { cardData }),
+    };
     // Compose and send order emails
     if (user) {
       const orderData = {
         user,
         payment,
         billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },
+        shipping: { ...shippingFormData, apartment: shippingFormData.apartment ?? "" },
         cartItems: cartItems.length ? cartItems : (cartItems as any)
       };
       
@@ -715,7 +760,7 @@ export default function PayMethod() {
                             : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
                         }`}
                       >
-                        Individual
+                        Residential
                       </button>
                       <button
                         type="button"

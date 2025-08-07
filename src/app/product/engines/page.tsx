@@ -62,8 +62,10 @@ export default function EngineProductPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
   // NEW: State for all variants and selected product (variant)
-  const [allVariants, setAllVariants] = useState<any[]>([]); // any for now, can type
-  const [selectedProductSku, setSelectedProductSku] = useState<string>("");
+  const [allVariants, setAllVariants] = useState<any[]>([]); // Flattened variants
+  const [groupedVariants, setGroupedVariants] = useState<any[]>([]); // Original grouped structure
+  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(null);
+  const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
   const [openAccordion, setOpenAccordion] = useState<number | null>(2);
   const [showCartPopup, setShowCartPopup] = useState(false);
@@ -97,7 +99,6 @@ export default function EngineProductPage() {
             group.variants.forEach((variant: any) => {
               variants.push({
                 ...variant,
-                // Add top-level info to each variant
                 make: data.make,
                 model: data.model,
                 year: data.year,
@@ -109,21 +110,28 @@ export default function EngineProductPage() {
           });
         }
         setAllVariants(variants);
-        // Set initial selected product (variant)
-        const initialProduct = sku
-          ? variants.find((v) => v.sku === sku)
-          : variants[0];
-        setSelectedProductSku(initialProduct?.sku || "");
-        setSelectedProduct(initialProduct || null);
+        setGroupedVariants(data.groupedVariants || []);
+        // Set initial selected subPart and miles
+        if (data.groupedVariants && data.groupedVariants.length > 0) {
+          const firstGroup = data.groupedVariants[0];
+          setSelectedSubPartId(firstGroup.subPart.id);
+          if (firstGroup.variants && firstGroup.variants.length > 0) {
+            setSelectedMilesSku(firstGroup.variants[0].sku);
+            setSelectedProduct(firstGroup.variants[0]);
+          }
+        }
       });
   }, [make, model, year, part, sku, API_BASE]);
 
-  // When selectedProductSku changes, update selectedProduct
+  // When selectedSubPartId or selectedMilesSku changes, update selectedProduct
   useEffect(() => {
-    if (!selectedProductSku || allVariants.length === 0) return;
-    const product = allVariants.find((v) => v.sku === selectedProductSku);
-    setSelectedProduct(product || null);
-  }, [selectedProductSku, allVariants]);
+    if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0) return;
+    const group = groupedVariants.find((g: any) => g.subPart.id === selectedSubPartId);
+    if (group) {
+      const variant = group.variants.find((v: any) => v.sku === selectedMilesSku);
+      setSelectedProduct(variant || null);
+    }
+  }, [selectedSubPartId, selectedMilesSku, groupedVariants]);
 
   const handleAddToCart = () => {
     if (!selectedProduct) return;
@@ -214,6 +222,10 @@ export default function EngineProductPage() {
 
         {/* Right: Details */}
         <div className="flex-1 flex flex-col gap-1 max-w-xl">
+          {/* Option at top */}
+          <div className="mb-2 text-base text-gray-400 font-semibold">
+            Option: {groupedVariants.find(g => g.subPart.id === selectedSubPartId)?.subPart.name || "-"}
+          </div>
           <h1
             className="text-xl md:text-3xl font-audiowide font-bold tracking-wide uppercase"
             style={{
@@ -221,34 +233,54 @@ export default function EngineProductPage() {
               letterSpacing: "0.1em",
             }}
           >
-            {selectedProduct
-              ? `${selectedProduct.year || ""} ${selectedProduct.make || ""} ${
-                  selectedProduct.model || ""
-                } Used ${ selectedProduct.part || ""}`.trim()
+            {selectedProduct && (selectedProduct.year || selectedProduct.make || selectedProduct.model || selectedProduct.part)
+              ? `${selectedProduct.year || ""} ${selectedProduct.make || ""} ${selectedProduct.model || ""} Used ${selectedProduct.part || ""}`.replace(/\s+/g, ' ').trim()
               : "ENGINE ASSEMBLY"}
           </h1>
-          <div className="text-base text-gray-400 mb-2">
-            Option:{" "}
-            <span className="text-gray-400">
-              {selectedProduct ? selectedProduct.sku : ""}
-            </span>
-          </div>
-          <div className="mb-2">
+          <div className="flex gap-4 mb-4">
             <select
-              className="w-full bg-[#12263A] border  border-[#1a2a44] rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-              value={selectedProductSku}
-              onChange={(e) => setSelectedProductSku(e.target.value)}
+              value={selectedSubPartId ?? ''}
+              onChange={e => {
+                const subPartId = Number(e.target.value);
+                setSelectedSubPartId(subPartId);
+                const group = groupedVariants.find((g: any) => g.subPart.id === subPartId);
+                if (group && group.variants.length > 0) {
+                  // Prefer first in-stock variant, else first
+                  const inStockVariant = group.variants.find((v: any) => v.inStock);
+                  const fallbackVariant = group.variants[0];
+                  const variant = inStockVariant || fallbackVariant;
+                  setSelectedMilesSku(variant.sku);
+                  setSelectedProduct(variant);
+                }
+              }}
+              className="bg-[#12263A] text-white py-2 rounded border border-blue-400"
             >
-              {allVariants.map((variant) => (
-                <option key={variant.sku} value={variant.sku}>
-                  {variant.sku} 
-                  {/* // // {variant.miles ? `(${variant.miles})` : "" */}
+              <option value="">Select Sub Part</option>
+              {groupedVariants.map((group: any) => (
+                <option key={group.subPart.id} value={group.subPart.id}>
+                  {group.subPart.name}
                 </option>
               ))}
             </select>
+            {selectedProduct?.inStock && (
+              <select
+                value={selectedMilesSku}
+                onChange={(e) => setSelectedMilesSku(e.target.value)}
+                className="bg-[#12263A] text-white py-2 rounded border border-blue-400"
+              >
+                <option value="">Select Miles</option>
+                {groupedVariants
+                  .find((g: any) => g.subPart.id === selectedSubPartId)
+                  ?.variants.map((variant: any) => (
+                    <option key={variant.sku} value={variant.sku}>
+                      {variant.miles}
+                    </option>
+                  ))}
+              </select>
+            )}
           </div>
           <div className="text-sm text-white mb-2">
-            Availability:{" "}
+            Availability: {" "}
             <span className="text-gray-400">
               {selectedProduct?.inStock === undefined
                 ? ""
@@ -256,13 +288,6 @@ export default function EngineProductPage() {
                 ? "In stock"
                 : "Out of stock"}
             </span>
-            {" "}
-            Miles:{" "}
-            <span className="text-gray-400">
-            {selectedProduct?.miles}
-            </span>
-          
-            
           </div>
           {selectedProduct?.inStock ? (
             <>

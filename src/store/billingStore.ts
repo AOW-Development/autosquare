@@ -1,4 +1,6 @@
 import { create } from "zustand";
+import { persist, createJSONStorage } from "zustand/middleware";
+
 interface BillingInfo {
   firstName: string;
   lastName: string;
@@ -16,17 +18,18 @@ interface BillingState {
   setBillingInfo: (info: BillingInfo) => void;
   clearBillingInfo: () => void;
 }
-const useBillingStore = create<BillingState>((set) => ({
-  billingInfo: null,
-
-  setBillingInfo: (info) =>
-    set({
-      billingInfo: info,
-    }),
-
-  clearBillingInfo: () =>
-    set({
+const useBillingStore = create<BillingState>()(
+  persist(
+    (set) => ({
       billingInfo: null,
+      setBillingInfo: (info) => set({ billingInfo: info }),
+      clearBillingInfo: () => set({ billingInfo: null }),
     }),
-}));
+    {
+      name: "billing-storage", // localStorage key
+      storage: createJSONStorage(() => localStorage),
+    }
+  )
+);
+
 export default useBillingStore;

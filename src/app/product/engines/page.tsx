@@ -58,6 +58,7 @@ interface Product {
 }
 
 export default function EngineProductPage() {
+  const [productInfo, setProductInfo] = useState({ make: '', model: '', year: '', part: '' });
   const [selectedImg, setSelectedImg] = useState(1);
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
@@ -111,14 +112,32 @@ export default function EngineProductPage() {
         }
         setAllVariants(variants);
         setGroupedVariants(data.groupedVariants || []);
-        // Set initial selected subPart and miles
-        if (data.groupedVariants && data.groupedVariants.length > 0) {
-          const firstGroup = data.groupedVariants[0];
-          setSelectedSubPartId(firstGroup.subPart.id);
-          if (firstGroup.variants && firstGroup.variants.length > 0) {
-            setSelectedMilesSku(firstGroup.variants[0].sku);
-            setSelectedProduct(firstGroup.variants[0]);
+        setProductInfo({
+          make: data.make || '',
+          model: data.model || '',
+          year: data.year || '',
+          part: data.part || ''
+        });
+        // Set initial selected subPart and miles based on SKU if present
+        let defaultGroup, defaultVariant;
+        if (sku) {
+          for (const group of data.groupedVariants) {
+            const variant = group.variants.find((v: any) => v.sku === sku);
+            if (variant) {
+              defaultGroup = group;
+              defaultVariant = variant;
+              break;
+            }
           }
+        }
+        if (!defaultVariant && data.groupedVariants && data.groupedVariants.length > 0) {
+          defaultGroup = data.groupedVariants[0];
+          defaultVariant = defaultGroup.variants[0];
+        }
+        if (defaultGroup && defaultVariant) {
+          setSelectedSubPartId(defaultGroup.subPart.id);
+          setSelectedMilesSku(defaultVariant.sku);
+          setSelectedProduct(defaultVariant);
         }
       });
   }, [make, model, year, part, sku, API_BASE]);
@@ -129,7 +148,17 @@ export default function EngineProductPage() {
     const group = groupedVariants.find((g: any) => g.subPart.id === selectedSubPartId);
     if (group) {
       const variant = group.variants.find((v: any) => v.sku === selectedMilesSku);
-      setSelectedProduct(variant || null);
+      if (variant) {
+        setSelectedProduct({
+          ...variant,
+          make: group.make,
+          model: group.model,
+          year: group.year,
+          part: group.part,
+        });
+      } else {
+        setSelectedProduct(null);
+      }
     }
   }, [selectedSubPartId, selectedMilesSku, groupedVariants]);
 
@@ -161,6 +190,8 @@ export default function EngineProductPage() {
 
   return (
     <>
+      {showCartPopup && <AddedCartPopup />}
+
       {/* Breadcrumb at the very top */}
       <div className="w-full bg-[#091b33] overflow-hidden">
         <div className="max-w-6xl mx-auto md:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
@@ -223,9 +254,7 @@ export default function EngineProductPage() {
         {/* Right: Details */}
         <div className="flex-1 flex flex-col gap-1 max-w-xl">
           {/* Option at top */}
-          <div className="mb-2 text-base text-gray-400 font-semibold">
-            Option: {groupedVariants.find(g => g.subPart.id === selectedSubPartId)?.subPart.name || "-"}
-          </div>
+          
           <h1
             className="text-xl md:text-3xl font-audiowide font-bold tracking-wide uppercase"
             style={{
@@ -233,10 +262,13 @@ export default function EngineProductPage() {
               letterSpacing: "0.1em",
             }}
           >
-            {selectedProduct && (selectedProduct.year || selectedProduct.make || selectedProduct.model || selectedProduct.part)
-              ? `${selectedProduct.year || ""} ${selectedProduct.make || ""} ${selectedProduct.model || ""} Used ${selectedProduct.part || ""}`.replace(/\s+/g, ' ').trim()
+            {productInfo.year || productInfo.make || productInfo.model || productInfo.part
+              ? `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${productInfo.part}`.replace(/\s+/g, ' ').trim()
               : "ENGINE ASSEMBLY"}
           </h1>
+          <div className="mb-2 text-base text-gray-400 font-semibold">
+            Option: {groupedVariants.find(g => g.subPart.id === selectedSubPartId)?.subPart.name || "-"}
+          </div>
           <div className="flex gap-4 mb-4">
             <select
               value={selectedSubPartId ?? ''}
@@ -255,7 +287,7 @@ export default function EngineProductPage() {
               }}
               className="bg-[#12263A] text-white py-2 rounded border border-blue-400"
             >
-              <option value="">Select Sub Part</option>
+              <option value="">Select Specification</option>
               {groupedVariants.map((group: any) => (
                 <option key={group.subPart.id} value={group.subPart.id}>
                   {group.subPart.name}

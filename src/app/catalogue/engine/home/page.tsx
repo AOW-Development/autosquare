@@ -35,6 +35,7 @@ interface Product {
   images: any[]; 
   inventory: any | null;
   subParts: SubPart[];
+  subPart?: SubPart;
 }
 
 const accordionData = [
@@ -56,6 +57,11 @@ const accordionData = [
 ];
 
 export default function CatalogPage() {
+  // --- SubPart Filter State ---
+  // Minimal addition for subpart filtering
+  const [subPartsList, setSubPartsList] = useState<SubPart[]>([]); // Deduped list for dropdown
+  const [subPartFilter, setSubPartFilter] = useState<number | null>(null); // Current filter selection
+
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -123,14 +129,19 @@ interface IGroupedVariant {
               part: response.data.part,
               partType: group.subPart?.name || null,
               subPart: group.subPart,
+              subPartId: group.subPart?.id ?? null, // Add subPartId for numeric filtering
               miles: variant.miles,
               // add any other fields you want to pass
             }))
           );
           
-          // console.log("Flattened products:", flattenedProducts); // For debugging
-
-          // setProducts(response.data); // Old method, commented out as it doesn't handle the new data structure.
+          // Build de-duplicated subParts list from groupedVariants (ensures matching objects)
+          const dedupedSubParts = Array.from(
+            new Map(
+              (response.data.groupedVariants || []).map((g: IGroupedVariant) => [g.subPart.id, g.subPart])
+            ).values()
+          );
+          setSubPartsList(dedupedSubParts as SubPart[]); // Ensure type safety
           setProducts(flattenedProducts); // New method with transformed data
 // =======
           // setProducts(response.data);
@@ -150,11 +161,17 @@ interface IGroupedVariant {
   }, [make, model, year, part]);
 
 
-  // Calculate pagination values
-  const totalPages = Math.ceil(products.length / itemsPerPage);
+  // --- Apply subPart filter before pagination ---
+  // Filter products by subPartId if filter is set
+  // Type-safe filter: check subPartId exists and is number
+const filteredProducts = subPartFilter !== null
+  ? products.filter(p => typeof p.subPart?.id === 'number' && p.subPart?.id === subPartFilter)
+  : products;
+  // Pagination values based on filtered list
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = products.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
@@ -335,7 +352,11 @@ interface IGroupedVariant {
         <div className="flex gap-6 px-3">
           {/* Filter Sidebar (Desktop) */}
           <aside className="hidden md:block w-[250px] text-sm flex-shrink-0">
-            <EngineFilterSidebar />
+            <EngineFilterSidebar 
+              subPartsList={subPartsList}
+              subPartFilter={subPartFilter}
+              setSubPartFilter={setSubPartFilter}
+            />
           </aside>
           {/* Product Cards Grid */}
           <main className="flex-1">
@@ -352,6 +373,8 @@ interface IGroupedVariant {
                 <span className="font-semibold">{products.length}</span>
               </div>
               <div className="relative flex justify-end items-center w-full">
+                {/* SubPart Filter Dropdown removed. Filtering logic is still present in CatalogPage, but UI is now delegated to EngineFilterSidebar. */}
+                {/* TODO: Wire subPartFilter and setSubPartFilter from EngineFilterSidebar via props or context. */}
                 <select
                   id="sort-by"
                   className="bg-[#091b33] border border-white text-white text-sm rounded-md shadow-xl focus:outline-none px-4 py-[6px] pr-10 appearance-none"
@@ -392,7 +415,11 @@ interface IGroupedVariant {
                   >
                     &times;
                   </button>
-                  <EngineFilterSidebar />
+                  <EngineFilterSidebar 
+              subPartsList={subPartsList}
+              subPartFilter={subPartFilter}
+              setSubPartFilter={setSubPartFilter}
+            />
                 </div>
               </div>
             )}
@@ -450,10 +477,10 @@ interface IGroupedVariant {
                         {year}  {make} {model} 
                         </h3>
                         <p className="text-sm text-gray-300 mb-1">
-                       {'USED'} {part || 'Engine/Transmission assembly'} 
+                       {'used'} {part || 'Engine/Transmission assembly'} 
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
-                            {item.sku}
+                            {item.subPart?.name || 'N/A'}
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
                           Genuine Used Part

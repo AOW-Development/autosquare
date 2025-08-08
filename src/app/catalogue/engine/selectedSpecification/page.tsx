@@ -99,7 +99,11 @@ export default function CatalogPage() {
         <div className="flex gap-6 px-3">
           {/* Filter Sidebar (Desktop) */}
           <aside className="hidden md:block w-[250px] text-sm flex-shrink-0">
-            <EngineFilterSidebar />
+            <EngineFilterSidebar
+              subPartsList={[]} // Replace with actual sub-parts list if available
+              subPartFilter={null} // Replace with actual filter value if available
+              setSubPartFilter={() => {}} // Replace with actual setter if available
+            />
           </aside>
           {/* Product Cards Grid */}
           <main className="flex-1">
@@ -152,7 +156,11 @@ export default function CatalogPage() {
                   >
                     &times;
                   </button>
-                  <EngineFilterSidebar />
+                  <EngineFilterSidebar
+                    subPartsList={[]} // Replace with actual sub-parts list if available
+                    subPartFilter={null} // Replace with actual filter value if available
+                    setSubPartFilter={() => {}} // Replace with actual setter if available
+                  />
                 </div>
               </div>
             )}

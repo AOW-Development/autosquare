@@ -97,8 +97,9 @@ useEffect(() => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
-  const total = subtotal + salesTax;
+  // const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
+  const total = subtotal 
+  // + salesTax;
 
   const handleBillingInputChange = (field: string, value: string) => {
     setBillingFormData((prev) => ({ ...prev, [field]: value }));
@@ -1056,10 +1057,10 @@ const handleSave1 = (e: React.FormEvent) => {
                     <span className="font-exo2">Shipping:</span>
                     <span className="font-exo2 text-white">Free Shipping</span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="font-exo2">Sales Tax:</span>
                     <span className="font-exo2">${salesTax}</span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between pt-2 border-t border-white">
                     <span className="font-exo2 text-2xl font-bold">TOTAL:</span>
                     <span className="font-exo2 text-2xl font-bold">

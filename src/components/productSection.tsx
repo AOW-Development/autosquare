@@ -116,7 +116,7 @@ export default function ProductSection({ product, make, model, year, part }: Pro
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">FEATURED PRODUCTS</h2>
-          <div className="flex gap-2">
+          <div className="grid grid-col-1 md:grid-col-2 gap-2">
             <button className="p-2">
               <span className="text-2xl">&#60;</span>
             </button>

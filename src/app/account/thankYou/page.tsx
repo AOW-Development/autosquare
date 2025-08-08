@@ -122,67 +122,67 @@ const cardImage = cardImageMap[cardType];
                 </div>
                 <div className="text-white text-sm mt-1 leading-tight">
                 {billingInfo && Object.keys(billingInfo).length > 0 ? (
-      <>
-        {/* Billing Info */}
-        <div>
-          <strong>Billing Information</strong>
-          <br />
-          {billingInfo.firstName} {billingInfo.lastName}
-          <br />
-          {billingInfo.address}
-          {billingInfo.apartment && (
-            <>
-              <br />
-              {billingInfo.apartment}
-            </>
-          )}
-          <br />
-          {billingInfo.company && (
-            <>
-              {billingInfo.company}
-              <br />
-            </>
-          )}
-          {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
-          <br />
-          {billingInfo.phone}
-        </div>
+                      <>
+                        {/* Billing Info */}
+                        <div>
+                          <strong>Billing Information</strong>
+                          <br />
+                          {billingInfo.firstName} {billingInfo.lastName}
+                          <br />
+                          {billingInfo.address}
+                          {billingInfo.apartment && (
+                            <>
+                              <br />
+                              {billingInfo.apartment}
+                            </>
+                          )}
+                          <br />
+                          {billingInfo.company && (
+                            <>
+                              {billingInfo.company}
+                              <br />
+                            </>
+                          )}
+                          {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
+                          <br />
+                          {billingInfo.phone}
+                        </div>
 
-    {/* Shipping Info — Only show if addresses are different */}
-    {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
-      <div className="mt-3">
-        <strong>Shipping Information</strong>
-        <br />
-        {shippingInfo.firstName} {shippingInfo.lastName}
-        <br />
-        {shippingInfo.address}
-        {shippingInfo.apartment && (
-          <>
-            <br />
-            {shippingInfo.apartment}
-          </>
-        )}
-        <br />
-        {shippingInfo.company && (
-          <>
-            {shippingInfo.company}
-            <br />
-          </>
-        )}
-        {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
-        <br />
-        {shippingInfo.phone}
-      </div>
-    )}
-  </>
-) : (
-  <>
-    No billing information available
-    <br />
-    Please contact support
-  </>
-)}
-</div>
+                    {/* Shipping Info — Only show if addresses are different */}
+                    {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+                      <div className="mt-3">
+                        <strong>Shipping Information</strong>
+                        <br />
+                        {shippingInfo.firstName} {shippingInfo.lastName}
+                        <br />
+                        {shippingInfo.address}
+                        {shippingInfo.apartment && (
+                          <>
+                            <br />
+                            {shippingInfo.apartment}
+                          </>
+                        )}
+                        <br />
+                        {shippingInfo.company && (
+                          <>
+                            {shippingInfo.company}
+                            <br />
+                          </>
+                        )}
+                        {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
+                        <br />
+                        {shippingInfo.phone}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    No billing information available
+                    <br />
+                    Please contact support
+                  </>
+                )}
+                </div>
               </div>
               <div className="flex flex-col items-start md:items-center">
                 <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
@@ -260,10 +260,10 @@ const cardImage = cardImageMap[cardType];
                 <span>Shipping:</span>
                 <span className="text-white">Free Shipping</span>
               </div>
-              <div className="flex justify-between">
+              {/* <div className="flex justify-between">
                 <span>Sales Tax:</span>
                 <span>${salesTax}</span>
-              </div>
+              </div> */}
             </div>
             <div className="border-t border-white my-4" />
             <div className="flex justify-between items-center text-lg font-semibold text-white uppercase">

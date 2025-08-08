@@ -242,80 +242,80 @@ const ShopByVehicle: React.FC = () => {
       </div>
 
       {/* Mobile Layout */}
-{/* Mobile Layout */}
-<div className="w-full lg:hidden" style={{ position: "relative" }}>
-  <div className="bg-[#091B33] pt-12 sm:pt-20">
-    <div
-      className="relative -mt-12 sm:-mt-20 mx-auto w-[50%] max-w-[400px] rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container"
-      style={{ background: "#00A3FF80" }}
-    >
+  {/* Mobile Layout */}
+  <div className="w-full lg:hidden" style={{ position: "relative" }}>
+    <div className="bg-[#091B33] pt-12 sm:pt-20 ">
       <div
-        className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
-        id="shop-by-vehicle-title-mobile"
+        className="relative -mt-12 sm:-mt-20 mx-auto md:w-[50%] max-w-[400px] rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container"
+        style={{ background: "#00A3FF80" }}
       >
-        SHOP BY VEHICLE
-      </div>
+        <div
+          className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
+          id="shop-by-vehicle-title-mobile"
+        >
+          SHOP BY VEHICLE
+        </div>
 
-      <div className="flex flex-col gap-2 sm:gap-3 ">
-        {/* Make Dropdown */}
-        <SearchableDropdown
-          options={MAKES}
-          value={make}
-          onChange={(selectedMake) => {
-            setMake(selectedMake);
-            setModel("");
-            setYear("");
-            setPart("");
-          }}
-          placeholder="Select make..."
-          disabled={!makeActive}
-        />
-
-        {/* Model Dropdown */}
-        {modelActive && (
+        <div className="flex flex-col gap-2 sm:gap-3 ">
+          {/* Make Dropdown */}
           <SearchableDropdown
-            options={make ? MODELS[make] || [] : []}
-            value={model}
-            onChange={(selectedModel) => {
-              setModel(selectedModel);
+            options={MAKES}
+            value={make}
+            onChange={(selectedMake) => {
+              setMake(selectedMake);
+              setModel("");
               setYear("");
               setPart("");
             }}
-            placeholder="Select model..."
-            disabled={!modelActive}
+            placeholder="Select make..."
+            disabled={!makeActive}
           />
-        )}
 
-        {/* Year Dropdown */}
-        {yearActive && (
-          <SearchableDropdown
-            options={availableYears}
-            value={year}
-            onChange={(selectedYear) => {
-              setYear(selectedYear);
-              setPart("");
-            }}
-            placeholder="Select year..."
-            disabled={!yearActive}
-          />
-        )}
+          {/* Model Dropdown */}
+          {modelActive && (
+            <SearchableDropdown
+              options={make ? MODELS[make] || [] : []}
+              value={model}
+              onChange={(selectedModel) => {
+                setModel(selectedModel);
+                setYear("");
+                setPart("");
+              }}
+              placeholder="Select model..."
+              disabled={!modelActive}
+            />
+          )}
 
-        {/* Part Dropdown */}
-        {partActive && (
-          <SearchableDropdown
-            options={PARTS}
-            value={part}
-            onChange={(selectedPart) => {
-              setPart(selectedPart);
-            }}
-            placeholder="Select part..."
-            disabled={!partActive}
-          />
-        )}
+          {/* Year Dropdown */}
+          {yearActive && (
+            <SearchableDropdown
+              options={availableYears}
+              value={year}
+              onChange={(selectedYear) => {
+                setYear(selectedYear);
+                setPart("");
+              }}
+              placeholder="Select year..."
+              disabled={!yearActive}
+            />
+          )}
+
+          {/* Part Dropdown */}
+          {partActive && (
+            <SearchableDropdown
+              options={PARTS}
+              value={part}
+              onChange={(selectedPart) => {
+                setPart(selectedPart);
+              }}
+              placeholder="Select part..."
+              disabled={!partActive}
+            />
+          )}
+        </div>
       </div>
     </div>
   </div>
-</div>
 
       
 

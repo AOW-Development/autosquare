@@ -40,7 +40,7 @@ const accordionData = [
   },
 ];
 
-export default function Page() {
+export default function outOfStock() {
   // const [selectedImg, setSelectedImg] = useState(1);
   const selectedImg = 1; // Default selected image index
   // const [selectedOption, setSelectedOption] = useState(0);
@@ -145,7 +145,7 @@ export default function Page() {
           </div>
           {/* <div className="mb-2">
             <select
-              className="w-full bg-[#12263A] border  border-[#1a2a44] rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full bg-[#12263A] border  border-[#1a2a44] rounded px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-400"
               value={selectedOption}
               onChange={(e) => setSelectedOption(Number(e.target.value))}
             >
@@ -173,7 +173,7 @@ export default function Page() {
             >
               Part Request
             </button>
-            <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition cursor-pointer">
+            <button className="flex-1 bg-[#091b33] text-white py-2 rounded  border border-sky-400 hover:bg-[#1a2a44] transition cursor-pointer">
               Call Now
             </button>
           </div>

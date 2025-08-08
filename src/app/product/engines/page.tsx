@@ -18,21 +18,64 @@ const galleryImages = [
 
 const accordionData = [
   {
-    title: "Payment",
-    content:
-      "We accept all major credit cards, PayPal, and bank transfers. Secure checkout is guaranteed.",
+    title: "DESCRIPTION",
+    content: (
+      <>
+        <p>
+          This Dodge Charger 6.4L Used Engine is 
+           models. Each engine is tested and ready to
+          install and offers improved performance.
+        </p>
+        <br />
+        <p>
+          This Unit is perfect for anyone in the market for reliable used
+          engines that will offer superior results - a great addition to any
+          repair project!
+        </p>
+        <br />
+        <p>
+          The Dodge Charger 6.4L Used Engine comes with all the Major
+          accessories such as:
+        </p>
+        <ul>
+          <li>Intake Manifold</li>
+          <li>Exhaust Manifold</li>
+          <li>Crankshaft</li>
+          <li>Camshaft</li>
+          <li>Pistons</li>
+          <li>Cylinder Head</li>
+          <li>Timing Cover</li>
+        </ul>
+        <p>
+          The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator
+          need to be replaced/swapped.
+        </p>
+        <br />
+        <p>
+          The Dodge Charger 6.4L Used Engine can be used as a direct replacement
+          for any of the following vehicles:
+        </p>
+        <p>Fit Notes:</p>
+      </>
+    ),
   },
   {
-    title: "Delivery",
+    title: "WARRANTY & REFUNDS",
+    content:
+      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
+  },
+  {
+    title: "SHIPPING",
     content:
       "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
   },
   {
-    title: "Warranty",
+    title:"PAYMENT",
     content:
-      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
-  },
+    ""
+  }
 ];
+
 
 interface SubPart {
   id: number;
@@ -68,7 +111,7 @@ export default function EngineProductPage() {
   const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(null);
   const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
-  const [openAccordion, setOpenAccordion] = useState<number | null>(2);
+ const [activeTab, setActiveTab] = useState(0); 
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -188,6 +231,12 @@ export default function EngineProductPage() {
     setTimeout(() => setShowCartPopup(false), 3000);
   };
 
+    const getTabButtonClass = (index: number) => {
+    return `py-2 px-4 text-lg font-semibold focus:outline-none ${
+      activeTab === index ? 'border-b-2 border-white' : 'text-gray-400'
+    }`;
+  };
+
   return (
     <>
       {showCartPopup && selectedProduct && (
@@ -279,7 +328,7 @@ export default function EngineProductPage() {
           <div className="mb-2 text-base text-gray-400 font-semibold">
             Option: {groupedVariants.find(g => g.subPart.id === selectedSubPartId)?.subPart.name || "-"}
           </div>
-          <div className="flex gap-4 mb-4">
+          <div className="grid grid-col-1 md:grid-col-2 gap-4 mb-4">
             <select
               value={selectedSubPartId ?? ''}
               onChange={e => {
@@ -390,48 +439,44 @@ export default function EngineProductPage() {
               </div>
             </>
           ) : (
-  <>
-    <button
-          onClick={() => setShowPopup(true)}
-          className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-1/3 block mb-6"
-        >
-          Part Request
-        </button>
-
-        {showPopup && <PartRequestPopup />}
-      </>
-    )}
-    
-      
-          {/* Accordion */}
-          <div className=" w-full">
-            {accordionData.map((item, i) => (
-              <div key={i} className="border-b border-white">
-                <button
-                  className="w-full flex justify-between items-center py-3 text-lg font-semibold focus:outline-none"
-                  onClick={() =>
-                    setOpenAccordion(openAccordion === i ? null : i)
-                  }
-                >
-                  {item.title}
-                  <span
-                    className={`ml-2 text-2xl inline-block transition-transform duration-300 ${
-                      openAccordion === i ? "rotate-180" : "rotate-0"
-                    }`}
+            <>
+              <button
+                    onClick={() => setShowPopup(true)}
+                    className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-1/3 block mb-6"
                   >
-                    ^
-                  </span>
-                </button>
-                {openAccordion === i && (
-                  <div className="pb-4 text-gray-300 text-sm whitespace-pre-line">
-                    {item.content}
+                    Part Request
+                  </button>
+
+                  {showPopup && <PartRequestPopup />}
+                </>
+              )}
+               <div className="w-full px-4 md:w-[1050px] md:pt-20 md:py-0 md:pl-0 md:pr-4 mr-auto flex flex-col md:flex-col">
+                  {/* Tabs container */}
+                  <div className="flex">
+                    {accordionData.map((item, i) => (
+                      <button
+                        key={i}
+                        className={`py-2 px-4 text-lg font-semibold focus:outline-none ${
+                          activeTab === i
+                            ? "border-b-2 border-white"
+                            : "text-gray-400"
+                        }`}
+                        onClick={() => setActiveTab(i)}
+                      >
+                        {item.title}
+                      </button>
+                    ))}
                   </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
+                  {/* Content container with top margin for a gap */}
+                  <div className="py-4 text-gray-300 md:text-lg text-sm whitespace-pre-line mt-4 text-left">
+                    {accordionData[activeTab].content}
+                  </div>
+                </div>
+
       </div>
+    
+    </div>
+   
       {selectedProduct && (
   <ProductSection
     product={selectedProduct}

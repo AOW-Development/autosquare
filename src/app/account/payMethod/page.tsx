@@ -22,7 +22,8 @@ export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
   const { billingInfo } = useBillingStore();
-  const {setShippingInfo}=useShippingStore();
+  // INTENTIONAL: We need shippingInfo here for order submission
+  const { shippingInfo, setShippingInfo } = useShippingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
   const [userType, setUserType] = useState("Individual");
@@ -269,16 +270,21 @@ const isFormValid = () => {
   } as PaymentInfo;
 
   if (user) {
+    // IMPORTANT:
+    // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
+    // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
     const orderData = {
       user,
       payment,
-      billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },
+      shipping: shippingInfo, // always from shipping store
+      billing: sameAsShipping ? shippingInfo : billingFormData, // correct billing info sent
       cartItems: cartItems.length ? cartItems : (cartItems as any)
     };
 
     // ✅ Store everything for Thank You page
     sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
+    // ...
     await fetch('/api-2/send-order-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -353,6 +359,11 @@ const [paymentInfo, setPaymentInfo] = useState<{
   cardType?: string;
 }>({ method: 'card' });
 
+// INTENTIONAL DESIGN:
+// If 'Same as shipping' is NOT selected, we save the billing form data into the shipping store.
+// This is because the backend/email logic expects the shipping store to always have the address to use (whether it's shipping or billing).
+// If 'Same as shipping' IS selected, the shipping store already has the shipping address.
+// This is confusing, but required by current backend/email integration. DO NOT change unless backend is refactored.
 const handleSave1 = (e: React.FormEvent) => {
     e.preventDefault();
     setShippingInfo(billingFormData);
@@ -963,7 +974,7 @@ const handleSave1 = (e: React.FormEvent) => {
                 onClick={()=>handleSave1}
               className="bg-blue-600 cursor-pointer z-50 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
             >
-              Save shipping Info
+              Save billing Info
             </button>
             </div>
             </div>

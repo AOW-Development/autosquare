@@ -185,12 +185,22 @@ export default function EngineProductPage() {
     });
     setShowCartPopup(true);
     setInCart(true);
-    setTimeout(() => setShowCartPopup(false), 2000);
+    setTimeout(() => setShowCartPopup(false), 3000);
   };
 
   return (
     <>
-      {showCartPopup && <AddedCartPopup />}
+      {showCartPopup && selectedProduct && (
+  <AddedCartPopup
+    title={`${selectedProduct.sku || ""}`}
+    price={selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}
+    image={
+      selectedProduct.product?.images && selectedProduct.product.images.length > 0
+        ? selectedProduct.product.images[0]
+        : "/Images/default-engine.png"
+    }
+  />
+)}
 
       {/* Breadcrumb at the very top */}
       <div className="w-full bg-[#091b33] overflow-hidden">

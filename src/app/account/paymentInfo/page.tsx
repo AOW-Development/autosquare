@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { State } from "country-state-city"; 
 
 import { useRouter } from 'next/navigation';
+import toast from "react-hot-toast";
 
 export default function PaymentInfoPage() {
   const { isLoggedIn } = useAuthStore();
@@ -75,6 +76,7 @@ export default function PaymentInfoPage() {
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
     setBillingInfo(fields);
+    toast.success("Shipping details saved successfully!");
   };
 
   
@@ -308,7 +310,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
             >
-              Save Billing Info
+              Save shipping Info
             </button>
           </form>
           {/* Order Summary */}

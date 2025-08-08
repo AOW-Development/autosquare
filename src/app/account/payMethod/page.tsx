@@ -16,6 +16,9 @@ import { FaApple } from "react-icons/fa";
 import { getCardType, isValidCardNumber } from "@/utils/cardUtil"
 import { FcGoogle } from "react-icons/fc";
 import { State } from "country-state-city"; 
+import toast from "react-hot-toast";
+
+
 
 
 export default function PayMethod() {
@@ -354,10 +357,21 @@ const [paymentInfo, setPaymentInfo] = useState<{
 }>({ method: 'card' });
 
 const handleSave1 = (e: React.FormEvent) => {
-    e.preventDefault();
-    setShippingInfo(billingFormData);
-  };
+  e.preventDefault();
 
+  // Skip the "company" field when checking required fields
+  const allFilled = Object.entries(billingFormData)
+    .filter(([key]) => key !== "company")
+    .every(([, value]) => value && value.toString().trim() !== "");
+
+  if (!allFilled) {
+    toast.error("Please fill in all required Billing fields before saving.");
+    return;
+  }
+
+  setShippingInfo(billingFormData);
+  toast.success("Billing details saved successfully!");
+};
 
 
   return (
@@ -880,7 +894,7 @@ const handleSave1 = (e: React.FormEvent) => {
                           value={billingFormData.address}
                           onChange={(e) =>
                             handleBillingInputChange(
-                              "streetAddress",
+                              "address",
                               e.target.value
                             )
                           }
@@ -959,12 +973,12 @@ const handleSave1 = (e: React.FormEvent) => {
                 )}
               </div>
                  <button
-                
-                onClick={()=>handleSave1}
-              className="bg-blue-600 cursor-pointer z-50 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
-            >
-              Save shipping Info
-            </button>
+                      onClick={handleSave1}
+                      className="bg-blue-600 cursor-pointer z-50 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
+                    >
+                      Save billing Info
+                    </button>
+
             </div>
             </div>
 

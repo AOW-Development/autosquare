@@ -122,31 +122,31 @@ const cardImage = cardImageMap[cardType];
                 </div>
                 <div className="text-white text-sm mt-1 leading-tight">
                 {billingInfo && Object.keys(billingInfo).length > 0 ? (
-  <>
-    {/* Billing Info */}
-    <div>
-      <strong>Billing Information</strong>
-      <br />
-      {billingInfo.firstName} {billingInfo.lastName}
-      <br />
-      {billingInfo.address}
-      {billingInfo.apartment && (
-        <>
+      <>
+        {/* Billing Info */}
+        <div>
+          <strong>Billing Information</strong>
           <br />
-          {billingInfo.apartment}
-        </>
-      )}
-      <br />
-      {billingInfo.company && (
-        <>
-          {billingInfo.company}
+          {billingInfo.firstName} {billingInfo.lastName}
           <br />
-        </>
-      )}
-      {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
-      <br />
-      {billingInfo.phone}
-    </div>
+          {billingInfo.address}
+          {billingInfo.apartment && (
+            <>
+              <br />
+              {billingInfo.apartment}
+            </>
+          )}
+          <br />
+          {billingInfo.company && (
+            <>
+              {billingInfo.company}
+              <br />
+            </>
+          )}
+          {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
+          <br />
+          {billingInfo.phone}
+        </div>
 
     {/* Shipping Info — Only show if addresses are different */}
     {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (

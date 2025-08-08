@@ -4,6 +4,8 @@ import { Inter, Exo_2, Audiowide } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
+import { Toaster } from "react-hot-toast";
+
 
 const inter = Inter({
   subsets: ["latin"],
@@ -54,6 +56,7 @@ export default function RootLayout({
         {/* End Google Tag Manager */}
       </head>
       <body className="antialiased">
+        <Toaster position="top-center" />
           {/* Google Tag Manager (noscript) */}
          <noscript>
           <iframe

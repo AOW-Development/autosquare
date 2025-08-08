@@ -6,9 +6,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import useBillingStore from "@/store/billingStore";
+import  {useShippingStore}  from "@/store/shippingStore";
 import useAuthStore from "@/store/authStore";
 import { useCartStore } from "@/store/cartStore";
-import { useShippingStore, ShippingInfo } from "@/store/shippingStore";
 import { formatOrderData } from "@/lib/mail";
 import type { PaymentInfo } from "@/store/paymentStore";
 import { FaApple } from "react-icons/fa";
@@ -22,9 +22,9 @@ export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
   const { billingInfo } = useBillingStore();
+  const {setShippingInfo}=useShippingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
-  const { shippingInfo, setShippingInfo } = useShippingStore();
   const [userType, setUserType] = useState("Individual");
   const [sameAsShipping, setSameAsShipping] = useState(false);
   // default to Apple Pay
@@ -44,21 +44,9 @@ export default function PayMethod() {
       zipCode: "",
     }
   );
-  const [shippingFormData, setShippingFormData] = useState<ShippingInfo>(
-    shippingInfo || {
-      firstName: "",
-      lastName: "",
-      phone: "",
-      company: "",
-      country: "",
-      address: "",
-      apartment: "",
-      city: "",
-      state: "",
-      zipCode: "",
-      shippingAddressType: "",
-    }
-  );
+useEffect(() => {
+  setShippingInfo(billingFormData)
+}, [billingFormData, setShippingInfo])
 
   useEffect(() => {
     if (sameAsShipping && billingInfo) {
@@ -66,12 +54,10 @@ export default function PayMethod() {
         ...billingInfo,
         apartment: billingInfo.apartment ?? "",
       });
-      setShippingFormData({
-        ...billingInfo,
-        apartment: billingInfo.apartment ?? "",
-        shippingAddressType: "Residential", // Default or infer from billing
-      });
     } else if (!sameAsShipping) {
+       console.log(billingFormData)
+       
+     
       setBillingFormData({
         firstName: "",
         lastName: "",
@@ -84,19 +70,7 @@ export default function PayMethod() {
         state: "",
         zipCode: "",
       });
-      setShippingFormData({
-        firstName: "",
-        lastName: "",
-        phone: "",
-        company: "",
-        country: "",
-        address: "",
-        apartment: "",
-        city: "",
-        state: "",
-        zipCode: "",
-        shippingAddressType: "",
-      });
+     
     }
   }, [sameAsShipping, billingInfo]);
 
@@ -124,14 +98,6 @@ export default function PayMethod() {
 
   const handleBillingInputChange = (field: string, value: string) => {
     setBillingFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleShippingInputChange = (field: string, value: string) => {
-    setShippingFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  const handleShippingUserTypeChange = (type: string) => {
-    setShippingFormData((prev) => ({ ...prev, shippingAddressType: type }));
   };
 
  const handleCardInputChange = (field: string, value: string) => {
@@ -281,49 +247,62 @@ const isFormValid = () => {
   return false;
 };
 
-
   const router = useRouter();
 
-  const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Store payment info in localStorage for thank you page
-    localStorage.setItem('paymentMethod', paymentMethod);
-    if (paymentMethod === 'card') {
-      localStorage.setItem('cardData', JSON.stringify(cardData));
-    }
-    
+  
     // Build payment info
-    const payment: PaymentInfo = {
-      paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
-      billingData: billingFormData,
-      billingAddressExpanded,
-      ...(paymentMethod === 'card' && { cardData }),
+  const handlePayment = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  // Store payment info in localStorage for thank you page
+  localStorage.setItem('paymentMethod', paymentMethod);
+  if (paymentMethod === 'card') {
+    localStorage.setItem('cardData', JSON.stringify(cardData));
+  }
+
+  // Build payment info
+  const payment = {
+    paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
+    cardData,
+    billingData: billingFormData,
+    billingAddressExpanded,
+  } as PaymentInfo;
+
+  if (user) {
+    const orderData = {
+      user,
+      payment,
+      billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },
+      cartItems: cartItems.length ? cartItems : (cartItems as any)
     };
-    // Compose and send order emails
-    if (user) {
-      const orderData = {
-        user,
-        payment,
-        billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },
-        shipping: { ...shippingFormData, apartment: shippingFormData.apartment ?? "" },
-        cartItems: cartItems.length ? cartItems : (cartItems as any)
-      };
-      
-      await fetch('/api-2/send-order-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      });
-    }
-    if(user){
-      router.push("/account/thankYou");
-    }else{
-      sessionStorage.setItem("redirectAfterLogin","/account/thankYou");
-      
-      router.push("/account/signIn");
-    }
-  };
+
+    // ✅ Store everything for Thank You page
+    sessionStorage.setItem("orderData", JSON.stringify(orderData));
+
+    await fetch('/api-2/send-order-email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(orderData)
+    });
+  }
+
+  if (user) {
+    router.push("/account/thankYou");
+    
+  } else {
+    // ✅ Even if user logs in later, we keep the data
+    const orderDataForGuest = {
+      payment,
+      billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },
+      cartItems
+    };
+    sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
+
+    sessionStorage.setItem("redirectAfterLogin", "/account/thankYou");
+    router.push("/account/signIn");
+  }
+};
+
 
    const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
   
@@ -336,6 +315,7 @@ const isFormValid = () => {
     } else {
       setStates([]);
     }
+
   }, [billingFormData.country]);
   
   
@@ -367,6 +347,16 @@ const isFormValid = () => {
 };
 const cardImage = cardImageMap[cardType];
 
+const [paymentInfo, setPaymentInfo] = useState<{
+  method: string;
+  lastFour?: string;
+  cardType?: string;
+}>({ method: 'card' });
+
+const handleSave1 = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShippingInfo(billingFormData);
+  };
 
 
 
@@ -786,7 +776,7 @@ const cardImage = cardImageMap[cardType];
                             : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
                         }`}
                       >
-                        Residential
+                        Individual
                       </button>
                       <button
                         type="button"
@@ -968,6 +958,13 @@ const cardImage = cardImageMap[cardType];
                   </div>
                 )}
               </div>
+                 <button
+                
+                onClick={()=>handleSave1}
+              className="bg-blue-600 cursor-pointer z-50 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
+            >
+              Save shipping Info
+            </button>
             </div>
             </div>
 

@@ -23,7 +23,7 @@ export type BillingData = {
 
 export type PaymentInfo = {
   paymentMethod: PaymentMethod;
-  cardData?: CardData; // Made optional
+  cardData: CardData; // Made optional
   billingData: BillingData;
   billingAddressExpanded: boolean;
 };
@@ -75,16 +75,20 @@ export const usePaymentStore = create<PaymentState>((set, get) => ({
     })),
 
   setCardData: (data) =>
-    set((state) => ({
-      paymentInfo: {
-        ...state.paymentInfo,
-        cardData: {
-          ...state.paymentInfo.cardData,
-          ...data,
+  set((state) => ({
+    paymentInfo: {
+      ...state.paymentInfo,
+      cardData: {
+        ...state.paymentInfo.cardData ?? {
+          cardNumber: "",
+          cardholderName: "",
+          expirationDate: "",
+          securityCode: "",
         },
+        ...data,
       },
-    })),
-
+    },
+  })),
   setBillingData: (data) =>
     set((state) => ({
       paymentInfo: {
@@ -105,15 +109,20 @@ export const usePaymentStore = create<PaymentState>((set, get) => ({
     })),
 
   updateCardField: (field, value) =>
-    set((state) => ({
-      paymentInfo: {
-        ...state.paymentInfo,
-        cardData: {
-          ...state.paymentInfo.cardData,
-          [field]: value,
+  set((state) => ({
+    paymentInfo: {
+      ...state.paymentInfo,
+      cardData: {
+        ...state.paymentInfo.cardData ?? {
+          cardNumber: "",
+          cardholderName: "",
+          expirationDate: "",
+          securityCode: "",
         },
+        [field]: value,
       },
-    })),
+    },
+  })),
 
   updateBillingField: (field, value) =>
     set((state) => ({

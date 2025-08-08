@@ -7,42 +7,71 @@ import useBillingStore from "@/store/billingStore";
 import { useCartStore } from "@/store/cartStore";
 import { generateOrderNumber } from "@/utils/order";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { log } from "console";
+import { useShippingStore } from '@/store/shippingStore';
+
 
 export default function ThankYouPage() {
   const { billingInfo } = useBillingStore();
   const cartItems = useCartStore((s) => s.items);
   const [orderNumber, setOrderNumber] = useState("");
   const [orderDate, setOrderDate] = useState("");
+   const { shippingInfo } = useShippingStore();
   const [paymentInfo, setPaymentInfo] = useState<{
     method: string;
     lastFour?: string;
   }>({ method: "card" });
+  const [cardType, setCardType] = useState("unknown");
+  const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+  console.log(isSameAddress,shippingInfo?.address)
+// const [paymentInfo, setPaymentInfo] = useState({ method: "", lastFour: "" });
+// const [orderNumber, setOrderNumber] = useState("");
+// const [orderDate, setOrderDate] = useState("");
+
+// Card image mapping (top-level so it’s accessible)
+const cardImageMap: Record<string, string> = {
+  Visa: "visa-inverted_82058.png",
+  MasterCard: "mastercard_82049.png",
+  "American Express": "americanexpress_82060 1.png",
+  Discover: "discover_82082.png",
+};
 
   useEffect(() => {
-    // Generate order number and date
-    setOrderNumber(generateOrderNumber());
-    setOrderDate(new Date().toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    }));
+  // Generate order number and date
+  setOrderNumber(generateOrderNumber());
+  setOrderDate(
+    new Date().toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  );
 
-    // Get payment info from localStorage (set during payment process)
-    const storedPaymentMethod = localStorage.getItem('paymentMethod') || 'card';
-    const storedCardData = localStorage.getItem('cardData');
-    
-    if (storedPaymentMethod === 'card' && storedCardData) {
-      try {
-        const cardData = JSON.parse(storedCardData);
-        const lastFour = cardData.cardNumber?.slice(-4) || '****';
-        setPaymentInfo({ method: 'card', lastFour });
-      } catch {
-        setPaymentInfo({ method: 'card', lastFour: '****' });
-      }
-    } else {
-      setPaymentInfo({ method: storedPaymentMethod });
+  // Get payment info from localStorage
+  const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card";
+  const storedCardData = localStorage.getItem("cardData");
+
+  if (storedPaymentMethod === "card" && storedCardData) {
+    try {
+      const cardData = JSON.parse(storedCardData);
+      const lastFour = cardData.cardNumber?.slice(-4) || "****";
+      setPaymentInfo({ method: "card", lastFour });
+
+      // Detect card type from number (basic check)
+      if (/^4/.test(cardData.cardNumber)) setCardType("Visa");
+      else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard");
+      else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express");
+      else if (/^6/.test(cardData.cardNumber)) setCardType("Discover");
+    } catch {
+      setPaymentInfo({ method: "card", lastFour: "****" });
     }
-  }, []);
+  } else {
+    setPaymentInfo({ method: storedPaymentMethod });
+  }
+}, []);
+
+const cardImage = cardImageMap[cardType];
+
 
   // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -92,30 +121,68 @@ export default function ThankYouPage() {
                   Deliver To
                 </div>
                 <div className="text-white text-sm mt-1 leading-tight">
-                  {billingInfo ? (
-                    <>
-                      {billingInfo.firstName} {billingInfo.lastName}
-                      <br />
-                      {billingInfo.address}
-                      {billingInfo.apartment && (
-                        <>
-                          <br />
-                          {billingInfo.apartment}
-                        </>
-                      )}
-                      <br />
-                      {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
-                      <br />
-                      {billingInfo.phone}
-                    </>
-                  ) : (
-                    <>
-                      No billing information available
-                      <br />
-                      Please contact support
-                    </>
-                  )}
-                </div>
+                {billingInfo && Object.keys(billingInfo).length > 0 ? (
+  <>
+    {/* Billing Info */}
+    <div>
+      <strong>Billing Information</strong>
+      <br />
+      {billingInfo.firstName} {billingInfo.lastName}
+      <br />
+      {billingInfo.address}
+      {billingInfo.apartment && (
+        <>
+          <br />
+          {billingInfo.apartment}
+        </>
+      )}
+      <br />
+      {billingInfo.company && (
+        <>
+          {billingInfo.company}
+          <br />
+        </>
+      )}
+      {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
+      <br />
+      {billingInfo.phone}
+    </div>
+
+    {/* Shipping Info — Only show if addresses are different */}
+    {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+      <div className="mt-3">
+        <strong>Shipping Information</strong>
+        <br />
+        {shippingInfo.firstName} {shippingInfo.lastName}
+        <br />
+        {shippingInfo.address}
+        {shippingInfo.apartment && (
+          <>
+            <br />
+            {shippingInfo.apartment}
+          </>
+        )}
+        <br />
+        {shippingInfo.company && (
+          <>
+            {shippingInfo.company}
+            <br />
+          </>
+        )}
+        {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
+        <br />
+        {shippingInfo.phone}
+      </div>
+    )}
+  </>
+) : (
+  <>
+    No billing information available
+    <br />
+    Please contact support
+  </>
+)}
+</div>
               </div>
               <div className="flex flex-col items-start md:items-center">
                 <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
@@ -127,12 +194,13 @@ export default function ThankYouPage() {
                       <span className="text-white text-sm tracking-widest">
                         **** **** **** {paymentInfo.lastFour || '****'}
                       </span>
-                      <Image
-                        src="/Images/mcard.png"
-                        alt="Card"
-                        width={32}
-                        height={20}
+                      {cardImage && (
+                      <img
+                        src={`/images/home/${cardImage}`}
+                        alt={cardType}
+                        className="h-auto w-6 sm:w-8 md:w-10 lg:w-12 object-contain"
                       />
+                    )}
                     </>
                   ) : (
                     <span className="text-white text-sm">

@@ -23,7 +23,7 @@ export type BillingData = {
 
 export type PaymentInfo = {
   paymentMethod: PaymentMethod;
-  cardData: CardData;
+  cardData?: CardData; // Made optional
   billingData: BillingData;
   billingAddressExpanded: boolean;
 };

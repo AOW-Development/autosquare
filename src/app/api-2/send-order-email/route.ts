@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sendOrderEmails, formatOrderData } from '@/lib/mail';
+import { sendCustomerInvoiceEmail } from '@/lib/customerMail';
 
 export async function POST(request: NextRequest) {
   try {
@@ -10,11 +11,14 @@ export async function POST(request: NextRequest) {
       data.user,
       data.payment,
       data.billing,
+      data.shipping,
       data.cartItems
     );
     
-    const result = await sendOrderEmails(orderData);
-    return NextResponse.json({ success: true, result });
+    const adminResult = await sendOrderEmails(orderData);
+    const customerResult = await sendCustomerInvoiceEmail(orderData);
+
+    return NextResponse.json({ success: true, admin: adminResult, customer: customerResult });
   } catch (error) {
     console.error('Error sending order emails:', error);
     return NextResponse.json(

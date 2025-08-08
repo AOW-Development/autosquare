@@ -27,3 +27,9 @@ export const isValidCardNumber = (cardNumber: string): boolean => {
 
   return sum % 10 === 0;
 };
+export const cardTypeToImageMap: Record<string, string> = {
+  Visa: "visa-inverted_82058.png",
+  MasterCard: "mastercard-inverted_82058.png",
+  "American Express": "amex-inverted_82058.png",
+  Discover: "discover-inverted_82058.png",
+};

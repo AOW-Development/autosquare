@@ -106,42 +106,41 @@ export default function PayMethod() {
     return;
   }
 
-  if (field === "cardNumber") {
-    const cleanValue = value.replace(/\D/g, ""); // Remove all non-digits
-    const cardType = getCardType(cleanValue);
+ if (field === "cardNumber") {
+  const cleanValue = value.replace(/\D/g, ""); // Remove non-digits
+  const cardType = getCardType(cleanValue);
+  setCardType(cardType || "unknown"); // <--- ADD THIS LINE
 
-    let formatted = cleanValue;
-    let maxLength = 16; // Default
+  let formatted = cleanValue;
+  let maxLength = 16;
 
-    // Apply format and max length based on card type
-    if (cardType === "American Express") {
-      maxLength = 15;
-      formatted = cleanValue
-        .slice(0, maxLength)
-        .replace(/^(\d{0,4})(\d{0,6})(\d{0,5})/, (_m, p1, p2, p3) =>
-          [p1, p2, p3].filter(Boolean).join(" ")
-        );
-    } else {
-      // Visa, Mastercard, Discover default
-      maxLength = 16;
-      formatted = cleanValue
-        .slice(0, maxLength)
-        .replace(/(\d{4})(?=\d)/g, "$1 ")
-        .trim();
-    }
+  if (cardType === "American Express") {
+    maxLength = 15;
+    formatted = cleanValue
+      .slice(0, maxLength)
+      .replace(/^(\d{0,4})(\d{0,6})(\d{0,5})/, (_m, p1, p2, p3) =>
+        [p1, p2, p3].filter(Boolean).join(" ")
+      );
+  } else {
+    formatted = cleanValue
+      .slice(0, maxLength)
+      .replace(/(\d{4})(?=\d)/g, "$1 ")
+      .trim();
+  }
+
 
     const isValid = isValidCardNumber(cleanValue);
 
-    if (!cardType && cleanValue.length > 0) {
-      setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
-    } else if (!isValid && cleanValue.length === maxLength) {
-      setCardErrors((prev) => ({ ...prev, cardNumber: "Invalid card number" }));
-    } else {
-      setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
-    }
+  if (!cardType && cleanValue.length > 0) {
+    setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
+  } else if (!isValid && cleanValue.length === maxLength) {
+    setCardErrors((prev) => ({ ...prev, cardNumber: "Invalid card number" }));
+  } else {
+    setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
+  }
 
-    setCardData((prev) => ({ ...prev, cardNumber: formatted }));
-    return;
+  setCardData((prev) => ({ ...prev, cardNumber: formatted }));
+  return;
   }
 
   if (field === "expirationDate") {
@@ -208,7 +207,7 @@ export default function PayMethod() {
   setCardData((prev) => ({ ...prev, [field]: value }));
 };
 
- const isFormValid = () => {
+const isFormValid = () => {
   if (paymentMethod === "card") {
     const cardType = getCardType(cardData.cardNumber);
     const validLuhn = isValidCardNumber(cardData.cardNumber);
@@ -229,13 +228,15 @@ export default function PayMethod() {
     ) return false;
 
     return (
-      cardData.cardholderName &&
-      cardData.expirationDate
+      !!cardData.cardholderName &&
+      !!cardData.expirationDate
     );
   }
 
-  return true;
+  // Disable for unimplemented payment methods
+  return false;
 };
+
 
   const router = useRouter();
 
@@ -312,6 +313,17 @@ export default function PayMethod() {
       }));
     }
   };
+  const [cardType, setCardType] = useState("unknown");
+  const cardImageMap: Record<string, string> = {
+  Visa: "visa-inverted_82058.png",
+  MasterCard: "mastercard_82049.png",
+  "American Express": "americanexpress_82060 1.png",
+  Discover: "discover_82082.png",
+};
+const cardImage = cardImageMap[cardType];
+
+
+
 
   return (
     
@@ -504,7 +516,7 @@ export default function PayMethod() {
                  <div className="flex items-center justify-between w-full">
                     <span className="font-exo2">Pay with Credit or Debit card</span>
 
-                    <div className="flex space-x-[8px]">
+                    {/* <div className="flex space-x-[8px]">
                       <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
                         <Image
                           src="/Images/home/visa-inverted_82058.png"
@@ -541,13 +553,13 @@ export default function PayMethod() {
                           className="bg-[#1E2A44] object-contain"
                         />
                       </a>
-                    </div>
+                    </div> */}
                     </div>
                   </label>
                   {/* Card Number */}
                   {paymentMethod === "card" && (
                     <>
-                      <div>
+                      <div className="relative">
                         <input
                           type="text"
                           placeholder="XXXX XXXX XXXX XXXX"
@@ -557,12 +569,23 @@ export default function PayMethod() {
                           }
                           className={`w-full bg-[#091627] border ${
                             cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
-                          } text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                          } text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300 pr-12`}
                         />
+                        {/* Icon on the right */}
+                        <div className="absolute top-1/2 right-4 transform -translate-y-1/2">
+                        {cardImage && (
+                          <img
+                            src={`/images/home/${cardImage}`}
+                            alt={cardType}
+                            className="h-auto w-6 sm:w-8 md:w-10 lg:w-12 object-contain"
+                          />
+                        )}
+                              </div>
                         {cardErrors.cardNumber && (
                           <p className="text-red-500 text-xs mt-1">{cardErrors.cardNumber}</p>
                         )}
                       </div>
+
 
                       {/* Cardholder Name */}
                       <div>
@@ -620,6 +643,8 @@ export default function PayMethod() {
                       onChange={(e) => setPaymentMethod(e.target.value)}
                       className="form-radio text-blue-600 shrink-0"
                     />
+
+                    
                     <div
                       className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
                         paymentMethod === "apple"
@@ -701,6 +726,7 @@ export default function PayMethod() {
                     Same as shipping address
                   </label>
                   </div>
+                  <div className="space-y-4 border p-4 border-blue-500 rounded-md">
 
                 {billingAddressExpanded && (
                   <div className="space-y-6 mt-4">
@@ -784,10 +810,10 @@ export default function PayMethod() {
                       </div>
                     </div>
                     {userType === 'Commercial' && (
-                      <div className="md:col-span-2">
-                        <label className="block text-xs mb-1">Company</label>
+                      <div className="">
+                        <label className="block font-exo2 mb-2">Company</label>
                         <input
-                          className="w-full md:w-[400px] max-w-[700px] bg-[#091627] rounded-lg px-5 py-3 text-white border border-white/10 focus:outline-none"
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                           value={billingFormData.company}
                           onChange={(e) => handleChange("company", e.target.value)}
                           placeholder="Company name "
@@ -859,9 +885,9 @@ export default function PayMethod() {
                         />
                       </div>
                       <div>
-                 <label className="block text-xs mb-1">State*</label>
+                 <label className="block font-exo2 mb-2">State*</label>
                   <select
-                    className="w-full bg-[#091627] rounded-lg px-4 py-2 md:mt-3 text-white border border-white/10 focus:outline-none"
+                    className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                     value={billingFormData.state}
                     onChange={(e) => handleChange("state", e.target.value)}
                     disabled={!states.length}
@@ -872,7 +898,7 @@ export default function PayMethod() {
                       <option
                         key={state.isoCode}
                         value={state.isoCode}
-                        className="text-white" // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
+                        className="text-white " // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
                       >
                         {state.name}
                       </option>
@@ -897,6 +923,7 @@ export default function PayMethod() {
                   </div>
                 )}
               </div>
+            </div>
             </div>
 
             {/* Right Column: Products & Order Summary */}

@@ -71,7 +71,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   const displayValue = search || value;
 
   return (
-    <div ref={wrapperRef} className="relative w-[368px]">
+    <div ref={wrapperRef} className="relative md:w-[368px]">
       <input
         type="text"
         value={displayValue}

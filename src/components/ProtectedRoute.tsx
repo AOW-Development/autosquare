@@ -8,11 +8,14 @@ interface ProtectedRouteProps {
 }
 
 export default function ProtectedRoute({ children }: ProtectedRouteProps) {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn,hasHydrated } = useAuthStore();
   const router = useRouter();
   const [isRedirecting, setIsRedirecting] = useState(false);
+  
 
   useEffect(() => {
+   
+    if (!hasHydrated) return;
     if (!isLoggedIn && !isRedirecting) {
       setIsRedirecting(true);
       // Use setTimeout to avoid the hook error during logout
@@ -21,7 +24,14 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
         router.push("/account/signIn");
       }, 0);
     }
-  }, [isLoggedIn, router, isRedirecting]);
+  }, [isLoggedIn, router, isRedirecting, hasHydrated]);
+   if (!hasHydrated) {
+    return (
+      <div className="min-h-screen bg-[#091B33] text-white flex items-center justify-center">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   // Don't show loading state if we're in the process of redirecting
   if (!isLoggedIn && !isRedirecting) {

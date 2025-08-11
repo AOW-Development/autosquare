@@ -196,11 +196,11 @@ useEffect(() => {
             <div className="flex-1 h-0.5 bg-white mb-4"></div>
           </div>
 
-          <div className="grid lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {/* Left Column: Recipient Details Form */}
-            <div className="lg:col-span-2">
+            <div className="col-span-3 lg:col-span-2 ">
               {/* Login Link */}
-              <div className="text-right mt-2 pr-6">
+              <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6">
                 <Link
                   href="/login"
                   className="text-sm text-[#FFFFFF] hover:underline font-exo2"
@@ -217,7 +217,7 @@ useEffect(() => {
               <button
                 type="button"
                 onClick={() => handleUserTypeChange("Individual")}
-                className={`md:w-full w-auto px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
+                className={`w-full px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
                   userType === "Individual"
                     ? "bg-blue-600 text-white"
                     : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
@@ -228,7 +228,7 @@ useEffect(() => {
               <button
                 type="button"
                 onClick={() => handleUserTypeChange("Commercial")}
-                className={`md:w-full px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
+                className={`w-full px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
                   userType === "Commercial"
                     ? "bg-blue-600 text-white"
                     : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
@@ -250,7 +250,7 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("firstName", e.target.value)
                       }
-                      className="md:w-full w-auto bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -263,7 +263,7 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("lastName", e.target.value)
                       }
-                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -293,7 +293,7 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("phone", e.target.value)
                       }
-                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -302,7 +302,7 @@ useEffect(() => {
                 <div className="">
                   <label className="block text-xs mb-1">Company*</label>
                   <input
-                    className="md:w-full max-w-[450px] bg-[#091627] rounded-lg px-5 py-3 text-white border border-white/10 focus:outline-none"
+                    className="w-full max-w-[450px] bg-[#091627] rounded-lg px-5 py-3 text-white border border-white/10 focus:outline-none"
                     value={formData.company}
                     onChange={(e) => handleChange("company", e.target.value)}
                     placeholder="Company name"
@@ -328,7 +328,7 @@ useEffect(() => {
                 <div>
                   <label className="block text-xs mb-1">Country*</label>
                 <select
-                  className="md:w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                  className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
                   value={formData.country}
                   onChange={(e) => handleChange("country", e.target.value)}
                   required
@@ -353,7 +353,7 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("address", e.target.value)
                       }
-                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -370,7 +370,7 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("apartment", e.target.value)
                       }
-                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
                   </div>
                 </div>
@@ -385,14 +385,14 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("city", e.target.value)
                       }
-                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
                    <div className="md:col-span-2">
                  <label className="block text-xs mb-4">State*</label>
                   <select
-                    className="md:w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
                     value={formData.state}
                     onChange={(e) => handleChange("state", e.target.value)}
                     disabled={!states.length}
@@ -419,7 +419,7 @@ useEffect(() => {
                       onChange={(e) =>
                         handleInputChange("zipCode", e.target.value)
                       }
-                      className="md:w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
@@ -442,8 +442,8 @@ useEffect(() => {
             </div>
 
             {/* Right Column: Products & Order Summary */}
-            <div className="lg:col-span-1 ">
-              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 md:p-4">
+            <div className=" col-span-3 lg:col-span-1 ">
+              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-5 md:p-4 ">
                 {/* Card Header */}
                 <div className="flex justify-between items-center ">
                   <h3 className="text-base font-semibold font-exo2">

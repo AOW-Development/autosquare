@@ -9,6 +9,7 @@ import ShopByVehicle from "@/components/shopByVehicle";
 import EngineFilterSidebar from "@/components/EngineFilterSidebar";
 import { useCartStore } from "@/store/cartStore";
 import { getGroupedProducts } from "@/utils/api";
+import PartRequestPopup from "@/components/partRequestPopup";
 
 interface SubPart {
   id: number;
@@ -69,6 +70,7 @@ export default function CatalogPage() {
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCartIdx, setInCartIdx] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
   
   const searchParams = useSearchParams();
   const make = searchParams.get('make');
@@ -565,13 +567,16 @@ const filteredProducts = subPartFilter !== null
                           )}
                         </>
                       ) : (
-                        <Link
-                          href="/account/modal/partRequestPopup"
-                          className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center w-full block mt-6"
-                          tabIndex={0}
-                        >
-                          Part Request
-                        </Link>
+                       <>
+                          <button
+                            onClick={() => setShowPopup(true)}
+                            className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center md:w-full w-full block mb-6"
+                          >
+                            Part Request
+                          </button>
+
+                          
+                        </>
                       )}
                     </div>
                   </div>
@@ -587,6 +592,7 @@ const filteredProducts = subPartFilter !== null
               )}
             </div>
            {totalPages > 1 && renderPaginationButtons()}
+           {showPopup && <PartRequestPopup setClosePopup={setShowPopup} />}
           </main>
         </div>
       </div>

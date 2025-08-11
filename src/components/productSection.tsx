@@ -72,7 +72,7 @@ export default function ProductSection({ product, make, model, year, part }: Pro
   return (
     <section className="bg-[#091b33] text-white w-full py-8 md:py-2 px-2 flex flex-col gap-12">
       {/* Top Table */}
-      <div className="max-w-6xl mx-auto w-full">
+      {/* <div className="max-w-6xl mx-auto w-full">
         <h2 className="text-xl font-bold mb-4">DESCRIPTION</h2>
         <div
           className="border border-[#00a3ff] rounded-md overflow-hidden"
@@ -110,13 +110,13 @@ export default function ProductSection({ product, make, model, year, part }: Pro
             </tbody>
           </table>
         </div>
-      </div>
+      </div> */}
 
       {/* Featured Products */}
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl font-bold">FEATURED PRODUCTS</h2>
-          <div className="flex gap-2">
+          <div className="grid grid-col-1 md:grid-col-2 gap-2">
             <button className="p-2">
               <span className="text-2xl">&#60;</span>
             </button>

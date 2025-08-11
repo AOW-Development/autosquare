@@ -138,63 +138,70 @@ export default function Cart() {
             {cartItems.map((item) => (
               <div key={item.id} className="border-b border-[#FFFFFF] pb-4">
                 {/* Desktop Layout */}
-                <div className="hidden lg:grid grid-cols-11 gap-4 items-center">
-                  <div className="col-span-6 flex items-center space-x-4">
-                    <Image
-                      src={item.image}
-                      alt={item.title}
-                      width={64}
-                      height={64}
-                      className="w-16 h-16 object-cover rounded"
-                    />
-                    <div>
-                      <h3 className="font-exo2 font-semibold">{item.title}</h3>
-                      <p className="font-exo2 text-sm text-white">{item.subtitle}</p>
-                    </div>
-                  </div>
-                  <div className="col-span-4 flex justify-end">
-                    <div className="flex items-center space-x-2 border border-[#FFFFFF] rounded-md p-1">
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                        className="w-6 h-6 flex items-center justify-center text-white border border-white rounded-md p-1 hover:bg-gray-600"
-                      >
-                        –
-                      </button>
-                      <input
-                        type="number"
-                        value={item.quantity}
-                        onChange={(e) =>
-                          updateQuantity(item.id, parseInt(e.target.value) || 1)
-                        }
-                        className="w-8 text-center bg-transparent text-white border-none focus:outline-none"
-                        min="1"
-                      />
-                      <button
-                        onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                        className="w-6 h-6 flex items-center justify-center text-white border border-white rounded-md p-1 hover:bg-gray-600"
-                      >
-                        +
-                      </button>
-                    </div>
-                  </div>
-                  <div className="col-span-2 flex justify-end items-center space-x-4">
-                    <span className="font-exo2 font-semibold pr-2">
-                      ${item.price * item.quantity}
-                    </span>
-                    <button
-                      onClick={() => removeItem(item.id)}
-                      className="hover:text-red-500"
-                    >
-                      <Image
-                        src="/Images/closeX.png"
-                        alt="Remove"
-                        width={18}
-                        height={18}
-                        className="w-5 h-5"
-                      />
-                    </button>
-                  </div>
+          
+            <div className="hidden lg:grid grid-cols-11 gap-4 items-center">
+              <div className="col-span-6 flex items-center space-x-4">
+                <Image
+                  src={item.image}
+                  alt={item.title}
+                  width={64}
+                  height={64}
+                  className="w-16 h-16 object-cover rounded"
+                />
+                <div>
+                  <h3 className="font-exo2 font-semibold">{item.title}</h3>
+                  <p className="font-exo2 text-lg text-white">{item.subtitle}</p>
                 </div>
+              </div>
+
+              {/* Quantity + Price + Close */}
+              <div className="col-span-5 flex items-center justify-end space-x-14">
+                {/* Quantity selector */}
+                <div className="flex items-center space-x-2 border border-[#FFFFFF] rounded-md p-1">
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                    className="w-6 h-6 flex items-center justify-center text-white border border-white rounded-md p-1 hover:bg-gray-600"
+                  >
+                    –
+                  </button>
+                  <input
+                    type="number"
+                    value={item.quantity}
+                    onChange={(e) =>
+                      updateQuantity(item.id, parseInt(e.target.value) || 1)
+                    }
+                    className="w-8 text-center bg-transparent text-white border-none focus:outline-none"
+                    min="1"
+                  />
+                  <button
+                    onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                    className="w-6 h-6 flex items-center justify-center text-white border border-white rounded-md p-1 hover:bg-gray-600"
+                  >
+                    +
+                  </button>
+                </div>
+
+                {/* Price */}
+                <span className="font-exo2 font-semibold text-2xl">
+                  ${item.price * item.quantity}
+                </span>
+
+                {/* Close button */}
+                <button
+                  onClick={() => removeItem(item.id)}
+                  className="hover:text-red-500"
+                >
+                  <Image
+                    src="/Images/closeX.png"
+                    alt="Remove"
+                    width={18}
+                    height={18}
+                    className="w-5 h-5"
+                  />
+                </button>
+              </div>
+            </div>
+
 
                 {/* Mobile Layout */}
                 <div className="lg:hidden">

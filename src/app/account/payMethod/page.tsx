@@ -97,8 +97,9 @@ useEffect(() => {
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-  const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
-  const total = subtotal + salesTax;
+  // const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
+  const total = subtotal 
+  // + salesTax;
 
   const handleBillingInputChange = (field: string, value: string) => {
     setBillingFormData((prev) => ({ ...prev, [field]: value }));
@@ -706,7 +707,7 @@ const handleSave1 = (e: React.FormEvent) => {
 
                     
                     <div
-                      className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                      className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
                         paymentMethod === "apple"
                           ? "bg-black text-white ring-2 ring-blue-500"
                           : "bg-black text-white hover:bg-gray-800"
@@ -728,7 +729,7 @@ const handleSave1 = (e: React.FormEvent) => {
                       className="form-radio text-blue-600 shrink-0"
                     />
                     <div
-                      className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                      className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
                         paymentMethod === "google"
                           ? "bg-white text-black ring-2 ring-blue-500"
                           : "bg-white text-black hover:bg-gray-200"
@@ -1056,10 +1057,10 @@ const handleSave1 = (e: React.FormEvent) => {
                     <span className="font-exo2">Shipping:</span>
                     <span className="font-exo2 text-white">Free Shipping</span>
                   </div>
-                  <div className="flex justify-between">
+                  {/* <div className="flex justify-between">
                     <span className="font-exo2">Sales Tax:</span>
                     <span className="font-exo2">${salesTax}</span>
-                  </div>
+                  </div> */}
                   <div className="flex justify-between pt-2 border-t border-white">
                     <span className="font-exo2 text-2xl font-bold">TOTAL:</span>
                     <span className="font-exo2 text-2xl font-bold">

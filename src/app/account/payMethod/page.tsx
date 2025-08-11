@@ -707,7 +707,7 @@ const handleSave1 = (e: React.FormEvent) => {
 
                     
                     <div
-                      className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                      className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
                         paymentMethod === "apple"
                           ? "bg-black text-white ring-2 ring-blue-500"
                           : "bg-black text-white hover:bg-gray-800"
@@ -729,7 +729,7 @@ const handleSave1 = (e: React.FormEvent) => {
                       className="form-radio text-blue-600 shrink-0"
                     />
                     <div
-                      className={`w-full py-4 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                      className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
                         paymentMethod === "google"
                           ? "bg-white text-black ring-2 ring-blue-500"
                           : "bg-white text-black hover:bg-gray-200"

@@ -45,7 +45,7 @@ const ShopByVehicle: React.FC = () => {
       setYear("")
       setPart("")
       
-    }else if(path=="/product/engines") {
+    }else if(path=="/") {
        setMake("")
       setModel("")
       setYear("")

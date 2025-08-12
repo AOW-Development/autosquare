@@ -45,11 +45,7 @@ const ShopByVehicle: React.FC = () => {
       setYear("")
       setPart("")
       
-    }else if(path=="/product/engines") {
-       setMake("")
-      setModel("")
-      setYear("")
-      setPart("")
+    
      
     }else{
       const stored = localStorage.getItem("shopByVehicle");
@@ -116,7 +112,13 @@ const ShopByVehicle: React.FC = () => {
       // setModel(model)
       // setYear(year)
       // setPart(part)
+      // router.push(`/catalogue/engine/home?${query}`);
+      
+    // Only redirect if NOT already on the catalogue or product page
+    if (path === "/" || path === "/some-landing-search-page") {
       router.push(`/catalogue/engine/home?${query}`);
+    }
+    // Do NOT redirect if already on /catalogue/engine/home or /product/engines
     }
   }, [make, model, year, part]);
 

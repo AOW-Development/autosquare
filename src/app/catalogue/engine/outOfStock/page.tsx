@@ -22,6 +22,13 @@ const dummyData = [
 ];
 
 export default function CatalogPage() {
+  // Example subparts list (replace with real data if available)
+  const [subPartsList] = useState([
+    { id: 1, name: '4.9L' },
+    { id: 2, name: '5.0L' },
+    { id: 3, name: '5.8L' },
+  ]);
+  const [subPartFilter, setSubPartFilter] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
@@ -171,11 +178,19 @@ export default function CatalogPage() {
                   >
                     &times;
                   </button>
+<<<<<<< HEAD
+                  <EngineFilterSidebar 
+  subPartsList={subPartsList}
+  subPartFilter={subPartFilter}
+  setSubPartFilter={setSubPartFilter}
+/>
+=======
                   <EngineFilterSidebar
                     subPartsList={[]}
                     subPartFilter={null}
                     setSubPartFilter={() => {}}
                   />
+>>>>>>> b1adb77e7a800db84b76d9f9e5bd9db17744d80a
                 </div>
               </div>
             )}

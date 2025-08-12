@@ -28,6 +28,12 @@ const audiowide = Audiowide({
 export const metadata: Metadata = {
   title: "Parts Central",
   description: "Parts Central",
+   viewport: {
+    width: 'device-width',
+    initialScale: 1.0,
+    maximumScale: 1.0,
+    userScalable: false,
+  },
    
 };
 

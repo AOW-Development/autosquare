@@ -8,6 +8,8 @@ import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup"
 import { redirect, useSearchParams } from "next/navigation"
 import { useCartStore } from "@/store/cartStore"
 import PartRequestPopup from "@/components/partRequestPopup"
+import { useRouter } from "next/navigation";
+
 
 const galleryImages = ["/Images/var.png", "/Images/main.png", "/Images/var.png"]
 
@@ -102,10 +104,31 @@ export default function EngineProductPage() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL
   const addItem = useCartStore((s) => s.addItem)
   const [showPopup, setShowPopup] = useState(false)
+  const router = useRouter();
 
   const handleBuyNow = () => {
-    redirect("/account/payMethod")
-  }
+  if (!selectedProduct) return;
+  
+  const clear = useCartStore.getState().clear;
+  const addItem = useCartStore.getState().addItem;
+
+  // Clear the cart first
+  clear();
+
+  // Add the selected product
+  addItem({
+    id: selectedProduct.sku,
+    name: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
+    title: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
+    subtitle: selectedProduct.sku,
+    image: selectedProduct.product?.images?.[0] || "/Images/default-engine.png",
+    price: selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0,
+    quantity
+  });
+
+  // Redirect to pay method page
+  router.push("/account/payMethod");
+};
 
   useEffect(() => {
     if (!make || !model || !year || !part) return

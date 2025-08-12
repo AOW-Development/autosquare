@@ -27,3 +27,21 @@ body {
 .animate-spin-slow {
   animation: spin 2.5s linear infinite;
 }
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* temp fix for overflow */
+}
+
+input, select, textarea {
+  font-size: 16px; /* avoid iOS zoom bug */
+}
+
+body {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+.container {
+  width: 100%; /* ✅ respects parent without scroll issues */
+}

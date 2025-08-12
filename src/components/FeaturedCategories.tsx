@@ -94,7 +94,7 @@ export default function FeaturedCategories() {
         >
           AUTO PARTS FOR YOUR MAKE
         </h2>
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:mt-14 lg:mt-16 md:mb-20 md:gap-x-14 lg:gap-x-16 gap-y-4 md:gap-y-4 lg:gap-y-6 w-full max-w-6xl">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:mt-14 lg:mt-16 md:mb-20 md:gap-x-14 lg:gap-x-16 gap-y-4 md:gap-y-4  lg:gap-y-6 w-full max-w-6xl">
           {makers.slice(0, 33).map((maker, i) => (
             <div
               key={maker.name}

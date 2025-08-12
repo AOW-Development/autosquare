@@ -245,12 +245,17 @@ const ShopByVehicle: React.FC = () => {
 
       {/* Mobile Layout */}
   {/* Mobile Layout */}
-  <div className="w-full lg:hidden" style={{ position: "relative" }}>
-    <div className="bg-[#091B33] pt-12 sm:pt-20 md:pt-10 ">
-      <div
-        className="relative -mt-12 sm:-mt-20 mx-auto md:w-[100%] md:max-w-[700px] max-w-[400px] rounded-md shadow-lg px-4 py-4 sm:py-6 flex flex-col justify-center mobile-shop-container "
-        style={{ background: "#00A3FF80" }}
-      >
+  <div className="bg-[#091B33] w-full lg:hidden" style={{ position: "relative" }}>
+   
+   <div
+  className="relative left-1/2 -translate-x-1/2 
+             w-[95%] sm:w-[95%] md:w-[90%]  
+             -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
+             rounded-md shadow-lg px-3 py-2 sm:px-4 sm:py-4 
+             flex flex-col justify-center"
+  style={{ background: "#00A3FF80" }}
+>
+
         <div
           className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px]  md:text-[20px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
           id="shop-by-vehicle-title-mobile"
@@ -316,7 +321,7 @@ const ShopByVehicle: React.FC = () => {
           )}
         </div>
       </div>
-    </div>
+   
   </div>
 
       

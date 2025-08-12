@@ -11,54 +11,32 @@ import PartRequestPopup from "@/components/partRequestPopup"
 import { useRouter } from "next/navigation";
 
 
+interface SubPart {
+  id: number
+  name: string
+}
+
+interface Product {
+  sku: string
+  subParts: SubPart[]
+  modelYear?: {
+    model?: {
+      make?: { name?: string }
+      name?: string
+    }
+    year?: { value?: string }
+  }
+  partType?: { name?: string }
+  inStock?: boolean
+  discountedPrice?: number
+  actualprice?: number
+}
+
+// const productInfo = { make: "", model: "", year: "", part: "" }
+
 const galleryImages = ["/Images/var.png", "/Images/main.png", "/Images/var.png"]
 
-const accordionData = [
-  {
-    title: "DESCRIPTION",
-    content: (
-      <>
-        <p>
-          This Dodge Charger 6.4L Used Engine is models. Each engine is tested and ready to install and offers improved
-          performance.
-        </p>
-        <br />
-        <p>
-          This Unit is perfect for anyone in the market for reliable used engines that will offer superior results - a
-          great addition to any repair project!
-        </p>
-        <br />
-        <p>The Dodge Charger 6.4L Used Engine comes with all the Major accessories such as:</p>
-        <ul>
-          <li>Intake Manifold</li>
-          <li>Exhaust Manifold</li>
-          <li>Crankshaft</li>
-          <li>Camshaft</li>
-          <li>Pistons</li>
-          <li>Cylinder Head</li>
-          <li>Timing Cover</li>
-        </ul>
-        <p>The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator need to be replaced/swapped.</p>
-        <br />
-        <p>The Dodge Charger 6.4L Used Engine can be used as a direct replacement for any of the following vehicles:</p>
-        <p>Fit Notes:</p>
-      </>
-    ),
-  },
-  {
-    title: "WARRANTY & REFUNDS",
-    content:
-      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
-  },
-  {
-    title: "SHIPPING",
-    content: "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
-  },
-  {
-    title: "PAYMENT",
-    content: "",
-  },
-]
+
 
 interface SubPart {
   id: number
@@ -149,6 +127,98 @@ export default function EngineProductPage() {
   // Redirect to pay method page
   router.push("/account/payMethod");
 };
+const accordionData = [
+  {
+    title: "DESCRIPTION",
+    content: (
+      <>
+        <p>
+          This {productInfo.make} {productInfo.model} {productInfo.part} is{" "}
+          {productInfo.year ? `from ${productInfo.year} ` : ""}models. Each engine is tested and ready to install and
+          offers improved performance.
+        </p>
+        <br />
+        <p>
+          This Unit is perfect for anyone in the market for reliable used engines that will offer superior results - a
+          great addition to any repair project!
+        </p>
+        <br />
+        <p>
+          The {productInfo.make} {productInfo.model} {productInfo.part} comes with all the Major accessories such as:
+        </p>
+        <ul>
+          <li>Intake Manifold</li>
+          <li>Exhaust Manifold</li>
+          <li>Crankshaft</li>
+          <li>Camshaft</li>
+          <li>Pistons</li>
+          <li>Cylinder Head</li>
+          <li>Timing Cover</li>
+        </ul>
+        <p>The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator need to be replaced/swapped.</p>
+        <br />
+        {/* <p>
+          The {productInfo.make} {productInfo.model} {productInfo.part} can be used as a direct replacement for any of
+          the following vehicles:
+        </p> */}
+
+      </>
+    ),
+ 
+  },
+  {
+    title: "WARRANTY & REFUNDS",
+    content:
+      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
+  },
+  {
+    title: "SHIPPING",
+    content: "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
+  },
+  {
+    title: "PAYMENT",
+    content:<>
+    <div className="flex space-x-[8px]">
+                {/* <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/visa-inverted_82058.png"
+                    alt="Visa"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+                {/* <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/mastercard_82049.png"
+                    alt="Mastercard"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+                {/* <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/americanexpress_82060 1.png"
+                    alt="Amex"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+                {/* <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/discover_82082.png"
+                    alt="Discover"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+              </div>
+    </>,
+  },
+]
 
   useEffect(() => {
     if (!make || !model || !year || !part) return
@@ -491,11 +561,11 @@ export default function EngineProductPage() {
                       Rated <span className="font-semibold text-white">4.6</span> out of 5 based on
                     </span>
                     <Image
-                      src="/google-logo.png"
+                      src="/GoogleMain.png"
                       alt="Google"
                       width={60}
                       height={20}
-                      className="h-4 sm:h-5 w-auto"
+                      className="h-4 sm:h-5  w-6"
                     />
                   </div>
 
@@ -504,18 +574,14 @@ export default function EngineProductPage() {
                       Rated <span className="font-semibold text-white">4.1</span> out of 5 based on
                     </span>
                     <div className="flex items-center gap-1">
-                      <svg
-                        className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-green-500 fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                      </svg>
+                      
+                     
                       <Image
-                        src="/trustpilot-logo.png"
+                        src="/trustpilotMain.png"
                         alt="Trustpilot"
                         width={80}
                         height={20}
-                        className="h-4 sm:h-5 w-auto"
+                        className="h-8 sm:h-5 w-30"
                       />
                     </div>
                   </div>

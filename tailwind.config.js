@@ -30,6 +30,9 @@ module.exports = {
           "sans-serif",
         ],
       },
+      screens: {
+        'xs425': {'max': '425px'}, // custom breakpoint
+      },
     },
   },
   plugins: [],

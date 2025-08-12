@@ -45,3 +45,11 @@ body {
 .container {
   width: 100%; /* ✅ respects parent without scroll issues */
 }
+
+@media (max-width: 425px) {
+  .mobile-shop-container {
+    top: 0 !important;
+    margin-top: 0 !important; /* or whatever gap you want */
+    position: absolute !important; /* ensure it's positioned */
+  }
+}

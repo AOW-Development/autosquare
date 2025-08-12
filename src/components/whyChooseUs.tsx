@@ -38,12 +38,12 @@ const cards = [
 
 export default function WhyChooseUs() {
   return (
-     <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 py-2 md:px-0">
+     <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 py-2 md:px-6 lg:px-0 ">
 
       <div className="max-w-6xl mx-auto px-0">
 
         <h2
-          className="font-audiowide text-white text-2xl sm:text-4xl mt-10 md:mt-10 mb-6 md:mb-10 tracking-wide uppercase text-left w-full pl-0"
+          className="font-audiowide text-white text-2xl sm:text-4xl mt-10 md:mt-6 lg:mt-10 mb-6 md:mb-10 tracking-wide uppercase text-left w-full pl-0"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.04em",
@@ -59,7 +59,7 @@ export default function WhyChooseUs() {
           professional manner. We want to treat you like we would want to be
           treated.
         </p>
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8">
+        <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
           {cards.map((card, i) => (
             <div
               key={i}

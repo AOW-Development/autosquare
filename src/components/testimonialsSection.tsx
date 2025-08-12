@@ -60,7 +60,7 @@ function TestimonialCard({
   avatar: string;
 }) {
   return (
-    <div className="relative rounded-md border border-blue-400 bg-[#12263A] p-0  flex flex-col shadow-lg w-full max-w-[370px] min-h-[320px] overflow-hidden">
+    <div className="relative rounded-md border border-blue-400 bg-[#12263A] p-0 flex flex-col shadow-lg w-full max-w-[370px] min-h-[320px] overflow-hidden">
       <Image
         src="/Images/cards-bg.png"
         alt=""
@@ -168,7 +168,7 @@ export default function TestimonialsSection() {
 
 
         {/* Heading + Arrows Row */}
-        <div className="flex items-center justify-between mt-10 mb-8 md:mb-14">
+        <div className="flex items-center justify-between mt-10 mb-8 md:mb-10 lg:mb-14">
           <h2
             className="font-audiowide text-white text-2xl sm:text-4xl tracking-wide uppercase"
             style={{

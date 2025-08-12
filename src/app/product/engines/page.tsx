@@ -105,6 +105,26 @@ export default function EngineProductPage() {
   const addItem = useCartStore((s) => s.addItem)
   const [showPopup, setShowPopup] = useState(false)
   const router = useRouter();
+    useEffect(() => {
+    if (showPopup) {
+      // Save scroll position
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    } else {
+      // Restore scroll position
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
+    }
+  }, [showPopup]);
 
   const handleBuyNow = () => {
   if (!selectedProduct) return;
@@ -242,7 +262,7 @@ export default function EngineProductPage() {
 
       {/* Breadcrumb */}
       <div className="w-full bg-[#091b33] overflow-hidden">
-        <div className="max-w-6xl mx-auto md:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
+        <div className="max-w-6xl mx-auto md:mx-16 lg:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
           <Link href="/" className="flex items-center">
             <Image src="/engine/HouseLine.png" alt="Home" width={20} height={20} />
           </Link>
@@ -270,8 +290,8 @@ export default function EngineProductPage() {
 
       {/* Main Product Section */}
       <div className="w-full bg-[#091b33] text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-0 md:py-8">
-          <div className="flex flex-col md:flex-row  gap-1 md:gap-8 items-start pt-0 md:pt-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
+          <div className="flex flex-col md:flex-row  gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
             {/* Left: Image */}
             <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
               <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">

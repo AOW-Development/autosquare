@@ -47,7 +47,7 @@ export default function CategoriesSection() {
   return (
     <>
       {/* <ShopByVehicle/> */}
-      <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 md:py-10 ">
+      <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 md:py-2 md:px-6 lg:py-10 ">
         <div className="w-full max-w-[1200px]">
           {/* <h2 className="font-audiowide text-white text-2xl sm:text-4xl mt-4 mb-6 tracking-wide uppercase text-left w-full">
           featured categories

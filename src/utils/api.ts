@@ -42,4 +42,10 @@ export const getGroupedProducts = (params: { make: string; model: string; year: 
   return api.get('/products/v2/grouped-with-subparts', { params });
 };
 
-export default api; 
+// Add order-related API calls
+export const orders = {
+  create: (orderData: any) => 
+    api.post('/orders', orderData)
+};
+
+export default api;

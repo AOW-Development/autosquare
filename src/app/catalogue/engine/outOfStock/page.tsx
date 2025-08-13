@@ -178,19 +178,11 @@ export default function CatalogPage() {
                   >
                     &times;
                   </button>
-<<<<<<< HEAD
                   <EngineFilterSidebar 
-  subPartsList={subPartsList}
-  subPartFilter={subPartFilter}
-  setSubPartFilter={setSubPartFilter}
-/>
-=======
-                  <EngineFilterSidebar
-                    subPartsList={[]}
-                    subPartFilter={null}
-                    setSubPartFilter={() => {}}
-                  />
->>>>>>> b1adb77e7a800db84b76d9f9e5bd9db17744d80a
+                subPartsList={subPartsList}
+                subPartFilter={subPartFilter}
+                setSubPartFilter={setSubPartFilter}
+              />
                 </div>
               </div>
             )}

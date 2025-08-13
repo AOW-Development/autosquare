@@ -14,7 +14,7 @@ const EngineFilterSidebar: React.FC<EngineFilterSidebarProps> = ({ subPartsList,
       <h3 className=" mb-3">CHOOSE YOUR SPECIFICATION</h3>
 
        {/* Dropdown for specification selection */}
-        <div className="mb-4">
+        <div className="hidden lg:block mb-4">
           <label htmlFor="specification" className="block text-sm text-gray-300 mb-1">
             Select Specification
           </label>

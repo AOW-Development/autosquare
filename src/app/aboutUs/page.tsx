@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function AboutUsPage() {
   return (
      <div className="mt-0 pt-0">
-        <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[400px] relative">
+        <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[380px] relative">
 
           <Image
             src="/autoparts/banner.png"

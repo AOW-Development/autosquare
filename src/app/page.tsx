@@ -82,6 +82,7 @@ export default function Home() {
       {/* <div className="z-10 absolute top-[50%] left-[50%] translate-x-[-50%] traslate-y-[-50%] md:top-[130%] md:left-[130%] md:translate-x-[-130%] md:translate-y-[-130%] w-full"> */}
       <ShopByVehicle />
       {/* </div> */}
+       <div id="shop-spacer" />
       <CategoriesSection />
       <WhyChooseUs />
       <TestimonialsSection />

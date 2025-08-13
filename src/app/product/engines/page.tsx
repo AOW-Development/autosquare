@@ -8,55 +8,35 @@ import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup"
 import { redirect, useSearchParams } from "next/navigation"
 import { useCartStore } from "@/store/cartStore"
 import PartRequestPopup from "@/components/partRequestPopup"
+import { useRouter } from "next/navigation";
+
+
+interface SubPart {
+  id: number
+  name: string
+}
+
+interface Product {
+  sku: string
+  subParts: SubPart[]
+  modelYear?: {
+    model?: {
+      make?: { name?: string }
+      name?: string
+    }
+    year?: { value?: string }
+  }
+  partType?: { name?: string }
+  inStock?: boolean
+  discountedPrice?: number
+  actualprice?: number
+}
+
+// const productInfo = { make: "", model: "", year: "", part: "" }
 
 const galleryImages = ["/Images/var.png", "/Images/main.png", "/Images/var.png"]
 
-const accordionData = [
-  {
-    title: "DESCRIPTION",
-    content: (
-      <>
-        <p>
-          This Dodge Charger 6.4L Used Engine is models. Each engine is tested and ready to install and offers improved
-          performance.
-        </p>
-        <br />
-        <p>
-          This Unit is perfect for anyone in the market for reliable used engines that will offer superior results - a
-          great addition to any repair project!
-        </p>
-        <br />
-        <p>The Dodge Charger 6.4L Used Engine comes with all the Major accessories such as:</p>
-        <ul>
-          <li>Intake Manifold</li>
-          <li>Exhaust Manifold</li>
-          <li>Crankshaft</li>
-          <li>Camshaft</li>
-          <li>Pistons</li>
-          <li>Cylinder Head</li>
-          <li>Timing Cover</li>
-        </ul>
-        <p>The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator need to be replaced/swapped.</p>
-        <br />
-        <p>The Dodge Charger 6.4L Used Engine can be used as a direct replacement for any of the following vehicles:</p>
-        <p>Fit Notes:</p>
-      </>
-    ),
-  },
-  {
-    title: "WARRANTY & REFUNDS",
-    content:
-      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
-  },
-  {
-    title: "SHIPPING",
-    content: "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
-  },
-  {
-    title: "PAYMENT",
-    content: "",
-  },
-]
+
 
 interface SubPart {
   id: number
@@ -102,10 +82,143 @@ export default function EngineProductPage() {
   const API_BASE = process.env.NEXT_PUBLIC_API_URL
   const addItem = useCartStore((s) => s.addItem)
   const [showPopup, setShowPopup] = useState(false)
+  const router = useRouter();
+    useEffect(() => {
+    if (showPopup) {
+      // Save scroll position
+      const scrollY = window.scrollY;
+      document.body.style.position = "fixed";
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.left = "0";
+      document.body.style.right = "0";
+      document.body.style.width = "100%";
+    } else {
+      // Restore scroll position
+      const scrollY = document.body.style.top;
+      document.body.style.position = "";
+      document.body.style.top = "";
+      document.body.style.left = "";
+      document.body.style.right = "";
+      document.body.style.width = "";
+      window.scrollTo(0, parseInt(scrollY || "0") * -1);
+    }
+  }, [showPopup]);
 
   const handleBuyNow = () => {
-    redirect("/account/payMethod")
-  }
+  if (!selectedProduct) return;
+  
+  const clear = useCartStore.getState().clear;
+  const addItem = useCartStore.getState().addItem;
+
+  // Clear the cart first
+  clear();
+
+  // Add the selected product
+  addItem({
+    id: selectedProduct.sku,
+    name: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
+    title: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
+    subtitle: selectedProduct.sku,
+    image: selectedProduct.product?.images?.[0] || "/Images/default-engine.png",
+    price: selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0,
+    quantity
+  });
+
+  // Redirect to pay method page
+  router.push("/account/payMethod");
+};
+const accordionData = [
+  {
+    title: "DESCRIPTION",
+    content: (
+      <>
+        <p>
+          This {productInfo.make} {productInfo.model} {productInfo.part} is{" "}
+          {productInfo.year ? `from ${productInfo.year} ` : ""}models. Each engine is tested and ready to install and
+          offers improved performance.
+        </p>
+        <br />
+        <p>
+          This Unit is perfect for anyone in the market for reliable used engines that will offer superior results - a
+          great addition to any repair project!
+        </p>
+        <br />
+        <p>
+          The {productInfo.make} {productInfo.model} {productInfo.part} comes with all the Major accessories such as:
+        </p>
+        <ul>
+          <li>Intake Manifold</li>
+          <li>Exhaust Manifold</li>
+          <li>Crankshaft</li>
+          <li>Camshaft</li>
+          <li>Pistons</li>
+          <li>Cylinder Head</li>
+          <li>Timing Cover</li>
+        </ul>
+        <p>The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator need to be replaced/swapped.</p>
+        <br />
+        {/* <p>
+          The {productInfo.make} {productInfo.model} {productInfo.part} can be used as a direct replacement for any of
+          the following vehicles:
+        </p> */}
+
+      </>
+    ),
+ 
+  },
+  {
+    title: "WARRANTY & REFUNDS",
+    content:
+      "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
+  },
+  {
+    title: "SHIPPING",
+    content: "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
+  },
+  {
+    title: "PAYMENT",
+    content:<>
+    <div className="flex space-x-[8px]">
+                {/* <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/visa-inverted_82058.png"
+                    alt="Visa"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+                {/* <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/mastercard_82049.png"
+                    alt="Mastercard"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+                {/* <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/americanexpress_82060 1.png"
+                    alt="Amex"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+                {/* <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer"> */}
+                  <Image
+                    src="/Images/home/discover_82082.png"
+                    alt="Discover"
+                    width={48}
+                    height={30}
+                    className="bg-[#1E2A44] object-contain"
+                  />
+                {/* </a> */}
+              </div>
+    </>,
+  },
+]
 
   useEffect(() => {
     if (!make || !model || !year || !part) return
@@ -219,7 +332,7 @@ export default function EngineProductPage() {
 
       {/* Breadcrumb */}
       <div className="w-full bg-[#091b33] overflow-hidden">
-        <div className="max-w-6xl mx-auto md:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
+        <div className="max-w-6xl mx-auto md:mx-16 lg:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
           <Link href="/" className="flex items-center">
             <Image src="/engine/HouseLine.png" alt="Home" width={20} height={20} />
           </Link>
@@ -247,8 +360,8 @@ export default function EngineProductPage() {
 
       {/* Main Product Section */}
       <div className="w-full bg-[#091b33] text-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-0 md:py-8">
-          <div className="flex flex-col md:flex-row  gap-1 md:gap-8 items-start pt-0 md:pt-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
+          <div className="flex flex-col md:flex-row  gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
             {/* Left: Image */}
             <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
               <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
@@ -402,7 +515,7 @@ export default function EngineProductPage() {
 
       {/* Tabs Section */}
       <div className="w-full bg-[#091b33] text-white ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:px-20 md:mx-60 md:py-6 pb-8 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:px-20 md:-mx-8 lg:mx-60 md:py-4 lg:py-6 pb-0">
           {/* Tabs container */}
           <div className="flex overflow-x-auto no-scrollbar border-b border-gray-700">
             {accordionData.map((item, i) => (
@@ -419,15 +532,15 @@ export default function EngineProductPage() {
           </div>
 
           {/* Content container */}
-          <div className="py-6 text-gray-300 text-sm sm:text-base md:text-lg whitespace-pre-line justify-left align-left  leading-relaxed break-words">
+          <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left  leading-relaxed break-words">
             {accordionData[activeTab].content}
           </div>
         </div>
-              <div className="w-full py-8 sm:py-12 ">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full py-8 sm:py-12 ">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-2 lg:px-8">
               <div className="text-left md:px-10">
                 {/* Main heading */}
-                <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-2 sm:mb-8">
                   Talk To An <span className="font-extrabold">Expert</span>
                 </h2>
 
@@ -442,17 +555,17 @@ export default function EngineProductPage() {
                 </div>
 
                 {/* Rating information */}
-                <div className="flex flex-col gap-3 text-white">
+                <div className="flex flex-col gap-3 text-white ">
                   <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-base">
                     <span>
                       Rated <span className="font-semibold text-white">4.6</span> out of 5 based on
                     </span>
                     <Image
-                      src="/google-logo.png"
+                      src="/GoogleMain.png"
                       alt="Google"
                       width={60}
                       height={20}
-                      className="h-4 sm:h-5 w-auto"
+                      className="h-4 sm:h-5  w-6"
                     />
                   </div>
 
@@ -461,18 +574,14 @@ export default function EngineProductPage() {
                       Rated <span className="font-semibold text-white">4.1</span> out of 5 based on
                     </span>
                     <div className="flex items-center gap-1">
-                      <svg
-                        className="w-3.5 sm:w-4 h-3.5 sm:h-4 text-green-500 fill-current"
-                        viewBox="0 0 20 20"
-                      >
-                        <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z" />
-                      </svg>
+                      
+                     
                       <Image
-                        src="/trustpilot-logo.png"
+                        src="/trustpilotMain.png"
                         alt="Trustpilot"
                         width={80}
                         height={20}
-                        className="h-4 sm:h-5 w-auto"
+                        className="h-8 sm:h-5 w-30"
                       />
                     </div>
                   </div>

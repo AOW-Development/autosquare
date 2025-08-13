@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     //py-[60px] md:py-[40px] sm:py-[32px]
     <footer className="w-full bg-[#090D15] font-exo-2">
-      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-30 md:py-16">
+      <div className="mx-auto max-w-[1440px] px-4 py-8 md:px-16 lg:px-30 md:py-8 lg:py-16">
         {/* Top Grid: Stacked on mobile, row on desktop */}
         <div className="flex flex-col md:flex-row md:space-x-4 gap-y-6">
           {/* Company Info */}
@@ -19,7 +19,7 @@ export default function Footer() {
                 height={60}
                 className="mb-[15px] bg-[#090D15]"
               />
-              <ul className="space-y-[8px] text-[14px] text-white leading-[1.5]">
+              <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-white leading-[1.5]">
                 <li>Parts Central LLC</li>
                 {/* <li>Toll Free: (888) 748–0882</li> */}
                 <li>Toll Free: (888) 338-2540</li>
@@ -43,7 +43,7 @@ export default function Footer() {
                   Location: 76 Imperial Dr Suite E Evanston, WY 82930, USA
                 </li>
               </ul>
-              <div className="flex gap-4 mt-4">
+              <div className="flex gap-4 mt-4 md:gap-10 ">
                 <a
                   href="https://www.facebook.com/profile.php?id=61569958892836"
                   target="_blank"
@@ -56,13 +56,13 @@ export default function Footer() {
                     width={24}
                     height={24}
                   />
-                  <span className="text-white text-[14px]">Facebook</span>
+                  <span className="text-white text-[12px] md:text-[14px] lg:text-[16px] ">Facebook</span>
                 </a>
                 <a
                   href="https://www.instagram.com/partscentral.us/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 "
                 >
                   <Image
                     src="/Images/home/social media (4).svg"
@@ -70,7 +70,7 @@ export default function Footer() {
                     width={24}
                     height={24}
                   />
-                  <span className="text-white text-[14px]">Instagram</span>
+                  <span className="text-white text-[12px] md:text-[14px] lg:text-[16px]">Instagram</span>
                 </a>
                  <a
                   href="https://www.linkedin.com/company/partscentral/?viewAsMember=true"
@@ -84,7 +84,7 @@ export default function Footer() {
                     width={24}
                     height={24}
                   />
-                  <span className="text-white text-[14px]">Linkedin</span>
+                  <span className="text-white text-[12px] md:text-[14px] lg:text-[16px]">Linkedin</span>
                   </a>
               </div>
             </div>
@@ -93,10 +93,10 @@ export default function Footer() {
           <div className="w-full md:w-[600px] grid grid-cols-2 md:grid-cols-3 gap-6">
             {/* Column 2: Online Store */}
             <div>
-              <h3 className="text-white uppercase font-exo-2 font-bold text-[16px] mb-[16px]">
+              <h3 className="text-white uppercase font-exo-2 font-bold text-[14px] md:text-[16px] lg:text-[18px] mb-[16px]">
                 Online Store
               </h3>
-              <ul className="space-y-[8px] text-[14px] text-[#CCCCCC] leading-[1.6]">
+              <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-[#CCCCCC] leading-[1.6]">
                 <li>
                   <a href="/" className="hover:text-white">
                     Home
@@ -126,10 +126,10 @@ export default function Footer() {
             </div>
             {/* Column 3: Information */}
             <div>
-              <h3 className="text-white uppercase font-exo2 font-bold text-[16px] mb-[16px]">
+              <h3 className="text-white uppercase font-exo2 font-bold text-[14px] md:text-[16px] lg:text-[18px] mb-[16px]">
                 Information
               </h3>
-              <ul className="space-y-[8px] text-[14px] text-[#CCCCCC] leading-[1.6]">
+              <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-[#CCCCCC] leading-[1.6]">
                 <li>
                   <a href="/aboutUs" className="hover:text-white">
                     About us
@@ -165,10 +165,10 @@ export default function Footer() {
             </div>
             {/* Column 4: Resources */}
             <div>
-              <h3 className="text-white uppercase font-exo2 font-bold text-[16px] mb-[16px]">
+              <h3 className="text-white uppercase font-exo2 font-bold text-[14px] md:text-[16px] lg:text-[18px] mb-[16px]">
                 Resources
               </h3>
-              <ul className="space-y-[8px] text-[14px] text-[#CCCCCC] leading-[1.6]">
+              <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-[#CCCCCC] leading-[1.6]">
                 <li>
                   <Link href="/account/trackOrder" className="hover:text-white">
                     Track my order

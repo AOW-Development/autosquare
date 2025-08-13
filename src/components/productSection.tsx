@@ -70,7 +70,7 @@ export default function ProductSection({ product, make, model, year, part }: Pro
   };
 
   return (
-    <section className="bg-[#091b33] text-white w-full py-8 md:py-2 px-2 flex flex-col gap-12">
+    <section className="bg-[#091b33] text-white w-full py-8 md:py-2 lg:py-2 px-2 flex flex-col gap-12">
       {/* Top Table */}
       {/* <div className="max-w-6xl mx-auto w-full">
         <h2 className="text-xl font-bold mb-4">DESCRIPTION</h2>
@@ -114,9 +114,9 @@ export default function ProductSection({ product, make, model, year, part }: Pro
 
       {/* Featured Products */}
       <div className="max-w-6xl mx-auto w-full">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-6 md:px-4">
           <h2 className="text-2xl font-bold">FEATURED PRODUCTS</h2>
-          <div className="grid grid-col-1 md:grid-col-2 gap-2">
+          <div className="grid grid-col-1 md:grid-col-1 lg:grid-col-2 gap-2">
             <button className="p-2">
               <span className="text-2xl">&#60;</span>
             </button>
@@ -125,7 +125,7 @@ export default function ProductSection({ product, make, model, year, part }: Pro
             </button>
           </div>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:px-4 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {featuredProducts.map((prod, i) => {
             // Parse desc for fields
             const [vehicle, specs, condition, grade, miles, warranty] =
@@ -182,8 +182,8 @@ export default function ProductSection({ product, make, model, year, part }: Pro
 
       {/* You Have Viewed */}
       <div className="max-w-6xl mx-auto w-full mt-12">
-        <h2 className="text-2xl font-bold mb-6">YOU HAVE VIEWED</h2>
-        <div className="flex flex-wrap gap-6">
+        <h2 className="text-2xl font-bold mb-6 md:px-4">YOU HAVE VIEWED</h2>
+        <div className="flex flex-wrap gap-6 md:px-4">
           {/* Only one card for viewedProduct, but use same card style */}
           {(() => {
             const [vehicle, specs, condition, grade, miles, warranty] =

@@ -93,32 +93,32 @@ export default function CatalogPage() {
         try {
           setLoading(true);
           const response = await getGroupedProducts({ make, model, year, part });
-// Define interfaces for explicit typing to prevent type errors.
-interface IVariant {
-  id: number;
-  sku: string;
-  miles: string | null;
-  actualprice: number | null;
-  discountedPrice?: number | null;
-  inStock: boolean;
-  productId?: number;
-  product: { images: any[]; description: string | null; id: number; sku: string };
-  make: string;
-  model: string;
-  modelYear: string;
-  part: string;
-  partType: string | null;
-  subPart: {
-    id: number;
-    name: string;
-    partTypeId: number;
-  };
-}
+        // Define interfaces for explicit typing to prevent type errors.
+        interface IVariant {
+          id: number;
+          sku: string;
+          miles: string | null;
+          actualprice: number | null;
+          discountedPrice?: number | null;
+          inStock: boolean;
+          productId?: number;
+          product: { images: any[]; description: string | null; id: number; sku: string };
+          make: string;
+          model: string;
+          modelYear: string;
+          part: string;
+          partType: string | null;
+          subPart: {
+            id: number;
+            name: string;
+            partTypeId: number;
+          };
+        }
 
-interface IGroupedVariant {
-  subPart: SubPart;
-  variants: IVariant[];
-}
+        interface IGroupedVariant {
+          subPart: SubPart;
+          variants: IVariant[];
+        }
 
           // The API returns data grouped by sub-parts. We need to flatten this structure
           // into a single list of products for rendering.
@@ -289,8 +289,8 @@ const filteredProducts = subPartFilter !== null
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
-      <div className="px-2  pt-4 md:py-0">
-        <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 pt-4 text-sm text-gray-300 flex items-center space-x-2">
+      <div className="px-2 pt-4 md:py-0">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 mb-8 pt-4 text-sm text-gray-300 flex items-center space-x-2">
 
           <Link
             href="/"
@@ -333,13 +333,36 @@ const filteredProducts = subPartFilter !== null
       </div>
 
       {/* Main Content Area */}
-      <div className="max-w-7xl mx-auto px-2 md:px-6 pb-12">
-        <div className="relative pt-12 md:pt-24 pb-10 md:pb-20">
+      <div className="max-w-7xl mx-auto px-2 md:px-4 lg-px-6 pb-12">
+        <div className="relative pt-12 md:pt-10 lg:pt-24 pb-1 md:pb-16 lg:pb-20">
           <ShopByVehicle />
         </div>
 
+        <div className="lg:hidden mb-8 px-2 md:px-4 lg:px-0 mt-6">
+          <label htmlFor="specification" className="block text-sm text-gray-300 mb-1 ">
+            Select Specification
+          </label>
+          <select
+            id="subpart-filter"
+            name="subpart-filter"
+            className="w-full bg-[#1C2A3A] text-white border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
+            value={subPartFilter !== null ? String(subPartFilter) : "ALL"}
+            onChange={e => {
+              const val = e.target.value;
+              setSubPartFilter(val === "ALL" ? null : Number(val));
+            }}
+          >
+            <option value="ALL">All Specification</option>
+            {subPartsList.map(sp => (
+              <option key={sp.id} value={String(sp.id)}>
+                {sp.name}
+              </option>
+            ))}
+          </select>
+        </div>
+
         <h2
-          className="text-xl md:text-3xl font-audiowide md:mt-8 mb-2 md:mb-6 pl-3 "
+          className="text-xl md:text-2xl lg:text-3xl font-audiowide md:mt-4 lg:mt-8 mb-2 md:mb-6  lg:mb-6 pl-3 md:pl-4"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -425,7 +448,7 @@ const filteredProducts = subPartFilter !== null
                 </div>
               </div>
             )}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-10">
               {currentItems.map((item, index) => {
                 const cartItem = cartItems.find(
                   (i) => i.id === item.sku // Use unique ID for item

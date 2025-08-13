@@ -179,10 +179,10 @@ export default function CatalogPage() {
                     &times;
                   </button>
                   <EngineFilterSidebar 
-  subPartsList={subPartsList}
-  subPartFilter={subPartFilter}
-  setSubPartFilter={setSubPartFilter}
-/>
+                subPartsList={subPartsList}
+                subPartFilter={subPartFilter}
+                setSubPartFilter={setSubPartFilter}
+              />
                 </div>
               </div>
             )}

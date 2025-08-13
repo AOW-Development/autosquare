@@ -95,7 +95,7 @@ const cardImage = cardImageMap[cardType];
   </div>
 
   {/* Thank You Content */}
-  <main className="relative z-10 w-full flex justify-center md:justify-end md:pr-100 px-4">
+  <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr- lg:pr-100 px-4">
 
     <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
             {/* Logo and Title */}

@@ -515,7 +515,7 @@ const accordionData = [
 
       {/* Tabs Section */}
       <div className="w-full bg-[#091b33] text-white ">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:px-20 md:mx-60 md:py-6 pb-8 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:px-20 md:-mx-8 lg:mx-60 md:py-4 lg:py-6 pb-0">
           {/* Tabs container */}
           <div className="flex overflow-x-auto no-scrollbar border-b border-gray-700">
             {accordionData.map((item, i) => (
@@ -532,15 +532,15 @@ const accordionData = [
           </div>
 
           {/* Content container */}
-          <div className="py-6 text-gray-300 text-sm sm:text-base md:text-lg whitespace-pre-line justify-left align-left  leading-relaxed break-words">
+          <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left  leading-relaxed break-words">
             {accordionData[activeTab].content}
           </div>
         </div>
-              <div className="w-full py-8 sm:py-12 ">
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="w-full py-8 sm:py-12 ">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-2 lg:px-8">
               <div className="text-left md:px-10">
                 {/* Main heading */}
-                <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-2 sm:mb-8">
                   Talk To An <span className="font-extrabold">Expert</span>
                 </h2>
 
@@ -555,7 +555,7 @@ const accordionData = [
                 </div>
 
                 {/* Rating information */}
-                <div className="flex flex-col gap-3 text-white">
+                <div className="flex flex-col gap-3 text-white ">
                   <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-base">
                     <span>
                       Rated <span className="font-semibold text-white">4.6</span> out of 5 based on

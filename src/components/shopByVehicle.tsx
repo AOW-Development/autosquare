@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { Listbox } from '@headlessui/react' 
@@ -77,6 +77,9 @@ const ShopByVehicle: React.FC = () => {
   const partActive = make !== "" && model !== "" && year !== "";
   // const subCategoryActive = partActive && part !== "";
   // const optionActive = subCategoryActive && subCategory !== "";
+  
+  const [boxHeight, setBoxHeight] = useState(0);
+  const boxRef = useRef<HTMLDivElement>(null);
 
   const arrowUrl = "/Images/home/arrows.png";
 
@@ -121,6 +124,22 @@ const ShopByVehicle: React.FC = () => {
     // Do NOT redirect if already on /catalogue/engine/home or /product/engines
     }
   }, [make, model, year, part]);
+
+// useEffect(() => {
+//   const spacer = document.getElementById("shop-spacer");
+//   if (spacer && boxRef.current) {
+//     spacer.style.height = `${boxRef.current.offsetHeight}px`;
+//   }
+// }, [
+//   make || "",
+//   model || "",
+//   year || "",
+//   part || "",
+//   !!makeActive,
+//   !!modelActive,
+//   !!yearActive,
+//   !!partActive
+// ]);
 
   return (
     <div className="relative z-20">
@@ -247,14 +266,14 @@ const ShopByVehicle: React.FC = () => {
   {/* Mobile Layout */}
   <div className="bg-[#091B33] w-full lg:hidden" style={{ position: "relative" }}>
    
-   <div
-  className="relative left-1/2 -translate-x-1/2 
-             w-[95%] sm:w-[95%] md:w-[90%]  
-             -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
-             rounded-md shadow-lg px-3 py-2 sm:px-4 sm:py-4 
-             flex flex-col justify-center"
-  style={{ background: "#00A3FF80" }}
->
+       <div
+          ref={boxRef}
+          className="relative left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[95%]  
+                     -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
+                     rounded-md shadow-lg px-3 py-2 sm:px-4 sm:py-4 
+                     flex flex-col gap-2 sm:gap-3 justify-center"
+          style={{ background: "#00A3FF80" }}
+        >
 
         <div
           className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px]  md:text-[20px] tracking-wider mb-3 sm:mb-4 uppercase text-white"

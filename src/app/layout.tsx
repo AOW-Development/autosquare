@@ -48,7 +48,7 @@ export default function RootLayout({
       className={`${exo2.className} ${inter.variable} ${audiowide.variable}`}
     >
       <head> 
-        <meta name="google-site-verification" content="mOkOiIA-Z0XcSgcmnQZ4nfwfqDWnm8W4UinaW5fpf8I" />
+        <meta name="google-site-verification" content="A1Xl2v-DDQNdX-rUzQZ2h6p2BTWfU-5Mf0OUZfYO7AU" />
           {/* Google Tag Manager */}
          <script
           dangerouslySetInnerHTML={{

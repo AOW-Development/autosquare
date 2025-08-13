@@ -338,7 +338,7 @@ const filteredProducts = subPartFilter !== null
           <ShopByVehicle />
         </div>
 
-        <div className="lg:hidden mb-8 px-2 md:px-4 lg:px-0">
+        <div className="lg:hidden mb-8 px-2 md:px-4 lg:px-0 mt-6">
           <label htmlFor="specification" className="block text-sm text-gray-300 mb-1 ">
             Select Specification
           </label>

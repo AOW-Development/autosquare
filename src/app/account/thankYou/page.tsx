@@ -120,12 +120,10 @@ export default function ThankYouPage() {
   const total = subtotal + salesTax;
 
   return (
-
-  {/* Thank You Content */}
-  <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
+    <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
 
       {/* Thank You Content */}
-      <div> className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
+      <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
           {/* Logo and Title */}
           <div className="flex flex-col items-center mb-6">
             {/* <Image src="/Images/logo.svg" alt="Brand Logo" width={80} height={80} className="mb-2" priority /> */}
@@ -314,7 +312,7 @@ export default function ThankYouPage() {
           </div>
         </div>
       </main>
-    </div>
+    // </div>
 
 
   );

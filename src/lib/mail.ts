@@ -211,27 +211,27 @@ export const formatOrderData = (
   };
 };
 
-// Test email functionality (for development)
-export const sendTestEmail = async (): Promise<boolean> => {
-  try {
-    const transporter = createTransporter();
+// // Test email functionality (for development)
+// export const sendTestEmail = async (): Promise<boolean> => {
+//   try {
+//     const transporter = createTransporter();
     
-    const mailOptions = {
-      from: `"AutoSquare Test" <${process.env.SMTP_USER}>`,
-      to: process.env.SMTP_USER, // Send to self for testing
-      subject: 'SMTP Configuration Test',
-      html: `
-        <h1>SMTP Test Email</h1>
-        <p>If you receive this email, your SMTP configuration is working correctly.</p>
-        <p>Sent at: ${new Date().toISOString()}</p>
-      `,
-    };
+//     const mailOptions = {
+//       from: `"AutoSquare Test" <${process.env.SMTP_USER}>`,
+//       to: process.env.SMTP_USER, // Send to self for testing
+//       subject: 'SMTP Configuration Test',
+//       html: `
+//         <h1>SMTP Test Email</h1>
+//         <p>If you receive this email, your SMTP configuration is working correctly.</p>
+//         <p>Sent at: ${new Date().toISOString()}</p>
+//       `,
+//     };
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('Test email sent:', result.messageId);
-    return true;
-  } catch (error) {
-    console.error('Error sending test email:', error);
-    return false;
-  }
-};
+//     const result = await transporter.sendMail(mailOptions);
+//     console.log('Test email sent:', result.messageId);
+//     return true;
+//   } catch (error) {
+//     console.error('Error sending test email:', error);
+//     return false;
+//   }
+// };

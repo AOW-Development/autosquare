@@ -27,9 +27,10 @@ export async function POST(request: NextRequest) {
     ]);
 
     return NextResponse.json({ 
-      success: true, 
+      success: true,
       admin: adminResult, 
-      customer: customerResult 
+      customer: customerResult,
+      message: 'Order confirmation email sent successfully'
     });
   } catch (error) {
     console.error('Error sending order emails:', error);

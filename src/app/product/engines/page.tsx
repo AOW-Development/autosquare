@@ -9,6 +9,25 @@ import { redirect, useSearchParams } from "next/navigation"
 import { useCartStore } from "@/store/cartStore"
 import PartRequestPopup from "@/components/partRequestPopup"
 import { useRouter } from "next/navigation";
+import Loading from "@/app/loading"
+
+
+
+// export default function PageLayout({ children }: { children: React.ReactNode }) {
+//   const [isReady, setIsReady] = useState(false);
+
+//   useEffect(() => {
+//     // Simulate async loading if needed, or set ready when mounted
+//     const timer = setTimeout(() => {
+//       setIsReady(true);
+//     }, 500); // small delay to ensure everything mounts
+//     return () => clearTimeout(timer);
+//   }, []);
+
+//   if (!isReady) {
+//     return <Loading />;
+//   }
+
 
 
 interface SubPart {
@@ -62,6 +81,7 @@ interface Product {
 export default function EngineProductPage() {
   const [productInfo, setProductInfo] = useState({ make: "", model: "", year: "", part: "" })
   const [selectedImg, setSelectedImg] = useState(1)
+  const [isLoading,setIsLoading]=useState(false)
   const [products, setProducts] = useState<Product[]>([])
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([])
   const [allVariants, setAllVariants] = useState<any[]>([])
@@ -222,6 +242,7 @@ const accordionData = [
 
   useEffect(() => {
     if (!make || !model || !year || !part) return
+    setIsLoading(true)
     fetch(`${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`)
       .then((res) => res.json())
       .then((data) => {
@@ -271,6 +292,7 @@ const accordionData = [
           setSelectedProduct(defaultVariant)
         }
       })
+      setIsLoading(false)
   }, [make, model, year, part, sku, API_BASE])
 
   useEffect(() => {
@@ -359,7 +381,20 @@ const accordionData = [
       </div>
 
       {/* Main Product Section */}
+      
+      {isLoading?(
       <div className="w-full bg-[#091b33] text-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
+<div className="flex h-screen flex-col justify-center items-center md:flex-row  gap-1 md:gap-8  pt-0 md lg:pt-10">
+
+
+        <h1 className="text-2xl animate-bounce transition-all">Loading...</h1>
+</div>
+
+        </div>
+      </div>):
+      
+      (<div className="w-full bg-[#091b33] text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
           <div className="flex flex-col md:flex-row  gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
             {/* Left: Image */}
@@ -511,7 +546,7 @@ const accordionData = [
             </div>
           </div>
         </div>
-      </div>
+      </div>)}
 
       {/* Tabs Section */}
       <div className="w-full bg-[#091b33] text-white ">

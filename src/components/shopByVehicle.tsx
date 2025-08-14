@@ -10,48 +10,50 @@ import { usePathname } from "next/navigation";
 import { Yaldevi } from "next/font/google";
 import SearchableDropdown from "./Searchable";
 
-const PARTS = [
-  "Engine",
-  "Transmission",
-];
 
-// const SUBCAT = [
-//   "Alternator",
-//   "Blower Motor",
-//   "Coil / Ignitor",
-//   "Engine / Motor Control Module",
-//   "Engine Cooling",
-//   "Engine Misc",
-//   "Engine Parts",
-//   "Exhaust Parts",
-// ];
-
-// const OPTIONS = [
-//   "Air cleaner",
-//   "Oil plan",
-//   "Throttle body assembly",
-//   "Fan Blade",
-//   "Fan Clutch",
-// ];
+const PARTS = ["Engine", "Transmission"];
 
 const ShopByVehicle: React.FC = () => {
-    const router = useRouter();
-    const path=usePathname();
-  // Get localStorage details if available
+  const router = useRouter();
+  const path = usePathname();
+
+  const [make, setMake] = useState("");
+  const [model, setModel] = useState("");
+  const [year, setYear] = useState("");
+  const [part, setPart] = useState("");
+  const [focused, setFocused] = useState<string | null>(null);
+  const [availableYears, setAvailableYears] = useState<number[]>([]);
+  const [boxHeight, setBoxHeight] = useState(0);
+
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+  const boxRef = useRef<HTMLDivElement>(null);
+
+  const makeActive = true;
+  const modelActive = make !== "";
+  const yearActive = make !== "" && model !== "";
+  const partActive = make !== "" && model !== "" && year !== "";
+
+  const arrowUrl = "/Images/home/arrows.png";
+  const arrowStyle = {
+    backgroundImage: `url('${arrowUrl}')`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "right 1rem center",
+    backgroundSize: "20px 20px",
+  };
+
+  // Reset or load saved values based on page
   useEffect(() => {
-    if(path=="/"){
-      setMake("")
-      setModel("")
-      setYear("")
-      setPart("")
-      
-    
-     
-    }else{
+    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/autoParts") {
+      setMake("");
+      setModel("");
+      setYear("");
+      setPart("");
+    } else {
       const stored = localStorage.getItem("shopByVehicle");
       if (stored) {
         try {
-          const { make: storedMake, model: storedModel, year: storedYear, part: storedPart } = JSON.parse(stored);
+          const { make: storedMake, model: storedModel, year: storedYear, part: storedPart } =
+            JSON.parse(stored);
           if (storedMake) setMake(storedMake);
           if (storedModel) setModel(storedModel);
           if (storedYear) setYear(storedYear);
@@ -61,69 +63,35 @@ const ShopByVehicle: React.FC = () => {
         }
       }
     }
-  }, [router]);
-  
-  const [make, setMake] = useState("");
-  const [model, setModel] = useState("");
-  const [year, setYear] = useState("");
-  const [part, setPart] = useState("");
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [focused, setFocused] = useState<string | null>(null);
-  const [availableYears, setAvailableYears] = useState([]);
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL; 
-  const makeActive = true;
-  const modelActive = make !== "";
-  const yearActive = make !== "" && model !== "";
-  const partActive = make !== "" && model !== "" && year !== "";
-  // const subCategoryActive = partActive && part !== "";
-  // const optionActive = subCategoryActive && subCategory !== "";
-  
-  const [boxHeight, setBoxHeight] = useState(0);
-  const boxRef = useRef<HTMLDivElement>(null);
+  }, [path]);
 
-  const arrowUrl = "/Images/home/arrows.png";
-
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const arrowStyle = {
-    backgroundImage: `url('${arrowUrl}')`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 1rem center",
-    backgroundSize: "20px 20px",
-  };
-
+  // Fetch available years when make & model change
   useEffect(() => {
     if (make && model) {
-      fetch(`${API_BASE}/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`)
-        .then(res => res.json())
-        .then(data => setAvailableYears(data.sort((a:number,b:number) => Number(b) - Number(a))))
+      fetch(
+        `${API_BASE}/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`
+      )
+        .then((res) => res.json())
+        .then((data) => setAvailableYears(data.sort((a: number, b: number) => b - a)))
         .catch(() => setAvailableYears([]));
     } else {
       setAvailableYears([]);
     }
-  }, [make, model]);
+  }, [make, model, API_BASE]);
 
-  React.useEffect(() => {
+  // Redirect when all selections are made
+  useEffect(() => {
     if (make && model && year && part) {
       const query = new URLSearchParams({ make, model, year, part }).toString();
-      localStorage.setItem("shopByVehicle", JSON.stringify({
-        make,
-        model,
-        year,
-        part
-      }));
-      // setMake(make)
-      // setModel(model)
-      // setYear(year)
-      // setPart(part)
-      // router.push(`/catalogue/engine/home?${query}`);
-      
-    // Only redirect if NOT already on the catalogue or product page
-    if (path === "/" || path === "/some-landing-search-page") {
-      router.push(`/catalogue/engine/home?${query}`);
+
+      localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
+
+      // Redirect only on pages that should trigger a search
+      if (path === "/" || path === "/engine" || path === "/transmission" || path==="/autoParts") {
+        router.push(`/catalogue/engine/home?${query}`);
+      }
     }
-    // Do NOT redirect if already on /catalogue/engine/home or /product/engines
-    }
-  }, [make, model, year, part]);
+  }, [make, model, year, part, path, router]);
 
 // useEffect(() => {
 //   const spacer = document.getElementById("shop-spacer");
@@ -186,7 +154,7 @@ const ShopByVehicle: React.FC = () => {
             />
 
             <SearchableDropdown
-              options={availableYears}
+              options={availableYears.map(String)}
               value={year}
               onChange={(selectedYear) => {
                 setYear(selectedYear);
@@ -315,7 +283,7 @@ const ShopByVehicle: React.FC = () => {
           {/* Year Dropdown */}
           {yearActive && (
             <SearchableDropdown
-              options={availableYears}
+              options={availableYears.map(String)}
               value={year}
               onChange={(selectedYear) => {
                 setYear(selectedYear);

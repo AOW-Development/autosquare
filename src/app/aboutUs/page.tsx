@@ -7,7 +7,7 @@ import Image from "next/image";
 export default function AboutUsPage() {
   return (
      <div className="mt-0 pt-0">
-        <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[380px] relative">
+        {/* <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[380px] relative">
 
           <Image
             src="/autoparts/banner.png"
@@ -16,7 +16,17 @@ export default function AboutUsPage() {
             priority
             className=" object-center"
           />
-        </div>
+        </div> */}
+         <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative ">
+               <Image
+                  src="/autoparts/banner.png"
+                  alt="Account Banner"
+                  fill
+                  style={{ objectFit: "cover" }}
+                  priority
+                  quality={100} // 1-100, default is 75
+                />
+          </div>
 
       <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-8 p-4 lg:p-8">
         {/* <div className="md:w-1/4">

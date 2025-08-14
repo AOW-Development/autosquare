@@ -3,18 +3,21 @@ import Image from "next/image";
 import FeaturedCategories from "@/components/FeaturedCategories";
 import ShopByVehicle from "@/components/shopByVehicle";
 
+
 export default function EnginePage() {
   return (
     <div className="bg-[#091b33] min-h-screen">
       {/* Banner */}
-      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
-        <Image
-          src="/engine/title_img.png"
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative ">
+       <Image
+          src="/engine/untitled design.png"
           alt="Engine Banner"
           fill
           style={{ objectFit: "cover" }}
           priority
+          quality={100} // 1-100, default is 75
         />
+
       </div>
 
       <ShopByVehicle />

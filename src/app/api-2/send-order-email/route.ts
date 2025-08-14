@@ -6,6 +6,11 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     
+    // Validate required data
+    if (!data.user?.email) {
+      throw new Error('User email is required');
+    }
+
     // Format the data properly
     const orderData = formatOrderData(
       data.user,
@@ -15,10 +20,18 @@ export async function POST(request: NextRequest) {
       data.cartItems
     );
     
-    const adminResult = await sendOrderEmails(orderData);
-    const customerResult = await sendCustomerInvoiceEmail(orderData);
+    // Send both emails
+    const [adminResult, customerResult] = await Promise.all([
+      sendOrderEmails(orderData),
+      sendCustomerInvoiceEmail(orderData)
+    ]);
 
-    return NextResponse.json({ success: true, admin: adminResult, customer: customerResult });
+    return NextResponse.json({ 
+      success: true,
+      admin: adminResult, 
+      customer: customerResult,
+      message: 'Order confirmation email sent successfully'
+    });
   } catch (error) {
     console.error('Error sending order emails:', error);
     return NextResponse.json(

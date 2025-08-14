@@ -1,3 +1,21 @@
+// import { useEffect, useState } from "react";
+// import Loading from "./Loading"; // your spinner component
+
+// export default function PageLayout({ children }: { children: React.ReactNode }) {
+//   const [isReady, setIsReady] = useState(false);
+
+//   useEffect(() => {
+//     // Simulate async loading if needed, or set ready when mounted
+//     const timer = setTimeout(() => {
+//       setIsReady(true);
+//     }, 500); // small delay to ensure everything mounts
+//     return () => clearTimeout(timer);
+//   }, []);
+
+//   if (!isReady) {
+//     return <Loading />;
+//   }
+
 export default function Loading() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[60vh] bg-[#091b33] w-full">

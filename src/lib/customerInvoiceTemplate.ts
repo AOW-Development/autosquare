@@ -37,7 +37,7 @@ export const generateCustomerInvoiceHTML = (data: OrderEmailData): string => {
           <p style="text-align:center; margin: 8px 0 0 0; font-size: 16px;">Order Confirmation</p>
         </div>
         <div style="padding: 24px;">
-          <h2 style="color: #091B33; margin: 0 0 16px 0;font-size: 25px;">Hello ${user?.firstName||"Customer"},</h2>
+          <h2 style="color: #091B33; margin: 0 0 16px 0;font-size: 25px;">Hello, ${user.name}</h2>
           <p style="color: #6b7280; margin: 0 0 24px 0;font-size: 16px;">Thank you for your order! Your order #${orderNumber} was placed on ${orderDate}.</p>
 
           <h3 style="margin: 24px 0 8px 0;font-size: 25px; color: #091B33;">Order Details</h3>

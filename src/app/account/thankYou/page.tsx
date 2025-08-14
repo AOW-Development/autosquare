@@ -120,6 +120,20 @@ export default function ThankYouPage() {
   const total = subtotal + salesTax;
 
   return (
+      <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
+      {/* Background Car Image */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[700px] h-[624px] relative">
+          <Image
+            src="/Images/thx_car.png"
+            alt="Car background"
+            fill
+            className="object-contain object-center"
+            priority
+          />
+        </div>
+      </div>
+
     <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
 
       {/* Thank You Content */}

@@ -1,0 +1,17 @@
+send to admin
+send to cx 
+
+same address === working but 3 address for admin as well as customer
+diff address ===
+
+
+Shipping addres in cx mail is "billing addr" . when shipping !== billing . billing address is overriding Shipping address in both mails , in thankYou page addres'es are inverse , also check db adders commit tx probabily there is issue also 
+even in thankYou page address are shown cross 
+
+When search from pages : engine / transmission / product redirect to catalogue page / show product cards .
+
+Bug fix : 2002 buick century trans showing 2 prod without miles why ?? miles type issue in excel 800000 vs 180K ??? make script type agnostic
+
+fix hydration err google vefication in layout causing it 
+
+cx name is not being sent in mails + db saving transaction  fix it 

@@ -15,3 +15,5 @@ Bug fix : 2002 buick century trans showing 2 prod without miles why ?? miles typ
 fix hydration err google vefication in layout causing it 
 
 cx name is not being sent in mails + db saving transaction  fix it 
+
+bug in saving order twice in db 

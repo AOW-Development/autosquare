@@ -111,8 +111,8 @@ useEffect(() => {
 
   return (
    
-      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22 overflow-hidden">
-        <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
+        <div className=" mx-auto md:mx-6 lg:mx-40 px-4 md:px-6 lg:px-1">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
             <Link
@@ -139,7 +139,7 @@ useEffect(() => {
 
           {/* Title */}
           <h1
-            className="font-audiowide text-3xl lg:text-4xl mb-4 text-left"
+            className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-4 text-left"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
@@ -196,9 +196,9 @@ useEffect(() => {
             <div className="flex-1 h-0.5 bg-white mb-4"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Left Column: Recipient Details Form */}
-            <div className="col-span-3 lg:col-span-2 ">
+            <div className="col-span-3 md:col-span-3 lg:col-span-2 ">
               {/* Login Link */}
               <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6">
                 <Link
@@ -240,7 +240,7 @@ useEffect(() => {
 
               <form className="space-y-6">
                 {/* Name Fields */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-exo2 mb-2">First Name *</label>
                     <input
@@ -340,7 +340,7 @@ useEffect(() => {
                 </select>
                 </div>
 
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-4">
                   {/* Address */}
                   <div>
                     <label className="block font-exo2 mb-2">
@@ -375,7 +375,7 @@ useEffect(() => {
                   </div>
                 </div>
                 {/* City, State, ZIP */}
-                <div className="grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div>
                     <label className="block font-exo2 mb-2">City *</label>
                     <input
@@ -389,7 +389,7 @@ useEffect(() => {
                       required
                     />
                   </div>
-                   <div className="md:col-span-2">
+                   <div className="lg:col-span-2">
                  <label className="block text-xs mb-4">State*</label>
                   <select
                     className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
@@ -443,7 +443,7 @@ useEffect(() => {
 
             {/* Right Column: Products & Order Summary */}
             <div className=" col-span-3 lg:col-span-1 ">
-              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-5 md:p-4 ">
+              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-2 md:p-4 ">
                 {/* Card Header */}
                 <div className="flex justify-between items-center ">
                   <h3 className="text-base font-semibold font-exo2">
@@ -495,7 +495,7 @@ useEffect(() => {
                 </div>
                   {/* Total number of products */}
                     <div className="flex justify-between items-center pb-0">
-                    <span className="font-exo2 text-sm md:text-lg text-gray-300">
+                    <span className="font-exo2 text-sm md:text-sm lg:text-lg text-gray-300">
                       Total products:
                     </span>
                     <span className="font-exo2 text-sm text-white">
@@ -580,7 +580,7 @@ useEffect(() => {
                 {isFormValid() ? (
                   <Link href="/account/payMethod">
                     <button
-                      className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
+                      className="w-full px-6 py-1 md:py-4  rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
                       onClick={handleContinue} // <-- Save billing info before navigating
                     >
                       Continue to payment

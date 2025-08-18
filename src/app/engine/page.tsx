@@ -8,9 +8,9 @@ export default function EnginePage() {
   return (
     <div className="bg-[#091b33] min-h-screen">
       {/* Banner */}
-      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative ">
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[280px] lg:h-[320px] relative ">
        <Image
-          src="/engine/untitled design.png"
+          src="/engine/title_img.png"
           alt="Engine Banner"
           fill
           style={{ objectFit: "cover" }}
@@ -23,10 +23,10 @@ export default function EnginePage() {
       <ShopByVehicle />
 
       {/* Engine Types Section */}
-     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-10 sm:py-8 md:pt-18">
+     <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-10 sm:py-8 md:pt-8 lg:pt-18">
 
         {/* Breadcrumb */}
-    <div className="flex flex-wrap items-center px-2 sm:px-4 md:px-8 lg:px-3 xl:px-3 2xl:px-3 gap-2 md:py-6 bg-[#091b33] text-[#0F1E35] text-sm sm:text-[15px] font-medium">
+      <div className="flex flex-wrap items-center px-2 sm:px-4 md:px-8 lg:px-3 xl:px-3 2xl:px-3 gap-2 md:py-6 bg-[#091b33] text-[#0F1E35] text-sm sm:text-[15px] font-medium">
       <a href="/">
         <Image src="/engine/HouseLine.png" alt="Home" width={20} height={20} />
       </a>
@@ -50,7 +50,7 @@ export default function EnginePage() {
 
 
         {/* Engine Type Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-4 sm:px-4 md:px-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 px-4 sm:px-4 md:px-4 lg:px-6">
           {[
             {
               title: "GASOLINE",
@@ -95,7 +95,7 @@ export default function EnginePage() {
               </div>
 
               <div className="w-full flex justify-left">
-                <button className="w-34 h-8 md:h-10 sm:w-40 mb-4  bg-[#00A3FF] text-white text-xs sm:text-sm font-semibold rounded-md py-1.5 hover:bg-[#0086cc] transition duration-200">
+                <button className="w-34 h-8 md:h-8 lg:h-10 sm:w-40 mb-4  bg-[#00A3FF] text-white text-xs sm:text-sm font-semibold rounded-md py-1.5 hover:bg-[#0086cc] transition duration-200">
                   View
                 </button>
               </div>

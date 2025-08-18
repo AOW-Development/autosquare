@@ -93,6 +93,8 @@ const ShopByVehicle: React.FC = () => {
     }
   }, [make, model, year, part, path, router]);
 
+
+    const [isOpen, setIsOpen] = useState(false);
 // useEffect(() => {
 //   const spacer = document.getElementById("shop-spacer");
 //   if (spacer && boxRef.current) {
@@ -231,86 +233,96 @@ const ShopByVehicle: React.FC = () => {
       </div>
 
       {/* Mobile Layout */}
-  {/* Mobile Layout */}
-  <div className="bg-[#091B33] w-full lg:hidden" style={{ position: "relative" }}>
-   
-       <div
-          ref={boxRef}
-          className="relative left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[95%]  
-                     -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
-                     rounded-md shadow-lg px-3 py-2 sm:px-4 sm:py-4 
-                     flex flex-col gap-2 sm:gap-3 justify-center"
-          style={{ background: "#00A3FF80" }}
-        >
+  
+<div className="bg-[#091B33] w-full lg:hidden relative">
+  <div
+    ref={boxRef}
+    className="absolute left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[95%]  
+               -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
+               rounded-md shadow-lg px-3 py-4 sm:px-4 sm:py-4 
+               flex flex-col gap-2 sm:gap-3 justify-center"
+    style={{ background: "#00A3FF80" }}
+  >
+    <div
+      className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] md:text-[20px] 
+                 tracking-wider mb-3 sm:mb-4 uppercase text-white"
+      id="shop-by-vehicle-title-mobile"
+    >
+      SHOP BY VEHICLE
+    </div>
 
-        <div
-          className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px]  md:text-[20px] tracking-wider mb-3 sm:mb-4 uppercase text-white"
-          id="shop-by-vehicle-title-mobile"
-        >
-          SHOP BY VEHICLE
-        </div>
+    <div className="flex flex-col gap-2 sm:gap-3">
+      {/* ✅ Make Dropdown always visible */}
+      <SearchableDropdown
+        options={MAKES}
+        value={make}
+        onChange={(selectedMake) => {
+          setMake(selectedMake);
+          setModel("");
+          setYear("");
+          setPart("");
+        }}
+        placeholder="Select make..."
+        disabled={!makeActive}
+      />
 
-        <div className="flex flex-col gap-2 sm:gap-3  ">
-          {/* Make Dropdown */}
-          <SearchableDropdown
-            options={MAKES}
-            value={make}
-            onChange={(selectedMake) => {
-              setMake(selectedMake);
-              setModel("");
-              setYear("");
-              setPart("");
-            }}
-            placeholder="Select make..."
-            disabled={!makeActive}
-          />
+      {/* ✅ Model shows only if make selected */}
+      {modelActive && (
+        <SearchableDropdown
+          options={make ? MODELS[make] || [] : []}
+          value={model}
+          onChange={(selectedModel) => {
+            setModel(selectedModel);
+            setYear("");
+            setPart("");
+          }}
+          placeholder="Select model..."
+          disabled={!modelActive}
+        />
+      )}
 
-          {/* Model Dropdown */}
-          {modelActive && (
-            <SearchableDropdown
-              options={make ? MODELS[make] || [] : []}
-              value={model}
-              onChange={(selectedModel) => {
-                setModel(selectedModel);
-                setYear("");
-                setPart("");
-              }}
-              placeholder="Select model..."
-              disabled={!modelActive}
-            />
-          )}
+      {/* ✅ Year shows only if make + model selected */}
+      {yearActive && (
+        <SearchableDropdown
+          options={availableYears.map(String)}
+          value={year}
+          onChange={(selectedYear) => {
+            setYear(selectedYear);
+            setPart("");
+          }}
+          placeholder="Select year..."
+          disabled={!yearActive}
+        />
+      )}
 
-          {/* Year Dropdown */}
-          {yearActive && (
-            <SearchableDropdown
-              options={availableYears.map(String)}
-              value={year}
-              onChange={(selectedYear) => {
-                setYear(selectedYear);
-                setPart("");
-              }}
-              placeholder="Select year..."
-              disabled={!yearActive}
-            />
-          )}
-
-          {/* Part Dropdown */}
-          {partActive && (
-            <SearchableDropdown
-              options={PARTS}
-              value={part}
-              onChange={(selectedPart) => {
-                setPart(selectedPart);
-              }}
-              placeholder="Select part..."
-              disabled={!partActive}
-            />
-          )}
-        </div>
-      </div>
-   
+      {/* ✅ Part shows only if make + model + year selected */}
+      {partActive && (
+        <SearchableDropdown
+          options={PARTS}
+          value={part}
+          onChange={(selectedPart) => {
+            setPart(selectedPart);
+          }}
+          placeholder="Select part..."
+          disabled={!partActive}
+        />
+      )}
+    </div>
   </div>
 
+  {/* ✅ Spacer adjusts based on how many dropdowns are visible */}
+  <div
+    id="shop-spacer"
+    className="transition-all duration-300"
+    style={{
+      height:
+        partActive ? 250 : // all 4 visible
+        yearActive ? 180 : // 3 visible
+        modelActive ? 160 : // 2 visible
+        80            // only make visible
+    }}
+  />
+</div>
       
 
       {/* Screen reader only styling */}

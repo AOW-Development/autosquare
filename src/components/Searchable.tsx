@@ -6,6 +6,7 @@ interface SearchableDropdownProps {
   onChange: (selected: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  onOpenChange?: (isOpen: boolean) => void; // ✅ already here
 }
 
 const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
@@ -14,6 +15,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   onChange,
   placeholder = "Select...",
   disabled = false,
+  onOpenChange, // ✅ pull this out
 }) => {
   const [search, setSearch] = useState<string>("");
   const [showOptions, setShowOptions] = useState<boolean>(false);
@@ -27,12 +29,13 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
       ) {
         setShowOptions(false);
         setSearch(""); // Clear search when clicking outside
+        if (onOpenChange) onOpenChange(false); // ✅ notify parent closed
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  }, [onOpenChange]);
 
   // Clear search when value changes externally (e.g., when resetting form)
   useEffect(() => {
@@ -46,10 +49,11 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
   );
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const input = e.target.value
+    const input = e.target.value;
     setSearch(input);
     setShowOptions(true);
-    if(input === ""){
+    if (onOpenChange) onOpenChange(true); // ✅ notify parent opened
+    if (input === "") {
       onChange("");
     }
   };
@@ -58,10 +62,12 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
     onChange(opt);
     setSearch("");
     setShowOptions(false);
+    if (onOpenChange) onOpenChange(false); // ✅ notify parent closed
   };
 
   const handleInputFocus = () => {
     setShowOptions(true);
+    if (onOpenChange) onOpenChange(true); // ✅ notify parent opened
     // If there's a value, show it in the search field for editing
     if (value && !search) {
       setSearch(value);
@@ -85,7 +91,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
             : "bg-white border-gray-200 text-gray-900 opacity-100 cursor-text"
         }`}
       />
-      
+
       {showOptions && !disabled && filteredOptions.length > 0 && (
         <ul className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded-md border border-gray-200 bg-white text-sm shadow-lg">
           {filteredOptions.map((opt) => (
@@ -93,7 +99,9 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
               key={opt}
               onClick={() => handleOptionSelect(opt)}
               className={`cursor-pointer px-4 py-2 hover:bg-blue-100 hover:text-blue-900 ${
-                opt === value ? 'bg-blue-50 text-blue-900 font-medium' : 'text-black'
+                opt === value
+                  ? "bg-blue-50 text-blue-900 font-medium"
+                  : "text-black"
               }`}
             >
               {opt}
@@ -101,7 +109,7 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
           ))}
         </ul>
       )}
-      
+
       {showOptions && !disabled && search && filteredOptions.length === 0 && (
         <ul className="absolute z-50 mt-1 w-full rounded-md border border-gray-200 bg-white text-sm shadow-lg">
           <li className="px-4 py-2 text-gray-500">No matches found</li>

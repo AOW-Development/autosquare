@@ -237,7 +237,7 @@ const ShopByVehicle: React.FC = () => {
 <div className="bg-[#091B33] w-full lg:hidden relative">
   <div
     ref={boxRef}
-    className="absolute left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[95%]  
+    className="absolute left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[93%]  
                -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
                rounded-md shadow-lg px-3 py-4 sm:px-4 sm:py-4 
                flex flex-col gap-2 sm:gap-3 justify-center"
@@ -311,19 +311,19 @@ const ShopByVehicle: React.FC = () => {
   </div>
 
   {/* ✅ Spacer adjusts based on how many dropdowns are visible */}
-  <div
-    id="shop-spacer"
-    className="transition-all duration-300"
-    style={{
-      height:
-        partActive ? 250 : // all 4 visible
-        yearActive ? 180 : // 3 visible
-        modelActive ? 160 : // 2 visible
-        80            // only make visible
-    }}
-  />
-</div>
-      
+    <div
+      id="shop-spacer"
+      className="transition-all duration-300"
+      style={{
+        height:
+          partActive ? 220 : // all 4 visible
+          yearActive ? 180 : // 3 visible
+          modelActive ? 160 : // 2 visible
+          80            // only make visible
+      }}
+    />
+  </div>
+        
 
       {/* Screen reader only styling */}
       <style>{`

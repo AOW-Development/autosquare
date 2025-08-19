@@ -59,7 +59,7 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-8 pb-22">
-      <div className="mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="mx-auto md:mx-10 lg:mx-40 px-4 md:px-6 lg:px-1">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
           <Link
@@ -74,7 +74,7 @@ export default function Cart() {
 
         {/* Title */}
         <h1
-          className="font-audiowide text-3xl lg:text-4xl mb-2 text-left"
+          className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-2 text-left"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",

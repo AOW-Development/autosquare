@@ -483,7 +483,7 @@ useEffect(() => {
                     {cartItems.map((item) => (
                     <div key={item.id} className="flex space-x-3 pb-4 ">
                       <Image
-                      src={item.image}
+                      src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
                       alt={item.title}
                       width={56}
                       height={56}

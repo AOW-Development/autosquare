@@ -484,8 +484,10 @@ const filteredProducts = subPartFilter !== null
                           height: "160px",
                         }}
                       >
-                        <Image
-                          src="/catalog/card.png"
+                        {part=="Engine"&&(
+                          <>
+                          <Image
+                          src="/catalog/Engine 1.png"
                           alt="Engine"
                           width={250}
                           height={160}
@@ -494,7 +496,20 @@ const filteredProducts = subPartFilter !== null
                         />
                         <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
                           Stock image
-                        </p>
+                        </p></>)}
+                        {part=="Transmission"&&(
+                          <>
+                          <Image
+                          src="/catalog/Trasmission_.png"
+                          alt="Engine"
+                          width={250}
+                          height={160}
+                          className="relative z-10 rounded-md object-contain"
+                          priority
+                        />
+                        <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                          Stock image
+                        </p></>)}
                       </div>
                       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
                       <div className="relative z-20 pt-2">
@@ -610,7 +625,8 @@ const filteredProducts = subPartFilter !== null
                   title={`${make} ${model} ${year} ${part || 'Engine assembly'}`}
                   subtitle={currentItems[inCartIdx].sku}
                   price={currentItems[inCartIdx].actualprice || 0}
-                  image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/Images/default-engine.png'}
+                  // image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/catalog/Trasmission_.png'}
+                  image={part==="Engine"? "/catalog/Engine 1.png":"/catalog/Trasmission_.png"}
                 />
               )}
             </div>

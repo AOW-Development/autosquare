@@ -25,6 +25,7 @@ export default function Cart() {
   const router = useRouter();
   const [error, setError] = useState("");
   const cartItems = useCartStore((s) => s.items);
+  console.log(cartItems);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const isCartEmpty = cartItems.length === 0;
@@ -142,7 +143,7 @@ export default function Cart() {
             <div className="hidden lg:grid grid-cols-11 gap-4 items-center">
               <div className="col-span-6 flex items-center space-x-4">
                 <Image
-                  src={item.image}
+                  src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
                   alt={item.title}
                   width={64}
                   height={64}
@@ -207,7 +208,7 @@ export default function Cart() {
                 <div className="lg:hidden">
                   <div className="flex items-start space-x-4">
                     <Image
-                      src={item.image}
+                      src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
                       alt={item.title}
                       width={64}
                       height={64}

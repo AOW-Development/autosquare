@@ -24,7 +24,7 @@ import toast from "react-hot-toast";
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
-  const { billingInfo } = useBillingStore();
+  const { billingInfo,setBillingInfo } = useBillingStore();
   // INTENTIONAL: We need shippingInfo here for order submission
   const { shippingInfo, setShippingInfo } = useShippingStore();
   const { user } = useAuthStore();
@@ -50,14 +50,24 @@ export default function PayMethod() {
     }
   );
 useEffect(() => {
-  setShippingInfo(billingFormData)
-}, [billingFormData, setShippingInfo])
+  console.log(shippingInfo);
+  
+  setShippingInfo(shippingInfo)
+}, [shippingInfo, setShippingInfo,sameAsShipping])
 
   useEffect(() => {
     if (sameAsShipping && billingInfo) {
       setBillingFormData({
-        ...billingInfo,
-        apartment: billingInfo.apartment ?? "",
+        firstName: shippingInfo?.firstName || "",
+        lastName: shippingInfo?.lastName || "",
+        phone: shippingInfo?.phone || "",
+        company: shippingInfo?.company || "",
+        country: shippingInfo?.country || "",
+        address: shippingInfo?.address || "",
+        apartment: shippingInfo?.apartment || "",
+        city: shippingInfo?.city || "",
+        state: shippingInfo?.state || "",
+        zipCode: shippingInfo?.zipCode || "",
       });
     } else if (!sameAsShipping) {
        console.log(billingFormData)
@@ -77,7 +87,7 @@ useEffect(() => {
       });
      
     }
-  }, [sameAsShipping, billingInfo]);
+  }, [sameAsShipping, shippingInfo]);
 
 
   const [cardData, setCardData] = useState({
@@ -325,7 +335,7 @@ const isFormValid = () => {
         user,
         payment,
         shipping: shippingInfo, // always from shipping store
-        billing: sameAsShipping ? shippingInfo : billingFormData, // correct billing info sent
+        billing: sameAsShipping ? shippingInfo: billingInfo, // correct billing info sent
         cartItems: cartItems.length ? cartItems : (cartItems as any)
       };
 
@@ -470,7 +480,8 @@ const handleSave1 = (e: React.FormEvent) => {
     return;
   }
 
-  setShippingInfo(billingFormData);
+  setShippingInfo(shippingInfo);
+  setBillingInfo(billingFormData);
   toast.success("Billing details saved successfully!");
 };
 
@@ -894,7 +905,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="text"
                 placeholder="Name"
-                value={billingFormData.firstName}
+                value={sameAsShipping? shippingInfo.firstName: billingFormData.firstName}
                 onChange={(e) =>
                   handleBillingInputChange("firstName", e.target.value)
                 }
@@ -913,7 +924,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="text"
                 placeholder="Name"
-                value={billingFormData.lastName}
+                value={sameAsShipping? shippingInfo.lastName:billingFormData.lastName}
                 onChange={(e) =>
                   handleBillingInputChange("lastName", e.target.value)
                 }
@@ -950,7 +961,7 @@ const handleSave1 = (e: React.FormEvent) => {
                 <input
                   className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
                             rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  value={billingFormData.company}
+                  value={sameAsShipping? shippingInfo.country:billingFormData.company}
                   onChange={(e) => handleChange("company", e.target.value)}
                   placeholder="Company name"
                 />
@@ -963,7 +974,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <select
                 className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white 
                           border border-white/10 focus:outline-none"
-                value={billingFormData.country}
+                value={sameAsShipping? shippingInfo.country:billingFormData.country}
                 onChange={(e) => handleChange("country", e.target.value)}
                 required
               >
@@ -979,7 +990,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="tel"
                 placeholder="(555) 123-4567"
-                value={billingFormData.phone}
+                value={sameAsShipping? shippingInfo.phone:billingFormData.phone}
                 onChange={(e) =>
                   handleBillingInputChange("phone", e.target.value)
                 }
@@ -1000,7 +1011,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="text"
                 placeholder="Address"
-                value={billingFormData.address}
+                value={sameAsShipping? shippingInfo.address:billingFormData.address}
                 onChange={(e) =>
                   handleBillingInputChange("address", e.target.value)
                 }
@@ -1016,7 +1027,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="text"
                 placeholder="Apartment, etc."
-                value={billingFormData.apartment}
+                value={sameAsShipping? shippingInfo.apartment:billingFormData.apartment}
                 onChange={(e) =>
                   handleBillingInputChange("apartment", e.target.value)
                 }
@@ -1031,7 +1042,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="text"
                 placeholder="City"
-                value={billingFormData.city}
+                value={sameAsShipping? shippingInfo.city:billingFormData.city}
                 onChange={(e) =>
                   handleBillingInputChange("city", e.target.value)
                 }
@@ -1050,7 +1061,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <select
                 className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
                           rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                value={billingFormData.state}
+                value={sameAsShipping? shippingInfo.state:billingFormData.state}
                 onChange={(e) => handleChange("state", e.target.value)}
                 disabled={!states.length}
                 required
@@ -1070,7 +1081,7 @@ const handleSave1 = (e: React.FormEvent) => {
               <input
                 type="text"
                 placeholder="ZIP Code"
-                value={billingFormData.zipCode}
+                value={sameAsShipping? shippingInfo.zipCode:billingFormData.zipCode}
                 onChange={(e) =>
                 handleBillingInputChange("zipCode", e.target.value)
                 }

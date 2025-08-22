@@ -62,9 +62,9 @@ export const generateCustomerInvoiceHTML = (data: OrderEmailData): string => {
 
           <h3 style="margin: 32px 0 8px 0; color: #091B33; font-size: 18px;">Billing Address</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px; font-size: 14px;">
-            <tr><td style="padding: 6px; color: #6b7280;">${shipping.firstName} ${shipping.lastName}</td></tr>
-            <tr><td style="padding: 6px; color: #6b7280;">${shipping.address}${shipping.apartment ? ', ' + shipping.apartment : ''}</td></tr>
-            <tr><td style="padding: 6px; color: #6b7280;">${shipping.city}, ${shipping.state} ${shipping.zipCode}, ${shipping.country}</td></tr>
+            <tr><td style="padding: 6px; color: #6b7280;">${billing.firstName} ${billing.lastName}</td></tr>
+            <tr><td style="padding: 6px; color: #6b7280;">${billing.address}${billing.apartment ? ', ' + billing.apartment : ''}</td></tr>
+            <tr><td style="padding: 6px; color: #6b7280;">${billing.city}, ${billing.state} ${billing.zipCode}, ${billing.country}</td></tr>
           </table>
 
           <h3 style="margin: 24px 0 8px 0; color: #091B33; font-size: 18px;">Payment Info</h3>

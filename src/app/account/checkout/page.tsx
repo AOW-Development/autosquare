@@ -7,13 +7,15 @@ import Link from "next/link";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore, CartItem } from "@/store/cartStore";
 import { State } from "country-state-city"; 
+import { useShippingStore } from "@/store/shippingStore";
 
 export default function Checkout() {
   const { billingInfo, setBillingInfo } = useBillingStore();
+  const { shippingInfo,setShippingInfo } = useShippingStore();
   const { items } = useCartStore();
 
   const [formData, setFormData] = useState(
-    billingInfo || {
+    shippingInfo || {
       firstName: "",
       lastName: "",
       // email: "",
@@ -32,13 +34,13 @@ export default function Checkout() {
 
   // Sync billingInfo to formData if it changes
   useEffect(() => {
-    if (billingInfo) {
+    if (shippingInfo) {
       setFormData((prev) => ({
         ...prev,
-        ...billingInfo,
+        ...shippingInfo,
       }));
     }
-  }, [billingInfo]);
+  }, [shippingInfo]);
 
 const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
@@ -90,7 +92,8 @@ const handleInputChange = (field: string, value: string) => {
 
   // Save billing info to store when continuing to payment
   const handleContinue = () => {
-    setBillingInfo(formData);
+    console.log("Form Data:", formData);
+    setShippingInfo(formData);
   };
 
 

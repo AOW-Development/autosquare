@@ -24,9 +24,13 @@ export default function ThankYouPage() {
     lastFour?: string;
   }>({ method: "card" });
   const [cardType, setCardType] = useState("unknown");
-  const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+  const isSameAddress =
+    JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+  const { setShippingInfo } = useShippingStore();
+  const { setBillingInfo } = useBillingStore();
+  
   const { user } = useAuthStore();
-  console.log(isSameAddress, shippingInfo?.address)
+  console.log(isSameAddress, shippingInfo, billingInfo);
 
   // Card image mapping (top-level so it’s accessible)
   const cardImageMap: Record<string, string> = {
@@ -161,11 +165,12 @@ export default function ThankYouPage() {
                 Deliver To
               </div>
               <div className="text-white text-sm mt-1 leading-tight">
-                {billingInfo && Object.keys(billingInfo).length > 0 ? (
+             
                   <>
                     {/* Billing Info */}
+                    {isSameAddress && billingInfo && Object.keys(billingInfo).length > 0 && (
                     <div>
-                      <strong>Shipping Information</strong>
+                      <strong>Billing Information</strong>
                       <br />
                       {billingInfo.firstName} {billingInfo.lastName}
                       <br />
@@ -187,11 +192,12 @@ export default function ThankYouPage() {
                       <br />
                       {billingInfo.phone}
                     </div>
-
-                    {/* Shipping Info — Only show if addresses are different */}
-                    {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+                    )}
+                    
+                     {/* Shipping Info — Only show if addresses are different */}
+                    {!isSameAddress && billingInfo && Object.keys(billingInfo).length > 0 && (
                       <div className="mt-3">
-                        <strong>Billing Information</strong>
+                        <strong>Shipping Information</strong>
                         <br />
                         {shippingInfo.firstName} {shippingInfo.lastName}
                         <br />
@@ -212,17 +218,11 @@ export default function ThankYouPage() {
                         {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
                         <br />
                         {shippingInfo.phone}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    No billing information available
-                    <br />
-                    Please contact support
-                  </>
-                )}
+                      </div>)}
+                    </>
+              
               </div>
+  
             </div>
             <div className="flex flex-col items-start md:items-center">
               <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
@@ -326,7 +326,7 @@ export default function ThankYouPage() {
           </div>
         </div>
       </main>
-    // </div>
+   </div>
 
 
   );

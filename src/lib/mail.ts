@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer';
 import { PaymentInfo } from '@/store/paymentStore';
 import { CartItem } from '@/store/cartStore';
-import { ShippingInfo } from '@/store/shippingStore';
+// import { ShippingInfo } from '@/store/shippingStore';
+// import { BillingInfo } from '@/store/shippingStore';
 
 // Types for email data
 export interface UserInfo {
@@ -13,6 +14,17 @@ export interface UserInfo {
 }
 
 export interface BillingInfo {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  country: string;
+  address: string;
+  apartment: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+export interface ShippingInfo {
   firstName: string;
   lastName: string;
   phone: string;
@@ -115,14 +127,14 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
             <tr><td style="padding: 6px; color: #6b7280;">Phone:</td><td style="padding: 6px; color: #1f2937;">${billing.phone}</td></tr>
           </table>
 
-          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Shipping Address</h3>
+          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Billing Address</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
             <tr><td style="padding: 6px; color: #6b7280;">${billing.firstName} ${billing.lastName}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">${billing.address}${billing.apartment ? ', ' + billing.apartment : ''}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">${billing.city}, ${billing.state} ${billing.zipCode}, ${billing.country}</td></tr>
           </table>
 
-          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Billing Address</h3>
+          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Shipping Address</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
             <tr><td style="padding: 6px; color: #6b7280;">${shipping.firstName} ${shipping.lastName}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">${shipping.address}${shipping.apartment ? ', ' + shipping.apartment : ''}</td></tr>

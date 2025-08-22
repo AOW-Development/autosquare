@@ -611,7 +611,7 @@ const accordionData = [
                     </a>
                   {/* Call Button */}
                   <a
-                     href="tel:+918867303611" 
+                     href="tel:+18883382540" 
                         className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base text-center"
                       >
                         CALL NOW

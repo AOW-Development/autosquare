@@ -16,8 +16,8 @@ const featuredBlogs = [
 
 export default function BlogDetailPage() {
   return (
-    <div className="min-h-screen bg-[#091b33] text-white flex flex-col  md:px-6 py-8 pb-16">
-      <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-row gap-8 px-10">
+    <div className="min-h-screen bg-[#091b33] text-white flex flex-col px-0 md:px-2 lg:px-6 py-8 pb-16">
+      <div className="max-w-7xl mx-auto w-full flex flex-col md:flex-col lg:flex-row gap-8 px-6">
         {/* Main Content */}
         <div className="flex-1 max-w-3xl">
         <div className="flex items-center gap-2 text-base text-white mb-6">
@@ -27,7 +27,7 @@ export default function BlogDetailPage() {
             <span> Registration</span>
           </div>
           {/* <a href="#" className="text-xs text-white/60 mb-4 inline-block">&lt; Registration</a> */}
-          <h1 className="text-2xl md:text-[32px]  mb-4 leading-tight uppercase " style={{
+          <h1 className= " text-2xl md:text-2xl lg:text-[32px] mb-4 leading-tight uppercase " style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
             }}>ELEVATE YOUR RIDE: A GUIDE TO ONLINE AUTO PARTS SHOPPING</h1>
@@ -47,8 +47,8 @@ export default function BlogDetailPage() {
           <p className="mb-4 text-white/90">At AutoSquare we take pride in offering a diverse selection of top-quality auto parts and accessories. Whether you're looking for essential components like brake pads, filters, or spark plugs, or you want to enhance your vehicle's aesthetics with stylish accessories, we've got you covered. Our products are sourced from reputable manufacturers to ensure durability, reliability, and optimal performance.</p>
         </div>
         {/* Sidebar */}
-        <aside className="w-full md:w-96 flex-shrink-0 flex flex-col gap-4">
-        <h3 className="mt-12 text-[24px] mb-2 uppercase tracking-wide" style={{
+        <aside className="w-full md:w-full lg:w-96 flex-shrink-0 flex flex-col gap-4">
+        <h3 className="mt-12 w-full text-[24px] mb-2 uppercase tracking-wide" style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
             }}>Featured Blogs</h3>
@@ -58,7 +58,7 @@ export default function BlogDetailPage() {
               {featuredBlogs.map((blog, i) => (
                 <div key={i} className="bg-[#091b33] rounded-xl p-4 flex flex-col">
                   <h4 className="font-semibold text-base mb-1 text-white line-clamp-2 ">{blog.title}</h4>
-                  <p className="text-xs text-white/70 line-clamp-2 mb-2">{blog.excerpt}</p>
+                  <p className="md:text-lg lg:text-sm text-white/70 line-clamp-2 mb-2">{blog.excerpt}</p>
                   <a href={blog.link} className="text-blue-400 text-right underline hover:underline text-xs font-medium mt-auto">Read more</a>
                 </div>
               ))}

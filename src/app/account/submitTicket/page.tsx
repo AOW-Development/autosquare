@@ -17,7 +17,7 @@ export default function SubmitTicketPage() {
       <div className="min-h-screen bg-[#0B1422] ">
         {/* Breadcrumb */}
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 ">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-8 py-10 ">
           <div className="flex items-center gap-2  py-4 mt-1 text-[15px] font-medium">
             <Link
               href="/"
@@ -40,12 +40,12 @@ export default function SubmitTicketPage() {
           </div>
 
           {/* Main content grid */}
-          <div className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-8 bg-transparent container">
+          <div className="w-full max-w-6xl grid md:grid-cols-1 lg:grid-cols-2 gap-8 bg-transparent container">
             {/* Info Column */}
             <div className="flex flex-col gap-6 justify-center">
               {/* <div className="uppercase text-xs text-gray-300 font-semibold tracking-wider">Have a question?</div> */}
               <h1
-                className="font-audiowide text-white text-wrap text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
+                className="font-audiowide text-white text-wrap text-xl md:text-3xl lg:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 lg:tracking-wide uppercase text-left w-full"
                 style={{
                   fontFamily: "Audiowide, sans-serif",
                   letterSpacing: "0.1em",
@@ -128,11 +128,11 @@ export default function SubmitTicketPage() {
             {/* Form Column */}
             <div className="bg-gray-900 rounded-lg shadow-sm p-6 flex flex-col justify-center">
               <form
-                className="w-full grid grid-cols-1 md:grid-cols-2 gap-4"
+                className="w-full grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4"
                 onSubmit={handleSubmit}
               >
                 {/* Full Name */}
-                <div className="flex flex-col col-span-1">
+                <div className="flex flex-col col-span-1 md:grid-cols-2">
                   <label
                     htmlFor="name"
                     className="text-white text-sm font-medium mb-1"
@@ -148,7 +148,7 @@ export default function SubmitTicketPage() {
                   />
                 </div>
                 {/* Order ID */}
-                <div className="flex flex-col col-span-1">
+                <div className="flex flex-col col-span-1 md:grid-cols-2">
                   <label
                     htmlFor="orderId"
                     className="text-white text-sm font-medium mb-1"

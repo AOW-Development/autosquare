@@ -165,7 +165,7 @@ export default function ThankYouPage() {
                   <>
                     {/* Billing Info */}
                     <div>
-                      <strong>Billing Information</strong>
+                      <strong>Shipping Information</strong>
                       <br />
                       {billingInfo.firstName} {billingInfo.lastName}
                       <br />
@@ -191,7 +191,7 @@ export default function ThankYouPage() {
                     {/* Shipping Info — Only show if addresses are different */}
                     {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
                       <div className="mt-3">
-                        <strong>Shipping Information</strong>
+                        <strong>Billing Information</strong>
                         <br />
                         {shippingInfo.firstName} {shippingInfo.lastName}
                         <br />
@@ -264,7 +264,7 @@ export default function ThankYouPage() {
             cartItems.map((item) => (
               <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
-                  src={item.image}
+                  src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
                   alt={item.title}
                   width={64}
                   height={64}
@@ -308,7 +308,7 @@ export default function ThankYouPage() {
           <div className="border-t border-white my-4" />
           <div className="flex justify-between items-center text-lg font-semibold text-white uppercase">
             <span>Total:</span>
-            <span>${total}</span>
+            <span>${subtotal}</span>
           </div>
           {/* Actions */}
           <div className="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">

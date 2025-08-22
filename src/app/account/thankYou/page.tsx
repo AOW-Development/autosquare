@@ -166,9 +166,9 @@ export default function ThankYouPage() {
               </div>
               <div className="text-white text-sm mt-1 leading-tight">
              
-                  <>
-                    {/* Billing Info */}
-                    {isSameAddress && billingInfo && Object.keys(billingInfo).length > 0 && (
+                 <>
+                  {/* Billing Info */}
+                  {billingInfo && Object.keys(billingInfo).length > 0 && (
                     <div>
                       <strong>Billing Information</strong>
                       <br />
@@ -192,34 +192,35 @@ export default function ThankYouPage() {
                       <br />
                       {billingInfo.phone}
                     </div>
-                    )}
-                    
-                     {/* Shipping Info — Only show if addresses are different */}
-                    {!isSameAddress && billingInfo && Object.keys(billingInfo).length > 0 && (
-                      <div className="mt-3">
-                        <strong>Shipping Information</strong>
-                        <br />
-                        {shippingInfo.firstName} {shippingInfo.lastName}
-                        <br />
-                        {shippingInfo.address}
-                        {shippingInfo.apartment && (
-                          <>
-                            <br />
-                            {shippingInfo.apartment}
-                          </>
-                        )}
-                        <br />
-                        {shippingInfo.company && (
-                          <>
-                            {shippingInfo.company}
-                            <br />
-                          </>
-                        )}
-                        {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
-                        <br />
-                        {shippingInfo.phone}
-                      </div>)}
-                    </>
+                  )}
+
+                  {/* Shipping Info — Only show if addresses are different */}
+                  {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+                    <div className="mt-3">
+                      <strong>Shipping Information</strong>
+                      <br />
+                      {shippingInfo.firstName} {shippingInfo.lastName}
+                      <br />
+                      {shippingInfo.address}
+                      {shippingInfo.apartment && (
+                        <>
+                          <br />
+                          {shippingInfo.apartment}
+                        </>
+                      )}
+                      <br />
+                      {shippingInfo.company && (
+                        <>
+                          {shippingInfo.company}
+                          <br />
+                        </>
+                      )}
+                      {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
+                      <br />
+                      {shippingInfo.phone}
+                    </div>
+                  )}
+                </>
               
               </div>
   

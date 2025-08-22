@@ -254,7 +254,7 @@ export default function ThankYouPage() {
           {/* Divider */}
           <div className="border-t border-white my-4" />
           {/* Order Details */}
-          <div className="flex flex-row justify-between items-center mb-2">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-2">
             <div className="uppercase text-sm text-white font-semibold">
               Order Details <span className="font-normal">#{orderNumber}</span>
             </div>

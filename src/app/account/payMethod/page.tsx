@@ -1098,23 +1098,19 @@ const handleSave1 = (e: React.FormEvent) => {
            
           )}
       </div>
-                  
-
             <button   
                 onClick={handleSave1}
               className="bg-blue-600 cursor-pointer z-50 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
             >
               Save Billing Info
             </button> 
-
-           </div>
-           
+           </div>   
       </div>
             {/* Right Column: Products & Order Summary */}
-            <div className="lg:col-span-1">
+            <div className="lg:col-span-1 w-full">
               <div className="bg-[#091627] rounded-lg p-4 space-y-6">
                 {/* Card Header */}
-                <div className="flex justify-between items-center">
+                <div className="flex justify-between items-center ">
                   <h3 className="text-base font-semibold font-exo2">
                     PRODUCTS IN CART
                   </h3>

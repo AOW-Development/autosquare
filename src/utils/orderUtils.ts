@@ -37,11 +37,21 @@ export const createOrderInBackend = async (orderData: any) => {
       throw new Error('API URL not configured');
     }
 
-    // Log the order payload
+    // Add error logging
     console.log('Order payload:', orderPayload);
 
-    // Emails will be sent by the frontend after order creation
-    // to avoid duplicate sending
+    try {
+      // First send order email
+      const emailResponse = await fetch('/api-2/send-order-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
+
+      console.log('Email response:', await emailResponse.json());
+    } catch (emailError) {
+      console.error('Email error:', emailError);
+    }
 
     // Use api.ts with error handling
     try {

@@ -52,7 +52,7 @@ export default function TestimonialsPage() {
   return (
     <div className="relative min-h-screen bg-[#0A1621] pb-32">
       {/* Banner */}
-      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[280px] lg:h-[320px] relative">
         <Image
           src="/Images/banner.png"
           alt="Banner"
@@ -63,7 +63,7 @@ export default function TestimonialsPage() {
       </div>
 
       {/* Breadcrumb */}
-      <div className="flex items-center gap-2 px-10 md:px-25 lg:px-40 py-6">
+      <div className="flex items-center gap-2 px-10 md:px-10 lg:px-40 py-6">
         <Link href="/">
           <Image
             src="/Images/HouseLine.png"
@@ -83,13 +83,13 @@ export default function TestimonialsPage() {
 
       {/* Category Buttons */}
       <div className="flex gap-4 px-10 md:px-25 lg:px-40 mb-8 overflow-x-scroll scroll-mb-0 md:overflow-hidden ">
-        <button className="px-16 md:px-6 md:py-2 rounded-full bg-black text-white/80 hover:bg-black transition cursor-pointer">
+        <button className="px-16 md:px-4 lg:px-6 lg:py-2 rounded-full bg-black text-white/80 hover:bg-black transition cursor-pointer">
           All
         </button>
         {categories.map((cat) => (
           <button
             key={cat}
-            className="px-16 md:px-6 md:py-1 rounded-full bg-[#1B2A3A] text-white/80 hover:bg-black transition  cursor-pointer"
+            className="px-16 md:px-4 lg:px-6 lg:py-1 rounded-full bg-[#1B2A3A] text-white/80 hover:bg-black transition  cursor-pointer"
           >
             {cat}
           </button>
@@ -97,8 +97,8 @@ export default function TestimonialsPage() {
       </div>
 
       {/* Testimonials Grid */}
-      <div className="relative z-10 px-10 md:px-25 lg:px-40">
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0  gap-y-4">
+      <div className="relative z-10 px-6 md:px-10 lg:px-40">
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0 md:gap-x-4  gap-y-4">
 
           {testimonials.map((t, i) => {
             // Calculate if this is in the last row

@@ -135,7 +135,7 @@ export default function Header() {
   return (
     <header className="w-full bg-[#091B33] text-white ">
       {/* Mobile Header */}
-  <div className="md:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
+  <div className="lg:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
   {/* Row 1: Logo left, contact info right */}
   <div className="flex items-center justify-between w-full">
     <Link href="/">
@@ -171,7 +171,7 @@ export default function Header() {
       >
         <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
           <path
-            stroke="currentColor"
+            stroke="currentColor"                              
             strokeWidth="2"
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -252,7 +252,7 @@ export default function Header() {
 </div>
 
       {/* Desktop/Tablet Header */}
-      <div className="hidden md:grid grid-cols-3 items-center px-4 py-4 text-sm font-medium gap-2 md:gap-0">
+      <div className="hidden lg:grid grid-cols-3 items-center px-4 py-4 text-sm font-medium gap-2 md:gap-0">
         {/* Left: Logo */}
         <div className="flex items-center gap-4 w-full md:w-auto justify-start">
           <Link href="/">
@@ -266,6 +266,30 @@ export default function Header() {
           </Link>
         </div>
         {/* Center: Contact Info */}
+      {/* <div className="relative inline-block lg:hidden text-left">
+
+      <button
+        className="flex items-center py-1"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d={
+              menuOpen
+                ? 'M6 18L18 6M6 6l12 12' // X icon
+                : 'M4 6h16M4 12h16M4 18h16' // Hamburger
+            }
+          />
+        </svg>
+        <span className="ml-1 font-medium">{menuOpen ? 'Close' : 'Menu'}</span>
+      </button>
+    </div> */}
         <div
           className="flex flex-row gap-2 items-center justify-center font-exo-2"
           style={{
@@ -277,7 +301,32 @@ export default function Header() {
           <span className="border-l-0 pl-0 ml-0">Mon‑Fri: 8AM ‑ 7PM EST</span>
         </div>
         {/* Right: Icons */}
-        <div className="flex items-center gap-6 justify-end">
+        <div className="flex items-center gap-6 md:justify-end">
+           {/* <div className="relative inline-block lg:hidden text-left">
+
+      <button
+        className="flex items-center py-1"
+        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+        aria-expanded={menuOpen}
+        onClick={() => setMenuOpen((prev) => !prev)}
+      >
+        <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+          <path
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d={
+              menuOpen
+                ? 'M6 18L18 6M6 6l12 12' // X icon
+                : 'M4 6h16M4 12h16M4 18h16' // Hamburger
+            }
+          />
+        </svg>
+        <span className="ml-1 font-medium">{menuOpen ? 'Close' : 'Menu'}</span>
+      </button>
+    </div> */}
+
           {showSearch ? (
             <input
               type="text"

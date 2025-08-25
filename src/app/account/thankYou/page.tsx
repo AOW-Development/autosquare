@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore } from "@/store/cartStore";
 import { generateOrderNumber } from "@/utils/order";
-// import ProtectedRoute from "@/components/ProtectedRoute";
-// import { log } from "console";
+import ProtectedRoute from "@/components/ProtectedRoute";
+import { log } from "console";
 import { useShippingStore } from '@/store/shippingStore';
 import { createOrderInBackend } from '@/utils/orderUtils';
 import { toast } from 'react-hot-toast'; // Add this import
@@ -24,9 +24,13 @@ export default function ThankYouPage() {
     lastFour?: string;
   }>({ method: "card" });
   const [cardType, setCardType] = useState("unknown");
-  const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+  const isSameAddress =
+    JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+  const { setShippingInfo } = useShippingStore();
+  const { setBillingInfo } = useBillingStore();
+  
   const { user } = useAuthStore();
-  console.log(isSameAddress, shippingInfo?.address)
+  console.log(isSameAddress, shippingInfo, billingInfo);
 
   // Card image mapping (top-level so it’s accessible)
   const cardImageMap: Record<string, string> = {
@@ -120,9 +124,21 @@ export default function ThankYouPage() {
   const total = subtotal + salesTax;
 
   return (
+      <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
+      {/* Background Car Image */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[700px] h-[624px] relative">
+          <Image
+            src="/Images/thx_car.png"
+            alt="Car background"
+            fill
+            className="object-contain object-center"
+            priority
+          />
+        </div>
+      </div>
 
-  // {/* Thank You Content */}
-  <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
+    <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
 
       {/* Thank You Content */}
       <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
@@ -149,9 +165,10 @@ export default function ThankYouPage() {
                 Deliver To
               </div>
               <div className="text-white text-sm mt-1 leading-tight">
-                {billingInfo && Object.keys(billingInfo).length > 0 ? (
-                  <>
-                    {/* Billing Info */}
+             
+                 <>
+                  {/* Billing Info */}
+                  {billingInfo && Object.keys(billingInfo).length > 0 && (
                     <div>
                       <strong>Billing Information</strong>
                       <br />
@@ -175,42 +192,38 @@ export default function ThankYouPage() {
                       <br />
                       {billingInfo.phone}
                     </div>
+                  )}
 
-                    {/* Shipping Info — Only show if addresses are different */}
-                    {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
-                      <div className="mt-3">
-                        <strong>Shipping Information</strong>
-                        <br />
-                        {shippingInfo.firstName} {shippingInfo.lastName}
-                        <br />
-                        {shippingInfo.address}
-                        {shippingInfo.apartment && (
-                          <>
-                            <br />
-                            {shippingInfo.apartment}
-                          </>
-                        )}
-                        <br />
-                        {shippingInfo.company && (
-                          <>
-                            {shippingInfo.company}
-                            <br />
-                          </>
-                        )}
-                        {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
-                        <br />
-                        {shippingInfo.phone}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <>
-                    No billing information available
-                    <br />
-                    Please contact support
-                  </>
-                )}
+                  {/* Shipping Info — Only show if addresses are different */}
+                  {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+                    <div className="mt-3">
+                      <strong>Shipping Information</strong>
+                      <br />
+                      {shippingInfo.firstName} {shippingInfo.lastName}
+                      <br />
+                      {shippingInfo.address}
+                      {shippingInfo.apartment && (
+                        <>
+                          <br />
+                          {shippingInfo.apartment}
+                        </>
+                      )}
+                      <br />
+                      {shippingInfo.company && (
+                        <>
+                          {shippingInfo.company}
+                          <br />
+                        </>
+                      )}
+                      {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
+                      <br />
+                      {shippingInfo.phone}
+                    </div>
+                  )}
+                </>
+              
               </div>
+  
             </div>
             <div className="flex flex-col items-start md:items-center">
               <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
@@ -241,7 +254,7 @@ export default function ThankYouPage() {
           {/* Divider */}
           <div className="border-t border-white my-4" />
           {/* Order Details */}
-          <div className="flex flex-row justify-between items-center mb-2">
+          <div className="flex flex-col md:flex-row justify-between items-center mb-2">
             <div className="uppercase text-sm text-white font-semibold">
               Order Details <span className="font-normal">#{orderNumber}</span>
             </div>
@@ -252,7 +265,7 @@ export default function ThankYouPage() {
             cartItems.map((item) => (
               <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
-                  src={item.image}
+                  src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
                   alt={item.title}
                   width={64}
                   height={64}
@@ -296,7 +309,7 @@ export default function ThankYouPage() {
           <div className="border-t border-white my-4" />
           <div className="flex justify-between items-center text-lg font-semibold text-white uppercase">
             <span>Total:</span>
-            <span>${total}</span>
+            <span>${subtotal}</span>
           </div>
           {/* Actions */}
           <div className="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
@@ -314,7 +327,7 @@ export default function ThankYouPage() {
           </div>
         </div>
       </main>
-    // </div>
+   </div>
 
 
   );

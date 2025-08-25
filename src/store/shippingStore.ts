@@ -16,7 +16,7 @@ export type ShippingInfo = {
 };
 
 type ShippingState = {
-  shippingInfo: ShippingInfo | null;
+  shippingInfo: ShippingInfo ;
   setShippingInfo: (info: ShippingInfo) => void;
   clearShippingInfo: () => void;
 };
@@ -24,9 +24,21 @@ type ShippingState = {
 export const useShippingStore = create<ShippingState>()(
   persist(
     (set) => ({
-      shippingInfo: null,
+      shippingInfo: {
+        firstName: "",
+        lastName: "",
+        phone: "",
+        company: "",
+        country: "",
+        address: "",
+        apartment: "",
+        city: "",
+        state: "",
+        zipCode: "",
+        shippingAddressType: "",
+      },
       setShippingInfo: (info) => set({ shippingInfo: info }),
-      clearShippingInfo: () => set({ shippingInfo: null }),
+      clearShippingInfo: () => set({ shippingInfo: undefined }),
     }),
     {
       name: 'shipping-storage',

@@ -102,7 +102,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
   
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2  py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
           <Link
@@ -127,7 +127,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
           <span className="text-white">Make a payment</span>
         </div>
         <h1
-          className="font-audiowide text-white text-wrap text-xl md:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
+          className="font-audiowide text-white text-wrap text-xl md:text-3xl lg:text-4xl mt-4 mb-4 sm:mt-6 sm:mb-6 md:tracking-wide uppercase text-left w-full"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -135,7 +135,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
         >
           Make a Payment
         </h1>
-        <div className="flex flex-col md:flex-row gap-8">
+        <div className="flex flex-col md:flex-col lg:flex-row gap-8">
           {/* Form */}
           <form className="flex-1 bg-transparent" onSubmit={handleSave}>
             <div className="flex items-center justify-between mb-4">
@@ -180,7 +180,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
             </div>
 
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="block text-xs mb-1">First Name*</label>
                 <input
@@ -314,7 +314,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
             </button>
           </form>
           {/* Order Summary */}
-          <aside className="w-full md:w-[350px] flex-shrink-0">
+          <aside className="w-full md:w-full lg:w-[350px] flex-shrink-0">
             <div className="bg-[#091627] rounded-2xl shadow-sm p-6">
               <h3 className="text-sm font-semibold mb-4 uppercase tracking-wide">
                 Products in Order

@@ -21,7 +21,20 @@ interface BillingState {
 const useBillingStore = create<BillingState>()(
   persist(
     (set) => ({
-      billingInfo: null,
+      billingInfo:{
+        firstName: "",
+        lastName: "",
+        phone: "",
+        company:"",
+        country: "",
+        address: "",
+        apartment: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      }
+        
+      ,
       setBillingInfo: (info) => set({ billingInfo: info }),
       clearBillingInfo: () => set({ billingInfo: null }),
     }),

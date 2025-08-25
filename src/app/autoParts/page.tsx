@@ -417,7 +417,7 @@ export default function AutoPartsPage() {
 
   return (
     <div className="bg-[#091b33] min-h-screen">
-      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[280px] lg:h-[320px] relative">
         <Image
           src="/Images/title_img (2).png"
           alt="Banner"
@@ -428,7 +428,7 @@ export default function AutoPartsPage() {
       </div>
       <ShopByVehicle />
       {/* <div className="min-h-screen bg-[#091B33] pb-12"> */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-10 sm:py-8">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-10 sm:py-12 sm:pb-8 md:py-0 lg:py-14">
 
         {/* Breadcrumb */}
         <div className="">
@@ -444,7 +444,7 @@ export default function AutoPartsPage() {
               Auto parts
             </span>
           </div> */}
-          <div className="flex items-center gap-2 md:py-8  mt-8 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
+          <div className="flex items-center gap-2 md:py-6 lg:py-8 mt-4 lg:mt-14 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium ">
             <a href="/">
               <Image
                 src="/autoparts/HouseLine.png"
@@ -458,12 +458,12 @@ export default function AutoPartsPage() {
           </div>
         </div>
         {/* Grids */}
-        <div className="flex flex-col gap-y-4 md:gap-y-12 mt-4">
+        <div className="flex flex-col gap-y-4 md:gap-y-10 lg:gap-y-12 mt-4">
           {PARTS.map((part, idx) => (
             <div key={part.name} className="p-2 md:p-1 w-full">
               {/* Collapsible header for mobile */}
               <div
-                className="mb-2 md:mb-4 text-white text-xl md:text-[32px] font-audiowide  flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
+                className="mb-2 md:mb-4 text-white text-xl md:text-[28px] lg:text-[32px] font-audiowide  flex items-center justify-between md:block cursor-pointer md:cursor-default select-none"
                 onClick={() => handleToggle(idx)}
               >
                 <span
@@ -524,7 +524,7 @@ export default function AutoPartsPage() {
                       alt={part.name + " card"}
                       width={282}
                       height={112}
-                      className="object-contain w-full h-auto max-h-[48px] sm:max-h-[72px] md:max-h-[112px]"
+                      className="object-contain w-full h-auto max-h-[48px] sm:max-h-[72px] md:max-h-[100px] lg:max-h-[112px]"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
                       }}

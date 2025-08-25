@@ -7,14 +7,15 @@ import Link from "next/link";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore, CartItem } from "@/store/cartStore";
 import { State } from "country-state-city"; 
+import { useShippingStore } from "@/store/shippingStore";
 
 export default function Checkout() {
   const { billingInfo, setBillingInfo } = useBillingStore();
+  const { shippingInfo,setShippingInfo } = useShippingStore();
   const { items } = useCartStore();
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const [formData, setFormData] = useState(
-    billingInfo || {
+    shippingInfo || {
       firstName: "",
       lastName: "",
       // email: "",
@@ -33,25 +34,70 @@ export default function Checkout() {
 
   // Sync billingInfo to formData if it changes
   useEffect(() => {
-    if (billingInfo) {
+    if (shippingInfo) {
       setFormData((prev) => ({
         ...prev,
-        ...billingInfo,
+        ...shippingInfo,
       }));
     }
-  }, [billingInfo]);
+  }, [shippingInfo]);
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
+const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+
+const handleInputChange = (field: string, value: string) => {
+  let error = "";
+  const country = formData.country; 
+
+  switch (field) {
+    case "firstName":
+    case "lastName":
+    case "city":
+      if (!/^[A-Za-z\s]*$/.test(value)) {
+        error = "Only letters allowed";
+      }
+      break;
+
+    case "phone":
+      if (country === "US") {
+        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
+          error = "Enter a valid US phone (e.g. 555-123-4567)";
+        }
+      } else if (country === "CA") {
+        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
+          error = "Enter a valid Canadian phone (e.g. 416-123-4567)";
+        }
+      }
+      break;
+
+    case "zipCode":
+      if (country === "US") {
+        if (!/^\d{5}(-\d{4})?$/.test(value)) {
+          error = "Enter a valid US ZIP (12345 or 12345-6789)";
+        }
+      } else if (country === "CA") {
+        if (!/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
+          error = "Enter a valid Canadian Postal Code (e.g. K1A 0B1)";
+        }
+      }
+      break;
+  }
+
+
+  setFormData((prev) => ({ ...prev, [field]: value }));
+  setErrors((prev) => ({ ...prev, [field]: error }));
+};
+
+
 
   // Save billing info to store when continuing to payment
   const handleContinue = () => {
-    setBillingInfo(formData);
+    console.log("Form Data:", formData);
+    setShippingInfo(formData);
   };
 
 
-   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
+const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
 
 
 useEffect(() => {
@@ -112,8 +158,8 @@ useEffect(() => {
 
   return (
    
-      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22 overflow-hidden">
-        <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
+        <div className=" mx-auto md:mx-6 lg:mx-40 px-4 md:px-6 lg:px-1">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
             <Link
@@ -140,7 +186,7 @@ useEffect(() => {
 
           {/* Title */}
           <h1
-            className="font-audiowide text-3xl lg:text-4xl mb-4 text-left"
+            className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-4 text-left"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
@@ -197,13 +243,13 @@ useEffect(() => {
             <div className="flex-1 h-0.5 bg-white mb-4"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Left Column: Recipient Details Form */}
-            <div className="col-span-3 lg:col-span-2 ">
+            <div className="col-span-3 md:col-span-3 lg:col-span-2 ">
               {/* Login Link */}
               <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6">
                 <Link
-                  href="/login"
+                  href="/account/signIn"
                   className="text-sm text-[#FFFFFF] hover:underline font-exo2"
                 >
                   Have an account? Log in
@@ -212,7 +258,7 @@ useEffect(() => {
 
               {/* Form Header */}
               <h2 className="text-base font-semibold mb-6 font-exo2">
-                SHIPPING DETAILS
+                Enter Shipping Information
               </h2>
               <div className="flex gap-4 mb-4">
               <button
@@ -241,7 +287,7 @@ useEffect(() => {
 
               <form className="space-y-6">
                 {/* Name Fields */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   <div>
               <label className="block font-exo2 mb-2">First Name *</label>
               <input
@@ -441,7 +487,7 @@ useEffect(() => {
 
             {/* Right Column: Products & Order Summary */}
             <div className=" col-span-3 lg:col-span-1 ">
-              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-5 md:p-4 ">
+              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-2 md:p-4 ">
                 {/* Card Header */}
                 <div className="flex justify-between items-center ">
                   <h3 className="text-base font-semibold font-exo2">
@@ -461,7 +507,7 @@ useEffect(() => {
                     {cartItems.map((item) => (
                     <div key={item.id} className="flex space-x-3 pb-4 ">
                       <Image
-                      src={item.image}
+                      src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
                       alt={item.title}
                       width={56}
                       height={56}
@@ -493,7 +539,7 @@ useEffect(() => {
                 </div>
                   {/* Total number of products */}
                     <div className="flex justify-between items-center pb-0">
-                    <span className="font-exo2 text-sm md:text-lg text-gray-300">
+                    <span className="font-exo2 text-sm md:text-sm lg:text-lg text-gray-300">
                       Total products:
                     </span>
                     <span className="font-exo2 text-sm text-white">
@@ -578,7 +624,7 @@ useEffect(() => {
                 {isFormValid() ? (
                   <Link href="/account/payMethod">
                     <button
-                      className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
+                      className="w-full px-6 py-1 md:py-4  rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
                       onClick={handleContinue} // <-- Save billing info before navigating
                     >
                       Continue to payment

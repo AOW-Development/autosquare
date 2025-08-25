@@ -1,7 +1,8 @@
 import nodemailer from 'nodemailer';
 import { PaymentInfo } from '@/store/paymentStore';
 import { CartItem } from '@/store/cartStore';
-import { ShippingInfo } from '@/store/shippingStore';
+// import { ShippingInfo } from '@/store/shippingStore';
+// import { BillingInfo } from '@/store/shippingStore';
 
 // Types for email data
 export interface UserInfo {
@@ -13,6 +14,17 @@ export interface UserInfo {
 }
 
 export interface BillingInfo {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  country: string;
+  address: string;
+  apartment: string;
+  city: string;
+  state: string;
+  zipCode: string;
+}
+export interface ShippingInfo {
   firstName: string;
   lastName: string;
   phone: string;
@@ -54,11 +66,13 @@ export const createTransporter = () => {
 // Generate admin notification email HTML in table format
 const generateAdminEmailHTML = (data: OrderEmailData): string => {
   const { user, payment, billing, shipping, cartItems, orderTotal, orderNumber, orderDate } = data;
+  console.log(billing);
+  
 
   const cartItemsHTML = cartItems.map(item => `
     <tr>
       <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">
-        <img src="${item.image}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" />
+        <img src="${item.title.includes("Transmission")?"https://partscentral.us/catalog/Trasmission_.png":"https://partscentral.us/catalog/Engine 1.png"}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" />
       </td>
       <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.title}</td>
       <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.subtitle}</td>
@@ -113,14 +127,14 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
             <tr><td style="padding: 6px; color: #6b7280;">Phone:</td><td style="padding: 6px; color: #1f2937;">${billing.phone}</td></tr>
           </table>
 
-          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Shipping Address</h3>
+          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Billing Address</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
             <tr><td style="padding: 6px; color: #6b7280;">${billing.firstName} ${billing.lastName}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">${billing.address}${billing.apartment ? ', ' + billing.apartment : ''}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">${billing.city}, ${billing.state} ${billing.zipCode}, ${billing.country}</td></tr>
           </table>
 
-          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Billing Address</h3>
+          <h3 style="margin: 24px 0 8px 0; color: #091B33;">Shipping Address</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
             <tr><td style="padding: 6px; color: #6b7280;">${shipping.firstName} ${shipping.lastName}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">${shipping.address}${shipping.apartment ? ', ' + shipping.apartment : ''}</td></tr>

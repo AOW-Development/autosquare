@@ -50,7 +50,7 @@ function TransmissionFeaturedCategories() {
       {" "}
       {/* Adjusted vertical padding */}
       <h2
-        className="text-xl sm:text-2xl md:text-[32px] font-normal mb-8 md:mb-12 md:-ml-6 text-white" // Adjusted font size and margin
+        className="text-xl sm:text-2xl md:text-[28px] lg:text-[32px] font-normal mb-8 md:mb-8 lg:mb-12 md:ml-3 lg:-ml-6 text-white" // Adjusted font size and margin
         style={{
           fontFamily: "Audiowide, sans-serif",
           letterSpacing: "0.04em",
@@ -58,7 +58,7 @@ function TransmissionFeaturedCategories() {
       >
         TRANSMISSION FOR YOUR MAKE
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-12 gap-y-3 sm:gap-y-4 max-w-7xl md:mx-2 mx-auto">
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-8 lg:gap-x-12 gap-y-3 sm:gap-y-4 max-w-7xl md:mx-2 mx-auto">
         {" "}
         {/* Adjusted gap-x and gap-y */}
         {makers.slice(0, 33).map((maker) => (
@@ -102,7 +102,7 @@ export default function TransmissionPage() {
   return (
     <div className="bg-[#091b33] min-h-screen overflow-hidden">
       {/* Banner */}
-      <div className="w-full h-[120px] sm:h-[180px] md:h-[240px] lg:h-[320px] relative ">
+      <div className="w-full h-[120px] sm:h-[180px] md:h-[280px] lg:h-[320px] relative ">
         {" "}
         {/* Made banner height more responsive */}
         <Image
@@ -124,10 +124,10 @@ export default function TransmissionPage() {
         {" "}
         {/* Adjusted horizontal padding */}
         {/* Transmission Types */}
-         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-12 md:pt-2">
+         <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-12 md:pt-0 lg:pt-2">
           {/* Adjusted vertical padding */}
           {/* Breadcrumb */}
-          <div className="md:mt-30 ">
+          <div className="md:mt-10 lg:mt-30 ">
             {" "}
             {/* Adjusted top padding */}
             <div className="flex items-center gap-1 sm:gap-2 py-2 sm:py-4 -mt-2 sm:mt-8 mb-2 sm:mb-4">
@@ -158,7 +158,7 @@ export default function TransmissionPage() {
             </div>
           </div>
           <h2
-            className="text-xl sm:text-2xl md:text-[32px] mb-4 sm:mb-6 text-white"
+            className="text-xl sm:text-2xl md:text-[28px] lg:text-[32px] mb-4 sm:mb-6 text-white"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
@@ -166,7 +166,7 @@ export default function TransmissionPage() {
           >
             TRANSMISSION TYPES
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 p-2 sm:p-4 pb-0">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 p-2 sm:p-4 pb-0">
             {" "}
             {/* Adjusted grid columns and gap */}
             {[
@@ -198,7 +198,7 @@ export default function TransmissionPage() {
             ].map((item, index) => (
               <div
                 key={index}
-                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[200px] md:h-[270px] bg-black/50" // Adjusted card height
+                className="relative flex flex-col rounded-lg overflow-hidden shadow-lg w-full h-[200px] md:h-[300px] lg:h-[270px] bg-black/50" // Adjusted card height
               >
                 <Image
                   src={item.img}
@@ -237,7 +237,7 @@ export default function TransmissionPage() {
           </div>
         </section>
         {/* Featured Categories (tweaked) */}
-        <div className="max-w-6xl mx-auto px-6 md:px-2 w-full md:mx-15 pt-0 pb-4 mt-0">
+        <div className="max-w-6xl mx-auto px-6 md:px-2 w-full md:mx-2 lg:mx-15 pt-0 pb-4 mt-0">
           {" "}
           {/* Removed px to avoid double padding */}
           <TransmissionFeaturedCategories />

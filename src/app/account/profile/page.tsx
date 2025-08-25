@@ -159,29 +159,25 @@ export default function ProfilePage() {
   // }
 
   return (
-  <ProtectedRoute>
-    <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row">
-      <div className="flex-1 flex flex-col gap-6">
-        <Banner />
-        <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto px-3 sm:px-4 md:px-6 lg:px-6 mt-4 gap-4">
-          
-          {/* Sidebar */}
-          <div className="mb-4 md:mb-6 w-full md:w-1/4">
-            <Sidebar activeKey="Profile" />
-          </div>
+    <ProtectedRoute>
+      <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row">
+        <div className="flex-1 flex flex-col gap-6">
+          <Banner />
+          <div className="flex flex-col md:flex-row w-full max-w-6xl mx-auto px-4 md:px-6 lg:px-6 mt-4">
 
-          {/* Main Profile Section */}
-          <div className="bg-[#091B33] shadow-lg p-4 sm:p-5 md:p-6 lg:p-8 flex flex-col w-full">
-            <h1
-              className="text-xl sm:text-2xl md:text-3xl font-bold text-center mb-4"
-              style={{
-                fontFamily: "Audiowide, sans-serif",
-                letterSpacing: "0.1em",
-              }}
-            >
-              PROFILE
-            </h1>
-
+            <div className="mb-6 md:mb-6">
+              <Sidebar activeKey="Profile" />
+            </div>
+            <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
+              <h1
+                className="text-2xl md:text-3xl font-bold text-center mb-4"
+                style={{
+                  fontFamily: "Audiowide, sans-serif",
+                  letterSpacing: "0.1em",
+                }}
+              >
+                PROFILE
+              </h1>
               {/* <form onSubmit={handleSubmit} className="space-y-4">
                 <FormField
                   label="Email*"
@@ -265,43 +261,36 @@ export default function ProfilePage() {
                   {loading ? "Saving Changes..." : "Save Changes"}
                 </button>
               </form> */}
-               <div className="flex flex-col items-center justify-center gap-4 bg-[#091627] rounded-lg p-4 sm:p-5 md:p-6 mt-4 shadow-md">
-              
-              {/* First Name */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full max-w-xs sm:max-w-md">
-                <span className="font-semibold text-blue-400 sm:w-32 sm:text-right text-left w-full">
-                  First Name:
-                </span>
-                <span className="text-white bg-[#0a2342] px-3 py-2 sm:py-3 rounded w-full">
-                  {fields.firstName}
-                </span>
+              <div className="flex flex-col items-center justify-center gap-4 bg-[#091627] rounded-lg p-6 mt-4 shadow-md">
+                <div className="flex items-center gap-2 w-full max-w-xs">
+                  <span className="font-semibold text-blue-400 w-32 text-right">
+                    First Name:
+                  </span>
+                  <span className="text-white bg-[#0a2342] px-3 py-4 rounded w-full">
+                    {fields.firstName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 w-full max-w-xs">
+                  <span className="font-semibold text-blue-400 w-32 text-right">
+                    Last Name:
+                  </span>
+                  <span className="text-white bg-[#0a2342] px-3 py-4 rounded w-full">
+                    {fields.lastName}
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 w-full max-w-xs">
+                  <span className="font-semibold text-blue-400 w-32 text-right">
+                    Email:
+                  </span>
+                  <span className="text-white bg-[#0a2342] px-3 py-1 rounded w-full">
+                    {fields.email}
+                  </span>
+                </div>
               </div>
-
-              {/* Last Name */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full max-w-xs sm:max-w-md">
-                <span className="font-semibold text-blue-400 sm:w-32 sm:text-right text-left w-full">
-                  Last Name:
-                </span>
-                <span className="text-white bg-[#0a2342] px-3 py-2 sm:py-3 rounded w-full">
-                  {fields.lastName}
-                </span>
-              </div>
-
-              {/* Email */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full max-w-xs sm:max-w-md">
-                <span className="font-semibold text-blue-400 sm:w-32 sm:text-right text-left w-full">
-                  Email:
-                </span>
-                <span className="text-white bg-[#0a2342] px-3 py-2 rounded w-full">
-                  {fields.email}
-                </span>
-              </div>
-
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </ProtectedRoute>
+    </ProtectedRoute>
   );
 }

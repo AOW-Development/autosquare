@@ -96,7 +96,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen bg-[#091B33] text-white pt-8 pb-22">
-      <div className="mx-auto md:mx-2 lg:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6 text-left">
           <Link
@@ -115,7 +115,7 @@ export default function SignInPage() {
         </div>
         <main className="bg-[#091B33] p-4 md:p-6 lg:p-8 w-full flex flex-col gap-6">
           <h1
-            className="text-xl md:text-2xl lg:text-3xl font-bold text-center mb-4"
+            className="text-2xl md:text-3xl font-bold text-center mb-4"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
@@ -125,7 +125,7 @@ export default function SignInPage() {
           </h1>
           <form
             onSubmit={handleSubmit}
-            className="grid w-full gap-2 lg:w-[75%] items-center md:mx-2 lg:mx-40"
+            className="grid w-full gap-2 md:w-[75%] items-center md:mx-40"
           >
             <FormField
               label="Email*"
@@ -174,7 +174,7 @@ export default function SignInPage() {
               {loading ? "Signing in..." : "Login"}
             </button>
           </form>
-          <div className="flex flex-col w-full gap-2 lg:w-[75%] items-center md:mx-2 lg:mx-40">
+          <div className="flex flex-col w-full gap-2 md:w-[75%] items-center md:mx-40">
             <span className="text-gray-400 text-sm">or sign in with</span>
             <button
               onClick={handleGoogleLogin}

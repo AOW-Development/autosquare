@@ -24,14 +24,13 @@ import toast from "react-hot-toast";
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
-  const { billingInfo,setBillingInfo } = useBillingStore();
+  const { billingInfo } = useBillingStore();
   // INTENTIONAL: We need shippingInfo here for order submission
   const { shippingInfo, setShippingInfo } = useShippingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
   const [userType, setUserType] = useState("Individual");
   const [sameAsShipping, setSameAsShipping] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   // default to Apple Pay
 
   const [billingFormData, setBillingFormData] = useState(
@@ -50,24 +49,14 @@ export default function PayMethod() {
     }
   );
 useEffect(() => {
-  console.log(shippingInfo);
-  
-  setShippingInfo(shippingInfo)
-}, [shippingInfo, setShippingInfo,sameAsShipping])
+  setShippingInfo(billingFormData)
+}, [billingFormData, setShippingInfo])
 
   useEffect(() => {
     if (sameAsShipping && billingInfo) {
       setBillingFormData({
-        firstName: shippingInfo?.firstName || "",
-        lastName: shippingInfo?.lastName || "",
-        phone: shippingInfo?.phone || "",
-        company: shippingInfo?.company || "",
-        country: shippingInfo?.country || "",
-        address: shippingInfo?.address || "",
-        apartment: shippingInfo?.apartment || "",
-        city: shippingInfo?.city || "",
-        state: shippingInfo?.state || "",
-        zipCode: shippingInfo?.zipCode || "",
+        ...billingInfo,
+        apartment: billingInfo.apartment ?? "",
       });
     } else if (!sameAsShipping) {
        console.log(billingFormData)
@@ -87,7 +76,7 @@ useEffect(() => {
       });
      
     }
-  }, [sameAsShipping, shippingInfo]);
+  }, [sameAsShipping, billingInfo]);
 
 
   const [cardData, setCardData] = useState({
@@ -112,53 +101,11 @@ useEffect(() => {
   const total = subtotal 
   // + salesTax;
 
-const handleBillingInputChange = (field: string, value: string) => {
-  let error = "";
-  const country = billingFormData.country;
-  console.log(country);
-  
-
-  switch (field) {
-    case "firstName":
-    case "lastName":
-    case "city":
-      if (!/^[A-Za-z\s]*$/.test(value)) {
-        error = "Only letters allowed";
-      }
-      break;
-
-    case "phone":
-      if (country === "US") {
-        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-          error = "Enter a valid US phone (e.g. 555-123-4567)";
-        }
-      } else if (country === "CA") {
-        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-          error = "Enter a valid Canadian phone (e.g. 416-123-4567)";
-        }
-      }
-      break;
-
-    case "zipCode":
-      if (country === "US") {
-        if (!/^\d{5}(-\d{4})?$/.test(value)) {
-          error = "Enter a valid US ZIP (12345 or 12345-6789)";
-        }
-      } else if (country === "CA") {
-        if (!/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
-          error = "Enter a valid Canadian Postal Code (e.g. K1A 0B1)";
-        }
-      }
-      break;
-  }
-
-  setBillingFormData((prev) => ({ ...prev, [field]: value }));
-  setErrors((prev) => ({ ...prev, [field]: error }));
-};
-
+  const handleBillingInputChange = (field: string, value: string) => {
+    setBillingFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
  const handleCardInputChange = (field: string, value: string) => {
-
   if (field === "cardholderName") {
     const onlyLetters = /^[A-Za-z\s]*$/;
     if (!onlyLetters.test(value)) {
@@ -335,7 +282,7 @@ const isFormValid = () => {
         user,
         payment,
         shipping: shippingInfo, // always from shipping store
-        billing: sameAsShipping ? shippingInfo: billingInfo, // correct billing info sent
+        billing: sameAsShipping ? shippingInfo : billingFormData, // correct billing info sent
         cartItems: cartItems.length ? cartItems : (cartItems as any)
       };
 
@@ -429,62 +376,22 @@ const [paymentInfo, setPaymentInfo] = useState<{
 // This is because the backend/email logic expects the shipping store to always have the address to use (whether it's shipping or billing).
 // If 'Same as shipping' IS selected, the shipping store already has the shipping address.
 // This is confusing, but required by current backend/email integration. DO NOT change unless backend is refactored.
-// const handleSave1 = (e: React.FormEvent) => {
-//   e.preventDefault();
-
-//   // Skip the "company" field when checking required fields
-//   const allFilled = Object.entries(billingFormData)
-//     .filter(([key]) => key !== "company"  && key !== "apartment")
-//     .every(([, value]) => value && value.toString().trim() !== "");
-
-//     console.log(allFilled);
-    
-
-//   if (!allFilled) {
-    
-//     toast.error("Please fill in all required Billing fields before saving.");
-//     return;
-//   }
-
-//   setShippingInfo(billingFormData);
-//   toast.success("Billing details saved successfully!");
-// };
-
 const handleSave1 = (e: React.FormEvent) => {
   e.preventDefault();
 
-  const requiredFields = [
-    "firstName",
-    "lastName",
-    "phone",
-    "country",
-    "address",
-    "city",
-    "state",
-    "zipCode"
-  ];
+  // Skip the "company" field when checking required fields
+  const allFilled = Object.entries(billingFormData)
+    .filter(([key]) => key !== "company")
+    .every(([, value]) => value && value.toString().trim() !== "");
 
-  const emptyFields = requiredFields.filter(
-    (field) =>
-      !billingFormData[field as keyof typeof billingFormData] ||
-      billingFormData[field as keyof typeof billingFormData].toString().trim() === ""
-  );
-
-  console.log("billingFormData:", billingFormData);
-  console.log("Empty fields:", emptyFields);
-
-  if (emptyFields.length > 0) {
-    toast.error(
-      `Please fill in all required fields: ${emptyFields.join(", ")}`
-    );
+  if (!allFilled) {
+    toast.error("Please fill in all required Billing fields before saving.");
     return;
   }
 
-  setShippingInfo(shippingInfo);
-  setBillingInfo(billingFormData);
+  setShippingInfo(billingFormData);
   toast.success("Billing details saved successfully!");
 };
-
 
 
   return (
@@ -675,9 +582,47 @@ const handleSave1 = (e: React.FormEvent) => {
                       onChange={(e) => setPaymentMethod(e.target.value)}
                       className="form-radio text-[#009AFF] focus:ring-blue-300"
                     />
-                    
                  <div className="flex items-center justify-between w-full">
                     <span className="font-exo2">Pay with Credit or Debit card</span>
+
+                    {/* <div className="flex space-x-[8px]">
+                      <a href="https://www.visa.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/visa-inverted_82058.png"
+                          alt="Visa"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                      <a href="https://www.mastercard.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/mastercard_82049.png"
+                          alt="Mastercard"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                      <a href="https://www.americanexpress.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/americanexpress_82060 1.png"
+                          alt="Amex"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                      <a href="https://www.discover.com" target="_blank" rel="noopener noreferrer">
+                        <Image
+                          src="/Images/home/discover_82082.png"
+                          alt="Discover"
+                          width={48}
+                          height={30}
+                          className="bg-[#1E2A44] object-contain"
+                        />
+                      </a>
+                    </div> */}
                     </div>
                   </label>
                   {/* Card Number */}
@@ -704,11 +649,12 @@ const handleSave1 = (e: React.FormEvent) => {
                             className="h-auto w-6 sm:w-8 md:w-10 lg:w-12 object-contain"
                           />
                         )}
-                        </div>
+                              </div>
                         {cardErrors.cardNumber && (
                           <p className="text-red-500 text-xs mt-1">{cardErrors.cardNumber}</p>
                         )}
                       </div>
+
 
                       {/* Cardholder Name */}
                       <div>
@@ -755,94 +701,75 @@ const handleSave1 = (e: React.FormEvent) => {
                               <p className="text-red-500 text-xs mt-1">{cardErrors.securityCode}</p>
                             )}
                       </div>
-                  
                        </>
                       )}
-                      </div>
-             
-                   <div className="space-y-6">
-                  {/* OR separator before Apple Pay */}
-                  <div className="flex items-center gap-2 text-gray-400 text-sm font-exo2 mt-8">
-                    <div className="flex-grow border-t border-gray-300"></div>
-                    <span className="px-2">OR</span>
-                    <div className="flex-grow border-t border-gray-300"></div>
-                  </div>
+                     <label className="flex items-center gap-4 cursor-pointer w-full">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="apple"
+                      checked={paymentMethod === "apple"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="form-radio text-blue-600 shrink-0"
+                    />
 
-                  {/* Apple Pay */}
-                   <div className="space-y-4 border p-4 border-blue-500 rounded-md">
-                  <div>
-                    <label className="flex items-center gap-4 cursor-pointer w-full">
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value="apple"
-                        checked={paymentMethod === "apple"}
-                        onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="form-radio text-blue-600 shrink-0"
-                      />
-
-                      <div
-                        className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
-                          paymentMethod === "apple"
-                            ? "bg-black text-white ring-2 ring-blue-500"
-                            : "bg-black text-white hover:bg-gray-800"
-                        }`}
-                      >
-                        <FaApple className="text-2xl mr-2" />
-                        Apple Pay
-                      </div>
-                    </label>
-                  </div>
+                    
+                    <div
+                      className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                        paymentMethod === "apple"
+                          ? "bg-black text-white ring-2 ring-blue-500"
+                          : "bg-black text-white hover:bg-gray-800"
+                      }`}
+                    >
+                      <FaApple className="text-2xl mr-2" />
+                      Apple Pay
+                    </div>
+                  </label>
 
                   {/* Google Pay */}
-                  <div>
-                    <label className="flex items-center gap-4 cursor-pointer w-full">
+                  <label className="flex items-center gap-4 cursor-pointer w-full">
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="google"
+                      checked={paymentMethod === "google"}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="form-radio text-blue-600 shrink-0"
+                    />
+                    <div
+                      className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
+                        paymentMethod === "google"
+                          ? "bg-white text-black ring-2 ring-blue-500"
+                          : "bg-white text-black hover:bg-gray-200"
+                      }`}
+                    >
+                      <FcGoogle className="text-2xl mr-2" />
+                      Google Pay
+                    </div>
+                  </label>
+
+                  {/* PayPal Option */}
+                  <label className="flex items-center justify-between cursor-pointer">
+                    <div className="flex items-center space-x-3">
                       <input
                         type="radio"
                         name="paymentMethod"
-                        value="google"
-                        checked={paymentMethod === "google"}
+                        value="paypal"
+                        checked={paymentMethod === "paypal"}
                         onChange={(e) => setPaymentMethod(e.target.value)}
-                        className="form-radio text-blue-600 shrink-0"
+                        className="form-radio text-[#009AFF] focus:ring-blue-300"
                       />
-                      <div
-                        className={`w-full md:py-4 py-2 rounded-md flex items-center justify-center font-exo2 text-lg transition-colors cursor-pointer ${
-                          paymentMethod === "google"
-                            ? "bg-white text-black ring-2 ring-blue-500"
-                            : "bg-white text-black hover:bg-gray-200"
-                        }`}
-                      >
-                        <FcGoogle className="text-2xl mr-2" />
-                        Google Pay
-                      </div>
-                    </label>
-                  </div>
-
-                  {/* PayPal */}
-                  <div>
-                    <label className="flex items-center justify-between cursor-pointer w-full">
-                      <div className="flex items-center space-x-3">
-                        <input
-                          type="radio"
-                          name="paymentMethod"
-                          value="paypal"
-                          checked={paymentMethod === "paypal"}
-                          onChange={(e) => setPaymentMethod(e.target.value)}
-                          className="form-radio text-[#009AFF] focus:ring-blue-300"
-                        />
-                        <span className="font-exo2">PayPal</span>
-                      </div>
-                      <Image
-                        src="/Images/paypal.png"
-                        alt="PayPal"
-                        width={60}
-                        height={20}
-                      />
-                    </label>
-                  </div>
+                      <span className="font-exo2">PayPal</span>
+                    </div>
+                    <Image
+                      src="/Images/paypal.png"
+                      alt="PayPal"
+                      width={60}
+                      height={20}
+                    />
+                  </label>
                 </div>
-                </div>
-                </div>
+              </div>
 
               {/* Billing Address Accordion */}
              
@@ -898,219 +825,188 @@ const handleSave1 = (e: React.FormEvent) => {
                       </button>
                     </div>
                     {/* First and Last Name Row */}
-                   <div className="grid md:grid-cols-2 gap-4">
-            {/* First Name */}
-            <div>
-              <label className="block font-exo2 mb-2">First Name *</label>
-              <input
-                type="text"
-                placeholder="Name"
-                value={sameAsShipping? shippingInfo.firstName: billingFormData.firstName}
-                onChange={(e) =>
-                  handleBillingInputChange("firstName", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.firstName && (
-                <p className="text-red-500 text-sm">{errors.firstName}</p>
-              )}
-            </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block font-exo2 mb-2">First Name *</label>
+                        <input
+                          type="text"
+                          placeholder="Name"
+                          value={billingFormData.firstName}
+                          onChange={(e) =>
+                            handleBillingInputChange("firstName", e.target.value)
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-exo2 mb-2">Last Name *</label>
+                        <input
+                          type="text"
+                          placeholder="Name"
+                          value={billingFormData.lastName}
+                          onChange={(e) =>
+                            handleBillingInputChange("lastName", e.target.value)
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                    </div>
 
-            {/* Last Name */}
-            <div>
-              <label className="block font-exo2 mb-2">Last Name *</label>
-              <input
-                type="text"
-                placeholder="Name"
-                value={sameAsShipping? shippingInfo.lastName:billingFormData.lastName}
-                onChange={(e) =>
-                  handleBillingInputChange("lastName", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.lastName && (
-                <p className="text-red-500 text-sm">{errors.lastName}</p>
-              )}
-            </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      {/* <div>
+                        <label className="block font-exo2 mb-2">Email *</label>
+                        <input
+                          type="email"
+                          placeholder="example@gmail.com"
+                          value={billingFormData.email}
+                          onChange={(e) =>
+                            handleBillingInputChange("email", e.target.value)
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div> */}
+                      <div>
+                        <label className="block font-exo2 mb-2">Phone *</label>
+                        <input
+                          type="tel"
+                          placeholder="(    )   -    "
+                          value={billingFormData.phone}
+                          onChange={(e) =>
+                            handleBillingInputChange("phone", e.target.value)
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                    </div>
+                    {userType === 'Commercial' && (
+                      <div className="">
+                        <label className="block font-exo2 mb-2">Company</label>
+                        <input
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                          value={billingFormData.company}
+                          onChange={(e) => handleChange("company", e.target.value)}
+                          placeholder="Company name "
+                        />
+                      </div>
+                    )}
+                     <div className="md:col-span-2">
+                  <label className="block text-xs mb-1">Country*</label>
+                  <select
+                    className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    value={billingFormData.country}
+                    onChange={(e) => handleChange("country", e.target.value)}
+                    required
+                  >
+                    <option value="Choose country…">Choose Country…</option>
+                  <option value="US">United States</option>
+                  <option value="CA">Canada</option>
+                    
+                  </select>
+                </div>
+                    <div className="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block font-exo2 mb-2">
+                          Street Address *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Address"
+                          value={billingFormData.address}
+                          onChange={(e) =>
+                            handleBillingInputChange(
+                              "address",
+                              e.target.value
+                            )
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                      <div>
+                        <label className="block font-exo2 mb-2">
+                          Apartment, etc. (optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Apartment, etc. (optional)"
+                          value={billingFormData.apartment}
+                          onChange={(e) =>
+                            handleBillingInputChange(
+                              "apartment",
+                              e.target.value
+                            )
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                    </div>
 
-            {/* Email */}
-            {/* <div>
-              <label className="block font-exo2 mb-2">Email *</label>
-              <input
-                type="email"
-                placeholder="example@gmail.com"
-                value={billingFormData.email}
-                onChange={(e) =>
-                  handleBillingInputChange("email", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
-              )}
-            </div> */}
-                 {userType === "Commercial" && (
-              <div className="md:col-span-1">
-                <label className="block font-exo2 mb-2">Company</label>
-                <input
-                  className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                            rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  value={sameAsShipping? shippingInfo.country:billingFormData.company}
-                  onChange={(e) => handleChange("company", e.target.value)}
-                  placeholder="Company name"
-                />
+                    <div className="grid md:grid-cols-3 gap-4">
+                      <div>
+                        <label className="block font-exo2 mb-2">City *</label>
+                        <input
+                          type="text"
+                          placeholder="City"
+                          value={billingFormData.city}
+                          onChange={(e) =>
+                            handleBillingInputChange("city", e.target.value)
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                      <div>
+                 <label className="block font-exo2 mb-2">State*</label>
+                  <select
+                    className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                    value={billingFormData.state}
+                    onChange={(e) => handleChange("state", e.target.value)}
+                    disabled={!states.length}
+                    required
+                  >
+                    <option value="">Choose State…</option>
+                    {states.map((state) => (
+                      <option
+                        key={state.isoCode}
+                        value={state.isoCode}
+                        className="text-white " // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
+                      >
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                      </div>
+                      <div>
+                        <label className="block font-exo2 mb-2">
+                          ZIP Code *
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="ZIP Code"
+                          value={billingFormData.zipCode}
+                          onChange={(e) =>
+                            handleBillingInputChange("zipCode", e.target.value)
+                          }
+                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-
-            {/* Country */}
-            <div className="">
-              <label className="block font-exo2 mb-2">Country *</label>
-              <select
-                className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white 
-                          border border-white/10 focus:outline-none"
-                value={sameAsShipping? shippingInfo.country:billingFormData.country}
-                onChange={(e) => handleChange("country", e.target.value)}
-                required
-              >
-                <option value="">Choose Country…</option>
-                <option value="US">United States</option>
-                <option value="CA">Canada</option>
-              </select>
-            </div>
-
-            {/* Phone */}
-            <div>
-              <label className="block font-exo2 mb-2">Phone *</label>
-              <input
-                type="tel"
-                placeholder="(555) 123-4567"
-                value={sameAsShipping? shippingInfo.phone:billingFormData.phone}
-                onChange={(e) =>
-                  handleBillingInputChange("phone", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-sm">{errors.phone}</p>
-              )}
-            </div>
-
-         
-
-            {/* Street Address */}
-            <div>
-              <label className="block font-exo2 mb-2">Street Address *</label>
-              <input
-                type="text"
-                placeholder="Address"
-                value={sameAsShipping? shippingInfo.address:billingFormData.address}
-                onChange={(e) =>
-                  handleBillingInputChange("address", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-            </div>
-
-            {/* Apartment */}
-            <div>
-              <label className="block font-exo2 mb-2">Apartment, etc. (optional)</label>
-              <input
-                type="text"
-                placeholder="Apartment, etc."
-                value={sameAsShipping? shippingInfo.apartment:billingFormData.apartment}
-                onChange={(e) =>
-                  handleBillingInputChange("apartment", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-            </div>
-
-            {/* City */}
-            <div>
-              <label className="block font-exo2 mb-2">City *</label>
-              <input
-                type="text"
-                placeholder="City"
-                value={sameAsShipping? shippingInfo.city:billingFormData.city}
-                onChange={(e) =>
-                  handleBillingInputChange("city", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.city && (
-                <p className="text-red-500 text-sm">{errors.city}</p>
-              )}
-            </div>
-
-            {/* State */}
-            <div>
-              <label className="block font-exo2 mb-2">State *</label>
-              <select
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                value={sameAsShipping? shippingInfo.state:billingFormData.state}
-                onChange={(e) => handleChange("state", e.target.value)}
-                disabled={!states.length}
-                required
-              >
-                <option value="">Choose State…</option>
-                {states.map((state) => (
-                  <option key={state.isoCode} value={state.isoCode}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* ZIP Code */}
-            <div>
-              <label className="block font-exo2 mb-2">ZIP Code *</label>
-              <input
-                type="text"
-                placeholder="ZIP Code"
-                value={sameAsShipping? shippingInfo.zipCode:billingFormData.zipCode}
-                onChange={(e) =>
-                handleBillingInputChange("zipCode", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.zipCode && (
-                <p className="text-red-500 text-sm">{errors.zipCode}</p>
-              )}
-                 </div>
-               </div>
-            </div>
-           
-          )}
-      </div>
-            <button   
-                onClick={handleSave1}
+                 <button
+                
+                onClick={()=>handleSave1}
               className="bg-blue-600 cursor-pointer z-50 hover:bg-blue-700 text-white font-semibold px-4 py-2 rounded-lg text-xs mt-4"
             >
               Save Billing Info
-            </button> 
-           </div>   
-      </div>
+            </button>
+            </div>
+            </div>
+
             {/* Right Column: Products & Order Summary */}
-            <div className="lg:col-span-1 w-full">
+            <div className="lg:col-span-1">
               <div className="bg-[#091627] rounded-lg p-4 space-y-6">
                 {/* Card Header */}
-                <div className="flex justify-between items-center ">
+                <div className="flex justify-between items-center">
                   <h3 className="text-base font-semibold font-exo2">
                     PRODUCTS IN CART
                   </h3>
@@ -1127,7 +1023,7 @@ const handleSave1 = (e: React.FormEvent) => {
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex space-x-3 pb-4">
                       <Image
-                        src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
+                        src={item.image}
                         alt={item.title}
                         width={56}
                         height={56}

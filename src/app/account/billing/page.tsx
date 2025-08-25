@@ -58,7 +58,7 @@ export default function BillingPage() {
     // console.log("Billing info saved:", billingInfo);
   };
   return (
-    <div className="min-h-screen bg-[#091B33] text-white flex flex-col lg:flex-row">
+    <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row">
       {/* <div className="md:w-1/4">
         <Sidebar activeKey="Billing Address" />
       </div> */}
@@ -67,7 +67,7 @@ export default function BillingPage() {
         <form
           onSubmit={(e) => handleSave(e)}
           autoComplete="off"
-          className="flex flex-col md:flex-row lg:flex-row w-full max-w-4xl mx-auto md:mx-1 lg:mx-60"
+          className="flex flex-col md:flex-row w-full max-w-4xl mx-auto md:mx-28"
         >
           {/* <h1 className="text-2xl md:text-3xl font-bold text-center mb-4">
             BILLING ADDRESS
@@ -77,7 +77,7 @@ export default function BillingPage() {
           </div>
           <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
             <h1
-              className="text-xl md:text-2xl lg:text-3xl font-bold text-center mb-4"
+              className="text-2xl md:text-3xl font-bold text-center mb-4"
               style={{
                 fontFamily: "Audiowide, sans-serif",
                 letterSpacing: "0.1em",
@@ -85,7 +85,7 @@ export default function BillingPage() {
             >
               BILLING ADDRESS
             </h1>
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 md:mt-4  ">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 ">
               <FormField
                 label="First Name*"
                 type="text"
@@ -101,7 +101,6 @@ export default function BillingPage() {
                 onChange={(v) => setFields((f) => ({ ...f, lastName: v }))}
               />
             </div>
-            <div className="md:mt-4">
             <FormField
               label="Phone*"
               type="tel"
@@ -109,8 +108,6 @@ export default function BillingPage() {
               value={fields.phone}
               onChange={(v) => setFields((f) => ({ ...f, phone: v }))}
             />
-            </div>
-            <div className="md:mt-4">
             <FormField
               label="Country*"
               type="select"
@@ -118,8 +115,7 @@ export default function BillingPage() {
               value={fields.country}
               onChange={(v) => setFields((f) => ({ ...f, country: v }))}
             />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 md:mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <FormField
                 label="Street address*"
                 type="text"
@@ -135,7 +131,7 @@ export default function BillingPage() {
                 onChange={(v) => setFields((f) => ({ ...f, apartment: v }))}
               />
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 md:mt-4 ">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <FormField
                 label="City*"
                 type="text"

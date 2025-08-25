@@ -25,7 +25,6 @@ export default function Cart() {
   const router = useRouter();
   const [error, setError] = useState("");
   const cartItems = useCartStore((s) => s.items);
-  console.log(cartItems);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const isCartEmpty = cartItems.length === 0;
@@ -60,7 +59,7 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-8 pb-22">
-      <div className="mx-auto md:mx-10 lg:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
           <Link
@@ -75,7 +74,7 @@ export default function Cart() {
 
         {/* Title */}
         <h1
-          className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-2 text-left"
+          className="font-audiowide text-3xl lg:text-4xl mb-2 text-left"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -143,7 +142,7 @@ export default function Cart() {
             <div className="hidden lg:grid grid-cols-11 gap-4 items-center">
               <div className="col-span-6 flex items-center space-x-4">
                 <Image
-                  src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
+                  src={item.image}
                   alt={item.title}
                   width={64}
                   height={64}
@@ -208,7 +207,7 @@ export default function Cart() {
                 <div className="lg:hidden">
                   <div className="flex items-start space-x-4">
                     <Image
-                      src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
+                      src={item.image}
                       alt={item.title}
                       width={64}
                       height={64}

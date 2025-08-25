@@ -15,8 +15,6 @@ export const sendCustomerInvoiceEmail = async (data: OrderEmailData): Promise<bo
     };
 
     const result = await transporter.sendMail(mailOptions);
-    console.log(data);
-    
     console.log('Customer invoice email sent:', result.messageId);
     return true;
   } catch (error) {

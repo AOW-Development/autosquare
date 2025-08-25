@@ -385,9 +385,11 @@ const accordionData = [
       {isLoading?(
       <div className="w-full bg-[#091b33] text-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
-            <div className="flex h-screen flex-col justify-center items-center md:flex-row  gap-1 md:gap-8  pt-0 md lg:pt-10">
-                    <h1 className="text-2xl animate-bounce transition-all">Loading...</h1>
-            </div>
+<div className="flex h-screen flex-col justify-center items-center md:flex-row  gap-1 md:gap-8  pt-0 md lg:pt-10">
+
+
+        <h1 className="text-2xl animate-bounce transition-all">Loading...</h1>
+</div>
 
         </div>
       </div>):
@@ -398,36 +400,13 @@ const accordionData = [
             {/* Left: Image */}
             <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
               <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
-                {/* <Image
+                <Image
                   src={galleryImages[selectedImg] || "/placeholder.svg"}
                   alt="main"
                   fill
                   className="object-contain py-4 px-8 md:p-4"
                 />
-                <span className="absolute bottom-2 right-2 text-xs text-gray-300">*Stock image</span> */}
-
-                 {part=="Engine"&&(
-                   <>
-                     <Image
-                        src="/catalog/Engine 1.png"
-                        alt="Engine"
-                        width={250}
-                        height={160}
-                        className="object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350"
-                       priority
-                      />
-                      <span className="absolute bottom-2 right-2 text-xs text-gray-300">*Stock image</span></>)}
-                          {part=="Transmission"&&(
-                             <>
-                              <Image
-                                 src="/catalog/Trasmission_.png"
-                                 alt="Engine"
-                                 width={250}
-                                height={160}
-                                 className="object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350"
-                                priority
-                              />
-                  <span className="absolute bottom-2 right-2 text-xs text-gray-300">*Stock image</span></>)}
+                <span className="absolute bottom-2 right-2 text-xs text-gray-300">*Stock image</span>
               </div>
             </div>
 
@@ -601,22 +580,14 @@ const accordionData = [
                 </h2>
 
                 {/* Action buttons */}
-               <div className="flex flex-wrap sm:flex-nowrap gap-3 sm:gap-4 items-center mb-6 sm:mb-8">
-                  {/* Email Button */}
-                   <a
-                      href="mailto:kubrafathima57@gmail.com"
-                      className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base text-center"
-                    >
-                      EMAIL US
-                    </a>
-                  {/* Call Button */}
-                  <a
-                     href="tel:+18883382540" 
-                        className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base text-center"
-                      >
-                        CALL NOW
-                      </a>
-                 </div>
+                <div className="flex flex-wrap sm:flex-nowrap gap-3 sm:gap-4 items-center mb-6 sm:mb-8">
+                  <button className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base">
+                    EMAIL US
+                  </button>
+                  <button className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base">
+                    CALL NOW
+                  </button>
+                </div>
 
                 {/* Rating information */}
                 <div className="flex flex-col gap-3 text-white ">
@@ -629,7 +600,7 @@ const accordionData = [
                       alt="Google"
                       width={60}
                       height={20}
-                      className="h-6 sm:h-5 w-16 md:w-20 md:h-6 lg:w-30 lg:h-8"
+                      className="h-4 sm:h-5  w-6"
                     />
                   </div>
 
@@ -638,12 +609,14 @@ const accordionData = [
                       Rated <span className="font-semibold text-white">4.1</span> out of 5 based on
                     </span>
                     <div className="flex items-center gap-1">
+                      
+                     
                       <Image
                         src="/trustpilotMain.png"
                         alt="Trustpilot"
                         width={80}
                         height={20}
-                        className="h-16 sm:h-5 w-25 md:w-40 md:h-20 lg:w-50 lg:h-24"
+                        className="h-8 sm:h-5 w-30"
                       />
                     </div>
                   </div>

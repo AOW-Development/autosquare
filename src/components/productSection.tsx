@@ -145,7 +145,7 @@ export default function ProductSection({ product, make, model, year, part }: Pro
                   }}
                 >
                   <Image
-                    src="/catalog/Engine 1.png"
+                    src="/catalog/card.png"
                     alt="Engine"
                     width={250}
                     height={160}
@@ -200,7 +200,7 @@ export default function ProductSection({ product, make, model, year, part }: Pro
                   }}
                 >
                   <Image
-                    src="/catalog/Engine 1.png"
+                    src="/catalog/card.png"
                     alt="Engine"
                     width={250}
                     height={160}

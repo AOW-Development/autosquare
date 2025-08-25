@@ -29,7 +29,7 @@ export default function OrderHistoryPage() {
           </div>
           <div className="bg-[#091B33] shadow-lg p-4 md:p-6 lg:p-8 flex flex-col w-full">
             <h1
-              className="text-xl md:text-2xl lg:text-3xl font-bold text-center mb-4"
+              className="text-2xl md:text-3xl font-bold text-center mb-4"
               style={{
                 fontFamily: "Audiowide, sans-serif",
                 letterSpacing: "0.1em",
@@ -79,7 +79,7 @@ export default function OrderHistoryPage() {
                   </div>
 
                   {/* Right: Total, Items, Details */}
-                  <div className="flex flex-col md:flex-row lg:flex-row md:items-center gap-4 md:gap-6 min-w-[300px] justify-between">
+                  <div className="flex flex-col md:flex-row md:items-center gap-4 md:gap-6 min-w-[300px] justify-between">
                     <div className="flex flex-row  md:justify-center md:items-center">
                       <div className="font-bold">Total: {order.total}</div>
                       <div className="flex gap-2 -mt-1 pl-2 items-start md:items-center md:justify-end justify-start">

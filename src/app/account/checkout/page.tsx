@@ -7,15 +7,13 @@ import Link from "next/link";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore, CartItem } from "@/store/cartStore";
 import { State } from "country-state-city"; 
-import { useShippingStore } from "@/store/shippingStore";
 
 export default function Checkout() {
   const { billingInfo, setBillingInfo } = useBillingStore();
-  const { shippingInfo,setShippingInfo } = useShippingStore();
   const { items } = useCartStore();
 
   const [formData, setFormData] = useState(
-    shippingInfo || {
+    billingInfo || {
       firstName: "",
       lastName: "",
       // email: "",
@@ -34,70 +32,25 @@ export default function Checkout() {
 
   // Sync billingInfo to formData if it changes
   useEffect(() => {
-    if (shippingInfo) {
+    if (billingInfo) {
       setFormData((prev) => ({
         ...prev,
-        ...shippingInfo,
+        ...billingInfo,
       }));
     }
-  }, [shippingInfo]);
+  }, [billingInfo]);
 
-const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
-const handleInputChange = (field: string, value: string) => {
-  let error = "";
-  const country = formData.country; 
-
-  switch (field) {
-    case "firstName":
-    case "lastName":
-    case "city":
-      if (!/^[A-Za-z\s]*$/.test(value)) {
-        error = "Only letters allowed";
-      }
-      break;
-
-    case "phone":
-      if (country === "US") {
-        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-          error = "Enter a valid US phone (e.g. 555-123-4567)";
-        }
-      } else if (country === "CA") {
-        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-          error = "Enter a valid Canadian phone (e.g. 416-123-4567)";
-        }
-      }
-      break;
-
-    case "zipCode":
-      if (country === "US") {
-        if (!/^\d{5}(-\d{4})?$/.test(value)) {
-          error = "Enter a valid US ZIP (12345 or 12345-6789)";
-        }
-      } else if (country === "CA") {
-        if (!/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
-          error = "Enter a valid Canadian Postal Code (e.g. K1A 0B1)";
-        }
-      }
-      break;
-  }
-
-
-  setFormData((prev) => ({ ...prev, [field]: value }));
-  setErrors((prev) => ({ ...prev, [field]: error }));
-};
-
-
+  const handleInputChange = (field: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
+  };
 
   // Save billing info to store when continuing to payment
   const handleContinue = () => {
-    console.log("Form Data:", formData);
-    setShippingInfo(formData);
+    setBillingInfo(formData);
   };
 
 
-const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
+   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
 
 
 useEffect(() => {
@@ -158,8 +111,8 @@ useEffect(() => {
 
   return (
    
-      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
-        <div className=" mx-auto md:mx-6 lg:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 pb-22 overflow-hidden">
+        <div className=" mx-auto md:mx-40 px-4 md:px-6 lg:px-1">
           {/* Breadcrumb */}
           <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
             <Link
@@ -186,7 +139,7 @@ useEffect(() => {
 
           {/* Title */}
           <h1
-            className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-4 text-left"
+            className="font-audiowide text-3xl lg:text-4xl mb-4 text-left"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",
@@ -243,13 +196,13 @@ useEffect(() => {
             <div className="flex-1 h-0.5 bg-white mb-4"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
             {/* Left Column: Recipient Details Form */}
-            <div className="col-span-3 md:col-span-3 lg:col-span-2 ">
+            <div className="col-span-3 lg:col-span-2 ">
               {/* Login Link */}
               <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6">
                 <Link
-                  href="/account/signIn"
+                  href="/login"
                   className="text-sm text-[#FFFFFF] hover:underline font-exo2"
                 >
                   Have an account? Log in
@@ -258,7 +211,7 @@ useEffect(() => {
 
               {/* Form Header */}
               <h2 className="text-base font-semibold mb-6 font-exo2">
-                Enter Shipping Information
+                SHIPPING DETAILS
               </h2>
               <div className="flex gap-4 mb-4">
               <button
@@ -287,22 +240,19 @@ useEffect(() => {
 
               <form className="space-y-6">
                 {/* Name Fields */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
                   <div>
                     <label className="block font-exo2 mb-2">First Name *</label>
                     <input
                       type="text"
                       placeholder="Name"
                       value={formData.firstName}
-                      onChange={(e) => handleInputChange("firstName", e.target.value)}
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3]
-                      rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      pattern="^[A-Za-z\s]+$"
-                      title="Only alphabets allowed"
+                      onChange={(e) =>
+                        handleInputChange("firstName", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
-                    {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
-
                   </div>
                   <div>
                     <label className="block font-exo2 mb-2">Last Name *</label>
@@ -310,141 +260,168 @@ useEffect(() => {
                       type="text"
                       placeholder="Name"
                       value={formData.lastName}
-                       onChange={(e) => handleInputChange("lastName", e.target.value)}
-                        className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3]
-                        rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                        pattern="^[A-Za-z\s]+$"
-                        title="Only alphabets allowed"
-                        required
-                      />
-                      {errors.firstName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+                      onChange={(e) =>
+                        handleInputChange("lastName", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      required
+                    />
                   </div>
                 </div>
 
                 {/* Contact Fields */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* <div>
+                    <label className="block font-exo2 mb-2">Email *</label>
+                    <input
+                      type="email"
+                      placeholder="example@gmail.com"
+                      value={formData.email}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      required
+                    />
+                  </div> */}
                   <div>
                     <label className="block font-exo2 mb-2">Phone *</label>
                     <input
                       type="tel"
                       placeholder="(888) 000-0000"
                       value={formData.phone}
-                     onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3]
-                      rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      pattern="^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$"
-                      title="Enter a valid US phone number (e.g. 888-000-0000)"
+                      onChange={(e) =>
+                        handleInputChange("phone", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
-                     {errors.phone && <p className="text-red-500 text-sm">{errors.phone}</p>}
                   </div>
-                  {userType === "Commercial" && (
-                    <div>
-                      <label className="block font-exo2 mb-2">Company*</label>
-                      <input
-                        className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                        rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                        value={formData.company}
-                        onChange={(e) => handleChange("company", e.target.value)}
-                        placeholder="Company name"
-                      />
-                    </div>
-                  )}
+                </div>
+                {userType === 'Commercial' && (
+                <div className="">
+                  <label className="block text-xs mb-1">Company*</label>
+                  <input
+                    className="w-full max-w-[450px] bg-[#091627] rounded-lg px-5 py-3 text-white border border-white/10 focus:outline-none"
+                    value={formData.company}
+                    onChange={(e) => handleChange("company", e.target.value)}
+                    placeholder="Company name"
+                  />
+                </div>
+              )}
+
+                {/* Company */}
+                {/* <div>
+                  <label className="block font-exo2 mb-2">Company</label>
+                  <input
+                    type="text"
+                    placeholder="Company name (optional)"
+                    value={formData.company}
+                    onChange={(e) =>
+                      handleInputChange("company", e.target.value)
+                    }
+                    className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                  />
+                </div> */}
+
+                {/* Country */}
+                <div>
+                  <label className="block text-xs mb-1">Country*</label>
+                <select
+                  className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                  value={formData.country}
+                  onChange={(e) => handleChange("country", e.target.value)}
+                  required
+                >
+                  <option value="Choose country…">Choose Country…</option>
+                 <option value="US">United States</option>
+                 <option value="CA">Canada</option>
+                  
+                </select>
                 </div>
 
-                {/* Country & Address */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-2 gap-4">
+                  {/* Address */}
                   <div>
-                    <label className="block font-exo2 mb-2">Country *</label>
-                    <select
-                      className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white 
-                      border border-white/10 focus:outline-none lg:py-3"
-                      value={formData.country}
-                      onChange={(e) => handleChange("country", e.target.value)}
-                      required
-                    >
-                      <option value="Choose country…">Choose Country…</option>
-                      <option value="US">United States</option>
-                      <option value="CA">Canada</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block font-exo2 mb-2">Street Address *</label>
+                    <label className="block font-exo2 mb-2">
+                      Street Address *
+                    </label>
                     <input
                       type="text"
                       placeholder="Address"
                       value={formData.address}
-                      onChange={(e) => handleInputChange("address", e.target.value)}
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                      rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      onChange={(e) =>
+                        handleInputChange("address", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
                   </div>
-                </div>
 
-                {/* Apartment & City */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  {/* Apartment */}
                   <div>
-                    <label className="block font-exo2 mb-2">Apartment (optional)</label>
+                    <label className="block font-exo2 mb-2">
+                      Apartment, etc. (optional)
+                    </label>
                     <input
                       type="text"
-                      placeholder="Apartment, etc."
+                      placeholder="Apartment, etc. (optional)"
                       value={formData.apartment}
-                      onChange={(e) => handleInputChange("apartment", e.target.value)}
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                      rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      onChange={(e) =>
+                        handleInputChange("apartment", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                     />
                   </div>
+                </div>
+                {/* City, State, ZIP */}
+                <div className="grid md:grid-cols-3 gap-4">
                   <div>
                     <label className="block font-exo2 mb-2">City *</label>
                     <input
                       type="text"
                       placeholder="City"
                       value={formData.city}
-                      onChange={(e) => handleInputChange("city", e.target.value)}
-                          className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3]
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                          pattern="^[A-Za-z\s]+$"
-                          title="City name must contain only letters"
-                          required/>
-                          {errors.firstName && <p className="text-red-500 text-sm">{errors.city}</p>}
-                     </div>
-                </div>
-
-                {/* State & ZIP */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block font-exo2 mb-2">State *</label>
-                    <select
-                      className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white 
-                      border border-white/10 focus:outline-none lg:py-3"
-                      value={formData.state}
-                      onChange={(e) => handleChange("state", e.target.value)}
-                      disabled={!states.length}
+                      onChange={(e) =>
+                        handleInputChange("city", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
-                    >
-                      <option value="">Choose State…</option>
-                      {states.map((state) => (
-                        <option key={state.isoCode} value={state.isoCode} className="text-white">
-                          {state.name}
-                        </option>
-                      ))}
-                    </select>
+                    />
                   </div>
+                   <div className="md:col-span-2">
+                 <label className="block text-xs mb-4">State*</label>
+                  <select
+                    className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white border border-white/10 focus:outline-none"
+                    value={formData.state}
+                    onChange={(e) => handleChange("state", e.target.value)}
+                    disabled={!states.length}
+                    required
+                  >
+                    <option value="">Choose State…</option>
+                    {states.map((state) => (
+                      <option
+                        key={state.isoCode}
+                        value={state.isoCode}
+                        className="text-white" // dropdown options appear default-colored, can't style them fully via Tailwind due to browser limitations
+                      >
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                   <div>
                     <label className="block font-exo2 mb-2">ZIP Code *</label>
                     <input
                       type="text"
                       placeholder="ZIP Code"
                       value={formData.zipCode}
-                      onChange={(e) => handleInputChange("zipCode", e.target.value)}
-                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3]
-                      rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                      pattern="^\d{5}(-\d{4})?$"
-                      title="Enter a valid US ZIP code (e.g. 12345 or 12345-6789)"
+                      onChange={(e) =>
+                        handleInputChange("zipCode", e.target.value)
+                      }
+                      className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
                       required
                     />
-                    {errors.firstName && <p className="text-red-500 text-sm">{errors.zipCode}</p>}
                   </div>
                 </div>
 
@@ -466,7 +443,7 @@ useEffect(() => {
 
             {/* Right Column: Products & Order Summary */}
             <div className=" col-span-3 lg:col-span-1 ">
-              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-2 md:p-4 ">
+              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-5 md:p-4 ">
                 {/* Card Header */}
                 <div className="flex justify-between items-center ">
                   <h3 className="text-base font-semibold font-exo2">
@@ -486,7 +463,7 @@ useEffect(() => {
                     {cartItems.map((item) => (
                     <div key={item.id} className="flex space-x-3 pb-4 ">
                       <Image
-                      src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
+                      src={item.image}
                       alt={item.title}
                       width={56}
                       height={56}
@@ -518,7 +495,7 @@ useEffect(() => {
                 </div>
                   {/* Total number of products */}
                     <div className="flex justify-between items-center pb-0">
-                    <span className="font-exo2 text-sm md:text-sm lg:text-lg text-gray-300">
+                    <span className="font-exo2 text-sm md:text-lg text-gray-300">
                       Total products:
                     </span>
                     <span className="font-exo2 text-sm text-white">
@@ -603,7 +580,7 @@ useEffect(() => {
                 {isFormValid() ? (
                   <Link href="/account/payMethod">
                     <button
-                      className="w-full px-6 py-1 md:py-4  rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
+                      className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
                       onClick={handleContinue} // <-- Save billing info before navigating
                     >
                       Continue to payment

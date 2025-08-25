@@ -47,13 +47,13 @@ export default function CategoriesSection() {
   return (
     <>
       {/* <ShopByVehicle/> */}
-      <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 md:py-1 md:px-6 lg:py-10 ">
+      <section className="w-full bg-[#091b33] flex flex-col items-center justify-center px-2 pt-10 md:py-4 md:px-6 lg:py-10 ">
         <div className="w-full max-w-[1200px]">
           {/* <h2 className="font-audiowide text-white text-2xl sm:text-4xl mt-4 mb-6 tracking-wide uppercase text-left w-full">
           featured categories
         </h2> */}
           <h1
-            className="font-audiowide text-white text-lg sm:text-4xl mt-8 md:mt-20 mb-6 md:mb-10 tracking-wide uppercase text-left w-full"
+            className="font-audiowide text-white text-lg sm:text-4xl mt-2 md:mt-20 mb-6 md:mb-10 tracking-wide uppercase text-left w-full"
             style={{
               fontFamily: "Audiowide, sans-serif",
               letterSpacing: "0.1em",

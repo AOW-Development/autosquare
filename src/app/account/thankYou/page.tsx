@@ -120,12 +120,24 @@ export default function ThankYouPage() {
   const total = subtotal + salesTax;
 
   return (
+      <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
+      {/* Background Car Image */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <div className="w-[700px] h-[624px] relative">
+          <Image
+            src="/Images/thx_car.png"
+            alt="Car background"
+            fill
+            className="object-contain object-center"
+            priority
+          />
+        </div>
+      </div>
 
-  {/* Thank You Content */}
-  <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
+    <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
 
       {/* Thank You Content */}
-      <div> className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
+      <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
           {/* Logo and Title */}
           <div className="flex flex-col items-center mb-6">
             {/* <Image src="/Images/logo.svg" alt="Brand Logo" width={80} height={80} className="mb-2" priority /> */}
@@ -314,7 +326,7 @@ export default function ThankYouPage() {
           </div>
         </div>
       </main>
-    </div>
+    // </div>
 
 
   );

@@ -274,33 +274,41 @@ const isFormValid = () => {
   } as PaymentInfo;
 
   if (user) {
-    // IMPORTANT:
-    // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
-    // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
-    const orderData = {
-      user,
-      payment,
-      shipping: shippingInfo, // always from shipping store
-      billing: sameAsShipping ? shippingInfo : billingFormData, // correct billing info sent
-      cartItems: cartItems.length ? cartItems : (cartItems as any)
-    };
+    try {
+      // IMPORTANT:
+      // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
+      // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
+      const orderData = {
+        user,
+        payment,
+        shipping: shippingInfo, // always from shipping store
+        billing: sameAsShipping ? shippingInfo : billingFormData, // correct billing info sent
+        cartItems: cartItems.length ? cartItems : (cartItems as any)
+      };
 
-    // ✅ Store everything for Thank You page
-    sessionStorage.setItem("orderData", JSON.stringify(orderData));
+      // Store order data for Thank You page
+      sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-    // ...
-    await fetch('/api-2/send-order-email', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(orderData)
-    });
-  }
+      // Send order confirmation email
+      const emailResponse = await fetch('/api-2/send-order-email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(orderData)
+      });
 
-  if (user) {
-    router.push("/account/thankYou");
-    
+      if (!emailResponse.ok) {
+        console.error('Failed to send order confirmation email');
+        // Continue with the order even if email fails
+      }
+
+      // Redirect to thank you page after successful order and email
+      router.push("/account/thankYou");
+    } catch (error) {
+      console.error('Error processing payment:', error);
+      // Handle the error appropriately, maybe show a toast message to the user
+    }
   } else {
-    // ✅ Even if user logs in later, we keep the data
+    // Even if user logs in later, we keep the data
     const orderDataForGuest = {
       payment,
       billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },

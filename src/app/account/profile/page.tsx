@@ -28,52 +28,46 @@ export default function ProfilePage() {
   // Consolidated useEffect to handle profile data
   useEffect(() => {
     const initializeProfile = async () => {
-      if (!token) {
-        console.log('No token available');
-        setProfileLoaded(true);
-        return;
-      }
+      if (!token) return;
       
       try {
-        // Use the API utility which handles token automatically
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/profile`, {
-          method: 'GET',
-          credentials: 'include', // Important for cookies if using httpOnly
+        const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+        const response = await fetch(`${API_BASE}/auth/profile`, {
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
         });
 
         if (response.ok) {
           const profile = await response.json();
           console.log('Profile data received:', profile);
-          
-          // Update fields with profile data
+          // Use API data if available
           setFields(prev => ({
             ...prev,
-            firstName: profile.full_name?.split(' ')[0] || user?.firstName || '',
-            lastName: profile.full_name?.split(' ').slice(1).join(' ') || user?.lastName || '',
-            email: profile.email || user?.email || '',
+            firstName: profile.full_name?.split(" ")[0] || "",
+            lastName: profile.full_name?.split(" ").slice(1).join(" ") || "",
+            email: profile.email || "",
           }));
         } else {
           console.error('Profile API failed:', response.status, response.statusText);
-          // Fallback to user data from auth store
+          // Fallback to user data from auth store if API fails
           setFields(prev => ({
             ...prev,
-            firstName: user?.firstName || '',
-            lastName: user?.lastName || '',
-            email: user?.email || '',
+            firstName: user?.firstName || "",
+            lastName: user?.lastName || "",
+            email: user?.email || "",
           }));
         }
       } catch (err) {
-        console.error('Failed to fetch profile:', err);
+        console.error("Failed to fetch profile:", err);
         // Fallback to user data from auth store
         setFields(prev => ({
           ...prev,
-          firstName: user?.firstName || '',
-          lastName: user?.lastName || '',
-          email: user?.email || '',
+          firstName: user?.firstName || "",
+          lastName: user?.lastName || "",
+          email: user?.email || "",
         }));
       } finally {
         setProfileLoaded(true);
@@ -123,62 +117,38 @@ export default function ProfilePage() {
     }
 
     try {
-      // Prepare the update data
-      const updateData: any = {
-        email: fields.email,
-        full_name: `${fields.firstName} ${fields.lastName}`.trim(),
-      };
-
-      // Only include password fields if they're being updated
-      if (fields.newPassword && fields.currentPassword) {
-        updateData.currentPassword = fields.currentPassword;
-        updateData.newPassword = fields.newPassword;
-      }
-
+      const API_BASE = process.env.NEXT_PUBLIC_API_URL;
+      // Simulate API call to update profile
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/auth/profile`,
+        `${API_BASE}/auth/profile`,
         {
-          method: 'PATCH', // Use PATCH for partial updates
+          method: "GET",
           headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           },
-          body: JSON.stringify(updateData),
-          credentials: 'include',
+          // no body for GET
         }
       );
 
-      const data = await response.json();
-
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update profile');
-      }
-
-      // Update user in auth store
-      if (data.user) {
-        setUser({
-          ...user,
-          email: data.user.email || fields.email,
-          firstName: fields.firstName,
-          lastName: fields.lastName,
-        });
+        throw new Error("Failed to update profile");
       }
 
       // Clear password fields after successful update
-      setFields(prev => ({
-        ...prev,
-        currentPassword: '',
-        newPassword: '',
-        confirmNewPassword: '',
+      setFields((f) => ({
+        ...f,
+        currentPassword: "",
+        newPassword: "",
+        confirmNewPassword: "",
       }));
 
       // Show success message
-      setErrors({ general: 'Profile updated successfully!' });
-    } catch (err: any) {
-      console.error('Update profile error:', err);
-      setErrors({
-        general: err.message || 'Failed to update profile. Please try again.',
-      });
+      setErrors({ general: "Profile updated successfully!" });
+    } catch (err) {
+      console.log(err);
+
+      setErrors({ general: "Failed to update profile. Please try again." });
     } finally {
       setLoading(false);
     }

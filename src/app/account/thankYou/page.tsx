@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore } from "@/store/cartStore";
 import { generateOrderNumber } from "@/utils/order";
@@ -30,7 +30,8 @@ export default function ThankYouPage() {
   const { setBillingInfo } = useBillingStore();
   
   const { user } = useAuthStore();
-  console.log(isSameAddress, shippingInfo, billingInfo);
+  
+  console.log("shiva",user);
 
   // Card image mapping (top-level so it’s accessible)
   const cardImageMap: Record<string, string> = {
@@ -39,8 +40,11 @@ export default function ThankYouPage() {
     "American Express": "americanexpress_82060 1.png",
     Discover: "discover_82082.png",
   };
+  const hasRunRef = useRef(false);
 
   useEffect(() => {
+    if (hasRunRef.current) return;  // prevent duplicate
+    hasRunRef.current = true;
     // Generate order number and date
     setOrderNumber(generateOrderNumber());
     setOrderDate(
@@ -72,48 +76,69 @@ export default function ThankYouPage() {
     } else {
       setPaymentInfo({ method: storedPaymentMethod });
     }
+    
 
     const createOrder = async () => {
+    
       try {
         // Get order data from session storage
-        const orderData = sessionStorage.getItem('orderData');
+        const orderData = sessionStorage.getItem("orderData");
         if (!orderData) {
-          console.error('No order data found in session storage');
+          console.error("No order data found in session storage");
           return;
         }
 
-        const parsedOrderData = JSON.parse(orderData);
+    const parsedOrderData = JSON.parse(orderData);
 
-        // Ensure user data exists in order payload
-        if (!parsedOrderData.user && user) {
-          parsedOrderData.user = {
+    // Rebuild full payload
+    const fullOrderData = {
+      ...parsedOrderData,
+      user: user
+        ? {
             id: user.id,
             email: user.email,
             firstName: user.firstName,
             lastName: user.lastName,
-            name: user.name
-          };
-        }
-
-        if (!parsedOrderData.user?.email) {
-          console.error('No user email found in order data');
-          return;
-        }
-
-        // Create order in backend
-        await createOrderInBackend(parsedOrderData);
-
-        // Clear session storage after successful order creation
-        sessionStorage.removeItem('orderData');
-
-      } catch (error) {
-        console.error('Error creating order:', error);
-        toast.error('Failed to process order. Please contact support.');
-      }
+            name: user.name,
+          }
+        : parsedOrderData.user,
+      shipping: shippingInfo,
+      billing: isSameAddress ? shippingInfo : billingInfo,
+      cartItems: cartItems,
+      subtotal,
+      total,
     };
 
-    createOrder();
-  }, [user]);
+    console.log("Final order payload:", fullOrderData);
+
+    // Send order to backend
+    await createOrderInBackend(fullOrderData);
+
+    // Send confirmation email (guest flow needs this too)
+    try {
+      const emailResponse = await fetch("/api-2/send-order-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fullOrderData),
+      });
+
+      if (!emailResponse.ok) {
+        console.error("Failed to send order confirmation email");
+      }
+    } catch (err) {
+      console.error("Email sending failed:", err);
+    }
+
+    // Clear session storage
+    sessionStorage.removeItem("orderData");
+  } catch (error) {
+    console.error("Error creating order:", error);
+    toast.error("Failed to process order. Please contact support.");
+  }
+};
+
+      if (user) createOrder();
+  },[user]);
 
   const cardImage = cardImageMap[cardType];
 

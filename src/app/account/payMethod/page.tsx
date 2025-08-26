@@ -343,38 +343,39 @@ const isFormValid = () => {
       sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
       // Send order confirmation email
-      const emailResponse = await fetch('/api-2/send-order-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
-      });
+      // const emailResponse = await fetch('/api-2/send-order-email', {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify(orderData)
+      // });
 
-      if (!emailResponse.ok) {
-        console.error('Failed to send order confirmation email');
-        // Continue with the order even if email fails
-      }
+      // if (!emailResponse.ok) {
+      //   console.error('Failed to send order confirmation email');
+      //   // Continue with the order even if email fails
+      // }
 
       // Redirect to thank you page after successful order and email
       router.push("/account/thankYou");
+      
     } catch (error) {
       console.error('Error processing payment:', error);
       // Handle the error appropriately, maybe show a toast message to the user
     }
   } else {
-    // Even if user logs in later, we keep the data
-    const orderDataForGuest = {
-      payment,
-      billing: { ...billingFormData, apartment: billingFormData.apartment ?? "" },
-      cartItems
-    };
-    sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
+  // Guest user checkout
+  const orderDataForGuest = {
+    payment,
+    shipping: shippingInfo, // always save shipping
+    billing: sameAsShipping ? shippingInfo : billingInfo,
+    cartItems,
+  };
 
-    sessionStorage.setItem("redirectAfterLogin", "/account/thankYou");
-    router.push("/account/signIn");
-  }
+  sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
+  sessionStorage.setItem("redirectAfterLogin", "/account/thankYou");
+
+  router.push("/account/signIn");
+}
 };
-
-
    const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
   
   

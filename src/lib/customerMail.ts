@@ -14,7 +14,8 @@ export const sendCustomerInvoiceEmail = async (data: OrderEmailData): Promise<bo
 
     // 2. Define email options with HTML + PDF attachment
     const mailOptions = {
-      from: `"PartsCentral.us" <${process.env.SMTP_USER}>`,
+      // from: `"PartsCentral.us" <${process.env.SMTP_USER}>`,
+      from: process.env.SMTP_USER,
       to: data.user.email,
       subject: `Your Order Confirmation - #${data.orderNumber}`,
       html: generateCustomerInvoiceHTML(data),

@@ -31,7 +31,7 @@ export default function ThankYouPage() {
   
   const { user } = useAuthStore();
   
-  console.log("shiva",user);
+
 
   // Card image mapping (top-level so it’s accessible)
   const cardImageMap: Record<string, string> = {
@@ -42,6 +42,13 @@ export default function ThankYouPage() {
   };
   const hasRunRef = useRef(false);
 
+    const cardImage = cardImageMap[cardType];
+
+
+  // Calculate totals
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
+  const total = subtotal + salesTax;
   useEffect(() => {
     if (hasRunRef.current) return;  // prevent duplicate
     hasRunRef.current = true;
@@ -91,25 +98,31 @@ export default function ThankYouPage() {
     const parsedOrderData = JSON.parse(orderData);
 
     // Rebuild full payload
+     // Replace the existing fullOrderData object inside your createOrder function
+
     const fullOrderData = {
-      ...parsedOrderData,
-      user: user
-        ? {
-            id: user.id,
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            name: user.name,
-          }
-        : parsedOrderData.user,
-      shipping: shippingInfo,
-      billing: isSameAddress ? shippingInfo : billingInfo,
-      cartItems: cartItems,
-      subtotal,
-      total,
+        user: user
+            ? {
+                id: user.id,
+                email: user.email,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                name: user.name,
+              }
+            : parsedOrderData.user,
+        payment: parsedOrderData.payment,
+        billing: parsedOrderData.billing,
+        shipping: parsedOrderData.shipping,
+        cartItems: cartItems,
+        orderNumber: parsedOrderData.orderNumber,
+        totalAmount: total,
+        subtotal: subtotal,
     };
 
-    console.log("Final order payload:", fullOrderData);
+console.log('Final full order data to be sent:', fullOrderData);
+    console.log('Full order data to be sent:', fullOrderData);
+
+  
 
     // Send order to backend
     await createOrderInBackend(fullOrderData);
@@ -136,17 +149,10 @@ export default function ThankYouPage() {
     toast.error("Failed to process order. Please contact support.");
   }
 };
-
-      if (user) createOrder();
+  createOrder();
   },[user]);
 
-  const cardImage = cardImageMap[cardType];
 
-
-  // Calculate totals
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
-  const total = subtotal + salesTax;
 
   return (
       <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">

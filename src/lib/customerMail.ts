@@ -1,8 +1,10 @@
 import nodemailer from 'nodemailer';
 import { OrderEmailData } from './mail';
-import { generateCustomerInvoiceHTML, generateInvoicePDF } from './customerInvoiceTemplate';
+import { generateCustomerInvoiceHTML, generateInvoicePDF } from '@/lib/customerInvoiceTemplate';
+
 import { createTransporter } from './mail'; // Import the shared transporter creator
 
+// Send Customer Invoice
 export const sendCustomerInvoiceEmail = async (data: OrderEmailData): Promise<boolean> => {
   try {
     const transporter = createTransporter();
@@ -19,7 +21,7 @@ export const sendCustomerInvoiceEmail = async (data: OrderEmailData): Promise<bo
       attachments: [
         {
           filename: `invoice-${data.orderNumber}.pdf`,
-          content: Buffer.from(pdfBytes), // Convert Uint8Array to Buffer
+          content: Buffer.from(pdfBytes),
           contentType: "application/pdf",
         },
       ],
@@ -34,3 +36,8 @@ export const sendCustomerInvoiceEmail = async (data: OrderEmailData): Promise<bo
     return false;
   }
 };
+
+
+// Send Purchase Order
+
+

@@ -18,6 +18,7 @@ export interface BillingInfo {
   lastName: string;
   phone: string;
   country: string;
+  company: string;
   address: string;
   apartment: string;
   city: string;
@@ -28,6 +29,7 @@ export interface ShippingInfo {
   firstName: string;
   lastName: string;
   phone: string;
+  company: string;
   country: string;
   address: string;
   apartment: string;
@@ -122,7 +124,7 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
 
           <h3 style="margin: 32px 0 8px 0; color: #091B33;">Customer Info</h3>
           <table style="width: 100%; border-collapse: collapse; margin-bottom: 16px;">
-            <tr><td style="padding: 6px; color: #6b7280;">Name:</td><td style="padding: 6px; color: #1f2937;">${user.firstName} ${user.lastName}</td></tr>
+            <tr><td style="padding: 6px; color: #6b7280;">Name:</td><td style="padding: 6px; color: #1f2937;">${shipping.firstName} ${shipping.lastName}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">Email:</td><td style="padding: 6px; color: #1f2937;">${user.email}</td></tr>
             <tr><td style="padding: 6px; color: #6b7280;">Phone:</td><td style="padding: 6px; color: #1f2937;">${billing.phone}</td></tr>
           </table>

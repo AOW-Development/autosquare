@@ -1,29 +1,39 @@
-"use client";
-import Banner from "@/components/Banner";
-import Sidebar from "@/components/Sidebar";
-import Link from "next/link";
+import { getMetadataForPath } from "@/utils/metadata";
+import type { Metadata } from "next";
 import Image from "next/image";
-// import { Metadata } from "next";
+import Link from "next/link";
+import { DATA } from "@/data/data";
 
-// export const metadata: Metadata = {
-//   title: "About Us | Car Parts - Trusted Auto Parts Supplier",
-//   description:
-//     "Discover Car Parts’ journey, mission, and values. Learn how Car Parts delivers quality auto parts with reliability and trust to customers nationwide.",
-// };
+type SlagPageProps = {
+  params: Promise<{
+    slag: string;
+  }>;
+};
 
-export default function AboutUsPage() {
+// Optionally, you can export metadata for static generation if needed
+export async function generateMetadata({
+  params,
+}: SlagPageProps): Promise<Metadata> {
+  // Await params before accessing its properties
+  const { slag } = await params;
+  // Prepend slash to match the keys in metadataMap
+  const path = `/${slag}`;
+  return getMetadataForPath(path);
+}
+
+export default async function SlagPage({ params }: SlagPageProps) {
+  const { slag } = await params;
+  //   const DATA = [
+  //     {
+  //       url: "used-engines-and-transmissions-for-sale-near-me-in-united-states",
+  //       content:
+  //         "Looking for the best place to buy used engines and transmissions.",
+  //     },
+  //   ];
+  const data = DATA.find((item) => item.url === slag);
+
   return (
     <div className="mt-0 pt-0">
-      {/* <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[380px] relative">
-
-          <Image
-            src="/autoparts/banner.png"
-            alt="Account Banner"
-            fill
-            priority
-            className=" object-center"
-          />
-        </div> */}
       <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative ">
         <Image
           src="/autoparts/banner.png"
@@ -61,13 +71,13 @@ export default function AboutUsPage() {
                 />
               </Link>
               {/* <span>&gt;</span> */}
-              <h1>About us</h1>
+              <h1>{data?.url.replace(/-/g, " ")}</h1>
             </div>
 
             <main className="flex flex-col gap-2">
               {/* WHO ARE WE? Section */}
               <section>
-                <h2
+                {/* <h2
                   className="text-xl md:text-[32px] font-semibold uppercase"
                   style={{
                     fontFamily: "Audiowide, sans-serif",
@@ -75,17 +85,11 @@ export default function AboutUsPage() {
                   }}
                 >
                   WHO ARE WE?
-                </h2>
+                </h2> */}
                 <div className="flex flex-col md:flex-row items-start">
                   <div className="flex-1">
                     <p className="text-base text-gray-200 leading-relaxed mt-4 text-[16px] justify-left">
-                      Parts Central LLC has always been your one-stop shop for
-                      replacement high-quality used OEM automotive parts and
-                      accessories. Our experts are always a phone call away for
-                      quick, real-time advice, and efficiently respond to your
-                      queries. Our prices are competitive and we strive to
-                      provide the best parts at the most affordable prices. Give
-                      us a call today.
+                      {data?.content}
                     </p>
                   </div>
                   {/*

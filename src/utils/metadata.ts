@@ -3,6 +3,9 @@ import { Metadata } from "next";
 export const metadataMap: Record<string, Metadata> = {
   "/aboutUs": {
     title: "About Us | Car Parts - Trusted Auto Parts Supplier",
+    alternates: {
+      canonical: "https://partscentral.us/aboutUs",
+    },
     description:
       "Discover Car Parts’ journey, mission, and values. Learn how Car Parts delivers quality auto parts with reliability and trust to customers nationwide.",
     keywords:
@@ -10,6 +13,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/autoParts": {
     title: " Trusted Auto Spare Parts Shop & Supplier in US | Buy Now",
+    alternates: {
+      canonical: "https://partscentral.us/autoParts",
+    },
     description:
       "Parts Central Your Trusted Source for Automotive parts and accessories. Genuine Car Spare Parts Distributer.",
     keywords:
@@ -17,6 +23,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/engine": {
     title: "Engine by Car Parts | Quality Auto Engines for Sale",
+    alternates: {
+      canonical: "https://partscentral.us/engine",
+    },
     description:
       "Buy premium Engine by Car Parts at the best price. Reliable, durable, and performance-driven engines designed to fit your vehicle’s needs. Shop now!",
     keywords:
@@ -24,6 +33,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/transmission": {
     title: "Transmission by Car Parts | Quality Auto Parts | Best Price",
+    alternates: {
+      canonical: "https://partscentral.us/transmission",
+    },
     description:
       "Find premium Transmission by Car Parts for your vehicle. Durable, affordable, and reliable solutions to keep your car running smoothly. Shop now!",
     keywords:
@@ -154,6 +166,9 @@ export const defaultMetadata: Metadata = {
     "Shop genuine spare parts for all car brands at best prices in US  at PartsCentral. OEM quality, fast delivery, and perfect fit for every make and model. Order now",
   keywords:
     "car spare parts, car service parts, auto parts, automobile accessories, car accessories, car parts online, buy car parts, auto parts online, vehicle accessories, genuine car parts, car parts store, car parts for sale, car repair parts, aftermarket car parts, engine parts, brake parts, car maintenance, auto parts supplier, buy auto parts online, vehicle spare parts, car parts shop, discount car parts, replacement car parts, car body parts, car parts and accessories, spare parts online, car spare parts dealer, car spare online, car spare parts, auto repair parts, quality auto parts, OEM auto parts, auto parts near me, cheap car parts, used car parts for sale",
+  alternates: {
+    canonical: "https://partscentral.us",
+  },
   //   viewport: {
   //     width: "device-width",
   //     initialScale: 1.0,

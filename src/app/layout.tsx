@@ -55,6 +55,11 @@ export default function RootLayout({
           name="google-site-verification"
           content="mOkOiIA-Z0XcSgcmnQZ4nfwfqDWnm8W4UinaW5fpf8I"
         />
+        <meta 
+        name="google-site-verification" 
+        content="cbWtFgAaDKGwqHjipxrO9D_8KrKucA6ZTzSbB4QMbJE" 
+        />
+ 
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{

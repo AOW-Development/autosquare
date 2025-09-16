@@ -5,7 +5,8 @@ import Link from "next/link";
 // import Hamburger from "@/public/header/hamburgur-button.png";
 // import Arrow from "@/public/header/arrows (4).png";
 import { useCartStore } from "@/store/cartStore";
-import { useState, useRef } from 'react';
+import { useState, useRef } from "react";
+import { last } from "pdf-lib";
 
 const categories = [
   {
@@ -38,6 +39,76 @@ const categories = [
   { name: "Suspension/Steering" },
   { name: "Transmission" },
   { name: "Wheels" },
+  {
+    name: "Our services",
+    sub: [
+      {
+        label: "Used Engines and Transmissions for Sale",
+        href: "/used-engines-and-transmissions-for-sale-near-me-in-united-states",
+      },
+      {
+        label: "Car Engines for Sale",
+        href: "/car-engines-for-sale-near-me-in-united-states",
+      },
+      {
+        label: "Cheap Engines for Sale",
+        href: "/cheap-engines-for-sale-in-united-states",
+      },
+      {
+        label: "Cheap Transmissions in United States",
+        href: "/cheap-transmissions-in-united-states",
+      },
+      {
+        label: "Rebuilt Transmissions for Sale",
+        href: "/rebuilt-transmissions-for-sale-in-united-states",
+      },
+      {
+        label: "Quality Used Transmissions in US",
+        href: "/quality-used-transmissions-in-united-states",
+      },
+      {
+        label: "Used Car Engines for Sale",
+        href: "/used-car-engines-for-sale-in-united-states",
+      },
+      {
+        label: "Find Affordable Used Motors",
+        href: "/used-motors-for-sale-near-me-in-united-states",
+      },
+      {
+        label: "Used 350 Chevy Engine and Motor",
+        href: "/used-350-chevy-engine-for-sale-in-united-states",
+      },
+      {
+        label: "700 R4 Transmission for Sale",
+        href: "/700-r4-transmission-for-sale-in-united-states",
+      },
+      {
+        label: "4L60E Transmission 4x4",
+        href: "/4l60e-transmission-4x4-in-united-states",
+      },
+      {
+        label: "Jeep Wrangler Automatic Transmission",
+        href: "/jeep-wrangler-automatic-transmission-for-sale-in-united-states",
+      },
+      {
+        label: "Honda Civic Engine for Sale",
+        href: "/honda-civic-engine-for-sale-in-united-states",
+      },
+      {
+        label: "Toyota Transmission in United States",
+        href: "/toyota-transmission-in-united-states",
+      },
+      {
+        label: "Best Place to Buy Used Car Engines in US",
+        href: "/best-place-to-buy-used-car-engines-in-united-states",
+      },
+      {
+        label: "Dodge Ram 2500 Cummins Turbo Diesel",
+        href: "/dodge-ram-2500-cummins-turbo-diesel-for-sale-in-united-states",
+      },
+    ],
+    // href: "/used-engines-and-transmissions-for-sale-near-me-in-united-states",
+  },
 ];
 
 const navLinks = [
@@ -82,7 +153,6 @@ export default function Header() {
 
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-
   // --- Hover logic for menus ---
   // Categories
   const categoriesHover = React.useRef(false);
@@ -93,7 +163,7 @@ export default function Header() {
   // Submenu
   const submenuHover = React.useRef(false);
   const submenuTimeout = React.useRef<NodeJS.Timeout | null>(null);
-    const cartCount = useCartStore((s) => 
+  const cartCount = useCartStore((s) =>
     s.items.reduce((sum, i) => sum + i.quantity, 0)
   );
 
@@ -121,7 +191,6 @@ export default function Header() {
     }, 300); // 300ms delay before closing
   };
 
-
   // Keyboard nav stub (expand as needed)
   React.useEffect(() => {
     const handler = (e: KeyboardEvent) => {
@@ -135,121 +204,122 @@ export default function Header() {
   return (
     <header className="w-full bg-[#091B33] text-white ">
       {/* Mobile Header */}
-  <div className="lg:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
-  {/* Row 1: Logo left, contact info right */}
-  <div className="flex items-center justify-between w-full">
-    <Link href="/">
-      <Image
-        src="/logos/header-3.png"
-        alt="Logo"
-        width={200}
-        height={60}
-        className="w-[160px] h-[28px] md:w-[110px] md:h-[28px]"
-      />
-    </Link>
-    <div className="flex flex-col items-end text-xs ">
-      <span className="font-bold">(888) 338-2540</span>
-      <span>Mon-Fri: 8AM - 7PM EST</span>
-    </div>
-  </div>
+      <div className="lg:hidden w-full px-2 pt-2 pb-1 bg-[#091B33]">
+        {/* Row 1: Logo left, contact info right */}
+        <div className="flex items-center justify-between w-full">
+          <Link href="/">
+            <Image
+              src="/logos/header-3.png"
+              alt="Logo"
+              width={200}
+              height={60}
+              className="w-[160px] h-[28px] md:w-[110px] md:h-[28px]"
+            />
+          </Link>
+          <div className="flex flex-col items-end text-xs ">
+            <span className="font-bold">(888) 338-2540</span>
+            <span>Mon-Fri: 8AM - 7PM EST</span>
+          </div>
+        </div>
 
-  {/* Row 2: Menu button left, icons right */}
-  <div className="flex items-center justify-between w-full mt-2">
-    {/* Menu Toggle */}
-    {/* <div
+        {/* Row 2: Menu button left, icons right */}
+        <div className="flex items-center justify-between w-full mt-2">
+          {/* Menu Toggle */}
+          {/* <div
       className="relative inline-block text-left"
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
     > */}
-    <div className="relative inline-block text-left">
+          <div className="relative inline-block text-left">
+            <button
+              className="flex items-center py-1"
+              aria-label={menuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={menuOpen}
+              onClick={() => setMenuOpen((prev) => !prev)}
+            >
+              <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+                <path
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d={
+                    menuOpen
+                      ? "M6 18L18 6M6 6l12 12" // X icon
+                      : "M4 6h16M4 12h16M4 18h16" // Hamburger
+                  }
+                />
+              </svg>
+              <span className="ml-1 font-medium">
+                {menuOpen ? "Close" : "Menu"}
+              </span>
+            </button>
+          </div>
 
-      <button
-        className="flex items-center py-1"
-        aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-        aria-expanded={menuOpen}
-        onClick={() => setMenuOpen((prev) => !prev)}
-      >
-        <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
-          <path
-            stroke="currentColor"                              
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d={
-              menuOpen
-                ? 'M6 18L18 6M6 6l12 12' // X icon
-                : 'M4 6h16M4 12h16M4 18h16' // Hamburger
-            }
-          />
-        </svg>
-        <span className="ml-1 font-medium">{menuOpen ? 'Close' : 'Menu'}</span>
-      </button>
-    </div>
+          {/* Right Side: Search and Icons */}
+          <div className="flex items-center gap-4">
+            {showSearch ? (
+              <input
+                type="text"
+                autoFocus
+                className="px-1 py-1 rounded-lg bg-gray-800 text-white outline-none w-40 transition"
+                placeholder="Search..."
+                onBlur={() => setShowSearch(false)}
+                onKeyDown={(e) => {
+                  if (e.key === "Escape") setShowSearch(false);
+                }}
+              />
+            ) : (
+              <Image
+                src="/header/MagnifyingGlass.png"
+                alt="Search"
+                width={24}
+                height={24}
+                className="hover:text-blue-400 cursor-pointer"
+                onClick={() => setShowSearch(true)}
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") setShowSearch(true);
+                }}
+                role="button"
+                aria-label="Open search"
+              />
+            )}
 
-    {/* Right Side: Search and Icons */}
-    <div className="flex items-center gap-4">
-      {showSearch ? (
-        <input
-          type="text"
-          autoFocus
-          className="px-1 py-1 rounded-lg bg-gray-800 text-white outline-none w-40 transition"
-          placeholder="Search..."
-          onBlur={() => setShowSearch(false)}
-          onKeyDown={(e) => {
-            if (e.key === "Escape") setShowSearch(false);
-          }}
-        />
-      ) : (
-        <Image
-          src="/header/MagnifyingGlass.png"
-          alt="Search"
-          width={24}
-          height={24}
-          className="hover:text-blue-400 cursor-pointer"
-          onClick={() => setShowSearch(true)}
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") setShowSearch(true);
-          }}
-          role="button"
-          aria-label="Open search"
-        />
-      )}
+            <Link href="/account/cart" className="relative">
+              <Image
+                src="/header/ShoppingCartSimple.png"
+                alt="Cart"
+                width={22}
+                height={22}
+              />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
+                  {cartCount}
+                </span>
+              )}
+            </Link>
 
-      <Link href="/account/cart" className="relative">
-        <Image
-          src="/header/ShoppingCartSimple.png"
-          alt="Cart"
-          width={22}
-          height={22}
-        />
-        {cartCount > 0 && (
-          <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
-            {cartCount}
-          </span>
-        )}
-      </Link>
+            <Link href="/account/garage" className="hover:text-blue-400">
+              <Image
+                src="/header/Garage.png"
+                alt="Garage"
+                width={22}
+                height={22}
+              />
+            </Link>
 
-      <Link href="/account/garage" className="hover:text-blue-400">
-        <Image
-          src="/header/Garage.png"
-          alt="Garage"
-          width={22}
-          height={22}
-        />
-      </Link>
-
-      <Link href="/account/profile" className="hover:text-blue-400">
-        <Image
-          src="/header/User.png"
-          alt="Profile"
-          width={22}
-          height={22}
-        />
-      </Link>
-    </div>
-  </div>
-</div>
+            <Link href="/account/profile" className="hover:text-blue-400">
+              <Image
+                src="/header/User.png"
+                alt="Profile"
+                width={22}
+                height={22}
+              />
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* Desktop/Tablet Header */}
       <div className="hidden lg:grid grid-cols-3 items-center px-4 py-4 text-sm font-medium gap-2 md:gap-0">
@@ -266,7 +336,7 @@ export default function Header() {
           </Link>
         </div>
         {/* Center: Contact Info */}
-      {/* <div className="relative inline-block lg:hidden text-left">
+        {/* <div className="relative inline-block lg:hidden text-left">
 
       <button
         className="flex items-center py-1"
@@ -302,7 +372,7 @@ export default function Header() {
         </div>
         {/* Right: Icons */}
         <div className="flex items-center gap-6 md:justify-end">
-           {/* <div className="relative inline-block lg:hidden text-left">
+          {/* <div className="relative inline-block lg:hidden text-left">
 
       <button
         className="flex items-center py-1"
@@ -364,7 +434,7 @@ export default function Header() {
               width={24}
               height={24}
             />
-   {cartCount > 0 && (
+            {cartCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-[#0270ae] text-white rounded-full text-xs px-2 py-0.5 z-10 min-w-[20px] text-center">
                 {cartCount}
               </span>
@@ -633,12 +703,21 @@ export default function Header() {
                           categories[0];
                         return cat.sub ? (
                           <ul>
-                            {cat.sub.map((sub) => (
+                            {cat.sub.map((sub, index) => (
                               <li
-                                key={sub}
+                                key={index}
                                 className="py-1 hover:text-blue-400 cursor-pointer"
                               >
-                                {sub}
+                                {typeof sub === "string" ? (
+                                  <span>{sub}</span>
+                                ) : (
+                                  <Link
+                                    href={sub.href || "#"}
+                                    onClick={closeAll}
+                                  >
+                                    {sub.label}
+                                  </Link>
+                                )}
                               </li>
                             ))}
                           </ul>
@@ -817,13 +896,22 @@ export default function Header() {
                                     cat.sub &&
                                     cat.sub.length > 0 && (
                                       <ul className="pl-4 border-l border-gray-700 bg-gray-800">
-                                        {cat.sub.map((sub) => (
+                                        {cat.sub.map((sub, index) => (
                                           <li
-                                            key={sub}
+                                            key={index}
                                             className="py-1 hover:text-blue-400 cursor-pointer"
                                             onClick={() => closeAll()}
                                           >
-                                            {sub}
+                                            {typeof sub === "string" ? (
+                                              <span>{sub}</span>
+                                            ) : (
+                                              <Link
+                                                href={sub.href || "#"}
+                                                onClick={closeAll}
+                                              >
+                                                {sub.label}
+                                              </Link>
+                                            )}
                                           </li>
                                         ))}
                                       </ul>

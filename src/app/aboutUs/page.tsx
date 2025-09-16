@@ -3,11 +3,18 @@ import Banner from "@/components/Banner";
 import Sidebar from "@/components/Sidebar";
 import Link from "next/link";
 import Image from "next/image";
+// import { Metadata } from "next";
+
+// export const metadata: Metadata = {
+//   title: "About Us | Car Parts - Trusted Auto Parts Supplier",
+//   description:
+//     "Discover Car Parts’ journey, mission, and values. Learn how Car Parts delivers quality auto parts with reliability and trust to customers nationwide.",
+// };
 
 export default function AboutUsPage() {
   return (
-     <div className="mt-0 pt-0">
-        {/* <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[380px] relative">
+    <div className="mt-0 pt-0">
+      {/* <div className="w-full h-[150px] sm:h-[200px] md:h-[320px] lg:h-[380px] relative">
 
           <Image
             src="/autoparts/banner.png"
@@ -17,16 +24,16 @@ export default function AboutUsPage() {
             className=" object-center"
           />
         </div> */}
-         <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative ">
-               <Image
-                  src="/autoparts/banner.png"
-                  alt="Account Banner"
-                  fill
-                  style={{ objectFit: "cover" }}
-                  priority
-                  quality={100} // 1-100, default is 75
-                />
-          </div>
+      <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative ">
+        <Image
+          src="/autoparts/banner.png"
+          alt="Account Banner"
+          fill
+          style={{ objectFit: "cover" }}
+          priority
+          quality={100} // 1-100, default is 75
+        />
+      </div>
 
       <div className="min-h-screen bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-8 p-4 lg:p-8">
         {/* <div className="md:w-1/4">
@@ -34,10 +41,8 @@ export default function AboutUsPage() {
       </div> */}
         <div className="flex-1 flex flex-col gap-6">
           <div className="w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12">
-
             {/* Breadcrumb */}
             <div className="flex items-center space-x-2 text-base text-white mb-6 px-2 sm:px-4 md:px-0">
-
               <Link
                 href="/"
                 className="flex items-center gap-2 hover:text-white transition-colors"
@@ -56,34 +61,34 @@ export default function AboutUsPage() {
                 />
               </Link>
               {/* <span>&gt;</span> */}
-              <span>About us</span>
+              <h1>About us</h1>
             </div>
 
             <main className="flex flex-col gap-2">
               {/* WHO ARE WE? Section */}
-             <section>
-              <h2
-                className="text-xl md:text-[32px] font-semibold uppercase"
-                style={{
-                  fontFamily: "Audiowide, sans-serif",
-                  letterSpacing: "0.1em",
-                }}
-              >
-                WHO ARE WE?
-              </h2>
-              <div className="flex flex-col md:flex-row items-start">
-                <div className="flex-1">
-                  <p className="text-base text-gray-200 leading-relaxed mt-4 text-[16px] justify-left">
-                    Parts Central LLC has always been your one-stop shop for
-                    replacement high-quality used OEM automotive parts and
-                    accessories. Our experts are always a phone call away for
-                    quick, real-time advice, and efficiently respond to your
-                    queries. Our prices are competitive and we strive to
-                    provide the best parts at the most affordable prices. Give
-                    us a call today.
-                  </p>
-                </div>
-                {/*
+              <section>
+                <h2
+                  className="text-xl md:text-[32px] font-semibold uppercase"
+                  style={{
+                    fontFamily: "Audiowide, sans-serif",
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  WHO ARE WE?
+                </h2>
+                <div className="flex flex-col md:flex-row items-start">
+                  <div className="flex-1">
+                    <p className="text-base text-gray-200 leading-relaxed mt-4 text-[16px] justify-left">
+                      Parts Central LLC has always been your one-stop shop for
+                      replacement high-quality used OEM automotive parts and
+                      accessories. Our experts are always a phone call away for
+                      quick, real-time advice, and efficiently respond to your
+                      queries. Our prices are competitive and we strive to
+                      provide the best parts at the most affordable prices. Give
+                      us a call today.
+                    </p>
+                  </div>
+                  {/*
                   Key changes for mobile responsiveness:
                   - Removed the global -mt-48.
                   - Added mt-4 for mobile to provide some space below the text.
@@ -91,24 +96,27 @@ export default function AboutUsPage() {
                   - Added md:relative and md:z-10 to ensure desktop positioning.
                   - Removed z-10 and relative from the mobile view, as they are not needed and can sometimes cause issues when not carefully managed.
                 */}
-                <div className="flex-1 flex justify-center md:justify-center mt-4 md:-mt-48 md:z-10 md:relative">
-                  <Image
-                    src="/Images/car.png"
-                    alt="Car"
-                    width={490}
-                    height={410}
-                    className="rounded-2xl w-full h-auto max-w-[400px] md:max-w-none" /* Added w-full h-auto for mobile scaling, and max-w- to control size on mobile */
-                  />
+                  <div className="flex-1 flex justify-center md:justify-center mt-4 md:-mt-48 md:z-10 md:relative">
+                    <Image
+                      src="/Images/car.png"
+                      alt="Car"
+                      width={490}
+                      height={410}
+                      className="rounded-2xl w-full h-auto max-w-[400px] md:max-w-none" /* Added w-full h-auto for mobile scaling, and max-w- to control size on mobile */
+                    />
+                  </div>
                 </div>
-              </div>
-            </section>
+              </section>
 
               {/* OUR GOAL Section */}
               <section className=" mt-10">
-                <h2 className="text-xl md:text-[32px] font-semibold uppercase mb-4 md:mb-6" style={{
-              fontFamily: "Audiowide, sans-serif",
-              letterSpacing: "0.1em",
-               }}>
+                <h2
+                  className="text-xl md:text-[32px] font-semibold uppercase mb-4 md:mb-6"
+                  style={{
+                    fontFamily: "Audiowide, sans-serif",
+                    letterSpacing: "0.1em",
+                  }}
+                >
                   OUR GOAL
                 </h2>
                 <p className="text-base text-gray-200 leading-relaxed mb-6 text-[16px]">

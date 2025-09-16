@@ -616,7 +616,7 @@ useEffect(() => {
                     >
                       Privacy Policy
                     </Link>{" "}
-                    of autosquare.us *
+                    of partscentral.us *
                   </span>
                 </label>
 

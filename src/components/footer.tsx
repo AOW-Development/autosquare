@@ -157,7 +157,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/cookie-policy" className="hover:text-white">
+                  <a href="/account/cookiePolicy" className="hover:text-white">
                     Cookie Policy
                   </a>
                 </li>

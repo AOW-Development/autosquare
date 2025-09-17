@@ -80,18 +80,35 @@ const ShopByVehicle: React.FC = () => {
   }, [make, model, API_BASE]);
 
   // Redirect when all selections are made
-  useEffect(() => {
-    if (make && model && year && part) {
-      const query = new URLSearchParams({ make, model, year, part }).toString();
+  // Corrected useEffect hook in your ShopByVehicle.tsx file
 
-      localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
+useEffect(() => {
+  if (make && model && year && part) {
+    const query = new URLSearchParams({ make, model, year, part }).toString();
+    const newUrl = `/catalogue/engine/home?${query}`;
 
-      // Redirect only on pages that should trigger a search
-      if (path === "/" || path === "/engine" || path === "/transmission" || path==="/autoParts") {
-        router.push(`/catalogue/engine/home?${query}`);
-      }
+    // Always save the selection to local storage, regardless of the page.
+    localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
+
+    // Check if the current path is one of the initial search pages
+    const isInitialSearchPage = 
+      path === "/" || 
+      path === "/engine" || 
+      path === "/transmission" || 
+      path === "/autoParts";
+
+    // If on an initial search page, perform a full navigation.
+    if (isInitialSearchPage) {
+      router.push(newUrl);
+    } 
+    // If we are already on the catalogue page, update the URL without a full reload.
+    // This makes the page dynamic and responsive to changes in the dropdowns.
+    else if (path.startsWith("/catalogue/") || path.startsWith("/product/")) {
+      // Use the native History API to change the URL without a full refresh.
+      window.history.pushState(null, '', newUrl);
     }
-  }, [make, model, year, part, path, router]);
+  }
+}, [make, model, year, part, path, router]);
 
 
     const [isOpen, setIsOpen] = useState(false);

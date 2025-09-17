@@ -154,19 +154,19 @@ const accordionData = [
       <>
         <p>
           This {productInfo.make} {productInfo.model} {productInfo.part} is{" "}
-          {productInfo.year ? `from ${productInfo.year} ` : ""}models. Each engine is tested and ready to install and
+          {productInfo.year ? `from ${productInfo.year} ` : ""}models. Each {productInfo.part} is tested and ready to install and
           offers improved performance.
         </p>
         <br />
         <p>
-          This Unit is perfect for anyone in the market for reliable used engines that will offer superior results - a
+          This Unit is perfect for anyone in the market for reliable used {productInfo.part} that will offer superior results - a
           great addition to any repair project!
         </p>
         <br />
-        <p>
+        {/* <p>
           The {productInfo.make} {productInfo.model} {productInfo.part} comes with all the Major accessories such as:
-        </p>
-        <ul>
+        </p> */}
+        {/* <ul>
           <li>Intake Manifold</li>
           <li>Exhaust Manifold</li>
           <li>Crankshaft</li>
@@ -175,7 +175,7 @@ const accordionData = [
           <li>Cylinder Head</li>
           <li>Timing Cover</li>
         </ul>
-        <p>The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator need to be replaced/swapped.</p>
+        <p>The Bolt Parts like the A/C Compressor, Starter Motor, and Alternator need to be replaced/swapped.</p> */}
         <br />
         {/* <p>
           The {productInfo.make} {productInfo.model} {productInfo.part} can be used as a direct replacement for any of
@@ -604,7 +604,7 @@ const accordionData = [
                <div className="flex flex-wrap sm:flex-nowrap gap-3 sm:gap-4 items-center mb-6 sm:mb-8">
                   {/* Email Button */}
                    <a
-                      href="mailto:kubrafathima57@gmail.com"
+                      href="mailto:partscentralus@gmail.com"
                       className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base text-center"
                     >
                       EMAIL US

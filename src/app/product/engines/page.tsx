@@ -604,7 +604,7 @@ const accordionData = [
                <div className="flex flex-wrap sm:flex-nowrap gap-3 sm:gap-4 items-center mb-6 sm:mb-8">
                   {/* Email Button */}
                    <a
-                      href="mailto:partscentralus@gmail.com"
+                      href="mailto:support@partscentral.us"
                       className="bg-[#00a3ff] hover:bg-[#1558b0] text-white font-semibold py-2.5 sm:py-3 px-5 sm:px-6 rounded-md transition-colors duration-200 min-w-[110px] text-sm sm:text-base text-center"
                     >
                       EMAIL US

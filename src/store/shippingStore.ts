@@ -13,6 +13,7 @@ export type ShippingInfo = {
   state: string;
   zipCode: string;
   shippingAddressType?: string;
+  email: string;
 };
 
 type ShippingState = {
@@ -36,6 +37,7 @@ export const useShippingStore = create<ShippingState>()(
         state: "",
         zipCode: "",
         shippingAddressType: "",
+        email:"",
       },
       setShippingInfo: (info) => set({ shippingInfo: info }),
       clearShippingInfo: () => set({ shippingInfo: undefined }),

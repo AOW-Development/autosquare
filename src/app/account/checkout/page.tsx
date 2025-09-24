@@ -1,24 +1,24 @@
-"use client";
+"use client"
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import Link from "next/link";
-
-import useBillingStore from "@/store/billingStore";
-import { useCartStore, CartItem } from "@/store/cartStore";
-import { State } from "country-state-city"; 
-import { useShippingStore } from "@/store/shippingStore";
+import type React from "react"
+import { useState, useEffect } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { State } from "country-state-city"
+import useBillingStore from "@/store/billingStore"
+import { useCartStore } from "@/store/cartStore"
+import { useShippingStore } from "@/store/shippingStore"
+import toast from "react-hot-toast"
 
 export default function Checkout() {
-  const { billingInfo, setBillingInfo } = useBillingStore();
-  const { shippingInfo,setShippingInfo } = useShippingStore();
-  const { items } = useCartStore();
+  const { billingInfo, setBillingInfo } = useBillingStore()
+  const { shippingInfo, setShippingInfo } = useShippingStore()
+  const { items } = useCartStore()
 
   const [formData, setFormData] = useState(
     shippingInfo || {
       firstName: "",
       lastName: "",
-      // email: "",
       phone: "",
       company: "",
       country: "",
@@ -27,107 +27,183 @@ export default function Checkout() {
       city: "",
       state: "",
       zipCode: "",
-      // orderNotes: "",
-    }
-  );
- const [userType, setUserType] = useState("Individual");
+      email: "", // Added email field
+    },
+  )
 
-  // Sync billingInfo to formData if it changes
+  const [userType, setUserType] = useState("Individual")
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
+  const [billingStates, setBillingStates] = useState<{ name: string; isoCode: string }[]>([])
+  const [sameAsShipping, setSameAsShipping] = useState(true)
+
+  const [billingFormData, setBillingFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    company: "",
+    country: "",
+    address: "",
+    apartment: "",
+    city: "",
+    state: "",
+    zipCode: "",
+  })
+
+  const [billingUserType, setBillingUserType] = useState("Individual")
+  const [billingErrors, setBillingErrors] = useState<{ [key: string]: string }>({})
+
   useEffect(() => {
     if (shippingInfo) {
       setFormData((prev) => ({
         ...prev,
         ...shippingInfo,
-      }));
+      }))
     }
-  }, [shippingInfo]);
+  }, [shippingInfo])
 
-const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-
-const handleInputChange = (field: string, value: string) => {
-  let error = "";
-  const country = formData.country; 
-
-  switch (field) {
-    case "firstName":
-    case "lastName":
-    case "city":
-      if (!/^[A-Za-z\s]*$/.test(value)) {
-        error = "Only letters allowed";
-      }
-      break;
-
-    case "phone":
-      if (country === "US") {
-        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-          error = "Enter a valid US phone (e.g. 555-123-4567)";
-        }
-      } else if (country === "CA") {
-        if (!/^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-          error = "Enter a valid Canadian phone (e.g. 416-123-4567)";
-        }
-      }
-      break;
-
-    case "zipCode":
-      if (country === "US") {
-        if (!/^\d{5}(-\d{4})?$/.test(value)) {
-          error = "Enter a valid US ZIP (12345 or 12345-6789)";
-        }
-      } else if (country === "CA") {
-        if (!/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
-          error = "Enter a valid Canadian Postal Code (e.g. K1A 0B1)";
-        }
-      }
-      break;
-  }
-
-
-  setFormData((prev) => ({ ...prev, [field]: value }));
-  setErrors((prev) => ({ ...prev, [field]: error }));
-};
-
-
-
-  // Save billing info to store when continuing to payment
-  const handleContinue = () => {
-    console.log("Form Data:", formData);
-    setShippingInfo(formData);
-  };
-
-
-const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
-
-
-useEffect(() => {
-  if (formData.country) {
-    const fetchedStates = State.getStatesOfCountry(formData.country);
-    console.log("Fetched States:", fetchedStates);
-    setStates(fetchedStates || []);
-  } else {
-    setStates([]);
-  }
-}, [formData.country]);
-
- // Handle field changes
-  const handleChange = (field: string, value: string) => {
-    if (field === "country") {
-      setFormData((prev) => ({
-        ...prev,
-        country: value,
-        state: "", // reset state when country changes
-      }));
+  useEffect(() => {
+    if (sameAsShipping) {
+      setBillingFormData({
+        firstName: formData.firstName || "",
+        lastName: formData.lastName || "",
+        phone: formData.phone || "",
+        company: formData.company || "",
+        country: formData.country || "",
+        address: formData.address || "",
+        apartment: formData.apartment || "",
+        city: formData.city || "",
+        state: formData.state || "",
+        zipCode: formData.zipCode || "",
+      })
+      setBillingUserType(userType)
     } else {
-      setFormData((prev) => ({
-        ...prev,
-        [field]: value,
-      }));
+      setBillingFormData({
+        firstName: "",
+        lastName: "",
+        phone: "",
+        company: "",
+        country: "",
+        address: "",
+        apartment: "",
+        city: "",
+        state: "",
+        zipCode: "",
+      })
+      setBillingUserType("Individual")
     }
-  };
-  
+  }, [
+    sameAsShipping,
+    formData.firstName,
+    formData.lastName,
+    formData.phone,
+    formData.company,
+    formData.country,
+    formData.address,
+    formData.apartment,
+    formData.city,
+    formData.state,
+    formData.zipCode,
+    userType,
+  ])
+
+  const handleInputChange = (field: string, value: string) => {
+    let error = ""
+    const country = formData.country
+
+    switch (field) {
+      case "firstName":
+      case "lastName":
+      case "city":
+        if (!/^[A-Za-z\s]*$/.test(value)) {
+          error = "Only letters allowed"
+        }
+        break
+      case "phone":
+        const phoneRegex = /^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$/
+        if (country === "US" && value && !phoneRegex.test(value)) {
+          error = "Enter a valid US phone (e.g., 555-123-4567)"
+        } else if (country === "CA" && value && !phoneRegex.test(value)) {
+          error = "Enter a valid Canadian phone (e.g., 416-123-4567)"
+        }
+        break
+      case "zipCode":
+        if (country === "US" && !/^\d{5}(-\d{4})?$/.test(value)) {
+          error = "Enter a valid US ZIP (12345 or 12345-6789)"
+        } else if (country === "CA" && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
+          error = "Enter a valid Canadian Postal Code (e.g., K1A 0B1)"
+        }
+        break
+    }
+
+    setFormData((prev) => ({ ...prev, [field]: value }))
+    setErrors((prev) => ({ ...prev, [field]: error }))
+  }
+
+  const handleBillingInputChange = (field: string, value: string) => {
+    let error = ""
+    const country = billingFormData.country
+    switch (field) {
+      case "firstName":
+      case "lastName":
+      case "city":
+        if (!/^[A-Za-z\s]*$/.test(value)) {
+          error = "Only letters allowed"
+        }
+        break
+      case "phone":
+        const phoneRegex = /^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$/
+        if (country === "US" && value && !phoneRegex.test(value)) {
+          error = "Enter a valid US phone (e.g. 555-123-4567)"
+        } else if (country === "CA" && value && !phoneRegex.test(value)) {
+          error = "Enter a valid Canadian phone (e.g. 416-123-4567)"
+        }
+        break
+      case "zipCode":
+        if (country === "US" && !/^\d{5}(-\d{4})?$/.test(value)) {
+          error = "Enter a valid US ZIP (12345 or 12345-6789)"
+        } else if (country === "CA" && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
+          error = "Enter a valid Canadian Postal Code (e.g. K1A 0B1)"
+        }
+        break
+    }
+    setBillingFormData((prev) => ({ ...prev, [field]: value }))
+    setBillingErrors((prev) => ({ ...prev, [field]: error }))
+  }
+
+  useEffect(() => {
+    if (formData.country) {
+      const fetchedStates = State.getStatesOfCountry(formData.country)
+      setStates(fetchedStates || [])
+    } else {
+      setStates([])
+    }
+  }, [formData.country])
+
+  useEffect(() => {
+    if (billingFormData.country) {
+      const fetchedBillingStates = State.getStatesOfCountry(billingFormData.country)
+      setBillingStates(fetchedBillingStates || [])
+    } else {
+      setBillingStates([])
+    }
+  }, [billingFormData.country])
+
+  const handleUserTypeChange = (type: "Individual" | "Commercial") => {
+    setUserType(type)
+  }
+
+  const handleBillingUserTypeChange = (type: "Individual" | "Commercial") => {
+    setBillingUserType(type)
+  }
+
+  const handleContinue = () => {
+    setShippingInfo(formData)
+    setBillingInfo(billingFormData)
+  }
+
   const isFormValid = () => {
-    return (
+    const shippingValid =
       formData.firstName &&
       formData.lastName &&
       formData.phone &&
@@ -135,514 +211,614 @@ useEffect(() => {
       formData.address &&
       formData.city &&
       formData.state &&
-      formData.zipCode &&
-      termsAccepted
-    );
-  };
+      formData.zipCode
 
-  const [couponCode, setCouponCode] = useState("");
-  const [termsAccepted, setTermsAccepted] = useState(false);
+    const billingValid =
+      sameAsShipping ||
+      (billingFormData.firstName &&
+        billingFormData.lastName &&
+        billingFormData.phone &&
+        billingFormData.country &&
+        billingFormData.address &&
+        billingFormData.city &&
+        billingFormData.state &&
+        billingFormData.zipCode)
 
-  // Get first 2 items from cart store
-  const cartItems = items.slice(0, 2);
+    return shippingValid && billingValid && termsAccepted
+  }
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+  const [termsAccepted, setTermsAccepted] = useState(false)
+  const cartItems = items.slice(0, 2)
+  const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const shipping = 180
+  const taxes = 180
+  const estimatedTotal = total + shipping + taxes
 
-  const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
-  setUserType(type);
-  setFormData((prev) => ({ ...prev, customerType: type }));
-};
+  const handleSave1 = (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const requiredFields = ["firstName", "lastName", "phone", "country", "address", "city", "state", "zipCode"]
+
+    const emptyFields = requiredFields.filter(
+      (field) =>
+        !billingFormData[field as keyof typeof billingFormData] ||
+        billingFormData[field as keyof typeof billingFormData].toString().trim() === "",
+    )
+
+    console.log("billingFormData:", billingFormData)
+    console.log("Empty fields:", emptyFields)
+
+    if (emptyFields.length > 0) {
+      toast.error(`Please fill in all required fields: ${emptyFields.join(", ")}`)
+      return
+    }
+
+    setShippingInfo(shippingInfo)
+    setBillingInfo(billingFormData)
+    toast.success("Billing details saved successfully!")
+  }
 
   return (
-   
-      <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
-        <div className=" mx-auto md:mx-6 lg:mx-40 px-4 md:px-6 lg:px-1">
-          {/* Breadcrumb */}
-          <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
-            <Link
-              href="/"
-              className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
-            >
-              <Image
-                src="/Images/HouseLine.png"
-                alt="Home"
-                width={24}
-                height={24}
-                // className="w-4 h-4"
-              />
-            </Link>
+    <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
+      <div className=" mx-auto md:mx-6 lg:mx-40 px-4 md:px-6 lg:px-1">
+        {/* Breadcrumb */}
+        <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
+          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
             <Image
-              src="/Images/arrows.png"
-              alt="Arrow"
-              width={16}
-              height={16}
-              // className="w-3 h-3"
+              src="/Images/HouseLine.png"
+              alt="Home"
+              width={24}
+              height={24}
+              // className="w-4 h-4"
             />
-            <span className="font-exo2">Cart</span>
+          </Link>
+          <Image
+            src="/Images/arrows.png"
+            alt="Arrow"
+            width={16}
+            height={16}
+            // className="w-3 h-3"
+          />
+          <span className="font-exo2">Cart</span>
+        </div>
+
+        {/* Title */}
+        <h1
+          className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-4 text-left"
+          style={{
+            fontFamily: "Audiowide, sans-serif",
+            letterSpacing: "0.1em",
+          }}
+        >
+          Shipping Checkout
+        </h1>
+
+        {/* Step Indicator */}
+        <div className="flex items-center justify-between mb-8 w-full">
+          {/* Step 1 - Complete */}
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
+              <span className="text-[#009AFF] font-exo2 font-semibold text-sm">✓</span>
+            </div>
+            <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">Cart</span>
           </div>
 
-          {/* Title */}
-          <h1
-            className="font-audiowide text-2xl md:text-3xl lg:text-4xl mb-4 text-left"
-            style={{
-              fontFamily: "Audiowide, sans-serif",
-              letterSpacing: "0.1em",
-            }}
-          >
-            CHECKOUT
-          </h1>
+          {/* Connector 1 */}
+          <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
 
-          {/* Step Indicator */}
-          <div className="flex items-center justify-between mb-8 w-full">
-            {/* Connector 1 */}
-            <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
-                <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
-                  ✓
-                </span>
-              </div>
-              <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
-                Cart
-              </span>
+          {/* Step 2 - Active */}
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 bg-[#009AFF] rounded-full flex items-center justify-center">
+              <span className="text-white font-exo2 font-semibold text-sm">2</span>
             </div>
-
-            {/* Connector 2 */}
-            <div className="flex-1 h-0.5 bg-[#009AFF] mx-2 mb-4"></div>
-
-            {/* Step 2 - Active */}
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 bg-[#009AFF] rounded-full flex items-center justify-center">
-                <span className="text-white font-exo2 font-semibold text-sm">
-                  2
-                </span>
-              </div>
-              <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
-                Information
-              </span>
-            </div>
-
-            {/* Connector 3 */}
-            <div className="flex-1 h-0.5 bg-white mb-4"></div>
-
-            {/* Step 3 - Inactive */}
-            <div className="flex flex-col items-center">
-              <div className="w-10 h-10 border border-white rounded-full flex items-center justify-center">
-                <span className="text-white font-exo2 font-semibold text-sm">
-                  3
-                </span>
-              </div>
-              <span className="mt-2 font-exo2 font-semibold text-white text-sm">
-                Payment
-              </span>
-            </div>
-            {/* Connector 4 */}
-            <div className="flex-1 h-0.5 bg-white mb-4"></div>
+            <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">Information</span>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Left Column: Recipient Details Form */}
-            <div className="col-span-3 md:col-span-3 lg:col-span-2 ">
-              {/* Login Link */}
-              <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6">
-                <Link
-                  href="/account/signIn"
-                  className="text-sm text-[#FFFFFF] hover:underline font-exo2"
+          {/* Connector 2 */}
+          <div className="flex-1 h-0.5 bg-white mb-4"></div>
+
+          {/* Step 3 - Inactive */}
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 border border-white rounded-full flex items-center justify-center">
+              <span className="text-white font-exo2 font-semibold text-sm">3</span>
+            </div>
+            <span className="mt-2 font-exo2 font-semibold text-white text-sm">Payment</span>
+          </div>
+
+          {/* Connector 3 */}
+          <div className="flex-1 h-0.5 bg-white mb-4"></div>
+          {/* Step 4 - Inactive */}
+          <div className="flex flex-col items-center">
+            <div className="w-10 h-10 border border-white rounded-full flex items-center justify-center">
+              <span className="text-white font-exo2 font-semibold text-sm">4</span>
+            </div>
+            <span className="mt-2 font-exo2 font-semibold text-white text-sm">Confirm</span>
+          </div>
+        </div>
+
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Left Column: Forms */}
+          <div className="lg:col-span-2">
+            <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6 mb-4">
+              <Link href="/account/signIn" className="text-sm text-[#FFFFFF] hover:underline font-exo2">
+                Have an account? Log in
+              </Link>
+            </div>
+
+            <div className="bg-[#02305A] rounded-lg p-6 mb-8">
+              <h2 className="text-xl font-bold mb-4 font-exo2">Shipping Information</h2>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2 font-exo2">Address Type</label>
+                <select
+                  className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                  value={userType}
+                  onChange={(e) => handleUserTypeChange(e.target.value as "Individual" | "Commercial")}
                 >
-                  Have an account? Log in
-                </Link>
+                  <option value="Individual">Individual</option>
+                  <option value="Commercial">Commercial</option>
+                </select>
               </div>
-
-              {/* Form Header */}
-              <h2 className="text-base font-semibold mb-6 font-exo2">
-                Enter Shipping Information
-              </h2>
-              <div className="flex gap-4 mb-4">
-              <button
-                type="button"
-                onClick={() => handleUserTypeChange("Individual")}
-                className={`w-full px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
-                  userType === "Individual"
-                    ? "bg-blue-600 text-white"
-                    : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
-                }`}
-              >
-                Individual
-              </button>
-              <button
-                type="button"
-                onClick={() => handleUserTypeChange("Commercial")}
-                className={`w-full px-4 py-2 rounded-md font-semibold text-base transition-colors duration-200 ${
-                  userType === "Commercial"
-                    ? "bg-blue-600 text-white"
-                    : "bg-[#091627] text-white/70 border border-white/10 hover:bg-blue-800 hover:text-white"
-                }`}
-              >
-                Commercial
-              </button>
-            </div>
 
               <form className="space-y-6">
-                {/* Name Fields */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* First Name */}
                   <div>
-              <label className="block font-exo2 mb-2">First Name *</label>
-              <input
-                type="text"
-                placeholder="Name"
-                value={formData.firstName}
-                onChange={(e) =>
-                  handleInputChange("firstName", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.firstName && (
-                <p className="text-red-500 text-sm">{errors.firstName}</p>
-              )}
-            </div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">First Name</label>
+                    <input
+                      type="text"
+                      placeholder="First Name"
+                      value={formData.firstName}
+                      onChange={(e) => handleInputChange("firstName", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                    {errors.firstName && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.firstName}</p>}
+                  </div>
 
-            {/* Last Name */}
-            <div>
-              <label className="block font-exo2 mb-2">Last Name *</label>
-              <input
-                type="text"
-                placeholder="Name"
-                value={formData.lastName}
-                onChange={(e) =>
-                  handleInputChange("lastName", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.lastName && (
-                <p className="text-red-500 text-sm">{errors.lastName}</p>
-              )}
-            </div>
+                  {/* Last Name */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Last Name</label>
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      value={formData.lastName}
+                      onChange={(e) => handleInputChange("lastName", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                    {errors.lastName && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.lastName}</p>}
+                  </div>
 
-            {/* Email */}
-            {/* <div>
-              <label className="block font-exo2 mb-2">Email *</label>
-              <input
-                type="email"
-                placeholder="example@gmail.com"
-                value={billingFormData.email}
-                onChange={(e) =>
-                  handleBillingInputChange("email", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm">{errors.email}</p>
-              )}
-            </div> */}
-                 {userType === "Commercial" && (
-              <div className="md:col-span-1">
-                <label className="block font-exo2 mb-2">Company</label>
-                <input
-                  className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                            rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                  value={formData.company}
-                  onChange={(e) => handleChange("company", e.target.value)}
-                  placeholder="Company name"
-                />
-              </div>
-            )}
+                  {/* Mobile */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+                    <input
+                      type="tel"
+                      placeholder="(555) 123-4567"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.phone}</p>}
+                  </div>
 
-            {/* Country */}
-            <div className="">
-              <label className="block font-exo2 mb-2">Country *</label>
-              <select
-                className="w-full bg-[#091627] rounded-lg px-4 py-2 text-white 
-                          border border-white/10 focus:outline-none"
-                value={formData.country}
-                onChange={(e) => handleChange("country", e.target.value)}
-                required
-              >
-                <option value="">Choose Country…</option>
-                <option value="US">United States</option>
-                <option value="CA">Canada</option>
-              </select>
-            </div>
+                  {/* Apartment */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Apartment</label>
+                    <input
+                      type="text"
+                      placeholder="Apartment"
+                      value={formData.apartment}
+                      onChange={(e) => handleInputChange("apartment", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                    />
+                  </div>
 
-            {/* Phone */}
-            <div>
-              <label className="block font-exo2 mb-2">Phone *</label>
-              <input
-                type="tel"
-                placeholder="(555) 123-4567"
-                value={formData.phone}
-                onChange={(e) =>
-                  handleInputChange("phone", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.phone && (
-                <p className="text-red-500 text-sm">{errors.phone}</p>
-              )}
-            </div>
+                  {/* Email */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Email</label>
+                    <input
+                      type="email"
+                      placeholder="Email"
+                      value={formData.email || ""}
+                      onChange={(e) => handleInputChange("email", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                  </div>
 
-         
+                  {/* Address */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
+                    <input
+                      type="text"
+                      placeholder="Address"
+                      value={formData.address}
+                      onChange={(e) => handleInputChange("address", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                  </div>
 
-            {/* Street Address */}
-            <div>
-              <label className="block font-exo2 mb-2">Street Address *</label>
-              <input
-                type="text"
-                placeholder="Address"
-                value={formData.address}
-                onChange={(e) =>
-                  handleInputChange("address", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-            </div>
+                  {/* City */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">City</label>
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={formData.city}
+                      onChange={(e) => handleInputChange("city", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                    {errors.city && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.city}</p>}
+                  </div>
 
-            {/* Apartment */}
-            <div>
-              <label className="block font-exo2 mb-2">Apartment, etc. (optional)</label>
-              <input
-                type="text"
-                placeholder="Apartment, etc."
-                value={formData.apartment}
-                onChange={(e) =>
-                  handleInputChange("apartment", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-              />
-            </div>
+                  {/* Country */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Country</label>
+                    <select
+                      className="w-full bg-[#1A263D] rounded-md px-4 py-3 text-[#FFFFFF] border border-[#484848] focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      value={formData.country}
+                      onChange={(e) => handleInputChange("country", e.target.value)}
+                      required
+                    >
+                      <option value="">Choose Country…</option>
+                      <option value="US">United States</option>
+                      <option value="CA">Canada</option>
+                    </select>
+                  </div>
 
-            {/* City */}
-            <div>
-              <label className="block font-exo2 mb-2">City *</label>
-              <input
-                type="text"
-                placeholder="City"
-                value={formData.city}
-                onChange={(e) =>
-                  handleInputChange("city", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.city && (
-                <p className="text-red-500 text-sm">{errors.city}</p>
-              )}
-            </div>
+                  {/* State */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">State</label>
+                    <select
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      value={formData.state}
+                      onChange={(e) => handleInputChange("state", e.target.value)}
+                      disabled={!states.length}
+                      required
+                    >
+                      <option value="">Choose State…</option>
+                      {states.map((state) => (
+                        <option key={state.isoCode} value={state.isoCode}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
 
-            {/* State */}
-            <div>
-              <label className="block font-exo2 mb-2">State *</label>
-              <select
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                value={formData.state}
-                onChange={(e) => handleChange("state", e.target.value)}
-                disabled={!states.length}
-                required
-              >
-                <option value="">Choose State…</option>
-                {states.map((state) => (
-                  <option key={state.isoCode} value={state.isoCode}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+                  {/* Zip Code */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Zip Code</label>
+                    <input
+                      type="text"
+                      placeholder="ZIP Code"
+                      value={formData.zipCode}
+                      onChange={(e) => handleInputChange("zipCode", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                    {errors.zipCode && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.zipCode}</p>}
+                  </div>
 
-            {/* ZIP Code */}
-            <div>
-              <label className="block font-exo2 mb-2">ZIP Code *</label>
-              <input
-                type="text"
-                placeholder="ZIP Code"
-                value={formData.zipCode}
-                onChange={(e) =>
-                handleInputChange("zipCode", e.target.value)
-                }
-                className="w-full bg-[#091627] border border-gray-700 text-[#E0E6F3] 
-                          rounded-md px-4 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                required
-              />
-              {errors.zipCode && (
-                <p className="text-red-500 text-sm">{errors.zipCode}</p>
-              )}
-                 </div>
-               </div>
+                  {/* Conditional Company Name Field for Commercial Address Type */}
+                  {userType === "Commercial" && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                      <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={formData.company || ""}
+                        onChange={(e) => handleInputChange("company", e.target.value)}
+                        className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                        required
+                      />
+                    </div>
+                  )}
+                </div>
               </form>
             </div>
 
-            {/* Right Column: Products & Order Summary */}
-            <div className=" col-span-3 lg:col-span-1 ">
-              <div className="bg-[#091627] rounded-lg space-y-6 pr-6 p-2 md:p-4 ">
-                {/* Card Header */}
-                <div className="flex justify-between items-center ">
-                  <h3 className="text-base font-semibold font-exo2">
-                    PRODUCTS IN CART
-                  </h3>
-                  <Link
-                    href="/account/cart"
-                    className="text-sm text-white hover:underline font-exo2"
+            <div className="mb-8">
+              <h2 className="text-xl font-bold mb-4 font-exo2">Billing Address</h2>
+              <div className="flex items-center mb-4">
+                <input
+                  type="checkbox"
+                  id="sameAsShipping"
+                  checked={sameAsShipping}
+                  onChange={(e) => setSameAsShipping(e.target.checked)}
+                  className="form-checkbox h-4 w-4 text-[#009AFF] bg-transparent border-white rounded mt-1 focus:ring-1 focus:ring-offset-0 focus:ring-white"
+                />
+                <label
+                  htmlFor="sameAsShipping"
+                  className="ml-2 text-sm md:text-base text-[#FFFFFF] font-exo2 leading-relaxed"
+                >
+                  My billing address is the same as the shipping address
+                </label>
+              </div>
+
+              <div className="bg-[#02305A] rounded-lg p-6">
+                <div className="mb-6">
+                  <label className="block text-sm font-medium mb-2 font-exo2">Address Type</label>
+                  <select
+                    className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                    value={billingUserType}
+                    onChange={(e) => handleBillingUserTypeChange(e.target.value as "Individual" | "Commercial")}
+                    disabled={sameAsShipping}
                   >
-                    Edit cart
-                  </Link>
+                    <option value="Individual">Individual</option>
+                    <option value="Commercial">Commercial</option>
+                  </select>
                 </div>
-                {/* Product Items */}
-                <div className="space-y-2 border-b border-white"></div>
-                <div className="space-y-2 border-b border-white">
-                   
-                    {cartItems.map((item) => (
-                    <div key={item.id} className="flex space-x-3 pb-4 ">
-                      <Image
-                      src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
-                      alt={item.title}
-                      width={56}
-                      height={56}
-                      className="w-14 h-14 object-cover rounded"
-                      />
-                      <div className="flex-1">
-                      <div className="flex justify-between items-start">
-                        <div className="flex-1">
-                        <h4 className="font-exo2 font-semibold">
-                          {item.title}
-                        </h4>
-                        <p className="font-exo2 text-sm text-gray-400">
-                          {item.subtitle}
-                        </p>
-                        <div className="mt-1 space-y-1">
-                          <p className="font-exo2 text-xs text-gray-400">
-                          {item.id}
-                          </p>
-                        </div>
-                        </div>
-                        <p className="font-exo2 font-semibold">
-                        ${item.price}
-                        </p>
-                      </div>
-                      </div>
-                      
-                    </div>
-                    ))}
-                </div>
-                  {/* Total number of products */}
-                    <div className="flex justify-between items-center pb-0">
-                    <span className="font-exo2 text-sm md:text-sm lg:text-lg text-gray-300">
-                      Total products:
-                    </span>
-                    <span className="font-exo2 text-sm text-white">
-                      {items.length}
-                    </span>
-                    </div>   
-                {/* Coupon Code */}
-                {/* <div className="border-b border-white pb-4">
-                  <label className="block font-exo2 mb-2">
-                    Have a coupon code?
-                  </label>
-                  <div className="flex space-x-2">
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {/* First Name */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">First Name</label>
                     <input
                       type="text"
-                      placeholder="Coupon Code"
-                      value={couponCode}
-                      onChange={(e) => setCouponCode(e.target.value)}
-                      className="flex-1  border border-gray-700 text-[#E0E6F3] rounded-md px-2 py-2 font-exo2 focus:outline-none focus:ring-2 focus:ring-blue-300"
+                      placeholder="First Name"
+                      value={billingFormData.firstName}
+                      onChange={(e) => handleBillingInputChange("firstName", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                      required
                     />
-                    <button className="bg-[#1D3758] px-4 py-2 rounded-md font-exo2 hover:bg-blue-600 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300">
-                      Apply
-                    </button>
+                    {billingErrors.firstName && (
+                      <p className="text-red-500 text-sm font-exo2">{billingErrors.firstName}</p>
+                    )}
                   </div>
-                </div> */}
 
-                {/* Totals */}
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span className="font-exo2">Cart total:</span>
-                    <span className="font-exo2">${total}</span>
+                  {/* Last Name */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Last Name</label>
+                    <input
+                      type="text"
+                      placeholder="Last Name"
+                      value={billingFormData.lastName}
+                      onChange={(e) => handleBillingInputChange("lastName", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                      required
+                    />
+                    {billingErrors.lastName && (
+                      <p className="text-red-500 text-sm font-exo2">{billingErrors.lastName}</p>
+                    )}
                   </div>
-                  <div className="flex justify-between">
-                    <span className="font-exo2">Shipping:</span>
-                    <span className="font-exo2 text-white">Free Shipping</span>
+
+                  {/* Mobile */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+                    <input
+                      type="tel"
+                      placeholder="(555) 123-4567"
+                      value={billingFormData.phone}
+                      onChange={(e) => handleBillingInputChange("phone", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                      required
+                    />
+                    {billingErrors.phone && <p className="text-red-500 text-sm font-exo2">{billingErrors.phone}</p>}
                   </div>
-                  <div className="flex justify-between pt-2 border-t border-white">
-                    <span className="font-exo2 text-2xl font-bold">TOTAL:</span>
-                    <span className="font-exo2 text-2xl font-bold">
-                      ${total}
-                    </span>
+
+                  {/* Apartment */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Apartment</label>
+                    <input
+                      type="text"
+                      placeholder="Apartment"
+                      value={billingFormData.apartment}
+                      onChange={(e) => handleBillingInputChange("apartment", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                    />
                   </div>
+
+                  {/* Address */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
+                    <input
+                      type="text"
+                      placeholder="Address"
+                      value={billingFormData.address}
+                      onChange={(e) => handleBillingInputChange("address", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                      required
+                    />
+                  </div>
+
+                  {/* Country */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Country</label>
+                    <select
+                      className="w-full bg-[#1A263D] rounded-md px-4 py-3 text-[#FFFFFF] border border-[#484848] focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      value={billingFormData.country}
+                      onChange={(e) => handleBillingInputChange("country", e.target.value)}
+                      disabled={sameAsShipping}
+                      required
+                    >
+                      <option value="">Choose Country…</option>
+                      <option value="US">United States</option>
+                      <option value="CA">Canada</option>
+                    </select>
+                  </div>
+
+                  {/* City */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">City</label>
+                    <input
+                      type="text"
+                      placeholder="City"
+                      value={billingFormData.city}
+                      onChange={(e) => handleBillingInputChange("city", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                      required
+                    />
+                    {billingErrors.city && <p className="text-red-500 text-sm font-exo2">{billingErrors.city}</p>}
+                  </div>
+
+                  {/* State */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">State</label>
+                    <select
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      value={billingFormData.state}
+                      onChange={(e) => handleBillingInputChange("state", e.target.value)}
+                      disabled={sameAsShipping || !billingStates.length}
+                      required
+                    >
+                      <option value="">Choose State…</option>
+                      {billingStates.map((state) => (
+                        <option key={state.isoCode} value={state.isoCode}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Zip Code */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Zip Code</label>
+                    <input
+                      type="text"
+                      placeholder="ZIP Code"
+                      value={billingFormData.zipCode}
+                      onChange={(e) => handleBillingInputChange("zipCode", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                      disabled={sameAsShipping}
+                      required
+                    />
+                    {billingErrors.zipCode && <p className="text-red-500 text-sm font-exo2">{billingErrors.zipCode}</p>}
+                  </div>
+
+                  {/* Conditional Company Name Field for Billing Address Type */}
+                  {billingUserType === "Commercial" && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                      <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={billingFormData.company || ""}
+                        onChange={(e) => handleBillingInputChange("company", e.target.value)}
+                        className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                        disabled={sameAsShipping}
+                        required
+                      />
+                    </div>
+                  )}
                 </div>
 
-                {/* Terms Checkbox */}
-                <label className="flex items-start space-x-2">
-                  <input
-                    type="checkbox"
-                    checked={termsAccepted}
-                    onChange={(e) => setTermsAccepted(e.target.checked)}
-                    required
-                    className="mt-1 form-checkbox bg-[#1A2230] border-gray-700 focus:ring-blue-300"
-                  />
-                  <span className="text-sm font-exo2">
-                    I have Read and Accept the
-                    <Link
-                      href="/account/t&c"
-                      className="text-blue-400 hover:underline"
-                    >
-                      {" "}
-                      terms and conditions
-                    </Link>
-                    ,
-                    <Link
-                      href="/account/warrantyAndReturn"
-                      className="text-blue-400 hover:underline"
-                    >
-                      {" "}
-                      return policy
-                    </Link>
-                    and the{" "}
-                    <Link
-                      href="/account/privacyPolicy"
-                      className="text-blue-400 hover:underline"
-                    >
-                      Privacy Policy
-                    </Link>{" "}
-                    of partscentral.us *
-                  </span>
-                </label>
-
-                {/* Continue Button */}
-                {isFormValid() ? (
-                  <Link href="/account/payMethod">
+                  <div className="mt-6">
                     <button
-                      className="w-full px-6 py-1 md:py-4  rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-[#00A3FF] text-white hover:bg-blue-500"
-                      onClick={handleContinue} // <-- Save billing info before navigating
+                      onClick={handleSave1}
+                      className="w-full bg-[#009AFF] hover:bg-blue-600 text-white py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2"
                     >
-                      Continue to payment
+                      Save Billing Info
+                    </button>
+                  </div>
+        
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <div className="flex items-start mb-6">
+              <input
+                type="checkbox"
+                id="terms"
+                checked={termsAccepted}
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+                className="form-checkbox h-4 w-4 text-[#009AFF] bg-transparent border-white rounded mt-1 focus:ring-1 focus:ring-offset-0 focus:ring-white mr-3"
+              />
+              <label htmlFor="terms" className="flex items-start">
+                <span className="text-sm md:text-xl font-exo2">
+                  I have Read and Accept the
+                  <Link
+                    href="/account/t&c"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline"
+                  >
+                    {" "}terms and conditions
+                  </Link>
+                  ,
+                  <Link
+                    href="/account/warrantyAndReturn"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline"
+                  >
+                    {" "}return policy
+                  </Link>
+                 {""} and the{" "}
+                  <Link
+                    href="/account/privacyPolicy"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-400 hover:underline"
+                  >
+                    Privacy Policy
+                  </Link>{" "}
+                  of partscentral.us *
+                </span>
+              </label>
+               </div>
+
+              <div className="flex justify-center md:justify-start mt-6 w-full">
+                {isFormValid() ? (
+                  <Link href="/account/payMethod" className="w-full md:w-auto">
+                    <button
+                      onClick={handleContinue} // Save billing info before navigating
+                      className="bg-[#00C853] text-white px-6 py-3 rounded-md font-exo2 text-lg hover:bg-green-600 transition-colors w-full md:w-auto flex items-center justify-center"
+                    >
+                      Continue to payment →
                     </button>
                   </Link>
                 ) : (
                   <button
                     disabled
-                    className="w-full px-6 py-3 rounded-md font-exo2 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 bg-gray-600 text-gray-400 cursor-not-allowed"
+                    className="bg-gray-600 text-gray-400 px-6 py-3 rounded-md font-exo2 text-lg cursor-not-allowed w-full md:w-auto flex items-center justify-center"
                   >
-                    Continue to payment
+                    Continue to payment →
                   </button>
                 )}
               </div>
+              </div>
+
+          </div>
+
+          <div className="lg:col-span-1 bg-[#02305A] rounded-lg p-6 h-fit md:mt-10">
+            <div className="bg-white p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
+              {/* Order details in white card */}
+              <div className="space-y-4 text-sm md:text-lg">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 font-exo2">Items:</span>
+                  <span className="text-gray-900 font-semibold font-exo2">({items.length})</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 font-exo2">Shipping:</span>
+                  <span className="text-gray-900 font-semibold font-exo2">TBD</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-700 font-exo2">Taxes:</span>
+                  <span className="text-gray-900 font-semibold font-exo2">TBD</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Estimated Total outside the white card */}
+            <div className="mt-4 flex justify-between items-center">
+              <span className="text-white text-lg font-bold font-exo2">Estimated Total:</span>
+              <span className="text-white text-xl font-bold font-exo2">${estimatedTotal.toFixed(2)}</span>
             </div>
           </div>
         </div>
       </div>
-
-  );
+    </div>
+  )
 }

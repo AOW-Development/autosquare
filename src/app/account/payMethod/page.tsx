@@ -532,7 +532,7 @@ export default function PayMethod() {
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-6 bg-white rounded-lg border border-gray-200"
+                  className="flex items-center justify-between p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
                 >
                   <div className="flex items-center space-x-4">
                     <Image
@@ -543,21 +543,21 @@ export default function PayMethod() {
                       className="w-20 h-20 object-cover rounded"
                     />
                     <div className="flex-1">
-                      <h4 className="font-exo2 font-semibold text-black text-lg">{item.title}</h4>
-                      <p className="font-exo2 text-base text-black font-medium">{item.subtitle}</p>
+                      <h4 className="font-exo2 font-semibold text-white text-lg">{item.title}</h4>
+                      <p className="font-exo2 text-base text-white font-medium">{item.subtitle}</p>
                       {/* <p className="font-exo2 text-sm text-black mt-1">Part#: {item.id}</p>
                       <p className="font-exo2 text-sm text-black">(3.5L V6 9 or VIN 1, 6th digit)</p> */}
                     </div>
                   </div>
                   <div className="flex items-center space-x-12 text-right">
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-black">QTY: {item.quantity}</p>
+                      <p className="font-exo2 text-sm md:text-xl text-white">QTY: {item.quantity}</p>
                     </div>
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-black">Price: ${item.price.toFixed(2)}</p>
+                      <p className="font-exo2 text-sm md:text-xl text-white">Price: ${item.price.toFixed(2)}</p>
                     </div>
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-black">
+                      <p className="font-exo2 text-sm md:text-xl text-white">
                         Item Total: ${(item.price * item.quantity).toFixed(2)}
                       </p>
                     </div>
@@ -566,9 +566,9 @@ export default function PayMethod() {
               ))}
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 md:mt-20">
+            <div className="grid md:grid-cols-2 gap-4 md:mt-16">
               {/* Shipping Address */}
-              <div className="bg-white border border-[#009AFF] rounded-lg p-8 text-black">
+              <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-8 text-white">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-xl md:text-2xl font-semibold font-exo2">Shipping Address</h3>
                   <Link href="/account/checkout" className="text-base text-white hover:underline font-exo2">
@@ -598,7 +598,7 @@ export default function PayMethod() {
               </div>
 
               {/* Billing Address */}
-              <div className="bg-white border border-[#009AFF] rounded-lg p-8 text-black">
+              <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-8 text-white">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-xl md:text-2xl font-semibold font-exo2">Billing Address</h3>
                   <Link href="/account/checkout" className="text-base text-white hover:underline font-exo2">
@@ -629,102 +629,115 @@ export default function PayMethod() {
             </div>
           </div>
 
-          <div className="bg-[#02305A] border border-[#02305A] rounded-lg p-8 w-full max-w-3xl ml-0">
+          <div className="bg-[#02305A] border border-[#02305A] rounded-lg p-8 w-full ">
+            <div className="max-w-2xl ml-0" >
             <h2 className="text-2xl font-semibold mb-8 font-exo2">Select Payment Method</h2>
 
             <div className="space-y-6">
               {/* Credit/Debit Card */}
-              <div className="bg-white text-black rounded-md p-5">
+              <div className="bg-[#252525E5] text-white rounded-md p-4">
                 <label className="flex items-center justify-between cursor-pointer">
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="card"
-                      checked={paymentMethod === "card"}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-5 h-5"
-                    />
-                    <span className="font-exo2 text-lg">Pay with Credit or Debit Card</span>
-                  </div>
+                <div className="flex items-center space-x-3">
+                <input
+                type="radio"
+                name="paymentMethod"
+                value="card"
+                checked={paymentMethod === "card"}
+                onChange={(e) => setPaymentMethod(e.target.value)}
+                className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
+                />
+                <span className="font-exo2 text-lg">Pay with Credit or Debit Card</span>
+                </div>
                 </label>
 
-                {paymentMethod === "card" && (
-                  <div className="mt-6 space-y-6 pl-8 text-gray-50">
-                    {/* Card Number */}
-                    <div className="relative">
-                      <input
-                        type="text"
-                        placeholder="XXXX XXXX XXXX XXXX"
-                        value={cardData.cardNumber}
-                        onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
-                        className={`w-full  bg-white border ${
-                          cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
-                        } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pr-16`}
-                      />
-                      {cardImage && (
-                        <div className="absolute top-1/2 right-6 transform -translate-y-1/2">
-                          <img src={`/images/home/${cardImage}`} alt="cardType" className="w-10 h-auto" />
-                        </div>
-                      )}
-                      {cardErrors.cardNumber && (
-                        <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.cardNumber}</p>
-                      )}
-                    </div>
+                  {paymentMethod === "card" && (
+                  <div className="mt-6 space-y-6 pl-6 pr-6 text-gray-50">
+                  {/* Card Number */}
+                  <div className="relative w-full">
+                  <label htmlFor="cardNumber" className="block text-sm md:text-lg mb-2 font-exo2 text-gray-200">Card Number</label>
+                  <input
+                  type="text"
+                  placeholder="XXXX XXXX XXXX XXXX"
+                  value={cardData.cardNumber}
+                  onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
+                  className={`w-full bg-[#FFFFFFD1] border ${
+                  cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
+                  } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pr-16`}
+                  />
 
-                    {/* Cardholder Name */}
-                    <div>
+
+                  {cardImage && (
+                  <div className="absolute top-1/2 right-6 transform -translate-y-1/2">
+                  <img src={`/images/home/${cardImage}`} alt="cardType" className="w-10 h-auto" />
+                  </div>
+                  )}
+
+
+                  {cardErrors.cardNumber && (
+                  <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.cardNumber}</p>
+                  )}
+                  </div>
+
+                    <div className="w-full grid grid-cols-2 gap-4">
+                      <div>
+                        <label htmlFor="expirationDate" className="block text-sm mb-2 md:text-lg font-exo2 text-gray-200">Expiration Date</label>
                       <input
-                        type="text"
-                        placeholder="Cardholder Name"
-                        value={cardData.cardholderName}
-                        onChange={(e) => handleCardInputChange("cardholderName", e.target.value)}
-                        className={`w-full bg-white border ${
-                          cardErrors.cardholderName ? "border-red-500" : "border-gray-700"
-                        } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                      type="text"
+                      placeholder="MM/YY"
+                      value={cardData.expirationDate}
+                      onChange={(e) => handleCardInputChange("expirationDate", e.target.value)}
+                      className={`w-full bg-[#FFFFFFD1] border ${
+                      cardErrors.expirationDate ? "border-red-500" : "border-gray-700"
+                      } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                      />
+                      {cardErrors.expirationDate && (
+                      <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.expirationDate}</p>
+                      )}
+                      </div>
+
+
+                      <div>
+                        <label htmlFor="securityCode" className="block text-sm md:text-lg mb-2 font-exo2 text-gray-200">Security Code</label>
+                      <input
+                      type="text"
+                      placeholder="CVV"
+                      value={cardData.securityCode}
+                      onChange={(e) => handleCardInputChange("securityCode", e.target.value)}
+                      className={`w-full bg-[#FFFFFFD1] border ${
+                      cardErrors.securityCode ? "border-red-500" : "border-gray-700"
+                      } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                      />
+                      {cardErrors.securityCode && (
+                      <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.securityCode}</p>
+                      )}
+                      </div>
+                      </div>
+
+
+                      {/* Cardholder Name */}
+                      <div>
+                        <label htmlFor="cardholderName" className="block text-sm md:text-lg mb-2 font-exo2 text-gray-200">Cardholder Name</label>
+                      <input
+                      type="text"
+                      placeholder="Enter Name"
+                      value={cardData.cardholderName}
+                      onChange={(e) => handleCardInputChange("cardholderName", e.target.value)}
+                      className={`w-full bg-[#FFFFFFD1] border ${
+                      cardErrors.cardholderName ? "border-red-500" : "border-gray-700"
+                      } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
                       />
                       {cardErrors.cardholderName && (
-                        <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.cardholderName}</p>
+                      <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.cardholderName}</p>
                       )}
-                    </div>
+                      </div>
 
-                    {/* Expiration + CVV */}
-                    <div className="grid grid-cols-2 gap-6">
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="MM/YY"
-                          value={cardData.expirationDate}
-                          onChange={(e) => handleCardInputChange("expirationDate", e.target.value)}
-                          className={`bg-white border ${
-                            cardErrors.expirationDate ? "border-red-500" : "border-gray-700"
-                          } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
-                        />
-                        {cardErrors.expirationDate && (
-                          <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.expirationDate}</p>
-                        )}
+
                       </div>
-                      <div>
-                        <input
-                          type="text"
-                          placeholder="CVV"
-                          value={cardData.securityCode}
-                          onChange={(e) => handleCardInputChange("securityCode", e.target.value)}
-                          className={`bg-white border ${
-                            cardErrors.securityCode ? "border-red-500" : "border-gray-700"
-                          } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
-                        />
-                        {cardErrors.securityCode && (
-                          <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.securityCode}</p>
-                        )}
-                      </div>
-                    </div>
-                  </div>
                 )}
               </div>
 
               {/* Google Pay */}
-              <div className="bg-white text-black rounded-md p-5 md:p-10">
+              <div className="bg-[#252525E5] text-white rounded-md p-5 md:p-6">
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex items-center space-x-3">
                     <input
@@ -733,16 +746,16 @@ export default function PayMethod() {
                       value="google"
                       checked={paymentMethod === "google"}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-5 h-5"
+                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
                     />
                     <span className="font-exo2 text-lg">Pay with Google Pay</span>
                   </div>
-                  <img src="/google.png" alt="Google Pay" className="h-6" />
+                  <img src="/google.png" alt="Google Pay" className="h-8 w-18" />
                 </label>
               </div>
 
               {/* Apple Pay */}
-              <div className="bg-white text-black rounded-md p-5 md:p-10">
+              <div className="bg-[#252525E5] text-white rounded-md p-5 md:p-6">
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex items-center space-x-3">
                     <input
@@ -751,16 +764,16 @@ export default function PayMethod() {
                       value="apple"
                       checked={paymentMethod === "apple"}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-5 h-5"
+                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
                     />
                     <span className="font-exo2 text-lg">Pay with Apple Pay</span>
                   </div>
-                  <img src="/apple.png" alt="Apple Pay" className="h-8" />
+                  <img src="/apple1.png" alt="Apple Pay" className="h-8 w-18" />
                 </label>
               </div>
 
               {/* PayPal */}
-              <div className="bg-white text-black rounded-md p-5 md:p-10">
+              <div className="bg-[#252525E5] text-white rounded-md p-5 md:p-6">
                 <label className="flex items-center justify-between cursor-pointer">
                   <div className="flex items-center space-x-3">
                     <input
@@ -769,13 +782,17 @@ export default function PayMethod() {
                       value="paypal"
                       checked={paymentMethod === "paypal"}
                       onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-5 h-5"
+                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
                     />
                     <span className="font-exo2 text-lg">Pay with PayPal</span>
                   </div>
                   <img src="/paypal.png" alt="PayPal" className="h-6" />
                 </label>
-                <p className="ml-8 mt-2 text-sm text-gray-400 font-exo2">6 Months No Interest with PayPal Credit</p>
+                <p className="ml-4 mt-2 text-sm text-gray-400 font-exo2 flex items-center gap-2">
+                  6 Months No Interest with PayPal Credit 
+                  <img src="/pay-credit.png" alt="PayPal Credit" className="h-4 w-auto inline-block" />
+                </p>
+
               </div>
             </div>
 
@@ -805,6 +822,7 @@ export default function PayMethod() {
             </div>
           </div>
         </div>
+      </div>
       </div>
     </div>
   )

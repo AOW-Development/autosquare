@@ -39,7 +39,7 @@ export default function Cart() {
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-8 pb-22">
-      <div className="mx-auto px-4 md:px-10 lg:px-40">
+       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
           <Link
@@ -115,9 +115,9 @@ export default function Cart() {
         </div>
 
         {/* Main Content Grid (Responsive stacking) */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-20">
           {/* LEFT: Cart Items */}
-          <div className="lg:col-span-2 space-y-4 bg-[#02305A] rounded-lg p-4 md:p-6">
+           <div className="lg:col-span-2 space-y-4 bg-[#02305A] rounded-lg p-4 md:p-6">
             {/* Header */}
             {!isCartEmpty && (
               <div className="hidden md:grid grid-cols-12 gap-4 py-2 border-b border-gray-400 text-sm md:text-lg font-exo2 font-semibold text-white">
@@ -137,7 +137,7 @@ export default function Cart() {
               cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex flex-col md:grid md:grid-cols-12 gap-4 md:items-center text-black p-4 bg-white rounded-lg shadow"
+                  className="flex flex-col md:grid md:grid-cols-12 gap-4 md:items-center text-white p-4 bg-[#252525E5] rounded-lg shadow"
                 >
                   {/* Item Info */}
                   <div className="flex items-center space-x-4 mb-4 md:mb-0 md:col-span-6">
@@ -153,25 +153,25 @@ export default function Cart() {
                       className="w-24 h-24 md:w-30 md:h-30 object-cover rounded"
                     />
                     <div>
-                      <h3 className="font-exo2 font-bold text-black text-lg">{item.title}</h3>
-                      <p className="text-sm text-black">{item.subtitle}</p>
+                      <h3 className="font-exo2 font-bold text-white text-lg">{item.title}</h3>
+                      <p className="text-sm text-white">{item.subtitle}</p>
                     </div>
                   </div>
 
                   {/* Price, Qty, Subtotal (stacked on mobile) */}
                   <div className="flex flex-col md:flex-row md:col-span-6 justify-between items-center w-full">
                     {/* Price */}
-                    <div className="flex justify-between w-full md:w-auto md:col-span-2 md:text-center font-exo2 text-lg text-black mb-2 md:mb-0">
+                    <div className="flex justify-between w-full md:w-auto md:col-span-2 md:text-center font-exo2 text-lg text-white mb-2 md:mb-0">
                       <span className="md:hidden">Price:</span>
                       <span>${item.price}.00</span>
                     </div>
 
                     {/* Qty */}
                   <div className="flex justify-between w-full md:w-auto md:col-span-2 md:justify-center mb-2 md:mb-0">
-                  <div className="flex items-center space-x-1 text-black rounded-md border border-gray-400 bg-white px-2">
+                  <div className="flex items-center space-x-1 text-white rounded-md border border-gray-400 bg-gray-800 px-2">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                      className="w-6 h-6 flex items-center justify-center text-black rounded hover:bg-gray-200"
+                      className="w-6 h-6 flex items-center justify-center text-white rounded hover:bg-gray-200"
                     >
                       –
                     </button>
@@ -181,12 +181,12 @@ export default function Cart() {
                       onChange={(e) =>
                         updateQuantity(item.id, parseInt(e.target.value) || 1)
                       }
-                      className="w-8 text-center bg-transparent text-lg text-black focus:outline-none"
+                      className="w-8 text-center bg-transparent text-lg text-white focus:outline-none"
                       min="1"
                     />
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                      className="w-6 h-6 flex items-center justify-center text-black rounded hover:bg-gray-200"
+                      className="w-6 h-6 flex items-center justify-center text-white rounded hover:bg-gray-200"
                     >
                       +
                     </button>
@@ -194,12 +194,12 @@ export default function Cart() {
                 </div>
 
                     {/* Subtotal + Remove */}
-                    <div className="relative flex justify-between md:justify-end items-start space-x-2 font-exo2 font-bold text-black text-lg w-full md:w-auto md:col-span-2">
+                    <div className="relative flex justify-between md:justify-end items-start space-x-2 font-exo2 font-bold text-white text-lg w-full md:w-auto md:col-span-2">
                       <span className="md:hidden">Subtotal:</span>
                       <span className="flex-1 md:flex-initial text-right md:text-left">${item.price * item.quantity}.00</span>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="hover:text-red-500 text-black ml-4 absolute top-[-50px]"
+                        className="absolute top-[-220px] right-0 text-white hover:text-red-500 md:top-[-50px] md:right-0"
                       >
                         ✕
                       </button>
@@ -211,38 +211,38 @@ export default function Cart() {
           </div>
 
           {/* RIGHT: Summary */}
-          <div className="lg:col-span-1 bg-[#02305A] rounded-lg p-6 py-10 space-y-4 text-black">
+          <div className="lg:col-span-1 bg-[#02305A] rounded-lg p-6 py-10 space-y-4 text-white md:mt-6 lg:mt-0">
             {/* Block 1: Totals */}
-            <div className="bg-white rounded-lg p-4 shadow space-y-3">
+            <div className="bg-[#252525E5] rounded-lg p-4 shadow space-y-3 md:mt-4">
               <div className="flex justify-between font-exo2 text-base">
                 <span>Items:</span>
                 <span>${total}.00</span>
               </div>
               <div className="flex justify-between font-exo2 text-base">
                 <span>Shipping:</span>
-                <span>TBD</span>
+                <span>free shipping</span>
               </div>
-              <div className="flex justify-between font-exo2 text-base">
+              {/* <div className="flex justify-between font-exo2 text-base">
                 <span>Taxes:</span>
                 <span>TBD</span>
-              </div>
+              </div> */}
             </div>
 
-            <div className="pt-2 flex justify-between font-exo2 font-bold text-white text-xl">
+            <div className="pt-2 flex justify-between font-exo2 px-2 font-bold text-white text-xl">
               <span>Estimated Total:</span>
               <span>${total}.00</span>
             </div>
 
             {/* Block 2: Coupon */}
-            <div className="bg-white rounded-lg p-4 shadow space-y-3">
-              <label className="text-base font-exo2 font-medium">
+            <div className="bg-[#252525E5] rounded-lg p-4 shadow space-y-3">
+              <label className="text-base font-exo2 font-medium mb-2">
                 Enter Coupon Code (Limit 1 coupon):
               </label>
-              <div className="grid md:grid-cols-1">
+              <div className="grid md:grid-cols-1 md:mt-4">
                 <input
                   type="text"
                   placeholder="Coupon Code"
-                  className="flex-1 px-3 py-2 rounded-md border border-gray-400 text-sm"
+                  className="flex-1 px-3 py-2 rounded-md border border-gray-400 text-sm "
                 />
                 <button className="bg-[#02305A] px-4 py-2 mt-4 rounded-md text-white hover:bg-[#02305A] text-sm">
                   Apply
@@ -253,7 +253,7 @@ export default function Cart() {
         </div>
         
         {/* Checkout Button (Responsive positioning) */}
-        <div className="flex justify-center md:justify-start mt-6">
+        <div className="flex justify-center md:justify-start md:mt-10">
           <button
             onClick={handleCheckout}
             className="bg-[#00C853] text-white px-6 py-3 rounded-md font-exo2 text-lg hover:bg-green-600 transition-colors w-full md:w-auto"

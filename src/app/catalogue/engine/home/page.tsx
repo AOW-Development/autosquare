@@ -4,12 +4,14 @@ import AddedCartPopup from "../../../account/modal/AddedCartPopup/AddedCartPopup
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from 'next/navigation';
+// IMPORTING useRouter ALONGSIDE useSearchParams
+import { useSearchParams, useRouter } from 'next/navigation'; 
 import ShopByVehicle from "@/components/shopByVehicle";
 import EngineFilterSidebar from "@/components/EngineFilterSidebar";
 import { useCartStore } from "@/store/cartStore";
 import { getGroupedProducts } from "@/utils/api";
 import PartRequestPopup from "@/components/partRequestPopup";
+import { VerifyPartPopup } from "@/components/fitment"; // Assuming this path is correct
 
 interface SubPart {
   id: number;
@@ -37,6 +39,12 @@ interface Product {
   inventory: any | null;
   subParts: SubPart[];
   subPart?: SubPart;
+  // Fields added during flattening in useEffect for easy access:
+  make: string; // Ensure these are defined if you use them on Product type
+  model: string;
+  modelYear: string;
+  part: string;
+  partType: string | null;
 }
 
 const accordionData = [
@@ -58,16 +66,20 @@ const accordionData = [
 ];
 
 export default function CatalogPage() {
+  // --- Initialize Router ---
+  const router = useRouter(); 
+  
   // --- SubPart Filter State ---
-  // Minimal addition for subpart filtering
-  const [subPartsList, setSubPartsList] = useState<SubPart[]>([]); // Deduped list for dropdown
-  const [subPartFilter, setSubPartFilter] = useState<number | null>(null); // Current filter selection
+  const [subPartsList, setSubPartsList] = useState<SubPart[]>([]); 
+  const [subPartFilter, setSubPartFilter] = useState<number | null>(null); 
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [showCartPopup, setShowCartPopup] = useState(false);
+  // showCartPopup will now be used to display the success message BEFORE redirecting, 
+  // though typically in this flow, redirection happens immediately.
+  const [showCartPopup, setShowCartPopup] = useState(false); 
   const [inCartIdx, setInCartIdx] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
@@ -77,6 +89,10 @@ export default function CatalogPage() {
   const model = searchParams.get('model');
   const year = searchParams.get('year');
   const part = searchParams.get('part');
+
+  // --- Verify Part Popup State ---
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedProductForVerify, setSelectedProductForVerify] = useState<Product | null>(null); 
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -93,61 +109,67 @@ export default function CatalogPage() {
         try {
           setLoading(true);
           const response = await getGroupedProducts({ make, model, year, part });
-        // Define interfaces for explicit typing to prevent type errors.
-        interface IVariant {
-          id: number;
-          sku: string;
-          miles: string | null;
-          actualprice: number | null;
-          discountedPrice?: number | null;
-          inStock: boolean;
-          productId?: number;
-          product: { images: any[]; description: string | null; id: number; sku: string };
-          make: string;
-          model: string;
-          modelYear: string;
-          part: string;
-          partType: string | null;
-          subPart: {
+          
+          interface IVariant {
             id: number;
-            name: string;
-            partTypeId: number;
-          };
-        }
+            sku: string;
+            miles: string | null;
+            actualprice: number | null;
+            discountedPrice?: number | null;
+            inStock: boolean;
+            productId?: number;
+            product: { images: any[]; description: string | null; id: number; sku: string; title: string; price: number; modelYearId: number; partTypeId: number; }; // Add necessary fields
+            make: string;
+            model: string;
+            modelYear: string;
+            part: string;
+            partType: string | null;
+            subPart: SubPart; // Change to non-optional
+          }
 
-        interface IGroupedVariant {
-          subPart: SubPart;
-          variants: IVariant[];
-        }
+          interface IGroupedVariant {
+            subPart: SubPart;
+            variants: IVariant[];
+          }
 
-          // The API returns data grouped by sub-parts. We need to flatten this structure
-          // into a single list of products for rendering.
-          const flattenedProducts = response.data.groupedVariants.flatMap((group: IGroupedVariant) => 
+          const flattenedProducts: Product[] = response.data.groupedVariants.flatMap((group: IGroupedVariant) => 
             group.variants.map((variant: IVariant) => ({
-              ...variant,
+              // Map IVariant to Product interface fields
+              id: variant.product.id, // Using product ID for main ID
+              sku: variant.sku,
+              title: variant.product.title,
+              price: variant.product.price,
+              modelYearId: variant.product.modelYearId,
+              partTypeId: variant.product.partTypeId,
+              inStock: variant.inStock,
+              description: variant.product.description,
+              actualprice: variant.actualprice || variant.product.price,
+              discountedPrice: variant.discountedPrice || null,
+              status: null, // Assuming default or fetch from API
+              miles: variant.miles,
+              Availability: null, // Assuming default or fetch from API
+              warranty: null, // Assuming default or fetch from API
+              categoryId: null, // Assuming default or fetch from API
+              images: variant.product.images || [],
+              inventory: null, // Assuming default or fetch from API
+              subParts: [group.subPart], // Single subPart from group
+              subPart: group.subPart,
+              // Add convenience fields
               make: response.data.make,
               model: response.data.model,
               modelYear: response.data.year,
               part: response.data.part,
               partType: group.subPart?.name || null,
-              subPart: group.subPart,
-              subPartId: group.subPart?.id ?? null, // Add subPartId for numeric filtering
-              miles: variant.miles,
-              // add any other fields you want to pass
             }))
           );
           
-          // Build de-duplicated subParts list from groupedVariants (ensures matching objects)
           const dedupedSubParts = Array.from(
             new Map(
               (response.data.groupedVariants || []).map((g: IGroupedVariant) => [g.subPart.id, g.subPart])
             ).values()
           );
-          setSubPartsList(dedupedSubParts as SubPart[]); // Ensure type safety
-          setProducts(flattenedProducts); // New method with transformed data
-// =======
-          // setProducts(response.data);
-// >>>>>>> d799a38ba15935a24589f9c41519dde472ec5bd1
+          setSubPartsList(dedupedSubParts as SubPart[]); 
+          setProducts(flattenedProducts); 
           setError(null);
         } catch (err) {
           setError('Failed to fetch products. Please try again later.');
@@ -165,10 +187,10 @@ export default function CatalogPage() {
 
   // --- Apply subPart filter before pagination ---
   // Filter products by subPartId if filter is set
-  // Type-safe filter: check subPartId exists and is number
-const filteredProducts = subPartFilter !== null
-  ? products.filter(p => typeof p.subPart?.id === 'number' && p.subPart?.id === subPartFilter)
-  : products;
+  const filteredProducts = subPartFilter !== null
+    ? products.filter(p => typeof p.subPart?.id === 'number' && p.subPart?.id === subPartFilter)
+    : products;
+  
   // Pagination values based on filtered list
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -179,7 +201,7 @@ const filteredProducts = subPartFilter !== null
 
   const renderPaginationButtons = () => {
     const pageNumbers = [];
-    const maxPageButtons = 5; // Max number of page buttons to show
+    const maxPageButtons = 5; 
     let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
@@ -216,7 +238,7 @@ const filteredProducts = subPartFilter !== null
               className={`flex items-center justify-center w-8 h-8 rounded-md bg-transparent ${
                 currentPage === 1
                   ? "text-gray-600 cursor-not-allowed"
-                  : "text-white hover:text-gray-300 transition-colors" // Adjusted hover for consistency
+                  : "text-white hover:text-gray-300 transition-colors" 
               }`}
             >
               <svg
@@ -245,8 +267,8 @@ const filteredProducts = subPartFilter !== null
                   onClick={() => paginate(Number(number))}
                   className={`flex items-center justify-center w-8 h-8 rounded-md font-bold ${
                     Number(number) === currentPage
-                      ? "bg-black text-white" // Active button: black background, white text
-                      : "bg-transparent text-gray-500 hover:text-gray-300 transition-colors" // Inactive: transparent background, specific gray text, subtle hover
+                      ? "bg-black text-white" 
+                      : "bg-transparent text-gray-500 hover:text-gray-300 transition-colors" 
                   }`}
                 >
                   {number}
@@ -264,7 +286,7 @@ const filteredProducts = subPartFilter !== null
               className={`flex items-center justify-center w-8 h-8 rounded-md bg-transparent ${
                 currentPage === totalPages
                   ? "text-gray-600 cursor-not-allowed"
-                  : "text-white hover:text-gray-300 transition-colors" // Adjusted hover for consistency
+                  : "text-white hover:text-gray-300 transition-colors" 
               }`}
             >
               <svg
@@ -286,6 +308,33 @@ const filteredProducts = subPartFilter !== null
     );
   };
 
+  // NEW function to handle the cart addition AND REDIRECTION after verification
+  const handleAddToCartAndRedirect = (product: Product, quantity: number = 1) => {
+    // 1. Add item to cart
+    addItem({
+      id: product.sku,
+      name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+      title: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+      subtitle: product.sku,
+      image: product.images && product.images.length > 0 ? product.images[0] : (part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"),
+      quantity: quantity,
+      price: product.actualprice || 0
+    });
+    
+    // 2. Show success popup briefly (optional, as we're redirecting immediately)
+    // We'll show it for a fraction of a second just to confirm the action visually.
+    setShowCartPopup(true);
+    
+    // 3. Navigate to the checkout page
+    // Using a very short timeout to allow the cart update to register and the popup to flash
+    setTimeout(() => {
+        setIsPopupOpen(false); // Close the verify popup
+        setSelectedProductForVerify(null); // Clear the selected product
+        setShowCartPopup(false); // Hide the success popup
+        router.push('/account/checkout'); // Redirect to the specified checkout URL
+    }, 100); 
+  };
+
   return (
     <div className="bg-[#061C37] text-white min-h-screen">
       {/* Breadcrumbs */}
@@ -302,7 +351,6 @@ const filteredProducts = subPartFilter !== null
               width={24}
               height={24}
             />
-            {/* <span>Home</span> */}
           </Link>
           <Image
             src="/autoparts/arrows (1).png"
@@ -338,8 +386,9 @@ const filteredProducts = subPartFilter !== null
           <ShopByVehicle />
         </div>
 
+        {/* Mobile SubPart Filter Dropdown */}
         <div className="lg:hidden mb-8 px-2 md:px-4 lg:px-0 mt-6 ">
-          <label htmlFor="specification" className="block text-sm text-gray-300 mb-1 ">
+          <label htmlFor="subpart-filter" className="block text-sm text-gray-300 mb-1 ">
             Select Specification
           </label>
           <select
@@ -350,6 +399,7 @@ const filteredProducts = subPartFilter !== null
             onChange={e => {
               const val = e.target.value;
               setSubPartFilter(val === "ALL" ? null : Number(val));
+              setCurrentPage(1); // Reset to page 1 on filter change
             }}
           >
             <option value="ALL">All Specification</option>
@@ -362,7 +412,7 @@ const filteredProducts = subPartFilter !== null
         </div>
 
         <h2
-          className="text-xl md:text-2xl lg:text-3xl font-audiowide md:mt-4 lg:mt-8 mb-2 md:mb-6  lg:mb-6 pl-3 md:pl-4"
+          className="text-xl md:text-2xl lg:text-3xl font-audiowide md:mt-4 lg:mt-8 mb-2 md:mb-6 lg:mb-6 pl-3 md:pl-4"
           style={{
             fontFamily: "Audiowide, sans-serif",
             letterSpacing: "0.1em",
@@ -370,7 +420,7 @@ const filteredProducts = subPartFilter !== null
         >
           {year && make && model && part
             ? `${year.toUpperCase()} ${make.toUpperCase()} ${model.toUpperCase()} USED ${part.toUpperCase()}S`
-             : "USED ENGINES"}
+            : "USED ENGINES"}
         </h2>
 
         {/* Filters + Cards Section */}
@@ -380,26 +430,28 @@ const filteredProducts = subPartFilter !== null
             <EngineFilterSidebar 
               subPartsList={subPartsList}
               subPartFilter={subPartFilter}
-              setSubPartFilter={setSubPartFilter}
+              setSubPartFilter={(id) => {
+                setSubPartFilter(id);
+                setCurrentPage(1); // Reset to page 1 on filter change
+              }}
             />
           </aside>
+          
           {/* Product Cards Grid */}
           <main className="flex-1">
             {/* Quantity and Sort */}
             <div className="flex justify-between items-center mb-4">
               <button
-                className="md:hidden w-full rounded-lg px-4 py-1.5 mr-1 border-2 border-blue-600 shadow-2xl"
+                className="md:hidden w-1/2 rounded-lg px-4 py-1.5 mr-1 border-2 border-blue-600 shadow-2xl"
                 onClick={() => setShowMobileFilter(true)}
               >
                 Filter
               </button>
               <div className="hidden md:block text-sm text-gray-300">
                 Quantity of products:{" "}
-                <span className="font-semibold">{products.length}</span>
+                <span className="font-semibold">{filteredProducts.length}</span>
               </div>
-              <div className="relative flex justify-end items-center w-full">
-                {/* SubPart Filter Dropdown removed. Filtering logic is still present in CatalogPage, but UI is now delegated to EngineFilterSidebar. */}
-                {/* TODO: Wire subPartFilter and setSubPartFilter from EngineFilterSidebar via props or context. */}
+              <div className="relative flex justify-end items-center w-full md:w-auto">
                 <select
                   id="sort-by"
                   className="bg-[#091b33] border border-white text-white text-sm rounded-md shadow-xl focus:outline-none px-4 py-[6px] pr-10 appearance-none"
@@ -429,6 +481,7 @@ const filteredProducts = subPartFilter !== null
                 </div>
               </div>
             </div>
+            
             {/* Mobile Filter Modal */}
             {showMobileFilter && (
               <div className="fixed justify-end inset-0 z-50 backdrop-blur-sm flex items-center md:hidden h-screen">
@@ -441,13 +494,18 @@ const filteredProducts = subPartFilter !== null
                     &times;
                   </button>
                   <EngineFilterSidebar 
-              subPartsList={subPartsList}
-              subPartFilter={subPartFilter}
-              setSubPartFilter={setSubPartFilter}
-            />
+                    subPartsList={subPartsList}
+                    subPartFilter={subPartFilter}
+                    setSubPartFilter={(id) => {
+                      setSubPartFilter(id);
+                      setCurrentPage(1); // Reset to page 1 on filter change
+                      setShowMobileFilter(false); // Close filter on apply/change
+                    }}
+                  />
                 </div>
               </div>
             )}
+            
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-10">
               {currentItems.map((item, index) => {
                 const cartItem = cartItems.find(
@@ -463,7 +521,7 @@ const filteredProducts = subPartFilter !== null
 
                 return (
                   <div
-                    key={item.id} // Ensure unique key
+                    key={`${item.id}-${item.sku}`} // Ensure unique key
                     className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
                   >
                     <Link
@@ -493,23 +551,23 @@ const filteredProducts = subPartFilter !== null
                           height={160}
                           className="relative z-10 rounded-md object-contain"
                           priority
-                        />
-                        <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                          Stock image
-                        </p></>)}
+                          />
+                          <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                            Stock image
+                          </p></>)}
                         {part=="Transmission"&&(
                           <>
                           <Image
                           src="/catalog/Trasmission_.png"
-                          alt="Engine"
+                          alt="Transmission"
                           width={250}
                           height={160}
                           className="relative z-10 rounded-md object-contain"
                           priority
-                        />
-                        <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                          Stock image
-                        </p></>)}
+                          />
+                          <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                            Stock image
+                          </p></>)}
                       </div>
                       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
                       <div className="relative z-20 pt-2">
@@ -517,7 +575,7 @@ const filteredProducts = subPartFilter !== null
                         {year}  {make} {model} 
                         </h3>
                         <p className="text-sm text-gray-300 mb-1">
-                       {'used'} {part || 'Engine/Transmission assembly'} 
+                        {'used'} {part || 'Engine/Transmission assembly'} 
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
                             {item.subPart?.name || 'N/A'}
@@ -540,14 +598,15 @@ const filteredProducts = subPartFilter !== null
                       {item.inStock ? (
                         <>
                           <span className="text-xl font-bold text-white">
-                           ${item.actualprice}
+                            ${item.actualprice}
                           </span>
                           {cartItem ? (
+                            // Quantity Controls
                             <button
                               className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
                               style={{ minWidth: 120 }}
                               tabIndex={0}
-                              onClick={(e) => e.preventDefault()} // prevent card click
+                              onClick={(e) => e.preventDefault()} 
                             >
                               <span
                                 className="cursor-pointer select-none text-3xl px-1"
@@ -582,22 +641,15 @@ const filteredProducts = subPartFilter !== null
                               </span>
                             </button>
                           ) : (
+                            // Add to Cart Button (Modified)
                             <button
                               className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setShowCartPopup(true);
-                                setInCartIdx(indexOfFirstItem + index);
-                                addItem({
-                                  id: item.sku,
-                                  name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
-                                  title: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
-                                  subtitle: item.sku,
-                                  image: item.images && item.images.length > 0 ? item.images[0] : '/Images/default-engine.png',
-                                  quantity: 1,
-                                  price: item.actualprice || 0
-                                });
-                                setTimeout(() => setShowCartPopup(false), 2000);
+                                // --- NEW LOGIC: Open VerifyPartPopup ---
+                                setSelectedProductForVerify(item);
+                                setIsPopupOpen(true);
+                                // ---------------------------------------
                               }}
                             >
                               Add to Cart
@@ -605,33 +657,59 @@ const filteredProducts = subPartFilter !== null
                           )}
                         </>
                       ) : (
-                       <>
+                        <>
                           <button
                             onClick={() => setShowPopup(true)}
                             className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center md:w-full w-full block mb-6"
                           >
                             Part Request
                           </button>
-
-                          
                         </>
                       )}
                     </div>
                   </div>
                 );
               })}
-              {showCartPopup && inCartIdx !== null && currentItems[inCartIdx] && (
+              
+              {/* AddedCartPopup - Only shows success message *after* verification and actual cart add */}
+              {showCartPopup && selectedProductForVerify && (
                 <AddedCartPopup
                   title={`${make} ${model} ${year} ${part || 'Engine assembly'}`}
-                  subtitle={currentItems[inCartIdx].sku}
-                  price={currentItems[inCartIdx].actualprice || 0}
-                  // image={currentItems[inCartIdx].images && currentItems[inCartIdx].images.length > 0 ? currentItems[inCartIdx].images[0] : '/catalog/Trasmission_.png'}
-                  image={part==="Engine"? "/catalog/Engine 1.png":"/catalog/Trasmission_.png"}
+                  subtitle={selectedProductForVerify.sku}
+                  price={selectedProductForVerify.actualprice || 0}
+                  image={part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"}
                 />
               )}
             </div>
-           {totalPages > 1 && renderPaginationButtons()}
-           {showPopup && <PartRequestPopup setClosePopup={setShowPopup} />}
+            
+            {totalPages > 1 && renderPaginationButtons()}
+            
+            {/* Part Request Popup */}
+            {showPopup && <PartRequestPopup setClosePopup={setShowPopup} />}
+
+            {/* Verify Part Popup (Updated with state management) */}
+            <VerifyPartPopup
+              isOpen={isPopupOpen}
+              onClose={() => {
+                setIsPopupOpen(false);
+                setSelectedProductForVerify(null);
+              }}
+              // Pass the current product data
+              make={make || ''}
+              model={model || ''}
+              year={year || ''}
+              part={part || ''}
+              subPartsList={subPartsList}
+              selectedProduct={selectedProductForVerify}
+              // This prop now calls the function to add to cart AND redirect to checkout
+              onConfirm={() => {
+                if (selectedProductForVerify) {
+                    handleAddToCartAndRedirect(selectedProductForVerify);
+                }
+              }}
+              // You can pass the VIN number if you have it from a user session or input elsewhere
+              vinNumber="" 
+            />  
           </main>
         </div>
       </div>

@@ -260,7 +260,7 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
-      <div className=" mx-auto md:mx-6 lg:mx-40 px-4 md:px-6 lg:px-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-10">
         {/* Breadcrumb */}
         <div className="flex items-center space-x-2 text-sm text-[#FFFFFF] mb-6">
           <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
@@ -346,20 +346,9 @@ export default function Checkout() {
               </Link>
             </div>
 
+            {/* Customer Information block */}
             <div className="bg-[#02305A] rounded-lg p-6 mb-8">
-              <h2 className="text-xl font-bold mb-4 font-exo2">Shipping Information</h2>
-
-              <div className="mb-6">
-                <label className="block text-sm font-medium mb-2 font-exo2">Address Type</label>
-                <select
-                  className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
-                  value={userType}
-                  onChange={(e) => handleUserTypeChange(e.target.value as "Individual" | "Commercial")}
-                >
-                  <option value="Individual">Individual</option>
-                  <option value="Commercial">Commercial</option>
-                </select>
-              </div>
+              <h2 className="text-xl font-bold mb-4 font-exo2">Customer Information</h2>
 
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -391,32 +380,6 @@ export default function Checkout() {
                     {errors.lastName && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.lastName}</p>}
                   </div>
 
-                  {/* Mobile */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
-                    <input
-                      type="tel"
-                      placeholder="(555) 123-4567"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
-                      required
-                    />
-                    {errors.phone && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.phone}</p>}
-                  </div>
-
-                  {/* Apartment */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">Apartment</label>
-                    <input
-                      type="text"
-                      placeholder="Apartment"
-                      value={formData.apartment}
-                      onChange={(e) => handleInputChange("apartment", e.target.value)}
-                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
-                    />
-                  </div>
-
                   {/* Email */}
                   <div>
                     <label className="block text-sm font-medium mb-2 font-exo2">Email</label>
@@ -430,6 +393,41 @@ export default function Checkout() {
                     />
                   </div>
 
+                  {/* Mobile */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+                    <input
+                      type="tel"
+                      placeholder="(555) 123-4567"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange("phone", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      required
+                    />
+                    {errors.phone && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.phone}</p>}
+                  </div>
+                </div>
+              </form>
+            </div>
+
+            {/* Shipping Information */}
+            <div className="bg-[#02305A] rounded-lg p-6 mb-8">
+              <h2 className="text-xl font-bold mb-4 font-exo2">Shipping Information</h2>
+
+              <div className="mb-6">
+                <label className="block text-sm font-medium mb-2 font-exo2">Address Type</label>
+                <select
+                  className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                  value={userType}
+                  onChange={(e) => handleUserTypeChange(e.target.value as "Individual" | "Commercial")}
+                >
+                  <option value="Individual">Individual</option>
+                  <option value="Commercial">Commercial</option>
+                </select>
+              </div>
+
+              <form className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Address */}
                   <div>
                     <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
@@ -440,6 +438,18 @@ export default function Checkout() {
                       onChange={(e) => handleInputChange("address", e.target.value)}
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                       required
+                    />
+                  </div>
+
+                  {/* Apartment */}
+                  <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Apartment</label>
+                    <input
+                      type="text"
+                      placeholder="Apartment"
+                      value={formData.apartment}
+                      onChange={(e) => handleInputChange("apartment", e.target.value)}
+                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                     />
                   </div>
 
@@ -523,6 +533,7 @@ export default function Checkout() {
               </form>
             </div>
 
+            {/* Billing Address */}
             <div className="mb-8">
               <h2 className="text-xl font-bold mb-4 font-exo2">Billing Address</h2>
               <div className="flex items-center mb-4">
@@ -556,53 +567,18 @@ export default function Checkout() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* First Name */}
+                  {/* Address */}
                   <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">First Name</label>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
                     <input
                       type="text"
-                      placeholder="First Name"
-                      value={billingFormData.firstName}
-                      onChange={(e) => handleBillingInputChange("firstName", e.target.value)}
+                      placeholder="Address"
+                      value={billingFormData.address}
+                      onChange={(e) => handleBillingInputChange("address", e.target.value)}
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
                       disabled={sameAsShipping}
                       required
                     />
-                    {billingErrors.firstName && (
-                      <p className="text-red-500 text-sm font-exo2">{billingErrors.firstName}</p>
-                    )}
-                  </div>
-
-                  {/* Last Name */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">Last Name</label>
-                    <input
-                      type="text"
-                      placeholder="Last Name"
-                      value={billingFormData.lastName}
-                      onChange={(e) => handleBillingInputChange("lastName", e.target.value)}
-                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
-                      disabled={sameAsShipping}
-                      required
-                    />
-                    {billingErrors.lastName && (
-                      <p className="text-red-500 text-sm font-exo2">{billingErrors.lastName}</p>
-                    )}
-                  </div>
-
-                  {/* Mobile */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
-                    <input
-                      type="tel"
-                      placeholder="(555) 123-4567"
-                      value={billingFormData.phone}
-                      onChange={(e) => handleBillingInputChange("phone", e.target.value)}
-                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
-                      disabled={sameAsShipping}
-                      required
-                    />
-                    {billingErrors.phone && <p className="text-red-500 text-sm font-exo2">{billingErrors.phone}</p>}
                   </div>
 
                   {/* Apartment */}
@@ -618,18 +594,19 @@ export default function Checkout() {
                     />
                   </div>
 
-                  {/* Address */}
+                  {/* City */}
                   <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
+                    <label className="block text-sm font-medium mb-2 font-exo2">City</label>
                     <input
                       type="text"
-                      placeholder="Address"
-                      value={billingFormData.address}
-                      onChange={(e) => handleBillingInputChange("address", e.target.value)}
+                      placeholder="City"
+                      value={billingFormData.city}
+                      onChange={(e) => handleBillingInputChange("city", e.target.value)}
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
                       disabled={sameAsShipping}
                       required
                     />
+                    {billingErrors.city && <p className="text-red-500 text-sm font-exo2">{billingErrors.city}</p>}
                   </div>
 
                   {/* Country */}
@@ -646,21 +623,6 @@ export default function Checkout() {
                       <option value="US">United States</option>
                       <option value="CA">Canada</option>
                     </select>
-                  </div>
-
-                  {/* City */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">City</label>
-                    <input
-                      type="text"
-                      placeholder="City"
-                      value={billingFormData.city}
-                      onChange={(e) => handleBillingInputChange("city", e.target.value)}
-                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
-                      disabled={sameAsShipping}
-                      required
-                    />
-                    {billingErrors.city && <p className="text-red-500 text-sm font-exo2">{billingErrors.city}</p>}
                   </div>
 
                   {/* State */}
@@ -714,60 +676,61 @@ export default function Checkout() {
                   )}
                 </div>
 
-                  <div className="mt-6">
-                    <button
-                      onClick={handleSave1}
-                      className="w-full bg-[#009AFF] hover:bg-blue-600 text-white py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2"
-                    >
-                      Save Billing Info
-                    </button>
-                  </div>
-        
+                <div className="mt-6">
+                  <button
+                    onClick={handleSave1}
+                    className="w-full bg-[#009AFF] hover:bg-blue-600 text-white py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2"
+                  >
+                    Save Billing Info
+                  </button>
+                </div>
               </div>
             </div>
 
             <div className="mt-8">
               <div className="flex items-start mb-6">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="form-checkbox h-4 w-4 text-[#009AFF] bg-transparent border-white rounded mt-1 focus:ring-1 focus:ring-offset-0 focus:ring-white mr-3"
-              />
-              <label htmlFor="terms" className="flex items-start">
-                <span className="text-sm md:text-xl font-exo2">
-                  I have Read and Accept the
-                  <Link
-                    href="/account/t&c"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
-                  >
-                    {" "}terms and conditions
-                  </Link>
-                  ,
-                  <Link
-                    href="/account/warrantyAndReturn"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
-                  >
-                    {" "}return policy
-                  </Link>
-                 {""} and the{" "}
-                  <Link
-                    href="/account/privacyPolicy"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-400 hover:underline"
-                  >
-                    Privacy Policy
-                  </Link>{" "}
-                  of partscentral.us *
-                </span>
-              </label>
-               </div>
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={termsAccepted}
+                  onChange={(e) => setTermsAccepted(e.target.checked)}
+                  className="form-checkbox h-4 w-4 text-[#009AFF] bg-transparent border-white rounded mt-2 focus:ring-1 focus:ring-offset-0 focus:ring-white mr-3"
+                />
+                <label htmlFor="terms" className="flex items-start">
+                  <span className="text-sm md:text-lg font-exo2">
+                    I have Read and Accept the
+                    <Link
+                      href="/account/t&c"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      {" "}
+                      terms and conditions
+                    </Link>
+                    ,
+                    <Link
+                      href="/account/warrantyAndReturn"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      {" "}
+                      return policy
+                    </Link>
+                    {""} and the{" "}
+                    <Link
+                      href="/account/privacyPolicy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-400 hover:underline"
+                    >
+                      Privacy Policy
+                    </Link>{" "}
+                    of partscentral.us *
+                  </span>
+                </label>
+              </div>
 
               <div className="flex justify-center md:justify-start mt-6 w-full">
                 {isFormValid() ? (
@@ -788,33 +751,74 @@ export default function Checkout() {
                   </button>
                 )}
               </div>
-              </div>
-
+            </div>
           </div>
 
-          <div className="lg:col-span-1 bg-[#02305A] rounded-lg p-6 h-fit md:mt-10">
-            <div className="bg-white p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
-              {/* Order details in white card */}
-              <div className="space-y-4 text-sm md:text-lg">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700 font-exo2">Items:</span>
-                  <span className="text-gray-900 font-semibold font-exo2">({items.length})</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700 font-exo2">Shipping:</span>
-                  <span className="text-gray-900 font-semibold font-exo2">TBD</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-700 font-exo2">Taxes:</span>
-                  <span className="text-gray-900 font-semibold font-exo2">TBD</span>
-                </div>
+          {/* Right Column: Product Summary */}
+          <div className="lg:col-span-1 h-fit md:mt-10">
+            {/* Products in Cart Block */}
+            <div className="bg-[#02305A] rounded-lg p-6 mb-6">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold font-exo2 text-white">PRODUCTS IN CART</h3>
+                <Link href="/cart" className="text-[#009AFF] hover:underline font-exo2 text-sm">
+                  Edit cart
+                </Link>
+              </div>
+
+              {/* Product Items */}
+              <div className="space-y-4">
+                {items.slice(0, 2).map((item, index) => (
+                  <div
+                    key={item.id || index}
+                    className="flex items-center justify-between p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
+                  >
+                    <div className="flex items-center space-x-4">
+                     <Image
+                                           src={item.title.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
+                                           alt={item.title}
+                                           width={100}
+                                           height={80}
+                                           className="w-20 h-20 object-cover rounded"
+                                         />
+                      <div className="flex-1">
+                        {/* <h4 className="font-exo2 font-semibold text-white text-lg">{item.name}</h4> */}
+                        <p className="font-exo2 text-base text-white font-medium">
+                          {item.subtitle}
+                        </p>
+                        <p className="font-exo2 text-sm text-gray-300 mt-1">{item.quantity} pc.</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-exo2 text-xl text-white font-bold">${item.price.toFixed(0)}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Estimated Total outside the white card */}
-            <div className="mt-4 flex justify-between items-center">
-              <span className="text-white text-lg font-bold font-exo2">Estimated Total:</span>
-              <span className="text-white text-xl font-bold font-exo2">${estimatedTotal.toFixed(2)}</span>
+            {/* Order Summary Block */}
+            <div className="bg-[#02305A] p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
+              {/* Order details in white card */}
+              <div className="space-y-4 text-sm md:text-lg bg-[#252525E5] rounded-lg p-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-white font-exo2">Items:</span>
+                  <span className="text-white font-semibold font-exo2">{items.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white font-exo2">Shipping:</span>
+                  <span className="text-white font-semibold font-exo2">free shipping</span>
+                </div>
+                {/* <div className="flex justify-between items-center">
+                  <span className="text-gray-700 font-exo2">Taxes:</span>
+                  <span className="text-gray-900 font-semibold font-exo2">TBD</span>
+                </div> */}
+              </div>
+
+              {/* Estimated Total inside the white card */}
+              <div className="mt-6 pt-4 md:px-4 flex justify-between items-center">
+                <span className="text-white text-lg font-bold font-exo2">Estimated Total:</span>
+                <span className="text-white text-xl font-bold font-exo2">${estimatedTotal.toFixed(2)}</span>
+              </div>
             </div>
           </div>
         </div>

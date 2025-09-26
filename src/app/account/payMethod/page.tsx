@@ -758,62 +758,32 @@ export default function PayMethod() {
             </div>
 
             {/* Google Pay */}
-            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
-              <label className="flex items-center justify-between cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="google"
-                    checked={paymentMethod === "google"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
-                  />
-                  <span className="font-exo2 text-base sm:text-lg">Pay with Google Pay</span>
-                </div>
-                <img src="/google.png" alt="Google Pay" className="h-6 w-auto sm:h-8" /> {/* Adjusted image size for mobile */}
-              </label>
-            </div>
+           
 
             {/* Apple Pay */}
-            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
-              <label className="flex items-center justify-between cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="apple"
-                    checked={paymentMethod === "apple"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
-                  />
-                  <span className="font-exo2 text-base sm:text-lg">Pay with Apple Pay</span>
-                </div>
-                <img src="/apple1.png" alt="Apple Pay" className="h-6 w-auto sm:h-8" /> {/* Adjusted image size for mobile */}
-              </label>
-            </div>
+           
 
             {/* PayPal */}
-            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
-              <label className="flex items-center justify-between cursor-pointer">
-                <div className="flex items-center space-x-3">
-                  <input
+            {/* <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
+              {/* <label className="flex items-center justify-between cursor-pointer">
+                <div className="flex items-center space-x-3"> */}
+                  {/* <input
                     type="radio"
                     name="paymentMethod"
                     value="paypal"
                     checked={paymentMethod === "paypal"}
                     onChange={(e) => setPaymentMethod(e.target.value)}
                     className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
-                  />
-                  <span className="font-exo2 text-base sm:text-lg">Pay with PayPal</span>
-                </div>
-                <img src="/paypal.png" alt="PayPal" className="h-5 sm:h-6" /> {/* Adjusted image size for mobile */}
-              </label>
-              <p className="ml-4 mt-2 text-xs sm:text-sm text-gray-400 font-exo2 flex items-center gap-2"> {/* Adjusted text size */}
-                6 Months No Interest with PayPal Credit
-                <img src="/pay-credit.png" alt="PayPal Credit" className="h-3 sm:h-4 w-auto inline-block" /> {/* Adjusted image size */}
-              </p>
-            </div>
+                  /> */}
+                  {/* <span className="font-exo2 text-base sm:text-lg">Pay with PayPal</span>
+                </div> */} 
+                {/* <img src="/paypal.png" alt="PayPal" className="h-5 sm:h-6" /> {/* Adjusted image size for mobile */}
+              {/* </label> */}
+              {/* <p className="ml-4 mt-2 text-xs sm:text-sm text-gray-400 font-exo2 flex items-center gap-2"> {/* Adjusted text size */}
+                {/* 6 Months No Interest with PayPal Credit */}
+                {/* <img src="/pay-credit.png" alt="PayPal Credit" className="h-3 sm:h-4 w-auto inline-block" /> Adjusted image size */}
+              {/* </p> */}
+            {/* </div> */}
           </div>
 
           {/* Confirm Order Button */}

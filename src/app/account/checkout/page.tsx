@@ -794,23 +794,24 @@ export default function Checkout() {
         />
         
         {/* 2. Title/Subtitle and Quantity Container */}
-        <div className="flex-1 min-w-0">
+        <div className="grid grid-cols-1 gap-1 flex-grow">
           {/* CRITICAL: Removed 'overflow-hidden' and 'break-words' is often enough */}
-          <p className="font-exo2 text-sm sm:text-base text-white font-medium flex-wrap">
+          <div className="font-exo2 text-sm sm:text-base text-white font-medium">
             {item.subtitle} 
-          </p>
-          <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
+          </div>
+          <div className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
             {item.quantity} pc.
-          </p>
-        </div>
-      </div>
-      
-      {/* 3. Price Container (Kept at minimum width on the right) */}
-      <div className="text-right min-w-max"> {/* CRITICAL: Used min-w-max to ensure price has enough room */}
+          </div>
+          <div className="text-right min-w-max"> {/* CRITICAL: Used min-w-max to ensure price has enough room */}
         <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
           ${item.price.toFixed(0)}
         </p>
       </div>
+        </div>
+      </div>
+      
+      {/* 3. Price Container (Kept at minimum width on the right) */}
+      
     </div>
   ))}
 </div>

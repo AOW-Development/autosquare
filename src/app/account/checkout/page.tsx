@@ -215,9 +215,9 @@ export default function Checkout() {
 
     const billingValid =
       sameAsShipping ||
-      (billingFormData.firstName &&
-        billingFormData.lastName &&
-        billingFormData.phone &&
+      (formData.firstName &&
+      formData.lastName &&
+      formData.phone &&
         billingFormData.country &&
         billingFormData.address &&
         billingFormData.city &&
@@ -237,7 +237,7 @@ export default function Checkout() {
   const handleSave1 = (e: React.FormEvent) => {
     e.preventDefault()
 
-    const requiredFields = ["firstName", "lastName", "phone", "country", "address", "city", "state", "zipCode"]
+    const requiredFields = ["country", "address", "city", "state", "zipCode"]
 
     const emptyFields = requiredFields.filter(
       (field) =>
@@ -755,72 +755,86 @@ export default function Checkout() {
           </div>
 
           {/* Right Column: Product Summary */}
-          <div className="lg:col-span-1 h-fit md:mt-10">
-            {/* Products in Cart Block */}
-            <div className="bg-[#02305A] rounded-lg p-6 mb-6">
-              <div className="flex justify-between items-center mb-6">
-                <h3 className="text-xl font-bold font-exo2 text-white">PRODUCTS IN CART</h3>
-                <Link href="/cart" className="text-[#009AFF] hover:underline font-exo2 text-sm">
-                  Edit cart
-                </Link>
-              </div>
+          {/* Right Column: Product Summary */}
+<div className="lg:col-span-1 h-fit md:mt-10 w-full">
+  {/* Products in Cart Block */}
+  <div className="bg-[#02305A] rounded-lg p-4 sm:p-6 mb-6">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+      <h3 className="text-lg sm:text-xl font-bold font-exo2 text-white text-center sm:text-left">
+        PRODUCTS IN CART
+      </h3>
+      <Link
+        href="/cart"
+        className="text-[#009AFF] hover:underline font-exo2 text-sm text-center sm:text-right"
+      >
+        Edit cart
+      </Link>
+    </div>
 
-              {/* Product Items */}
-              <div className="space-y-4">
-                {items.slice(0, 2).map((item, index) => (
-                  <div
-                    key={item.id || index}
-                    className="flex items-center justify-between p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
-                  >
-                    <div className="flex items-center space-x-4">
-                     <Image
-                                           src={item.title.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
-                                           alt={item.title}
-                                           width={100}
-                                           height={80}
-                                           className="w-20 h-20 object-cover rounded"
-                                         />
-                      <div className="flex-1">
-                        {/* <h4 className="font-exo2 font-semibold text-white text-lg">{item.name}</h4> */}
-                        <p className="font-exo2 text-base text-white font-medium">
-                          {item.subtitle}
-                        </p>
-                        <p className="font-exo2 text-sm text-gray-300 mt-1">{item.quantity} pc.</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-exo2 text-xl text-white font-bold">${item.price.toFixed(0)}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Order Summary Block */}
-            <div className="bg-[#02305A] p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
-              {/* Order details in white card */}
-              <div className="space-y-4 text-sm md:text-lg bg-[#252525E5] rounded-lg p-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-white font-exo2">Items:</span>
-                  <span className="text-white font-semibold font-exo2">{items.length}</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-white font-exo2">Shipping:</span>
-                  <span className="text-white font-semibold font-exo2">free shipping</span>
-                </div>
-                {/* <div className="flex justify-between items-center">
-                  <span className="text-gray-700 font-exo2">Taxes:</span>
-                  <span className="text-gray-900 font-semibold font-exo2">TBD</span>
-                </div> */}
-              </div>
-
-              {/* Estimated Total inside the white card */}
-              <div className="mt-6 pt-4 md:px-4 flex justify-between items-center">
-                <span className="text-white text-lg font-bold font-exo2">Estimated Total:</span>
-                <span className="text-white text-xl font-bold font-exo2">${estimatedTotal.toFixed(2)}</span>
-              </div>
+    {/* Product Items */}
+    <div className="space-y-4">
+      {items.slice(0, 2).map((item, index) => (
+        <div
+          key={item.id || index}
+          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
+        >
+          <div className="flex items-center space-x-4">
+            <Image
+              src={
+                item.title.includes("Transmission")
+                  ? "/catalog/Trasmission_.png"
+                  : "/catalog/Engine 1.png"
+              }
+              alt={item.title}
+              width={80}
+              height={80}
+              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
+            />
+            <div className="flex-1 min-w-0">
+              <p className="font-exo2 text-sm sm:text-base text-white font-medium break-words whitespace-normal">
+                {item.subtitle}
+              </p>
+              <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
+                {item.quantity} pc.
+              </p>
             </div>
           </div>
+          <div className="text-right">
+            <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
+              ${item.price.toFixed(0)}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  {/* Order Summary Block */}
+  <div className="bg-[#02305A] p-4 sm:p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
+    {/* Order details in white card */}
+    <div className="space-y-3 sm:space-y-4 text-sm md:text-lg bg-[#252525E5] rounded-lg p-3 sm:p-4">
+      <div className="flex justify-between items-center">
+        <span className="text-white font-exo2">Items:</span>
+        <span className="text-white font-semibold font-exo2">{items.length}</span>
+      </div>
+      <div className="flex justify-between items-center">
+        <span className="text-white font-exo2">Shipping:</span>
+        <span className="text-white font-semibold font-exo2">free shipping</span>
+      </div>
+    </div>
+
+    {/* Estimated Total inside the white card */}
+    <div className="mt-6 pt-4 md:px-4 flex justify-between items-center">
+      <span className="text-white text-base sm:text-lg font-bold font-exo2">
+        Estimated Total:
+      </span>
+      <span className="text-white text-lg sm:text-xl font-bold font-exo2">
+        ${estimatedTotal.toFixed(2)}
+      </span>
+    </div>
+  </div>
+</div>
+
         </div>
       </div>
     </div>

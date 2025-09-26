@@ -532,29 +532,42 @@ export default function PayMethod() {
               {cartItems.map((item) => (
                 <div
                   key={item.id}
-                  className="flex items-center justify-between p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
+                  className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 md:gap-0 p-4 md:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
                 >
+                  {/* Left: Image + Title */}
                   <div className="flex items-center space-x-4">
                     <Image
-                      src={item.title.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
+                      src={
+                        item.title.includes("Transmission")
+                          ? "/catalog/Trasmission_.png"
+                          : "/catalog/Engine 1.png"
+                      }
                       alt={item.title}
                       width={80}
                       height={80}
-                      className="w-20 h-20 object-cover rounded"
+                      className="w-16 h-16 md:w-20 md:h-20 object-cover rounded"
                     />
                     <div className="flex-1">
-                      <h4 className="font-exo2 font-semibold text-white text-lg">{item.title}</h4>
-                      <p className="font-exo2 text-base text-white font-medium">{item.subtitle}</p>
-                      {/* <p className="font-exo2 text-sm text-black mt-1">Part#: {item.id}</p>
-                      <p className="font-exo2 text-sm text-black">(3.5L V6 9 or VIN 1, 6th digit)</p> */}
+                      <h4 className="font-exo2 font-semibold text-white text-base md:text-lg">
+                        {item.title}
+                      </h4>
+                      <p className="font-exo2 text-sm md:text-base text-white font-medium">
+                        {item.subtitle}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-12 text-right">
+
+                  {/* Right: Qty, Price, Total */}
+                  <div className="flex flex-col md:flex-row md:items-center md:space-x-12 text-left md:text-right gap-2 md:gap-0">
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-white">QTY: {item.quantity}</p>
+                      <p className="font-exo2 text-sm md:text-xl text-white">
+                        QTY: {item.quantity}
+                      </p>
                     </div>
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-white">Price: ${item.price.toFixed(2)}</p>
+                      <p className="font-exo2 text-sm md:text-xl text-white">
+                        Price: ${item.price.toFixed(2)}
+                      </p>
                     </div>
                     <div>
                       <p className="font-exo2 text-sm md:text-xl text-white">
@@ -566,260 +579,268 @@ export default function PayMethod() {
               ))}
             </div>
 
-            <div className="grid md:grid-cols-2 gap-4 md:mt-16">
-              {/* Shipping Address */}
-              <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-8 text-white">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl md:text-2xl font-semibold font-exo2">Shipping Address</h3>
-                  <Link href="/account/checkout" className="text-base text-white hover:underline font-exo2">
-                    Change
-                  </Link>
-                </div>
-                <div className="space-y-3 text-base font-exo2">
-                  {(() => {
-                    const shipping = useShippingStore.getState().shippingInfo
-                    if (!shipping) return <p>No shipping address on file</p>
-                    return (
-                      <>
-                        <p className="text-base">
-                          {shipping.firstName} {shipping.lastName}
-                        </p>
-                        <p className="text-base">{shipping.address}</p>
-                        {shipping.apartment && <p className="text-base">{shipping.apartment}</p>}
-                        <p className="text-base">
-                          {shipping.city}, {shipping.state} {shipping.zipCode}
-                        </p>
-                        <p className="text-base">{shipping.country}</p>
-                        <p className="text-base">{shipping.phone}</p>
-                      </>
-                    )
-                  })()}
-                </div>
-              </div>
-
-              {/* Billing Address */}
-              <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-8 text-white">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl md:text-2xl font-semibold font-exo2">Billing Address</h3>
-                  <Link href="/account/checkout" className="text-base text-white hover:underline font-exo2">
-                    Change
-                  </Link>
-                </div>
-                <div className="space-y-3 text-base font-exo2">
-                  {(() => {
-                    const billing = useBillingStore.getState().billingInfo
-                    if (!billing) return <p>No billing address on file</p>
-                    return (
-                      <>
-                        <p className="text-base">
-                          {billing.firstName} {billing.lastName}
-                        </p>
-                        <p className="text-base">{billing.address}</p>
-                        {billing.apartment && <p className="text-base">{billing.apartment}</p>}
-                        <p className="text-base">
-                          {billing.city}, {billing.state} {billing.zipCode}
-                        </p>
-                        <p className="text-base">{billing.country}</p>
-                        <p className="text-base">{billing.phone}</p>
-                      </>
-                    )
-                  })()}
-                </div>
-              </div>
+           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:mt-16 mt-6">
+          {/* Shipping Address */}
+          <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-6 sm:p-8 text-white">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2 sm:gap-0">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-exo2">
+                Shipping Address
+              </h3>
+              <Link
+                href="/account/checkout"
+                className="text-sm sm:text-base text-white hover:underline font-exo2"
+              >
+                Change
+              </Link>
+            </div>
+            <div className="space-y-2 sm:space-y-3 text-sm sm:text-base md:text-base font-exo2">
+              {(() => {
+                const shipping = useShippingStore.getState().shippingInfo
+                if (!shipping) return <p>No shipping address on file</p>
+                return (
+                  <>
+                    <p className="text-sm sm:text-base md:text-lg">
+                      {shipping.firstName} {shipping.lastName}
+                    </p>
+                    <p className="text-sm sm:text-base md:text-lg">{shipping.address}</p>
+                    {shipping.apartment && (
+                      <p className="text-sm sm:text-base md:text-lg">{shipping.apartment}</p>
+                    )}
+                    <p className="text-sm sm:text-base md:text-lg">
+                      {shipping.city}, {shipping.state} {shipping.zipCode}
+                    </p>
+                    <p className="text-sm sm:text-base md:text-lg">{shipping.country}</p>
+                    <p className="text-sm sm:text-base md:text-lg">{shipping.phone}</p>
+                  </>
+                )
+              })()}
             </div>
           </div>
 
-          <div className="bg-[#02305A] border border-[#02305A] rounded-lg p-8 w-full ">
-            <div className="max-w-2xl ml-0" >
+          {/* Billing Address */}
+          <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-6 sm:p-8 text-white">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2 sm:gap-0">
+              <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-exo2">
+                Billing Address
+              </h3>
+              <Link
+                href="/account/checkout"
+                className="text-sm sm:text-base text-white hover:underline font-exo2"
+              >
+                Change
+              </Link>
+            </div>
+            <div className="space-y-2 sm:space-y-3 text-sm sm:text-base md:text-base font-exo2">
+              {(() => {
+                const billing = useBillingStore.getState().billingInfo
+                if (!billing) return <p>No billing address on file</p>
+                return (
+                  <>
+                    <p className="text-sm sm:text-base md:text-lg">
+                      {billing.firstName} {billing.lastName}
+                    </p>
+                    <p className="text-sm sm:text-base md:text-lg">{billing.address}</p>
+                    {billing.apartment && (
+                      <p className="text-sm sm:text-base md:text-lg">{billing.apartment}</p>
+                    )}
+                    <p className="text-sm sm:text-base md:text-lg">
+                      {billing.city}, {billing.state} {billing.zipCode}
+                    </p>
+                    <p className="text-sm sm:text-base md:text-lg">{billing.country}</p>
+                    <p className="text-sm sm:text-base md:text-lg">{billing.phone}</p>
+                  </>
+                )
+              })()}
+            </div>
+          </div>
+        </div>
+          </div>
+
+          <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full ">
+            <div className="max-w-xl ml-0" >
             <h2 className="text-2xl font-semibold mb-8 font-exo2">Select Payment Method</h2>
 
             <div className="space-y-6">
-              {/* Credit/Debit Card */}
-              <div className="bg-[#252525E5] text-white rounded-md p-4">
-                <label className="flex items-center justify-between cursor-pointer">
+            {/* Credit/Debit Card */}
+            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Increased base padding for better mobile feel */}
+              <label className="flex items-center justify-between cursor-pointer">
                 <div className="flex items-center space-x-3">
-                <input
-                type="radio"
-                name="paymentMethod"
-                value="card"
-                checked={paymentMethod === "card"}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-                className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
-                />
-                <span className="font-exo2 text-lg">Pay with Credit or Debit Card</span>
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="card"
+                    checked={paymentMethod === "card"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4" // Increased size slightly for easier mobile tapping
+                  />
+                  <span className="font-exo2 text-base sm:text-lg">Pay with Credit or Debit Card</span> {/* Adjusted text size for mobile */}
                 </div>
-                </label>
+              </label>
 
-                  {paymentMethod === "card" && (
-                  <div className="mt-6 space-y-6 pl-6 pr-6 text-gray-50">
+              {paymentMethod === "card" && (
+                <div className="mt-6 space-y-4 sm:space-y-6 pl-4 pr-4 sm:pl-6 sm:pr-6 text-gray-50"> {/* Reduced space-y and padding on small screens */}
                   {/* Card Number */}
                   <div className="relative w-full">
-                  <label htmlFor="cardNumber" className="block text-sm md:text-lg mb-2 font-exo2 text-gray-200">Card Number</label>
-                  <input
-                  type="text"
-                  placeholder="XXXX XXXX XXXX XXXX"
-                  value={cardData.cardNumber}
-                  onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
-                  className={`w-full bg-[#FFFFFFD1] border ${
-                  cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
-                  } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pr-16`}
-                  />
-
-
-                  {cardImage && (
-                  <div className="absolute top-1/2 right-6 transform -translate-y-1/2">
-                  <img src={`/images/home/${cardImage}`} alt="cardType" className="w-10 h-auto" />
-                  </div>
-                  )}
-
-
-                  {cardErrors.cardNumber && (
-                  <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.cardNumber}</p>
-                  )}
-                  </div>
-
-                    <div className="w-full grid grid-cols-2 gap-4">
-                      <div>
-                        <label htmlFor="expirationDate" className="block text-sm mb-2 md:text-lg font-exo2 text-gray-200">Expiration Date</label>
-                      <input
+                    <label htmlFor="cardNumber" className="block text-sm sm:text-lg mb-2 font-exo2 text-gray-200">Card Number</label>
+                    <input
                       type="text"
-                      placeholder="MM/YY"
-                      value={cardData.expirationDate}
-                      onChange={(e) => handleCardInputChange("expirationDate", e.target.value)}
+                      placeholder="XXXX XXXX XXXX XXXX"
+                      value={cardData.cardNumber}
+                      onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
                       className={`w-full bg-[#FFFFFFD1] border ${
-                      cardErrors.expirationDate ? "border-red-500" : "border-gray-700"
-                      } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                        cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
+                      } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pr-12 sm:pr-16`} // Adjusted padding/font/pr for mobile
+                    />
+
+                    {cardImage && (
+                      <div className="absolute top-1/2 right-4 sm:right-6 transform -translate-y-1/2"> {/* Adjusted right position for mobile */}
+                        <img src={`/images/home/${cardImage}`} alt="cardType" className="w-8 h-auto sm:w-10" /> {/* Adjusted image size for mobile */}
+                      </div>
+                    )}
+
+                    {cardErrors.cardNumber && (
+                      <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.cardNumber}</p> 
+                    )}
+                  </div>
+
+                  <div className="w-full grid grid-cols-1 gap-4 sm:grid-cols-2"> {/* KEY CHANGE: grid-cols-1 for mobile, sm:grid-cols-2 for desktop */}
+                    <div>
+                      <label htmlFor="expirationDate" className="block text-sm sm:text-lg mb-2 font-exo2 text-gray-200">Expiration Date</label>
+                      <input
+                        type="text"
+                        placeholder="MM/YY"
+                        value={cardData.expirationDate}
+                        onChange={(e) => handleCardInputChange("expirationDate", e.target.value)}
+                        className={`w-full bg-[#FFFFFFD1] border ${
+                          cardErrors.expirationDate ? "border-red-500" : "border-gray-700"
+                        } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`} // Adjusted padding/font
                       />
                       {cardErrors.expirationDate && (
-                      <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.expirationDate}</p>
+                        <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.expirationDate}</p>
                       )}
-                      </div>
+                    </div>
 
-
-                      <div>
-                        <label htmlFor="securityCode" className="block text-sm md:text-lg mb-2 font-exo2 text-gray-200">Security Code</label>
+                    <div>
+                      <label htmlFor="securityCode" className="block text-sm sm:text-lg mb-2 font-exo2 text-gray-200">Security Code</label>
                       <input
-                      type="text"
-                      placeholder="CVV"
-                      value={cardData.securityCode}
-                      onChange={(e) => handleCardInputChange("securityCode", e.target.value)}
-                      className={`w-full bg-[#FFFFFFD1] border ${
-                      cardErrors.securityCode ? "border-red-500" : "border-gray-700"
-                      } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
+                        type="text"
+                        placeholder="CVV"
+                        value={cardData.securityCode}
+                        onChange={(e) => handleCardInputChange("securityCode", e.target.value)}
+                        className={`w-full bg-[#FFFFFFD1] border ${
+                          cardErrors.securityCode ? "border-red-500" : "border-gray-700"
+                        } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`} // Adjusted padding/font
                       />
                       {cardErrors.securityCode && (
-                      <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.securityCode}</p>
+                        <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.securityCode}</p>
                       )}
-                      </div>
-                      </div>
+                    </div>
+                  </div>
 
-
-                      {/* Cardholder Name */}
-                      <div>
-                        <label htmlFor="cardholderName" className="block text-sm md:text-lg mb-2 font-exo2 text-gray-200">Cardholder Name</label>
-                      <input
+                  {/* Cardholder Name */}
+                  <div>
+                    <label htmlFor="cardholderName" className="block text-sm sm:text-lg mb-2 font-exo2 text-gray-200">Cardholder Name</label>
+                    <input
                       type="text"
                       placeholder="Enter Name"
                       value={cardData.cardholderName}
                       onChange={(e) => handleCardInputChange("cardholderName", e.target.value)}
                       className={`w-full bg-[#FFFFFFD1] border ${
-                      cardErrors.cardholderName ? "border-red-500" : "border-gray-700"
-                      } text-black rounded-md px-6 py-4 font-exo2 text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`}
-                      />
-                      {cardErrors.cardholderName && (
-                      <p className="text-red-500 text-sm mt-2 font-exo2">{cardErrors.cardholderName}</p>
-                      )}
-                      </div>
-
-
-                      </div>
-                )}
-              </div>
-
-              {/* Google Pay */}
-              <div className="bg-[#252525E5] text-white rounded-md p-5 md:p-6">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="google"
-                      checked={paymentMethod === "google"}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
+                        cardErrors.cardholderName ? "border-red-500" : "border-gray-700"
+                      } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`} // Adjusted padding/font
                     />
-                    <span className="font-exo2 text-lg">Pay with Google Pay</span>
+                    {cardErrors.cardholderName && (
+                      <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.cardholderName}</p>
+                    )}
                   </div>
-                  <img src="/google.png" alt="Google Pay" className="h-8 w-18" />
-                </label>
-              </div>
-
-              {/* Apple Pay */}
-              <div className="bg-[#252525E5] text-white rounded-md p-5 md:p-6">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="apple"
-                      checked={paymentMethod === "apple"}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
-                    />
-                    <span className="font-exo2 text-lg">Pay with Apple Pay</span>
-                  </div>
-                  <img src="/apple1.png" alt="Apple Pay" className="h-8 w-18" />
-                </label>
-              </div>
-
-              {/* PayPal */}
-              <div className="bg-[#252525E5] text-white rounded-md p-5 md:p-6">
-                <label className="flex items-center justify-between cursor-pointer">
-                  <div className="flex items-center space-x-3">
-                    <input
-                      type="radio"
-                      name="paymentMethod"
-                      value="paypal"
-                      checked={paymentMethod === "paypal"}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="form-radio text-[#009AFF] focus:ring-blue-300 w-3 h-3"
-                    />
-                    <span className="font-exo2 text-lg">Pay with PayPal</span>
-                  </div>
-                  <img src="/paypal.png" alt="PayPal" className="h-6" />
-                </label>
-                <p className="ml-4 mt-2 text-sm text-gray-400 font-exo2 flex items-center gap-2">
-                  6 Months No Interest with PayPal Credit 
-                  <img src="/pay-credit.png" alt="PayPal Credit" className="h-4 w-auto inline-block" />
-                </p>
-
-              </div>
+                </div>
+              )}
             </div>
 
-            {/* Confirm Order Button */}
-            <form onSubmit={handlePayment} className="mt-10">
-              <button
-                type="submit"
-                disabled={!isFormValid()}
-                className={`w-full py-4 cursor-pointer rounded-md font-exo2 text-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 ${
-                  isFormValid()
-                    ? "bg-[#009AFF] text-white hover:bg-blue-500"
-                    : "bg-gray-600 text-gray-400 cursor-not-allowed"
-                }`}
-              >
-                Confirm Order
-              </button>
-            </form>
-
-            {/* Back Link */}
-            <div className="text-center mt-6">
-              <Link
-                href="/account/paymentInfo"
-                className="text-base text-gray-400 hover:underline font-exo2 cursor-pointer"
-              >
-                Back
-              </Link>
+            {/* Google Pay */}
+            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
+              <label className="flex items-center justify-between cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="google"
+                    checked={paymentMethod === "google"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
+                  />
+                  <span className="font-exo2 text-base sm:text-lg">Pay with Google Pay</span>
+                </div>
+                <img src="/google.png" alt="Google Pay" className="h-6 w-auto sm:h-8" /> {/* Adjusted image size for mobile */}
+              </label>
             </div>
+
+            {/* Apple Pay */}
+            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
+              <label className="flex items-center justify-between cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="apple"
+                    checked={paymentMethod === "apple"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
+                  />
+                  <span className="font-exo2 text-base sm:text-lg">Pay with Apple Pay</span>
+                </div>
+                <img src="/apple1.png" alt="Apple Pay" className="h-6 w-auto sm:h-8" /> {/* Adjusted image size for mobile */}
+              </label>
+            </div>
+
+            {/* PayPal */}
+            <div className="bg-[#252525E5] text-white rounded-md p-4 md:p-6"> {/* Unified padding for consistency */}
+              <label className="flex items-center justify-between cursor-pointer">
+                <div className="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="paypal"
+                    checked={paymentMethod === "paypal"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
+                  />
+                  <span className="font-exo2 text-base sm:text-lg">Pay with PayPal</span>
+                </div>
+                <img src="/paypal.png" alt="PayPal" className="h-5 sm:h-6" /> {/* Adjusted image size for mobile */}
+              </label>
+              <p className="ml-4 mt-2 text-xs sm:text-sm text-gray-400 font-exo2 flex items-center gap-2"> {/* Adjusted text size */}
+                6 Months No Interest with PayPal Credit
+                <img src="/pay-credit.png" alt="PayPal Credit" className="h-3 sm:h-4 w-auto inline-block" /> {/* Adjusted image size */}
+              </p>
+            </div>
+          </div>
+
+          {/* Confirm Order Button */}
+          <form onSubmit={handlePayment} className="mt-8 sm:mt-10"> {/* Adjusted top margin */}
+            <button
+              type="submit"
+              disabled={!isFormValid()}
+              className={`w-full py-3 sm:py-4 cursor-pointer rounded-md font-exo2 text-lg sm:text-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-300 ${
+                isFormValid()
+                  ? "bg-[#009AFF] text-white hover:bg-blue-500"
+                  : "bg-gray-600 text-gray-400 cursor-not-allowed"
+              }`} // Adjusted padding/font
+            >
+              Confirm Order
+            </button>
+          </form>
+
+          {/* Back Link */}
+          <div className="text-center mt-6">
+            <Link
+              href="/account/paymentInfo"
+              className="text-sm sm:text-base text-gray-400 hover:underline font-exo2 cursor-pointer" // Adjusted text size
+            >
+              Back
+            </Link>
+          </div>
+
           </div>
         </div>
       </div>

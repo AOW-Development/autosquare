@@ -773,40 +773,48 @@ export default function Checkout() {
 
     {/* Product Items */}
     <div className="space-y-4">
-      {items.slice(0, 2).map((item, index) => (
-        <div
-          key={item.id || index}
-          className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
-        >
-          <div className="flex items-center space-x-4">
-            <Image
-              src={
-                item.title.includes("Transmission")
-                  ? "/catalog/Trasmission_.png"
-                  : "/catalog/Engine 1.png"
-              }
-              alt={item.title}
-              width={80}
-              height={80}
-              className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded"
-            />
-            <div className="flex-1 min-w-0">
-              <p className="font-exo2 text-sm sm:text-base text-white font-medium break-words whitespace-normal">
-                {item.subtitle}
-              </p>
-              <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
-                {item.quantity} pc.
-              </p>
-            </div>
-          </div>
-          <div className="text-right">
-            <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
-              ${item.price.toFixed(0)}
-            </p>
-          </div>
+  {items.slice(0, 2).map((item, index) => (
+    <div
+      key={item.id || index}
+      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
+    >
+      
+      {/* 1. Item Image and Details Container */}
+      <div className="flex items-start space-x-4 flex-grow">
+        <Image
+          src={
+            item.title.includes("Transmission")
+              ? "/catalog/Trasmission_.png"
+              : "/catalog/Engine 1.png"
+          }
+          alt={item.title}
+          width={80}
+          height={80}
+          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0" // Added flex-shrink-0
+        />
+        
+        {/* 2. Title/Subtitle and Quantity Container */}
+        <div className="flex-1 min-w-0">
+          {/* CRITICAL: Removed 'overflow-hidden' and 'break-words' is often enough */}
+          <p className="font-exo2 text-sm sm:text-base text-white font-medium">
+            {item.subtitle} 
+          </p>
+          <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
+            {item.quantity} pc.
+          </p>
         </div>
-      ))}
+      </div>
+      
+      {/* 3. Price Container (Kept at minimum width on the right) */}
+      <div className="text-right min-w-max"> {/* CRITICAL: Used min-w-max to ensure price has enough room */}
+        <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
+          ${item.price.toFixed(0)}
+        </p>
+      </div>
     </div>
+  ))}
+</div>
+
   </div>
 
   {/* Order Summary Block */}

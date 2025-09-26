@@ -66,6 +66,8 @@ const accordionData = [
 ];
 
 export default function CatalogPage() {
+
+  
   // --- Initialize Router ---
   const router = useRouter(); 
   
@@ -89,6 +91,14 @@ export default function CatalogPage() {
   const model = searchParams.get('model');
   const year = searchParams.get('year');
   const part = searchParams.get('part');
+  const subPartId = searchParams.get('subPartId');
+  const subPartParam = searchParams.get("subPartFilter")
+
+   useEffect(() => {
+    if (subPartParam) {
+      setSubPartFilter(Number(subPartParam)) // preselect based on query
+    }
+  }, [subPartParam])
 
   // --- Verify Part Popup State ---
   const [isPopupOpen, setIsPopupOpen] = useState(false);

@@ -173,14 +173,25 @@ export function VerifyPartPopup({
                     onClick={onConfirm}
                     className="mt-3 sm:mt-4 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 sm:px-4 rounded transition-colors w-full"
                   >
-                    Proceed to Checkout
+                    Proceed to cart
                   </button>
                 </>
               ) : (
-                <p className="text-red-500 font-medium text-xs sm:text-sm">
-                  Selected option does not match the vehicle specifications. Please
-                  check year, make, model, or sub-part.
+                <div className="text-center">
+                <p className="text-red-500 font-medium text-xs sm:text-sm mb-2">
+                  Selected option does not match the vehicle specifications.
                 </p>
+                <a
+                  href={`/catalogue/engine/home?make=${encodeURIComponent(make)}&model=${encodeURIComponent(
+                    model
+                  )}&year=${encodeURIComponent(year)}&subPartFilter=${encodeURIComponent(
+                    selectedSubPart?.id || ""
+                  )}`}
+                  className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors text-xs sm:text-sm"
+                >
+                  View Products for {year} {make} {model}
+                </a>
+               </div>
               )}
             </div>
           )}

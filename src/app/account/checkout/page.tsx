@@ -216,8 +216,8 @@ export default function Checkout() {
     const billingValid =
       sameAsShipping ||
       (formData.firstName &&
-      formData.lastName &&
-      formData.phone &&
+        formData.lastName &&
+        formData.phone &&
         billingFormData.country &&
         billingFormData.address &&
         billingFormData.city &&
@@ -230,8 +230,8 @@ export default function Checkout() {
   const [termsAccepted, setTermsAccepted] = useState(false)
   const cartItems = items.slice(0, 2)
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const shipping = 180
-  const taxes = 180
+  const shipping = 0
+  const taxes = 0
   const estimatedTotal = total + shipping + taxes
 
   const handleSave1 = (e: React.FormEvent) => {
@@ -269,7 +269,7 @@ export default function Checkout() {
               alt="Home"
               width={24}
               height={24}
-              // className="w-4 h-4"
+            // className="w-4 h-4"
             />
           </Link>
           <Image
@@ -277,7 +277,7 @@ export default function Checkout() {
             alt="Arrow"
             width={16}
             height={16}
-            // className="w-3 h-3"
+          // className="w-3 h-3"
           />
           <span className="font-exo2">Cart</span>
         </div>
@@ -756,97 +756,97 @@ export default function Checkout() {
 
           {/* Right Column: Product Summary */}
           {/* Right Column: Product Summary */}
-<div className="lg:col-span-1 h-fit md:mt-10 w-full">
-  {/* Products in Cart Block */}
-  <div className="bg-[#02305A] rounded-lg p-4 sm:p-6 mb-6">
-    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
-      <h3 className="text-lg sm:text-xl font-bold font-exo2 text-white text-center sm:text-left">
-        PRODUCTS IN CART
-      </h3>
-      <Link
-        href="/account/cart"
-        className="text-[#009AFF] hover:underline font-exo2 text-sm text-center sm:text-right"
-      >
-        Edit cart
-      </Link>
-    </div>
+          <div className="lg:col-span-1 h-fit md:mt-10 w-full">
+            {/* Products in Cart Block */}
+            <div className="bg-[#02305A] rounded-lg p-4 sm:p-6 mb-6">
+              <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 gap-2">
+                <h3 className="text-lg sm:text-xl font-bold font-exo2 text-white text-center sm:text-left">
+                  PRODUCTS IN CART
+                </h3>
+                <Link
+                  href="/account/cart"
+                  className="text-[#009AFF] hover:underline font-exo2 text-sm text-center sm:text-right"
+                >
+                  Edit cart
+                </Link>
+              </div>
 
-    {/* Product Items */}
-<div className="space-y-4">
-  {items.map((item, index) => (
-    <div
-      key={item.id || index}
-      // Main container: flex-row on small screens and up, vertical on mobile
-      className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
-    >
+              {/* Product Items */}
+              <div className="space-y-4">
+                {items.map((item, index) => (
+                  <div
+                    key={item.id || index}
+                    // Main container: flex-row on small screens and up, vertical on mobile
+                    className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
+                  >
 
-      {/* 1. LEFT SIDE: Image and Text Details Container (set to grow) */}
-      <div className="flex items-start space-x-4 flex-grow">
-        <Image
-          src={
-            item.title.includes("Transmission")
-              ? "/catalog/Trasmission_.png"
-              : "/catalog/Engine 1.png"
-          }
-          alt={item.title}
-          width={80}
-          height={80}
-          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0"
-        />
+                    {/* 1. LEFT SIDE: Image and Text Details Container (set to grow) */}
+                    <div className="flex items-start space-x-4 flex-grow">
+                      <Image
+                        src={
+                          item.title.includes("Transmission")
+                            ? "/catalog/Trasmission_.png"
+                            : "/catalog/Engine 1.png"
+                        }
+                        alt={item.title}
+                        width={80}
+                        height={80}
+                        className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0"
+                      />
 
-        {/* 2. Text Content: Title/Subtitle and Quantity */}
-        {/* flex-1 min-w-0 forces the flex item to shrink and allows text wrapping inside */}
-        <div className="flex-1 min-w-0"> 
-          
-          {/* CRITICAL FIX: The break-all class forces the long string to wrap mid-word */}
-          <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
-            {item.subtitle}
-          </p>
-          <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
-            {item.quantity} pc.
-          </p>
-        </div>
-      </div>
+                      {/* 2. Text Content: Title/Subtitle and Quantity */}
+                      {/* flex-1 min-w-0 forces the flex item to shrink and allows text wrapping inside */}
+                      <div className="flex-1 min-w-0">
 
-      {/* 3. RIGHT SIDE: Price Container (Must be outside the details container) */}
-      {/* flex-shrink-0 prevents the price from being squeezed by the long title */}
-      <div className="text-right flex-shrink-0 ml-auto">
-        <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
-          ${item.price.toFixed(0)}
-        </p>
-      </div>
+                        {/* CRITICAL FIX: The break-all class forces the long string to wrap mid-word */}
+                        <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
+                          {item.subtitle}
+                        </p>
+                        <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
+                          {item.quantity} pc.
+                        </p>
+                      </div>
+                    </div>
 
-    </div>
-  ))}
-</div>
+                    {/* 3. RIGHT SIDE: Price Container (Must be outside the details container) */}
+                    {/* flex-shrink-0 prevents the price from being squeezed by the long title */}
+                    <div className="text-right flex-shrink-0 ml-auto">
+                      <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
+                        ${item.price.toFixed(0)}
+                      </p>
+                    </div>
 
-  </div>
+                  </div>
+                ))}
+              </div>
 
-  {/* Order Summary Block */}
-  <div className="bg-[#02305A] p-4 sm:p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
-    {/* Order details in white card */}
-    <div className="space-y-3 sm:space-y-4 text-sm md:text-lg bg-[#252525E5] rounded-lg p-3 sm:p-4">
-      <div className="flex justify-between items-center">
-        <span className="text-white font-exo2">Items:</span>
-        <span className="text-white font-semibold font-exo2">{items.length}</span>
-      </div>
-      <div className="flex justify-between items-center">
-        <span className="text-white font-exo2">Shipping:</span>
-        <span className="text-white font-semibold font-exo2">free shipping</span>
-      </div>
-    </div>
+            </div>
 
-    {/* Estimated Total inside the white card */}
-    <div className="mt-6 pt-4 md:px-4 flex justify-between items-center">
-      <span className="text-white text-base sm:text-lg font-bold font-exo2">
-        Estimated Total:
-      </span>
-      <span className="text-white text-lg sm:text-xl font-bold font-exo2">
-        ${estimatedTotal.toFixed(2)}
-      </span>
-    </div>
-  </div>
-</div>
+            {/* Order Summary Block */}
+            <div className="bg-[#02305A] p-4 sm:p-6 rounded-lg shadow-lg sticky top-24 max-h-fit">
+              {/* Order details in white card */}
+              <div className="space-y-3 sm:space-y-4 text-sm md:text-lg bg-[#252525E5] rounded-lg p-3 sm:p-4">
+                <div className="flex justify-between items-center">
+                  <span className="text-white font-exo2">Items:</span>
+                  <span className="text-white font-semibold font-exo2">{items.length}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-white font-exo2">Shipping:</span>
+                  <span className="text-white font-semibold font-exo2">free shipping</span>
+                </div>
+              </div>
+
+              {/* Estimated Total inside the white card */}
+              <div className="mt-6 pt-4 md:px-4 flex justify-between items-center">
+                <span className="text-white text-base sm:text-lg font-bold font-exo2">
+                  Estimated Total:
+                </span>
+                <span className="text-white text-lg sm:text-xl font-bold font-exo2">
+                  ${estimatedTotal.toFixed(2)}
+                </span>
+              </div>
+            </div>
+          </div>
 
         </div>
       </div>

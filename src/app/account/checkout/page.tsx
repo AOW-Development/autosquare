@@ -796,7 +796,7 @@ export default function Checkout() {
         {/* 2. Title/Subtitle and Quantity Container */}
         <div className="flex-1 min-w-0">
           {/* CRITICAL: Removed 'overflow-hidden' and 'break-words' is often enough */}
-          <p className="font-exo2 text-sm sm:text-base text-white font-medium">
+          <p className="font-exo2 text-sm sm:text-base text-white font-medium flex-wrap">
             {item.subtitle} 
           </p>
           <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">

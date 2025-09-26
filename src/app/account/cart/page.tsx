@@ -22,6 +22,7 @@ export default function Cart() {
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
   const isCartEmpty = cartItems.length === 0;
+   const { items } = useCartStore()
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -216,7 +217,7 @@ export default function Cart() {
             <div className="bg-[#252525E5] rounded-lg p-4 shadow space-y-3 md:mt-4">
               <div className="flex justify-between font-exo2 text-base">
                 <span>Items:</span>
-                <span>${total}.00</span>
+                <span>{items.length}</span>
               </div>
               <div className="flex justify-between font-exo2 text-base">
                 <span>Shipping:</span>

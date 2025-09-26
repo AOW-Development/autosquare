@@ -610,6 +610,7 @@ export const MODELS: Record<string, string[]> = {
   ],
   Acura: [
     "CSX",
+    "CL",
     "EL",
     "ILX",
     "Integra",

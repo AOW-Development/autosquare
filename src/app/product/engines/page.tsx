@@ -281,7 +281,7 @@ export default function EngineProductPage() {
       setIsVerifyPopupOpen(false)
       setSelectedProductForVerify(null)
       setShowCartPopup(false)
-      router.push("/account/checkout")
+      router.push("/account/cart")
     }, 100)
   }
 

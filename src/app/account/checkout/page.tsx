@@ -764,7 +764,7 @@ export default function Checkout() {
         PRODUCTS IN CART
       </h3>
       <Link
-        href="/cart"
+        href="/account/cart"
         className="text-[#009AFF] hover:underline font-exo2 text-sm text-center sm:text-right"
       >
         Edit cart
@@ -772,14 +772,15 @@ export default function Checkout() {
     </div>
 
     {/* Product Items */}
-    <div className="space-y-4">
-  {items.slice(0, 2).map((item, index) => (
+<div className="space-y-4">
+  {items.map((item, index) => (
     <div
       key={item.id || index}
+      // Main container: flex-row on small screens and up, vertical on mobile
       className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 p-4 sm:p-6 bg-[#252525E5] rounded-lg border border-[#252525E5]"
     >
-      
-      {/* 1. Item Image and Details Container */}
+
+      {/* 1. LEFT SIDE: Image and Text Details Container (set to grow) */}
       <div className="flex items-start space-x-4 flex-grow">
         <Image
           src={
@@ -790,28 +791,31 @@ export default function Checkout() {
           alt={item.title}
           width={80}
           height={80}
-          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0" // Added flex-shrink-0
+          className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0"
         />
-        
-        {/* 2. Title/Subtitle and Quantity Container */}
-        <div className="grid grid-cols-1 gap-1 flex-grow">
-          {/* CRITICAL: Removed 'overflow-hidden' and 'break-words' is often enough */}
-          <div className="font-exo2 text-sm sm:text-base text-white font-medium">
-            {item.subtitle} 
-          </div>
-          <div className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
+
+        {/* 2. Text Content: Title/Subtitle and Quantity */}
+        {/* flex-1 min-w-0 forces the flex item to shrink and allows text wrapping inside */}
+        <div className="flex-1 min-w-0"> 
+          
+          {/* CRITICAL FIX: The break-all class forces the long string to wrap mid-word */}
+          <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
+            {item.subtitle}
+          </p>
+          <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
             {item.quantity} pc.
-          </div>
-          <div className="text-right min-w-max"> {/* CRITICAL: Used min-w-max to ensure price has enough room */}
+          </p>
+        </div>
+      </div>
+
+      {/* 3. RIGHT SIDE: Price Container (Must be outside the details container) */}
+      {/* flex-shrink-0 prevents the price from being squeezed by the long title */}
+      <div className="text-right flex-shrink-0 ml-auto">
         <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
           ${item.price.toFixed(0)}
         </p>
       </div>
-        </div>
-      </div>
-      
-      {/* 3. Price Container (Kept at minimum width on the right) */}
-      
+
     </div>
   ))}
 </div>

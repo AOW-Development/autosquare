@@ -331,7 +331,7 @@ export default function CatalogPage() {
         setIsPopupOpen(false); // Close the verify popup
         setSelectedProductForVerify(null); // Clear the selected product
         setShowCartPopup(false); // Hide the success popup
-        router.push('/account/checkout'); // Redirect to the specified checkout URL
+        router.push('/account/cart'); // Redirect to the specified checkout URL
     }, 100); 
   };
 

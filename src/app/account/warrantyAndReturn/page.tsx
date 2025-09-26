@@ -183,10 +183,10 @@ export default function WarrantyAndReturn() {
             <div className="space-y-6">
               <div>
                 <h3 className="font-exo2 font-semibold mt-4 mb-2">
-                  60 days Warranty:
+                  90 days Warranty:
                 </h3>
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
-                  We offer 60 days limited warranty on all our used parts,
+                  We offer 90 days limited warranty on all our used parts,
                   engines and transmissions. Our parts, engines and
                   transmissions are unmatched for their level of quality,
                   warranty and price. Buy with confidence with us knowing the

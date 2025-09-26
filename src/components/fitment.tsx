@@ -110,8 +110,8 @@ export function VerifyPartPopup({
   const vinSuffix = DEMO_VIN.substring(VIN_TARGET_INDEX + 1)
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50">
-      <div className="bg-[#061C37] rounded-lg w-full max-w-sm sm:max-w-3xl p-4 sm:p-6 relative overflow-y-auto max-h-[95vh]">
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50 ">
+      <div className="bg-[#061C37] rounded-lg w-full max-w-sm sm:max-w-3xl p-4 sm:p-6 relative h-auto max-h-[100vh]">
         <button
           onClick={onClose}
           className="absolute top-3 right-3 sm:top-4 sm:right-4 text-white hover:text-gray-300 z-10 transition-colors"

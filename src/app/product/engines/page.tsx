@@ -100,7 +100,7 @@ export default function EngineProductPage() {
       quantity,
     })
 
-    router.push("/account/payMethod")
+    router.push("/account/payMethod?buyInOneClick=true")
   }
 
   const accordionData = [

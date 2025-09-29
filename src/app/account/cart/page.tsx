@@ -153,9 +153,9 @@ export default function Cart() {
                       height={120}
                       className="w-24 h-24 md:w-30 md:h-30 object-cover rounded"
                     />
-                    <div>
+                    <div className="flex-1">
                       <h3 className="font-exo2 font-bold text-white text-lg break-all">{item.title}</h3>
-        <p className="text-sm text-white break-all">{item.subtitle}</p>
+                        <p className="text-sm text-white break-all">{item.subtitle}</p>
                     </div>
                   </div>
 

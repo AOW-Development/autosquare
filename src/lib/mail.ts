@@ -33,6 +33,7 @@ export interface ShippingInfo {
   country: string;
   address: string;
   apartment: string;
+  shippingAddressType?: string;
   city: string;
   state: string;
   zipCode: string;

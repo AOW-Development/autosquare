@@ -1,37 +1,32 @@
-"use client";
+"use client"
 
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import useBillingStore from "@/store/billingStore";
-import { useCartStore } from "@/store/cartStore";
-import { generateOrderNumber } from "@/utils/order";
-import ProtectedRoute from "@/components/ProtectedRoute";
-import { log } from "console";
-import { useShippingStore } from '@/store/shippingStore';
-import { createOrderInBackend } from '@/utils/orderUtils';
-import { toast } from 'react-hot-toast'; // Add this import
-import useAuthStore from "@/store/authStore";
+import Image from "next/image"
+import Link from "next/link"
+import { useEffect, useRef, useState } from "react"
+import useBillingStore from "@/store/billingStore"
+import { useCartStore } from "@/store/cartStore"
+import { generateOrderNumber } from "@/utils/order"
+import { useShippingStore } from "@/store/shippingStore"
+import { createOrderInBackend } from "@/utils/orderUtils"
+import { toast } from "react-hot-toast" // Add this import
+import useAuthStore from "@/store/authStore"
 
 export default function ThankYouPage() {
-  const { billingInfo } = useBillingStore();
-  const cartItems = useCartStore((s) => s.items);
-  const [orderNumber, setOrderNumber] = useState("");
-  const [orderDate, setOrderDate] = useState("");
-  const { shippingInfo } = useShippingStore();
+  const { billingInfo } = useBillingStore()
+  const cartItems = useCartStore((s) => s.items)
+  const [orderNumber, setOrderNumber] = useState("")
+  const [orderDate, setOrderDate] = useState("")
+  const { shippingInfo } = useShippingStore()
   const [paymentInfo, setPaymentInfo] = useState<{
-    method: string;
-    lastFour?: string;
-  }>({ method: "card" });
-  const [cardType, setCardType] = useState("unknown");
-  const isSameAddress =
-    JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
-  const { setShippingInfo } = useShippingStore();
-  const { setBillingInfo } = useBillingStore();
-  
-  const { user } = useAuthStore();
-  
+    method: string
+    lastFour?: string
+  }>({ method: "card" })
+  const [cardType, setCardType] = useState("unknown")
+  const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo)
+  const { setShippingInfo } = useShippingStore()
+  const { setBillingInfo } = useBillingStore()
 
+  const { user } = useAuthStore()
 
   // Card image mapping (top-level so it’s accessible)
   const cardImageMap: Record<string, string> = {
@@ -39,123 +34,137 @@ export default function ThankYouPage() {
     MasterCard: "mastercard_82049.png",
     "American Express": "americanexpress_82060 1.png",
     Discover: "discover_82082.png",
-  };
-  const hasRunRef = useRef(false);
+  }
+  const hasRunRef = useRef(false)
 
-    const cardImage = cardImageMap[cardType];
-
+  const cardImage = cardImageMap[cardType]
 
   // Calculate totals
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
-  const total = subtotal + salesTax;
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const salesTax = Math.round(subtotal * 0.029) // 2.9% tax
+  const total = subtotal + salesTax
   useEffect(() => {
-    if (hasRunRef.current) return;  // prevent duplicate
-    hasRunRef.current = true;
+    if (hasRunRef.current) return // prevent duplicate
+    hasRunRef.current = true
     // Generate order number and date
-    setOrderNumber(generateOrderNumber());
+    setOrderNumber(generateOrderNumber())
     setOrderDate(
       new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
-      })
-    );
+      }),
+    )
 
     // Get payment info from localStorage
-    const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card";
-    const storedCardData = localStorage.getItem("cardData");
+    const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card"
+    const storedCardData = localStorage.getItem("cardData")
 
     if (storedPaymentMethod === "card" && storedCardData) {
       try {
-        const cardData = JSON.parse(storedCardData);
-        const lastFour = cardData.cardNumber?.slice(-4) || "****";
-        setPaymentInfo({ method: "card", lastFour });
+        const cardData = JSON.parse(storedCardData)
+        const lastFour = cardData.cardNumber?.slice(-4) || "****"
+        setPaymentInfo({ method: "card", lastFour })
 
         // Detect card type from number (basic check)
-        if (/^4/.test(cardData.cardNumber)) setCardType("Visa");
-        else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard");
-        else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express");
-        else if (/^6/.test(cardData.cardNumber)) setCardType("Discover");
+        if (/^4/.test(cardData.cardNumber)) setCardType("Visa")
+        else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard")
+        else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express")
+        else if (/^6/.test(cardData.cardNumber)) setCardType("Discover")
       } catch {
-        setPaymentInfo({ method: "card", lastFour: "****" });
+        setPaymentInfo({ method: "card", lastFour: "****" })
       }
     } else {
-      setPaymentInfo({ method: storedPaymentMethod });
+      setPaymentInfo({ method: storedPaymentMethod })
     }
-    
 
     const createOrder = async () => {
-    
       try {
         // Get order data from session storage
-        const orderData = sessionStorage.getItem("orderData");
+        const orderData = sessionStorage.getItem("orderData")
         if (!orderData) {
-          console.error("No order data found in session storage");
-          return;
+          console.error("No order data found in session storage")
+          return
         }
 
-    const parsedOrderData = JSON.parse(orderData);
+        const parsedOrderData = JSON.parse(orderData)
 
-    // Rebuild full payload
-     // Replace the existing fullOrderData object inside your createOrder function
+        // Determine the customer email - prioritize guest email from forms over logged-in user email
+        const customerEmail = parsedOrderData.customerEmail || parsedOrderData.user?.email || user?.email
 
-    const fullOrderData = {
-        user: user
-            ? {
-                id: user.id,
-                email: user.email,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                name: user.name,
-              }
-            : parsedOrderData.user,
-        payment: parsedOrderData.payment,
-        billing: parsedOrderData.billing,
-        shipping: parsedOrderData.shipping,
-        cartItems: cartItems,
-        orderNumber: parsedOrderData.orderNumber,
-        totalAmount: total,
-        subtotal: subtotal,
-    };
+        if (!customerEmail) {
+          console.error("No customer email found for invoice")
+          toast.error("Unable to send invoice - no email address found")
+          return
+        }
 
-console.log('Final full order data to be sent:', fullOrderData);
-    console.log('Full order data to be sent:', fullOrderData);
+        // Build user object with proper email handling
+        const orderUser = user
+          ? {
+              id: user.id,
+              email: customerEmail, // Use the determined customer email
+              firstName: user.firstName,
+              lastName: user.lastName,
+              name: user.name,
+            }
+          : {
+              // For guest users, create user object from order data
+              email: customerEmail,
+              firstName: parsedOrderData.billing?.firstName || parsedOrderData.shipping?.firstName || "",
+              lastName: parsedOrderData.billing?.lastName || parsedOrderData.shipping?.lastName || "",
+              name: `${parsedOrderData.billing?.firstName || parsedOrderData.shipping?.firstName || ""} ${parsedOrderData.billing?.lastName || parsedOrderData.shipping?.lastName || ""}`.trim(),
+            }
 
-  
+        const fullOrderData = {
+          user: orderUser,
+          payment: parsedOrderData.payment,
+          billing: parsedOrderData.billing,
+          shipping: parsedOrderData.shipping,
+          cartItems: cartItems,
+          orderNumber: parsedOrderData.orderNumber,
+          totalAmount: total,
+          subtotal: subtotal,
+          customerEmail: customerEmail, // Explicitly include customer email for invoice
+        }
 
-    // Send order to backend
-    await createOrderInBackend(fullOrderData);
+        console.log("Final full order data to be sent:", fullOrderData)
+        console.log(`Invoice will be sent to: ${customerEmail}`)
 
-    // Send confirmation email (guest flow needs this too)
-    try {
-      const emailResponse = await fetch("/api-2/send-order-email", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(fullOrderData),
-      });
+        // Send order to backend
+        await createOrderInBackend(fullOrderData)
 
-      if (!emailResponse.ok) {
-        console.error("Failed to send order confirmation email");
+        try {
+          const emailResponse = await fetch("/api-2/send-order-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullOrderData),
+          })
+
+          if (!emailResponse.ok) {
+            const errorText = await emailResponse.text()
+            console.error("Failed to send order confirmation email:", errorText)
+            toast.error("Order placed successfully, but failed to send confirmation email")
+          } else {
+            console.log(`Order confirmation email sent successfully to: ${customerEmail}`)
+            toast.success(`Order confirmation sent to ${customerEmail}`)
+          }
+        } catch (err) {
+          console.error("Email sending failed:", err)
+          toast.error("Order placed successfully, but failed to send confirmation email")
+        }
+
+        // Clear session storage
+        sessionStorage.removeItem("orderData")
+      } catch (error) {
+        console.error("Error creating order:", error)
+        toast.error("Failed to process order. Please contact support.")
       }
-    } catch (err) {
-      console.error("Email sending failed:", err);
     }
-
-    // Clear session storage
-    sessionStorage.removeItem("orderData");
-  } catch (error) {
-    console.error("Error creating order:", error);
-    toast.error("Failed to process order. Please contact support.");
-  }
-};
-  createOrder();
-  },[user]);
-
-
+    createOrder()
+  }, [user])
 
   return (
-      <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
+    <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
       {/* Background Car Image */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <div className="w-[700px] h-[624px] relative">
@@ -169,41 +178,43 @@ console.log('Final full order data to be sent:', fullOrderData);
         </div>
       </div>
 
-    <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
-
-      {/* Thank You Content */}
-      <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
+      <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
+        {/* Thank You Content */}
+        <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
           {/* Logo and Title */}
           <div className="flex flex-col items-center mb-6">
             {/* <Image src="/Images/logo.svg" alt="Brand Logo" width={80} height={80} className="mb-2" priority /> */}
-            <h1 className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide " style={{
-              fontFamily: "Audiowide, sans-serif",
-              letterSpacing: "0.1em",
-            }}>
+            <h1
+              className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide "
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               Thank you
             </h1>
-            <div className="text-white text-xl md:text-2xl lg:text-3xl font-normal text-center mt-1" style={{
-              fontFamily: "Audiowide, sans-serif",
-              letterSpacing: "0.1em",
-            }}>
+            <div
+              className="text-white text-xl md:text-2xl lg:text-3xl font-normal text-center mt-1"
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}
+            >
               for shopping with us!
             </div>
           </div>
           {/* Header: Deliver To / Payment */}
           <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-0 mb-1">
             <div>
-              <div className="uppercase text-sm text-gray-300 font-semibold">
-                Deliver To
-              </div>
+              <div className="uppercase text-sm text-gray-300 font-semibold">Deliver To</div>
               <div className="text-white text-sm mt-1 leading-tight">
-             
-                 <>
+                <>
                   {/* Billing Info */}
                   {billingInfo && Object.keys(billingInfo).length > 0 && (
                     <div>
                       <strong>Billing Information</strong>
                       <br />
-                      {billingInfo.firstName} {billingInfo.lastName}
+                      {shippingInfo.firstName} {shippingInfo.lastName}
                       <br />
                       {billingInfo.address}
                       {billingInfo.apartment && (
@@ -252,19 +263,15 @@ console.log('Final full order data to be sent:', fullOrderData);
                     </div>
                   )}
                 </>
-              
               </div>
-  
             </div>
             <div className="flex flex-col items-start md:items-center">
-              <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
-                Payment Method
-              </div>
+              <div className="uppercase text-sm text-gray-300 font-semibold pr-12">Payment Method</div>
               <div className="flex items-center gap-3 mt-1">
-                {paymentInfo.method === 'card' ? (
+                {paymentInfo.method === "card" ? (
                   <>
                     <span className="text-white text-sm tracking-widest">
-                      **** **** **** {paymentInfo.lastFour || '****'}
+                      **** **** **** {paymentInfo.lastFour || "****"}
                     </span>
                     {cardImage && (
                       <img
@@ -275,9 +282,7 @@ console.log('Final full order data to be sent:', fullOrderData);
                     )}
                   </>
                 ) : (
-                  <span className="text-white text-sm">
-                    PayPal
-                  </span>
+                  <span className="text-white text-sm">PayPal</span>
                 )}
               </div>
             </div>
@@ -296,18 +301,22 @@ console.log('Final full order data to be sent:', fullOrderData);
             cartItems.map((item) => (
               <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
-                  src={item.title.includes("Transmission")?"/catalog/Trasmission_.png":"/catalog/Engine 1.png"}
+                  src={
+                    item.title.includes("Transmission")
+                      ? "/catalog/Trasmission_.png"
+                      : "/catalog/Engine 1.png" 
+                  }
                   alt={item.title}
                   width={64}
                   height={64}
                   className="rounded-lg"
                 />
                 <div className="flex-1">
-                  <div className="text-base text-white font-semibold">
-                    {item.title}
-                  </div>
+                  <div className="text-base text-white font-semibold">{item.title}</div>
                   <div className="text-sm text-gray-300">{item.subtitle}</div>
-                  <div className="text-sm text-gray-300">{item.quantity} pc{item.quantity > 1 ? 's' : ''}.</div>
+                  <div className="text-sm text-gray-300">
+                    {item.quantity} pc{item.quantity > 1 ? "s" : ""}.
+                  </div>
                 </div>
                 <div className="text-base text-white font-semibold min-w-[60px] text-right">
                   ${item.price * item.quantity}
@@ -316,9 +325,7 @@ console.log('Final full order data to be sent:', fullOrderData);
             ))
           ) : (
             <div className="flex flex-row items-start gap-4 py-2">
-              <div className="text-white text-center w-full">
-                No items in cart
-              </div>
+              <div className="text-white text-center w-full">No items in cart</div>
             </div>
           )}
           <div className="border-t border-white my-3" />
@@ -358,8 +365,6 @@ console.log('Final full order data to be sent:', fullOrderData);
           </div>
         </div>
       </main>
-   </div>
-
-
-  );
+    </div>
+  )
 }

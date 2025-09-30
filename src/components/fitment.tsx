@@ -103,7 +103,10 @@ export function VerifyPartPopup({
 
   if (!isOpen) return null
 
-  const vehicleDisplay = `${year} ${make} ${model}`
+  const vehicleDisplay = `${year || ""} ${make || ""} ${model || ""} used ${part || ""} ${
+  selectedSubPart ? `(${selectedSubPart.name})` : ""
+}`.trim()
+
   const showVinCheckVisual = !selectedFitOption
   const vinPrefix = DEMO_VIN.substring(0, VIN_TARGET_INDEX)
   const vinTarget = DEMO_VIN.charAt(VIN_TARGET_INDEX)
@@ -189,7 +192,8 @@ export function VerifyPartPopup({
                   )}`}
                   className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors text-xs sm:text-sm"
                 >
-                  View Products for {year} {make} {model}
+                  View Products for {year} {make} {model} used {part} {selectedSubPart ? ` (${selectedSubPart.name})` : ""}
+                
                 </a>
                </div>
               )}
@@ -271,7 +275,7 @@ export function VerifyPartPopup({
               </div>
               <div className="text-left sm:text-right">
                 <p className="text-white font-bold text-base sm:text-lg">
-                  ${selectedProduct.actualprice || selectedProduct.price}
+                  ${selectedProduct.discountedPrice || selectedProduct.price}
                 </p>
                 <p
                   className={`text-xs sm:text-sm ${

@@ -4,7 +4,7 @@ import type React from "react"
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { State } from "country-state-city"
+// import { State } from "country-state-city"
 import useBillingStore from "@/store/billingStore"
 import { useCartStore } from "@/store/cartStore"
 import { useShippingStore } from "@/store/shippingStore"
@@ -36,6 +36,24 @@ export default function Checkout() {
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
   const [billingStates, setBillingStates] = useState<{ name: string; isoCode: string }[]>([])
   const [sameAsShipping, setSameAsShipping] = useState(true)
+
+  const US_STATES = [
+  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
+  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
+  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada",
+  "New Hampshire","New Jersey","New Mexico","New York","North Carolina",
+  "North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island",
+  "South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont",
+  "Virginia","Washington","West Virginia","Wisconsin","Wyoming"
+]
+
+  const CA_PROVINCES = [
+  "Alberta","British Columbia","Manitoba","New Brunswick",
+  "Newfoundland and Labrador","Nova Scotia","Ontario",
+  "Prince Edward Island","Quebec","Saskatchewan",
+  "Northwest Territories","Nunavut","Yukon"
+]
 
   const [billingFormData, setBillingFormData] = useState({
     firstName: "",
@@ -171,23 +189,23 @@ export default function Checkout() {
     setBillingErrors((prev) => ({ ...prev, [field]: error }))
   }
 
-  useEffect(() => {
-    if (formData.country) {
-      const fetchedStates = State.getStatesOfCountry(formData.country)
-      setStates(fetchedStates || [])
-    } else {
-      setStates([])
-    }
-  }, [formData.country])
+  // useEffect(() => {
+  //   if (formData.country) {
+  //     const fetchedStates = State.getStatesOfCountry(formData.country)
+  //     setStates(fetchedStates || [])
+  //   } else {
+  //     setStates([])
+  //   }
+  // }, [formData.country])
 
-  useEffect(() => {
-    if (billingFormData.country) {
-      const fetchedBillingStates = State.getStatesOfCountry(billingFormData.country)
-      setBillingStates(fetchedBillingStates || [])
-    } else {
-      setBillingStates([])
-    }
-  }, [billingFormData.country])
+  // useEffect(() => {
+  //   if (billingFormData.country) {
+  //     const fetchedBillingStates = State.getStatesOfCountry(billingFormData.country)
+  //     setBillingStates(fetchedBillingStates || [])
+  //   } else {
+  //     setBillingStates([])
+  //   }
+  // }, [billingFormData.country])
 
   const handleUserTypeChange = (type: "Individual" | "Commercial") => {
     setUserType(type)
@@ -429,6 +447,20 @@ export default function Checkout() {
               <form className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Address */}
+
+                   {userType === "Commercial" && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                      <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={formData.company || ""}
+                        onChange={(e) => handleInputChange("company", e.target.value)}
+                        className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                        required
+                      />
+                    </div>
+                  )}
                   <div>
                     <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
                     <input
@@ -489,15 +521,15 @@ export default function Checkout() {
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                       value={formData.state}
                       onChange={(e) => handleInputChange("state", e.target.value)}
-                      disabled={!states.length}
+                      // disabled={!states.length}
                       required
                     >
-                      <option value="">Choose State…</option>
-                      {states.map((state) => (
-                        <option key={state.isoCode} value={state.isoCode}>
-                          {state.name}
-                        </option>
-                      ))}
+                       <option value="">Select State</option>
+                        {(formData.country === "US" ? US_STATES : CA_PROVINCES).map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
                     </select>
                   </div>
 
@@ -516,7 +548,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Conditional Company Name Field for Commercial Address Type */}
-                  {userType === "Commercial" && (
+                  {/* {userType === "Commercial" && (
                     <div>
                       <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
                       <input
@@ -528,7 +560,7 @@ export default function Checkout() {
                         required
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
               </form>
             </div>
@@ -568,6 +600,22 @@ export default function Checkout() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {/* Address */}
+
+                   {billingUserType === "Commercial" && (
+                    <div>
+                      <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                      <input
+                        type="text"
+                        placeholder="Company Name"
+                        value={billingFormData.company || ""}
+                        onChange={(e) => handleBillingInputChange("company", e.target.value)}
+                        className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 font-exo2 focus:outline-none focus:ring-2 focus:ring-[#009AFF]"
+                        disabled={sameAsShipping}
+                        required
+                      />
+                    </div>
+                  )}
+                  
                   <div>
                     <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
                     <input
@@ -632,15 +680,15 @@ export default function Checkout() {
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                       value={billingFormData.state}
                       onChange={(e) => handleBillingInputChange("state", e.target.value)}
-                      disabled={sameAsShipping || !billingStates.length}
+                       disabled={sameAsShipping}
                       required
                     >
-                      <option value="">Choose State…</option>
-                      {billingStates.map((state) => (
-                        <option key={state.isoCode} value={state.isoCode}>
-                          {state.name}
-                        </option>
-                      ))}
+                      <option value="">Select State</option>
+                        {(billingFormData.country === "US" ? US_STATES : CA_PROVINCES).map((s) => (
+                          <option key={s} value={s}>
+                            {s}
+                          </option>
+                        ))}
                     </select>
                   </div>
 
@@ -660,7 +708,7 @@ export default function Checkout() {
                   </div>
 
                   {/* Conditional Company Name Field for Billing Address Type */}
-                  {billingUserType === "Commercial" && (
+                  {/* {billingUserType === "Commercial" && (
                     <div>
                       <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
                       <input
@@ -673,7 +721,7 @@ export default function Checkout() {
                         required
                       />
                     </div>
-                  )}
+                  )} */}
                 </div>
 
                 <div className="mt-6">

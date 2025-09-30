@@ -13,7 +13,7 @@ import { useCartStore } from "@/store/cartStore"
 import type { PaymentInfo } from "@/store/paymentStore"
 // Remove local CartItem interface entirely, use global type
 import { getCardType, isValidCardNumber } from "@/utils/cardUtil"
-import { State } from "country-state-city"
+// import { State } from "country-state-city"
 import toast from "react-hot-toast"
 
 export default function PayMethod() {
@@ -31,6 +31,25 @@ export default function PayMethod() {
   // default to Apple Pay
 
   const searchParams = useSearchParams()
+
+  const US_STATES = [
+  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
+  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
+  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
+  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada",
+  "New Hampshire","New Jersey","New Mexico","New York","North Carolina",
+  "North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island",
+  "South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont",
+  "Virginia","Washington","West Virginia","Wisconsin","Wyoming"
+]
+
+  const CA_PROVINCES = [
+  "Alberta","British Columbia","Manitoba","New Brunswick",
+  "Newfoundland and Labrador","Nova Scotia","Ontario",
+  "Prince Edward Island","Quebec","Saskatchewan",
+  "Northwest Territories","Nunavut","Yukon"
+]
+
 
   const [billingFormData, setBillingFormData] = useState({
     firstName: "",
@@ -405,15 +424,15 @@ export default function PayMethod() {
   }
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
 
-  useEffect(() => {
-    if (billingFormData.country) {
-      const fetchedStates = State.getStatesOfCountry(billingFormData.country)
-      console.log("Fetched States:", fetchedStates)
-      setStates(fetchedStates || [])
-    } else {
-      setStates([])
-    }
-  }, [billingFormData.country])
+  // useEffect(() => {
+  //   if (billingFormData.country) {
+  //     const fetchedStates = State.getStatesOfCountry(billingFormData.country)
+  //     console.log("Fetched States:", fetchedStates)
+  //     setStates(fetchedStates || [])
+  //   } else {
+  //     setStates([])
+  //   }
+  // }, [billingFormData.country])
 
   const handleUserTypeChange = (type: "Individual" | "Commercial") => {
     setUserType(type)
@@ -528,14 +547,14 @@ export default function PayMethod() {
     setShippingErrors((prev) => ({ ...prev, [field]: error }))
   }
 
-  useEffect(() => {
-    if (shippingFormData.country) {
-      const fetchedStates = State.getStatesOfCountry(shippingFormData.country)
-      setShippingStates(fetchedStates || [])
-    } else {
-      setShippingStates([])
-    }
-  }, [shippingFormData.country])
+  // useEffect(() => {
+  //   if (shippingFormData.country) {
+  //     const fetchedStates = State.getStatesOfCountry(shippingFormData.country)
+  //     setShippingStates(fetchedStates || [])
+  //   } else {
+  //     setShippingStates([])
+  //   }
+  // }, [shippingFormData.country])
 
   const [cardType, setCardType] = useState("unknown")
   const cardImageMap: Record<string, string> = {
@@ -834,6 +853,19 @@ export default function PayMethod() {
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                       {shippingUserType === "Commercial" && (
+                        <div>
+                          <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                          <input
+                            type="text"
+                            placeholder="Company Name"
+                            value={shippingFormData.company || ""}
+                            onChange={(e) => handleShippingInputChange("company", e.target.value)}
+                            className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                            required
+                          />
+                        </div>
+                      )}
                       <div>
                         <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
                         <input
@@ -892,15 +924,15 @@ export default function PayMethod() {
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           value={shippingFormData.state}
                           onChange={(e) => handleShippingInputChange("state", e.target.value)}
-                          disabled={!shippingStates.length}
+                          // disabled={!shippingStates.length}
                           required
                         >
-                          <option value="">Choose State…</option>
-                          {shippingStates.map((state) => (
-                            <option key={state.isoCode} value={state.isoCode}>
-                              {state.name}
-                            </option>
-                          ))}
+                           <option value="">Choose State…</option>
+                            {(shippingFormData.country === "US" ? US_STATES : CA_PROVINCES).map((s) => (
+                              <option key={s} value={s}>
+                                {s}
+                              </option>
+                            ))}
                         </select>
                       </div>
 
@@ -919,7 +951,7 @@ export default function PayMethod() {
                         )}
                       </div>
 
-                      {shippingUserType === "Commercial" && (
+                      {/* {shippingUserType === "Commercial" && (
                         <div>
                           <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
                           <input
@@ -931,7 +963,7 @@ export default function PayMethod() {
                             required
                           />
                         </div>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="mt-6">
@@ -965,6 +997,7 @@ export default function PayMethod() {
                           <p className="text-sm sm:text-base md:text-lg">
                             {shipping.firstName} {shipping.lastName}
                           </p>
+                          <p className="text-sm sm:text-base md:text-lg">{shipping.company}</p>
                           <p className="text-sm sm:text-base md:text-lg">{shipping.address}</p>
                           {shipping.apartment && (
                             <p className="text-sm sm:text-base md:text-lg">{shipping.apartment}</p>
@@ -1019,6 +1052,20 @@ export default function PayMethod() {
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {userType === "Commercial" && (
+                        <div>
+                          <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                          <input
+                            type="text"
+                            placeholder="Company Name"
+                            value={billingFormData.company || ""}
+                            onChange={(e) => handleBillingInputChange("company", e.target.value)}
+                            className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                            disabled={sameAsShipping}
+                            required
+                          />
+                        </div>
+                      )}
                       <div>
                         <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
                         <input
@@ -1079,15 +1126,21 @@ export default function PayMethod() {
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           value={billingFormData.state}
                           onChange={(e) => handleBillingInputChange("state", e.target.value)}
-                          disabled={sameAsShipping || !states.length}
+                          disabled={sameAsShipping}
                           required
                         >
-                          <option value="">Choose State…</option>
+                          {/* <option value="">Choose State…</option>
                           {states.map((state) => (
                             <option key={state.isoCode} value={state.isoCode}>
                               {state.name}
                             </option>
-                          ))}
+                          ))} */}
+                           <option value="">Choose State…</option>
+                              {(billingFormData.country === "US" ? US_STATES : CA_PROVINCES).map((s) => (
+                                <option key={s} value={s}>
+                                  {s}
+                                </option>
+                              ))}
                         </select>
                       </div>
 
@@ -1105,7 +1158,7 @@ export default function PayMethod() {
                         {errors.zipCode && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.zipCode}</p>}
                       </div>
 
-                      {userType === "Commercial" && (
+                      {/* {userType === "Commercial" && (
                         <div>
                           <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
                           <input
@@ -1118,7 +1171,7 @@ export default function PayMethod() {
                             required
                           />
                         </div>
-                      )}
+                      )} */}
                     </div>
 
                     <div className="mt-6">
@@ -1152,6 +1205,7 @@ export default function PayMethod() {
                           <p className="text-sm sm:text-base md:text-lg">
                             {billing.firstName} {billing.lastName}
                           </p>
+                          <p className="text-sm sm:text-base md:text-lg">{billing.company}</p>
                           <p className="text-sm sm:text-base md:text-lg">{billing.address}</p>
                           {billing.apartment && <p className="text-sm sm:text-base md:text-lg">{billing.apartment}</p>}
                           <p className="text-sm sm:text-base md:text-lg">

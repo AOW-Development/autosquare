@@ -139,21 +139,21 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Overview
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               Parts Central LLC and its third-party service providers (together
               referred to as "we" or "us") are committed to protecting your
               privacy. This Privacy Policy explains how we collect, use, and
               share information when you use our website at
               https://usedpartscentral.com ("the Site").
             </p>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               Our services include credit card processing, shipping, and other
               third-party operations necessary to fulfill orders. By using the
               Site, you agree to the practices described in this Privacy Policy.
               We recommend reviewing this policy periodically as it may change
               over time.
             </p>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               For additional information regarding your rights and obligations
               when purchasing from the Site, please also review our Terms and
               Conditions.
@@ -165,7 +165,7 @@ export default function PrivacyPolicy() {
             <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Information We Collect
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               We collect two types of information from visitors: Personally
               Identifiable Information and Non-Personally Identifiable
               Information.
@@ -174,16 +174,16 @@ export default function PrivacyPolicy() {
             <h2 className="font-audiowide font-semibold text-lg md:text-xl mb-3 mt-4 uppercase">
               Personally Identifiable Information
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               This is information that identifies you directly. We collect it
               when you:
             </p>
-            <ul className="list-disc list-inside text-sm md:text-base font-exo2 mt-2 space-y-1">
+            <ul className="list-disc list-inside text-sm md:text-base lg:text-lg font-exo2 mt-2 space-y-1">
               <li>Place an order</li>
               <li>Participate in surveys, contests, or sweepstakes</li>
               <li>Contact us via email, phone, or live chat</li>
             </ul>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               This may include your name, mailing address, email address, phone
               number, and payment details. This information allows us to process
               orders, provide personalized service, and communicate order
@@ -194,18 +194,18 @@ export default function PrivacyPolicy() {
             <h3 className="font-audiowide font-semibold text-lg md:text-xl mb-3 mt-4 uppercase">
               Non-Personally Identifiable Information
             </h3>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               This includes information that does not identify you directly. We
               collect it to improve your experience on the Site and may include:
             </p>
-            <ul className="list-disc list-inside text-sm md:text-base font-exo2 mt-2 space-y-1">
+            <ul className="list-disc list-inside text-sm md:text-base lg:text-lg font-exo2 mt-2 space-y-1">
               <li>IP address</li>
               <li>Browser type</li>
               <li>Pages visited</li>
               <li>Referring and next URL</li>
               <li>Search terms used</li>
             </ul>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               We analyze this data in aggregate to enhance our website content,
               improve services, and understand customer preferences.
             </p>
@@ -216,13 +216,13 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               How We Use Your Information
             </h2>
-            <ul className="list-disc list-inside text-sm md:text-base font-exo2 space-y-1">
+            <ul className="list-disc list-inside text-sm md:text-base lg:text-lg font-exo2 space-y-1">
               <li>Process and deliver your orders</li>
               <li>Provide customer service and respond to inquiries</li>
               <li>Send updates, newsletters, and promotions with your consent</li>
               <li>Analyze website traffic and improve the Site experience</li>
             </ul>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               We may also use your information to administer contests, surveys,
               and warranty programs.
             </p>
@@ -233,11 +233,11 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Sharing Your Information
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               We do not sell, trade, or rent your personal information to third
               parties. Information may be shared with:
             </p>
-            <ul className="list-disc list-inside text-sm md:text-base font-exo2 mt-2 space-y-1">
+            <ul className="list-disc list-inside text-sm md:text-base lg:text-lg font-exo2 mt-2 space-y-1">
               <li>Payment processors to authorize and process transactions</li>
               <li>Shipping partners to deliver your orders</li>
               <li>
@@ -245,7 +245,7 @@ export default function PrivacyPolicy() {
               </li>
               <li>Legal authorities if required by law</li>
             </ul>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               We may also share information as part of a business transfer,
               merger, or sale of assets, but only in compliance with this
               Privacy Policy.
@@ -257,7 +257,7 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Updating or Correcting Your Information
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               You can update or correct your personal information at any time
               through your account page on the Site. If you wish, you may
               request deletion of your information, subject to legal obligations
@@ -270,16 +270,16 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Marketing Communications
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               With your consent, we may send newsletters, promotions, or product
               updates. You can opt out at any time by:
             </p>
-            <ul className="list-disc list-inside text-sm md:text-base font-exo2 mt-2 space-y-1">
+            <ul className="list-disc list-inside text-sm md:text-base lg:text-lg font-exo2 mt-2 space-y-1">
               <li>Unchecking the opt-in box in your account settings</li>
               <li>Following the unsubscribe instructions in emails</li>
               <li>Replying STOP or HELP to SMS notifications</li>
             </ul>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               We do not share your contact information for external marketing
               purposes.
             </p>
@@ -290,13 +290,13 @@ export default function PrivacyPolicy() {
             <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Security Measures
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               We take the security of your information seriously. The Site uses
               advanced encryption, secure servers, and firewall technology to
               protect your data. SSL encryption is used for sensitive
               information such as payment details.
             </p>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed mt-2">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               Third-party service providers handling payment and shipping are
               bound by confidentiality agreements and use secure practices to
               protect your information.
@@ -308,7 +308,7 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Use of Cookies
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               Our Site uses cookies to enhance your browsing experience, store
               preferences, and improve site functionality. Cookies cannot access
               personal information from your computer and cannot transmit
@@ -322,7 +322,7 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Children’s Privacy
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               The Site is intended for users 18 years or older. We do not
               knowingly collect information from children under 18. If you
               believe a minor has submitted personal information to us, please
@@ -335,7 +335,7 @@ export default function PrivacyPolicy() {
              <h2 className="font-audiowide font-semibold text-lg md:text-2xl mb-3 uppercase">
               Contact Information
             </h2>
-            <p className="font-exo2 text-sm md:text-base leading-relaxed">
+            <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed">
               For questions about this Privacy Policy or your personal data,
               please contact us at:  (888) 338-2540
             </p>

@@ -8,6 +8,11 @@ import Link from "next/link";
 
 interface CartItem {
   id: number;
+  make: string;
+  model: string;
+  year: string;
+  part: string;
+  subPart: string;
   title: string;
   subtitle: string;
   price: number;

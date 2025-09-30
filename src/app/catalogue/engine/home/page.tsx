@@ -100,6 +100,15 @@ export default function CatalogPage() {
     }
   }, [subPartParam])
 
+  // useEffect(() => {
+  //   if (make && model && year && part) {
+  //     fetch(`/api/products?make=${make}&model=${model}&year=${year}&part=${part}`)
+  //       .then(res => res.json())
+  //       .then(data => setProducts(data))
+  //       .catch(() => setProducts([]));
+  //   }
+  // }, [make, model, year, part]);
+
   // --- Verify Part Popup State ---
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedProductForVerify, setSelectedProductForVerify] = useState<Product | null>(null); 
@@ -607,9 +616,15 @@ export default function CatalogPage() {
                     <div className="flex justify-between items-center mt-3 relative z-30">
                       {item.inStock ? (
                         <>
-                          <span className="text-xl font-bold text-white">
-                            ${item.actualprice}
+                         <span className="text-2xl font-bold text-white">
+                            ${item.discountedPrice}
                           </span>
+                          <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">
+                            $ {item.actualprice}
+                          </span>
+
+                         
+
                           {cartItem ? (
                             // Quantity Controls
                             <button

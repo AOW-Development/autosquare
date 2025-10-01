@@ -145,12 +145,20 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/account/warrantyAndReturn"
+                    href="/account/warrantyAndPolicy"
                     className="hover:text-white"
                   >
                     Warranty and Returns
                   </a>
                 </li>
+                {/* <li>
+                  <a
+                    href="/account/refund-and-return-policy"
+                    className="hover:text-white"
+                  >
+                    Refund And Return Policy
+                  </a>
+                </li> */}
                 <li>
                   <a href="/account/privacyPolicy" className="hover:text-white">
                     Privacy Policy

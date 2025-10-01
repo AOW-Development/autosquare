@@ -95,7 +95,12 @@ export default function EngineProductPage() {
       title:
         `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
       subtitle: selectedProduct.sku,
-      image: selectedProduct.product?.images?.[0] || "/Images/default-engine.png",
+     image:
+     selectedProduct.product?.images && selectedProduct.product.images.length > 0
+    ? selectedProduct.product.images[0]
+    : (selectedProduct.part === "Engine"
+        ? "/catalog/Engine 1.png"
+        : "/catalog/Trasmission_.png"),
       price: selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0,
       quantity,
     })
@@ -269,7 +274,7 @@ export default function EngineProductPage() {
       image:
         product.product?.images && product.product.images.length > 0
           ? product.product.images[0]
-          : "/Images/default-engine.png",
+          : (product.part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"),
       price,
       quantity,
     })
@@ -294,7 +299,9 @@ export default function EngineProductPage() {
           image={
             selectedProduct.product?.images && selectedProduct.product.images.length > 0
               ? selectedProduct.product.images[0]
-              : "/Images/default-engine.png"
+            : (selectedProduct.part === "Engine"
+                ? "/catalog/Engine 1.png"
+                : "/catalog/Trasmission_.png")
           }
         />
       )}

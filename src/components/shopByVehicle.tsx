@@ -24,6 +24,9 @@ const ShopByVehicle: React.FC = () => {
   const [focused, setFocused] = useState<string | null>(null);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
   const [boxHeight, setBoxHeight] = useState(0);
+  // Track if user changed any dropdown
+  const [userChanged, setUserChanged] = useState(false);
+
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
   const boxRef = useRef<HTMLDivElement>(null);
@@ -40,6 +43,8 @@ const ShopByVehicle: React.FC = () => {
     backgroundPosition: "right 1rem center",
     backgroundSize: "20px 20px",
   };
+
+  
 
   // Reset or load saved values based on page
   useEffect(() => {
@@ -81,34 +86,34 @@ const ShopByVehicle: React.FC = () => {
 
   // Redirect when all selections are made
   // Corrected useEffect hook in your ShopByVehicle.tsx file
-
 useEffect(() => {
   if (make && model && year && part) {
     const query = new URLSearchParams({ make, model, year, part }).toString();
     const newUrl = `/catalogue/engine/home?${query}`;
 
-    // Always save the selection to local storage, regardless of the page.
+    // Save selection to local storage
     localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
 
-    // Check if the current path is one of the initial search pages
-    const isInitialSearchPage = 
-      path === "/" || 
-      path === "/engine" || 
-      path === "/transmission" || 
+    // If user is on product page, always do a full redirect
+    if (path.startsWith("/product/") && userChanged) {
+      window.location.assign(newUrl); // full redirect
+      return; // exit so no history push happens
+    }
+
+    // Otherwise, normal flow
+    const isInitialSearchPage =
+      path === "/" ||
+      path === "/engine" ||
+      path === "/transmission" ||
       path === "/autoParts";
 
-    // If on an initial search page, perform a full navigation.
     if (isInitialSearchPage) {
       router.push(newUrl);
-    } 
-    // If we are already on the catalogue page, update the URL without a full reload.
-    // This makes the page dynamic and responsive to changes in the dropdowns.
-    else if (path.startsWith("/catalogue/") || path.startsWith("/product/")) {
-      // Use the native History API to change the URL without a full refresh.
+    } else if (path.startsWith("/catalogue/")) {
       window.history.pushState(null, '', newUrl);
     }
   }
-}, [make, model, year, part, path, router]);
+}, [make, model, year, part, path, router, userChanged]);
 
 
     const [isOpen, setIsOpen] = useState(false);
@@ -155,6 +160,7 @@ useEffect(() => {
                 setModel("");
                 setYear("");
                 setPart("");
+                setUserChanged(true);
               }}
               placeholder="Select make..."
               disabled={!makeActive}
@@ -167,6 +173,7 @@ useEffect(() => {
                 setModel(selectedModel);
                 setYear("");
                 setPart("");
+                setUserChanged(true);
               }}
               placeholder="Select model..."
               disabled={!modelActive}
@@ -178,6 +185,7 @@ useEffect(() => {
               onChange={(selectedYear) => {
                 setYear(selectedYear);
                 setPart("");
+                setUserChanged(true);
               }}
               placeholder="Select year..."
               disabled={!yearActive}
@@ -188,6 +196,7 @@ useEffect(() => {
               value={part}
               onChange={(selectedPart) => {
                 setPart(selectedPart);
+                setUserChanged(true);
               }}
               placeholder="Select part..."
               disabled={!partActive}
@@ -278,6 +287,7 @@ useEffect(() => {
           setModel("");
           setYear("");
           setPart("");
+          setUserChanged(true);
         }}
         placeholder="Select make..."
         disabled={!makeActive}
@@ -292,6 +302,7 @@ useEffect(() => {
             setModel(selectedModel);
             setYear("");
             setPart("");
+            setUserChanged(true);
           }}
           placeholder="Select model..."
           disabled={!modelActive}
@@ -306,6 +317,7 @@ useEffect(() => {
           onChange={(selectedYear) => {
             setYear(selectedYear);
             setPart("");
+            setUserChanged(true);
           }}
           placeholder="Select year..."
           disabled={!yearActive}
@@ -319,6 +331,7 @@ useEffect(() => {
           value={part}
           onChange={(selectedPart) => {
             setPart(selectedPart);
+            setUserChanged(true);
           }}
           placeholder="Select part..."
           disabled={!partActive}

@@ -14,8 +14,8 @@ interface AuthState {
   user: User | null;
   token: string | null;
   isLoggedIn: boolean;
-  hasHydrated: boolean; // ✅ NEW
-  setHasHydrated: (value: boolean) => void; // ✅ NEW
+  hasHydrated: boolean; 
+  setHasHydrated: (value: boolean) => void;
   login: (user: User, token: string) => void;
   logout: () => void;
   setToken: (token: string) => void;
@@ -27,8 +27,8 @@ const useAuthStore = create<AuthState>()(
       user: null,
       token: null,
       isLoggedIn: false,
-      hasHydrated: false, // ✅ NEW
-      setHasHydrated: (value) => set({ hasHydrated: value }), // ✅ NEW
+      hasHydrated: false, 
+      setHasHydrated: (value) => set({ hasHydrated: value }), 
 
 
       login: (user, token) => {
@@ -70,7 +70,7 @@ const useAuthStore = create<AuthState>()(
         isLoggedIn: state.isLoggedIn,
       }),
       onRehydrateStorage: () => (state) => {
-        state?.setHasHydrated(true); // ✅
+        state?.setHasHydrated(true); 
       },
     }
   )

@@ -263,9 +263,10 @@ export default function EngineProductPage() {
 
     addItem({
       id: product.sku,
-      name: `${product.make || ""} ${product.model || ""} ${product.year || ""} ${product.part || ""}`.trim(),
-      title: `${product.make || ""} ${product.model || ""} ${product.year || ""} ${product.part || ""}`.trim(),
-      subtitle: product.sku,
+      name: `${product.year || ""} ${product.make || ""} ${product.model || ""} ${product.part || ""}`.trim(),
+      //title: `${product.year || ""} ${product.make || ""} ${product.model || ""} ${product.part || ""}`.trim(),
+      title: product.title,
+      subtitle: product.specification + " " + product.miles,
       image:
         product.product?.images && product.product.images.length > 0
           ? product.product.images[0]

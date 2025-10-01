@@ -39,6 +39,7 @@ interface Product {
   inventory: any | null;
   subParts: SubPart[];
   subPart?: SubPart;
+  specifications: string | null;
   // Fields added during flattening in useEffect for easy access:
   make: string; // Ensure these are defined if you use them on Product type
   model: string;
@@ -144,6 +145,8 @@ export default function CatalogPage() {
             part: string;
             partType: string | null;
             subPart: SubPart; // Change to non-optional
+            specification: string | null;
+            title: string;
           }
 
           interface IGroupedVariant {
@@ -156,7 +159,7 @@ export default function CatalogPage() {
               // Map IVariant to Product interface fields
               id: variant.product.id, // Using product ID for main ID
               sku: variant.sku,
-              title: variant.product.title,
+              title: variant.title,
               price: variant.product.price,
               modelYearId: variant.product.modelYearId,
               partTypeId: variant.product.partTypeId,
@@ -166,6 +169,7 @@ export default function CatalogPage() {
               discountedPrice: variant.discountedPrice || null,
               status: null, // Assuming default or fetch from API
               miles: variant.miles,
+              specifications:variant.specification || null,
               Availability: null, // Assuming default or fetch from API
               warranty: null, // Assuming default or fetch from API
               categoryId: null, // Assuming default or fetch from API
@@ -333,8 +337,8 @@ export default function CatalogPage() {
     addItem({
       id: product.sku,
       name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
-      title: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
-      subtitle: product.sku,
+      title: `${product.title}` || `${year} ${make} ${model}  ${part}`,
+      subtitle: product.specifications+" "+ product.miles +" miles",
       image: product.images && product.images.length > 0 ? product.images[0] : (part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"),
       quantity: quantity,
       price: product.actualprice || 0

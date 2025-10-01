@@ -30,15 +30,21 @@ export const useCartStore = create<CartState>()(
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find((i) => i.id === item.id);
-          let imgUrl=""
+            let imgUrl = "";
+          if (item.title?.includes("Transmission")) {
+            imgUrl = "/catalog/Trasmission_.png";
+          } else if (item.title?.includes("Engine")) {
+            imgUrl = "/catalog/Engine 1.png";
+          } else {
+            imgUrl = "/catalog/default.png"; // fallback
+          }
+
           if (existing) {
-            imgUrl = existing.title.includes("Transmission")
-                ? "/catalog/Engine 1.png"
-              
-                : "/catalog/Trasmission_.png";
             return {
               items: state.items.map((i) =>
-                i.id === item.id ? { ...i,image:imgUrl, quantity: i.quantity + 1 } : i
+                i.id === item.id
+                  ? { ...i, quantity: i.quantity + 1 }
+                  : i
               ),
             };
           }

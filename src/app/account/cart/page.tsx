@@ -149,10 +149,11 @@ export default function Cart() {
                   <div className="flex items-center space-x-4 mb-4 md:mb-0 md:col-span-6">
                     <Image
                       src={
-                        item.title.includes("Transmission")
+                        item.title?.includes("Transmission")
                           ? "/catalog/Trasmission_.png"
                           : "/catalog/Engine 1.png"
                       }
+
                       alt={item.title}
                       width={120}
                       height={120}

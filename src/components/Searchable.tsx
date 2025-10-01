@@ -44,9 +44,9 @@ const SearchableDropdown: React.FC<SearchableDropdownProps> = ({
     }
   }, [value]);
 
-  const filteredOptions = options.filter((opt) =>
-    opt.toLowerCase().includes(search.toLowerCase())
-  );
+ const filteredOptions = options.filter((opt) =>
+  opt.toLowerCase().startsWith(search.toLowerCase())
+);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const input = e.target.value;

@@ -349,6 +349,33 @@ export default function PayMethod() {
   // Build payment info
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault()
+      if (buyInOneClick) {
+      const shippingRequiredFields = ["firstName", "lastName", "email", "phone", "country", "address", "city", "state", "zipCode"]
+      const shippingEmpty = shippingRequiredFields.some(
+        (field) =>
+          !shippingFormData[field as keyof typeof shippingFormData] ||
+          shippingFormData[field as keyof typeof shippingFormData].toString().trim() === ""
+      )
+
+      if (shippingEmpty) {
+        toast.error("Please save your shipping information before confirming the order.")
+        return
+      }
+
+      if (!sameAsShipping) {
+        const billingRequiredFields = ["country", "address", "city", "state", "zipCode"]
+        const billingEmpty = billingRequiredFields.some(
+          (field) =>
+            !billingFormData[field as keyof typeof billingFormData] ||
+            billingFormData[field as keyof typeof billingFormData].toString().trim() === ""
+        )
+
+        if (billingEmpty) {
+          toast.error("Please save your billing information before confirming the order.")
+          return
+        }
+      }
+    }
 
     // Store payment info in localStorage for thank you page
     localStorage.setItem("paymentMethod", paymentMethod)

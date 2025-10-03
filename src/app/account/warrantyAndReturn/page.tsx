@@ -59,11 +59,11 @@ export default function WarrantyAndReturn() {
             <div className="space-y-6">
               <div>
                 <h3 className="font-exo2 font-semibold mt-4 mb-2">
-                  30-Day Money Back Guarantee:
+                  15-Day Money Back Guarantee:
                 </h3>
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
                   You may return any item in its original condition for a full
-                  refund within 30 days of receipt of your shipment, less
+                  refund within 15 days of receipt of your shipment, less
                   shipping charges. It typically takes us approximately 3–5
                   business days to process a credit back to your account and 2–3
                   business days for the credit to appear on your account.
@@ -119,7 +119,7 @@ export default function WarrantyAndReturn() {
                   The shipping cost for both the original and the replacement
                   auto part is a cost attributed to the shipper at hand. Note,
                   if these auto parts are not shipped back to the supplier
-                  within 30 days of the delivery date of the replacement part,
+                  within 15 days of the delivery date of the replacement part,
                   the buyer's credit card is subject to a recharge for the
                   initial cost of the original auto part (minus the initial
                   shipping cost). If you have any questions about the shipping

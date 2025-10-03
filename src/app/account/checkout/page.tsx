@@ -246,7 +246,7 @@ export default function Checkout() {
   }
 
   const [termsAccepted, setTermsAccepted] = useState(false)
-  const cartItems = items.slice(0, 2)
+  const cartItems = items || []
   const total = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
   const shipping = 0
   const taxes = 0

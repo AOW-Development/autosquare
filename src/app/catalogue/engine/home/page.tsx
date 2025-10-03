@@ -547,14 +547,19 @@ export default function CatalogPage() {
                     key={`${item.id}-${item.sku}`} // Ensure unique key
                     className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
                   >
-                    <Link
+                    {/* <Link
                       href={{
                         pathname: "/product/engines",
                         query: { make, model, year, part, sku: item.sku }
                       }}
                       className="block cursor-pointer"
                       tabIndex={-1}
-                    >
+                    > */}
+                    <Link
+                        href={`/product/engines?make=${make}&model=${model}&year=${year}&part=${part}&sku=${item.sku}`}
+                        className="block cursor-pointer"
+                        tabIndex={-1}
+                      >
                       {/* Image container */}
                       <div
                         className="relative mx-auto mb-3 flex justify-center items-center rounded-md"

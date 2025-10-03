@@ -11,8 +11,8 @@ export type CartItem = {
   quantity: number;
   expiresAt?: number;
   price: number;
-  miles:string;
-  specification:string;
+  // miles:string;
+  // specification:string;
   
 };
 

@@ -848,6 +848,9 @@ export default function Checkout() {
 
                         {/* CRITICAL FIX: The break-all class forces the long string to wrap mid-word */}
                         <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
+                          {item.title}
+                        </p>
+                        <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
                           {item.subtitle}
                         </p>
                         <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">

@@ -75,7 +75,7 @@ const generateAdminEmailHTML = (data: OrderEmailData): string => {
   const cartItemsHTML = cartItems.map(item => `
     <tr>
       <td style="padding: 8px; border: 1px solid #e5e7eb; text-align: center;">
-        <img src="${item.title.includes("Transmission")?"https://partscentral.us/catalog/Trasmission_.png":"https://partscentral.us/catalog/Engine 1.png"}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" />
+        <img src="${item.title?.includes("Transmission")?"https://partscentral.us/catalog/Trasmission_.png":"https://partscentral.us/catalog/Engine 1.png"}" alt="${item.title}" style="width: 60px; height: 60px; object-fit: cover; border-radius: 4px;" />
       </td>
       <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.title}</td>
       <td style="padding: 8px; border: 1px solid #e5e7eb;">${item.subtitle}</td>

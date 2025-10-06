@@ -19,8 +19,8 @@ export const createOrderInBackend = async (orderData: any) => {
     // Create payload for backend
     const orderPayload = {
       orderNumber,
-      billingAddress: billing,
-      shippingAddress: shipping,
+      billingInfo: billing,
+      shippingInfo: shipping,
       customerInfo: {
         email: user.email,
         firstName: user.firstName || '',

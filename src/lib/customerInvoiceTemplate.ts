@@ -382,7 +382,7 @@ export const generateInvoicePDF = async (data: OrderEmailData): Promise<Uint8Arr
   // Products
   if (data.cartItems) {
     for (const product of data.cartItems) {
-      const title = product.subtitle || ""
+      const title = product.title+" "+product.subtitle || ""
       const maxWidth = 160 // Further reduce max width to prevent overlap with price column
       const fontSize = 10
 

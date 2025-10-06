@@ -154,7 +154,7 @@ export default function Cart() {
                           : "/catalog/Engine 1.png"
                       }
 
-                      alt={item.title}
+                      alt={item.title||"default"}
                       width={120}
                       height={120}
                       className="w-24 h-24 md:w-30 md:h-30 object-cover rounded"

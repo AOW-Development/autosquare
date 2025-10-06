@@ -10,6 +10,7 @@ import { useShippingStore } from "@/store/shippingStore"
 import { createOrderInBackend } from "@/utils/orderUtils"
 import { toast } from "react-hot-toast" // Add this import
 import useAuthStore from "@/store/authStore"
+import { OrderEmailData } from "@/lib/mail"
 
 export default function ThankYouPage() {
   const { billingInfo } = useBillingStore()
@@ -25,6 +26,7 @@ export default function ThankYouPage() {
   const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo)
   const { setShippingInfo } = useShippingStore()
   const { setBillingInfo } = useBillingStore()
+  const [finalOrderNumber, setFinalOrderNumber] = useState("") // Store the final order number
 
   const { user } = useAuthStore()
 
@@ -46,8 +48,27 @@ export default function ThankYouPage() {
   useEffect(() => {
     if (hasRunRef.current) return // prevent duplicate
     hasRunRef.current = true
-    // Generate order number and date
-    setOrderNumber(generateOrderNumber())
+    
+    // Get order data from session storage first
+    const orderData = sessionStorage.getItem("orderData")
+    let existingOrderNumber = ""
+    
+    if (orderData) {
+      try {
+        const parsedOrderData = JSON.parse(orderData)
+        existingOrderNumber = parsedOrderData.orderNumber || ""
+      } catch (error) {
+        console.error("Error parsing order data:", error)
+      }
+    }
+    
+    // Use existing order number if available, otherwise generate new one
+    const orderNum = existingOrderNumber || generateOrderNumber()
+    setFinalOrderNumber(orderNum) // Store in state for use in createOrder function
+    setOrderNumber(orderNum)
+    
+    console.log('Order number determined:', orderNum)
+    
     setOrderDate(
       new Date().toLocaleDateString("en-US", {
         year: "numeric",
@@ -121,7 +142,7 @@ export default function ThankYouPage() {
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
           cartItems: cartItems,
-          orderNumber: parsedOrderData.orderNumber,
+          orderNumber: orderNum, // Use the local orderNum variable directly
           totalAmount: total,
           subtotal: subtotal,
           customerEmail: customerEmail, // Explicitly include customer email for invoice
@@ -129,6 +150,8 @@ export default function ThankYouPage() {
 
         console.log("Final full order data to be sent:", fullOrderData)
         console.log(`Invoice will be sent to: ${customerEmail}`)
+        console.log(`Order number being sent to email API: ${fullOrderData.orderNumber}`)
+        console.log(`Order number displayed on page: ${orderNum}`)
 
         // Send order to backend
         await createOrderInBackend(fullOrderData)
@@ -302,11 +325,11 @@ export default function ThankYouPage() {
               <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
                   src={
-                    item.title.includes("Transmission")
+                    item.title?.includes("Transmission")
                       ? "/catalog/Trasmission_.png"
                       : "/catalog/Engine 1.png" 
                   }
-                  alt={item.title}
+                  alt={item.title||"default"}
                   width={64}
                   height={64}
                   className="rounded-lg"

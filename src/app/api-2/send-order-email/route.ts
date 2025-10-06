@@ -6,6 +6,9 @@ export async function POST(request: NextRequest) {
   try {
     const data = await request.json();
     
+    console.log('API Route received data:', data);
+    console.log('Order number received in API:', data.orderNumber);
+    
     // Validate required data
     if (!data.user?.email) {
       throw new Error('User email is required');
@@ -17,7 +20,8 @@ export async function POST(request: NextRequest) {
       data.payment,
       data.billing,
       data.shipping,
-      data.cartItems
+      data.cartItems,
+      data.orderNumber // Pass the order number from the request
     );
     
     // Send both emails

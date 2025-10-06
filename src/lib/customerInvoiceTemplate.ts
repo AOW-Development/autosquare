@@ -82,8 +82,8 @@ function drawCustomerInfo(page: any, y: number, data: any, bold: any, times: any
     orderY -= lineHeight
   }
 
-  if (data.billing.mobile) {
-    page.drawText(`Mobile: ${data.billing.mobile}`, {
+  if (data.shipping.phone) {
+    page.drawText(`Mobile: ${data.shipping.phone}`, {
       x: orderX,
       y: orderY,
       size: 11,

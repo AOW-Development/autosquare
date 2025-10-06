@@ -13,6 +13,7 @@ import { useCartStore } from "@/store/cartStore"
 import type { PaymentInfo } from "@/store/paymentStore"
 // Remove local CartItem interface entirely, use global type
 import { getCardType, isValidCardNumber } from "@/utils/cardUtil"
+import { generateOrderNumber } from "@/utils/order"
 // import { State } from "country-state-city"
 import toast from "react-hot-toast"
 
@@ -396,12 +397,14 @@ export default function PayMethod() {
         // IMPORTANT:
         // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
         // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
+        const orderNumber = generateOrderNumber() // Generate order number once during checkout
         const orderData = {
           user,
           payment,
           shipping: shippingInfo, // always from shipping store
           billing: sameAsShipping ? shippingInfo : billingInfo, // correct billing info sent
           cartItems: cartItems.length ? cartItems : (cartItems as any),
+          orderNumber, // Include the generated order number
         }
 
         // Store order data for Thank You page
@@ -428,6 +431,7 @@ export default function PayMethod() {
     } else {
       // Determine customer email - from buy-in-one-click form or checkout page
       const customerEmail = buyInOneClick ? shippingFormData.email : shippingInfo?.email
+      const orderNumber = generateOrderNumber() // Generate order number for guest users too
 
       const orderDataForGuest = {
         payment,
@@ -441,6 +445,7 @@ export default function PayMethod() {
             : billingInfo,
         cartItems,
         customerEmail, // use email for invoicing regardless of flow
+        orderNumber, // Include the generated order number for guest users
       }
 
       sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest))
@@ -759,8 +764,8 @@ export default function PayMethod() {
                   {/* Left: Image + Title */}
                   <div className="flex items-center space-x-4">
                     <Image
-                      src={item.title.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
-                      alt={item.title}
+                      src={item.title?.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
+                      alt={item.title||"Product Image"}
                       width={80}
                       height={80}
                       className="w-16 h-16 md:w-20 md:h-20 object-cover rounded"

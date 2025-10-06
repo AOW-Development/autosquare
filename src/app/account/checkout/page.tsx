@@ -832,11 +832,11 @@ export default function Checkout() {
                     <div className="flex items-start space-x-4 flex-grow">
                       <Image
                         src={
-                          item.title.includes("Transmission")
+                          item.title?.includes("Transmission")
                             ? "/catalog/Trasmission_.png"
                             : "/catalog/Engine 1.png"
                         }
-                        alt={item.title}
+                        alt={item.title||"default"}
                         width={80}
                         height={80}
                         className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded flex-shrink-0"

@@ -204,10 +204,15 @@ export const formatOrderData = (
   payment: PaymentInfo,
   billing: BillingInfo,
   shipping: ShippingInfo,
-  cartItems: CartItem[]
+  cartItems: CartItem[],
+  orderNumber?: string // Make orderNumber optional parameter
 ): OrderEmailData => {
   const orderTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const orderNumber = generateOrderNumber();
+  const finalOrderNumber = orderNumber || generateOrderNumber(); // Use provided order number or generate new one
+  
+  console.log('formatOrderData - orderNumber parameter:', orderNumber);
+  console.log('formatOrderData - finalOrderNumber used:', finalOrderNumber);
+  
   const orderDate = new Date().toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -223,7 +228,7 @@ export const formatOrderData = (
     shipping,
     cartItems,
     orderTotal,
-    orderNumber,
+    orderNumber: finalOrderNumber,
     orderDate,
   };
 };

@@ -192,7 +192,7 @@ export function VerifyPartPopup({
                   )}`}
                   className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors text-xs sm:text-sm"
                 >
-                  View Products for {year} {make} {model} used {part} {selectedSubPart ? ` (${selectedSubPart.name})` : ""}
+                  View Products for {year} {make} {model} used {part} {selectedSubPart ? ` ${selectedSubPart.name}` : ""}
                 
                 </a>
                </div>
@@ -254,7 +254,7 @@ export function VerifyPartPopup({
           )}
         </div>
 
-        {selectedProduct && (
+        {/* {selectedProduct && (
           <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-slate-600 px-2 sm:px-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
               <div>
@@ -287,7 +287,7 @@ export function VerifyPartPopup({
               </div>
             </div>
           </div>
-        )}
+        )} */}
       </div>
     </div>
   )

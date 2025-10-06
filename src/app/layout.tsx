@@ -71,6 +71,19 @@ export default function RootLayout({
           }}
         />
         {/* End Google Tag Manager */}
+
+         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17273467579"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-17273467579');
+              gtag('event', 'conversion', {'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA'});
+            `,
+          }}
+        />
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />

@@ -341,7 +341,7 @@ export default function CatalogPage() {
       subtitle: product.specifications+" "+ product.miles +" miles",
       image: product.images && product.images.length > 0 ? product.images[0] : (part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"),
       quantity: quantity,
-      price: product.actualprice || 0
+      price: product.discountedPrice || 0
     });
     
     // 2. Show success popup briefly (optional, as we're redirecting immediately)

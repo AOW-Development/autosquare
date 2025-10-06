@@ -158,53 +158,9 @@ export default function PayMethod() {
   })
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  // const salesTax = Math.round(subtotal * 0.029); // 2.9% tax
+  
   const total = subtotal
-  // + salesTax;
-
-  // const handleBillingInputChange = (field: string, value: string) => {
-  //   let error = ""
-  //   const country = billingFormData.country
-  //   console.log(country)
-
-  //   switch (field) {
-  //     case "firstName":
-  //     case "lastName":
-  //     case "city":
-  //       if (!/^[A-Za-z\s]*$/.test(value)) {
-  //         error = "Only letters allowed"
-  //       }
-  //       break
-
-  //     case "phone":
-  //       if (country === "US") {
-  //         if (!/^$$?\d{3}$$?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-  //           error = "Enter a valid US phone (e.g. 555-123-4567)"
-  //         }
-  //       } else if (country === "CA") {
-  //         if (!/^$$?\d{3}$$?[-.\s]?\d{3}[-.\s]?\d{4}$/.test(value)) {
-  //           error = "Enter a valid Canadian phone (e.g. 416-123-4567)"
-  //         }
-  //       }
-  //       break
-
-  //     case "zipCode":
-  //       if (country === "US") {
-  //         if (!^\d{5}(-\d{4})?$/.test(value)) {
-  //           error = "Enter a valid US ZIP (12345 or 12345-6789)"
-  //         }
-  //       } else if (country === "CA") {
-  //         if (!/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
-  //           error = "Enter a valid Canadian Postal Code (e.g. K1A 0B1)"
-  //         }
-  //       }
-  //       break
-  //   }
-
-  //   setBillingFormData((prev) => ({ ...prev, [field]: value }))
-  //   setErrors((prev) => ({ ...prev, [field]: error }))
-  // }
-
+ 
   const handleCardInputChange = (field: string, value: string) => {
     if (field === "cardholderName") {
       const onlyLetters = /^[A-Za-z\s]*$/
@@ -377,7 +333,7 @@ export default function PayMethod() {
       }
     }
 
-    // Store payment info in localStorage for thank you page
+  
     localStorage.setItem("paymentMethod", paymentMethod)
     if (paymentMethod === "card") {
       localStorage.setItem("cardData", JSON.stringify(cardData))
@@ -407,19 +363,6 @@ export default function PayMethod() {
         // Store order data for Thank You page
         sessionStorage.setItem("orderData", JSON.stringify(orderData))
 
-        // Send order confirmation email
-        // const emailResponse = await fetch('/api-2/send-order-email', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify(orderData)
-        // });
-
-        // if (!emailResponse.ok) {
-        //   console.error('Failed to send order confirmation email');
-        //   // Continue with the order even if email fails
-        // }
-
-        // Redirect to thank you page after successful order and email
         router.push("/account/thankYou")
       } catch (error) {
         console.error("Error processing payment:", error)
@@ -450,16 +393,6 @@ export default function PayMethod() {
     }
   }
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
-
-  // useEffect(() => {
-  //   if (billingFormData.country) {
-  //     const fetchedStates = State.getStatesOfCountry(billingFormData.country)
-  //     console.log("Fetched States:", fetchedStates)
-  //     setStates(fetchedStates || [])
-  //   } else {
-  //     setStates([])
-  //   }
-  // }, [billingFormData.country])
 
   const handleUserTypeChange = (type: "Individual" | "Commercial") => {
     setUserType(type)

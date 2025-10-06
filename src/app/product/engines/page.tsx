@@ -92,9 +92,9 @@ export default function EngineProductPage() {
     addItem({
       id: selectedProduct.sku,
       name: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
-      title:
+      title: selectedProduct.title ||
         `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${selectedProduct.year || ""} ${selectedProduct.part || ""}`.trim(),
-      subtitle: selectedProduct.sku,
+      subtitle: selectedProduct.specification+" "+selectedProduct.miles || selectedProduct.sku,
      image:
      selectedProduct.product?.images && selectedProduct.product.images.length > 0
     ? selectedProduct.product.images[0]

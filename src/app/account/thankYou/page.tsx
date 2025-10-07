@@ -12,7 +12,22 @@ import { toast } from "react-hot-toast" // Add this import
 import useAuthStore from "@/store/authStore"
 import { OrderEmailData } from "@/lib/mail"
 
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 export default function ThankYouPage() {
+
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.gtag) {
+      window.gtag("event", "conversion", {
+        send_to: "AW-17273467579/h4FRCNLj86cbELvl0KxA",
+      });
+    }
+  }, []);
+
   const { billingInfo } = useBillingStore()
   const cartItems = useCartStore((s) => s.items)
   const [orderNumber, setOrderNumber] = useState("")

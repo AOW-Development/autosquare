@@ -362,7 +362,7 @@ export const generateInvoicePDF = async (data: OrderEmailData): Promise<Uint8Arr
   drawCustomerInfo(page, y, data, bold, times, rgb)
 
   y = height - 280
-  const headerY = y - 10
+  const headerY = y - 20
 
   page.drawRectangle({
     x: 40,

@@ -556,7 +556,7 @@ export default function EngineProductPage() {
                   <Image
                     src="/GoogleMain.png"
                     alt="Google"
-                    width={60}
+                    width={30}
                     height={20}
                     className="h-6 sm:h-5 w-16 md:w-20 md:h-6 lg:w-30 lg:h-8"
                   />
@@ -570,7 +570,7 @@ export default function EngineProductPage() {
                     <Image
                       src="/trustpilotMain.png"
                       alt="Trustpilot"
-                      width={80}
+                      width={40}
                       height={20}
                       className="h-16 sm:h-5 w-25 md:w-40 md:h-20 lg:w-50 lg:h-24"
                     />

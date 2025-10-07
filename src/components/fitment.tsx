@@ -73,11 +73,20 @@ export function VerifyPartPopup({
   const [fitError, setFitError] = useState(false)
 
   useEffect(() => {
-    if (isOpen) {
-      setSelectedFitOption("")
-      setFitError(false)
+  if (isOpen) {
+    // Default to selectedProduct's subPart if available
+    let defaultOption = "";
+    if (selectedProduct?.subPart) {
+      const matchingSubPart = subPartsList.find(
+        (sub) => sub.name === selectedProduct.subPart!.name
+      );
+      defaultOption = matchingSubPart ? String(matchingSubPart.id) : "";
     }
-  }, [isOpen])
+    setSelectedFitOption(defaultOption);
+    setFitError(false);
+  }
+}, [isOpen, selectedProduct, subPartsList]);
+
 
   const selectedSubPart = subPartsList.find(
     (sub) => String(sub.id) === selectedFitOption
@@ -104,13 +113,15 @@ export function VerifyPartPopup({
   if (!isOpen) return null
 
   const vehicleDisplay = `${year || ""} ${make || ""} ${model || ""} used ${part || ""} ${
-  selectedSubPart ? `(${selectedSubPart.name})` : ""
+  selectedSubPart ? `${selectedSubPart.name}` : ""
 }`.trim()
 
   const showVinCheckVisual = !selectedFitOption
   const vinPrefix = DEMO_VIN.substring(0, VIN_TARGET_INDEX)
   const vinTarget = DEMO_VIN.charAt(VIN_TARGET_INDEX)
   const vinSuffix = DEMO_VIN.substring(VIN_TARGET_INDEX + 1)
+
+  
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-2 sm:p-4 z-50 ">

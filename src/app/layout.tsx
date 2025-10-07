@@ -83,6 +83,8 @@ export default function RootLayout({
             `,
           }}
         />
+
+        
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />
@@ -104,6 +106,3 @@ export default function RootLayout({
     </html>
   );
 }
-// To use Inter: className="font-inter"
-// To use Exo 2: className="font-exo-2"
-// To use Audiowide: className="font-audiowide"

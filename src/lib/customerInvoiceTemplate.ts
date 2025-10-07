@@ -533,73 +533,41 @@ export const generateInvoicePDF = async (data: OrderEmailData): Promise<Uint8Arr
     })
   }
 
-  page.drawText("Shipping DETAILS:", {
-    x: 400,
-    y: y + 10,
-    size: 11,
-    font: bold,
-    color: rgb(0, 0, 0.8),
-  })
-
-  
-
-  page.drawText(`${data.shipping.firstName} ${data.shipping.lastName}` || " ", {
-    x: 400,
-    y: y - 20,
-    size: 11,
-    font: times,
-    color: rgb(0, 0, 0.8),
-  })
-  y -= 15
-
-  if (data.shipping) {
-    const { address, apartment, city, state, zipCode, company } = data.shipping
-
-    if (address) {
-      page.drawText(address, {
+      page.drawText("Shipping DETAILS:", {
         x: 400,
-        y: y - 20,
+        y: y + 15,
         size: 11,
-        font: times,
+        font: bold,
         color: rgb(0, 0, 0.8),
-      })
-      y -= 15
-    }
+      });
 
-    if (apartment) {
-      page.drawText(apartment, {
-        x: 400,
-        y: y - 20,
-        size: 11,
-        font: times,
-        color: rgb(0, 0, 0.8),
-      })
-      y -= 15
-    }
+      if (data.shipping) {
+        const { address, apartment, city, state, zipCode, company } = data.shipping;
 
-    if (city || state || zipCode) {
-      const cityStateZip = `${city || ""}${city && state ? ", " : ""}${state || ""}${zipCode ? " " + zipCode : ""}`
-      page.drawText(cityStateZip, {
-        x: 400,
-        y: y - 20,
-        size: 11,
-        font: times,
-        color: rgb(0, 0, 0.8),
-      })
-      y -= 15
-    }
-    if(company){
-     page.drawText(company, {
-        x: 400,
-        y: y - 20,
-        size: 11,
-        font: times,
-        color: rgb(0, 0, 0.8),
-      })
-      y -= 15
-    }
+        const drawLine = (text: string) => {
+          page.drawText(text, {
+            x: 400,
+            y: y,
+            size: 11,
+            font: times,
+            color: rgb(0, 0, 0.8),
+          });
+          y -= 15; // decrement only when text is drawn
+        };
 
-  }
+        if (company) drawLine(company);
+        if (address) drawLine(address);
+        if (apartment) drawLine(apartment);
+
+        if (city || state || zipCode) {
+          const cityStateZip = `${city || ""}${city && state ? ", " : ""}${state || ""}${zipCode ? " " + zipCode : ""}`;
+          if (cityStateZip.trim() !== "") drawLine(cityStateZip);
+        }
+      }
+
+        
+
+  y -= 30
 
   page.drawText("Authorize Signature", {
     x: 450,

@@ -3,13 +3,6 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-declare global {
-  interface Window {
-    gtag_report_conversion: (url: string) => boolean;
-  }
-}
-
-
 export default function Footer() {
   return (
     //py-[60px] md:py-[40px] sm:py-[32px]
@@ -30,25 +23,21 @@ export default function Footer() {
               <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-white leading-[1.5]">
                 <li>Parts Central LLC</li>
                 {/* <li>Toll Free: (888) 748–0882</li> */}
-                 <li>
-                    Toll Free:{" "}
-                    <a 
-                          href="tel:+18883382540" 
-                          className="font-bold" 
-                          onClick={(e) => {
-                            e.preventDefault();
-                            // Check if the global function exists before calling it
-                            if (typeof window.gtag_report_conversion === 'function') {
-                              window.gtag_report_conversion('tel:+18883382540');
-                            } else {
-                              // Fallback in case the script failed to load
-                              window.location.href = 'tel:+18883382540';
-                            }
-                          }}
-                        >
+                <li>
+                      Toll Free:&nbsp;
+                      <a
+                        href="tel:+18883382540"
+                        onClick={() => {
+                          if (typeof window !== "undefined" && window.gtag_report_conversion) {
+                            window.gtag_report_conversion?.("tel:+18883382540");
+                          }
+                        }}
+                        className="text-white hover:underline"
+                      >
                         (888) 338-2540
-                    </a>
-                </li>
+                      </a>
+                    </li>
+
                 <li>Fax: (312) 845–9711</li>
                 <li>
                   Email:{" "}

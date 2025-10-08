@@ -703,10 +703,22 @@ export default function PayMethod() {
                       height={80}
                       className="w-16 h-16 md:w-20 md:h-20 object-cover rounded"
                     />
-                    <div className="flex-1">
-                      <h4 className="font-exo2 font-semibold text-white text-base md:text-lg">{item.title}</h4>
-                      <p className="font-exo2 text-sm md:text-base text-white font-medium">{item.subtitle}</p>
-                    </div>
+                    <div className="flex-1 min-w-0">
+                    <h4 className="font-exo2 font-semibold text-white text-base md:text-lg break-words">
+                      {item.title.includes("Used") ? (
+                        <>
+                          {item.title.split(/Used/i)[0].trim()}
+                          <br />
+                          {"Used" + item.title.split(/Used/i)[1]}
+                        </>
+                      ) : (
+                        item.title
+                      )}
+                    </h4>
+                    <p className="font-exo2 text-sm md:text-base text-white font-medium break-words">
+                      {item.subtitle}
+                    </p>
+                  </div>
                   </div>
 
                   {/* Right: Qty, Price, Total */}

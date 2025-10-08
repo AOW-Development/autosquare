@@ -218,7 +218,20 @@ export default function Header() {
             />
           </Link>
           <div className="flex flex-col items-end text-xs ">
-            <span className="font-bold">(888) 338-2540</span>
+            <div className="flex flex-col items-end text-xs">
+                  <a
+                    href="tel:+18883382540"
+                    onClick={() => {
+                      if (typeof window !== "undefined" && window.gtag_report_conversion) {
+                        window.gtag_report_conversion?.("tel:+18883382540");
+                      }
+                    }}
+                    className="font-bold hover:underline"
+                  >
+                    (888) 338-2540
+                  </a>
+                </div>
+
             <span>Mon-Fri: 8AM - 7PM EST</span>
           </div>
         </div>

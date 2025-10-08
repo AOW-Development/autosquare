@@ -403,8 +403,8 @@ export default function ThankYouPage() {
            {/* Hidden conversion component */}
       <div className="hidden">
         <GtagConversion
-          orderId={finalOrderNumber || "pc#00000"}
-          orderTotal={total}
+          orderId={orderNumber || "pc#00000"}
+          orderTotal={subtotal}
           items={cartItems.map((item) => ({
             itemId: item.id,
             itemName: item.title,

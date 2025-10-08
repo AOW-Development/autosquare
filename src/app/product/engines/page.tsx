@@ -452,7 +452,7 @@ export default function EngineProductPage() {
                 {selectedProduct?.inStock ? (
                   <>
                     <div className="flex items-end gap-4 mb-4">
-                      <span className="text-2xl sm:text-3xl md:text-4xl font-bold">
+                      <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
                         $
                         {selectedProduct?.discountedPrice
                           ? `${selectedProduct.discountedPrice}`

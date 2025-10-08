@@ -44,6 +44,18 @@ export default function ThankYouPage() {
   const salesTax = Math.round(subtotal * 0.029)
   const total = subtotal + salesTax
 
+    useEffect(() => {
+    // Check if the page was reloaded
+    const [navigation] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[]
+    if (navigation?.type === "reload") {
+      // toast.error("You cannot reload this page. Your order has already been processed.")
+      alert("You cannot reload this page. Your order has already been processed we will redirect to homepage.")
+      window.location.href = "/"
+      return
+    }
+  }, [])
+
+
   // ✅ MAIN: Run once to create order + send invoice
   useEffect(() => {
     if (hasRunRef.current) return
@@ -156,21 +168,21 @@ export default function ThankYouPage() {
             toast.error("Order placed successfully, but failed to send confirmation email")
           } else {
             toast.success(`Order confirmation sent to ${customerEmail}`)
-         setTimeout(() => {
-          setShowPopup(true)
+        
+        //   setShowPopup(true)
 
-          // Mark order as viewed
-          const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
-          if (!viewedOrders.includes(finalOrderNumber)) {
-            viewedOrders.push(finalOrderNumber)
-            localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
-          }
+        //   // Mark order as viewed
+        //   const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
+        //   if (!viewedOrders.includes(finalOrderNumber)) {
+        //     viewedOrders.push(finalOrderNumber)
+        //     localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
+        //   }
 
-          // Redirect after another short delay
-          setTimeout(() => {
-            window.location.href = "/"
-          }, 15000) // 3s after popup appears
-        }, 2000) // 0.5s delay to let toast appear first
+        //   // Redirect after another short delay
+        //   setTimeout(() => {
+        //     window.location.href = "/"
+        //   }, 15000) // 3s after popup appears
+        // }, 2000) // 0.5s delay to let toast appear first
       
           }
         } catch (err) {
@@ -386,20 +398,8 @@ export default function ThankYouPage() {
       </main>
 
       {/* ✅ Popup for duplicate view */}
-       {showPopup && (
-            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]">
-              <div className="bg-white text-black p-6 rounded-lg shadow-lg text-center max-w-sm">
-                <h2 className="text-lg font-semibold mb-2">You’ve already viewed this page</h2>
-                <p className="text-sm mb-4">Redirecting you to the home page...</p>
-                <button
-                  onClick={() => (window.location.href = "/")}
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Go Now
-                </button>
-              </div>
-            </div>
-          )}
+       
+      
            {/* Hidden conversion component */}
       <div className="hidden">
         <GtagConversion />

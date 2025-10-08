@@ -1,4 +1,5 @@
 "use client"
+"use client"
 
 import Image from "next/image"
 import Link from "next/link"
@@ -8,67 +9,49 @@ import { useCartStore } from "@/store/cartStore"
 import { generateOrderNumber } from "@/utils/order"
 import { useShippingStore } from "@/store/shippingStore"
 import { createOrderInBackend } from "@/utils/orderUtils"
-import { toast } from "react-hot-toast" // Add this import
+import { toast } from "react-hot-toast"
 import useAuthStore from "@/store/authStore"
 import { OrderEmailData } from "@/lib/mail"
 import GtagConversion from "@/components/GtagConversion"
 
-// declare global {
-//   interface Window {
-//     gtag?: (...args: any[]) => void;
-//   }
-// }
-
 export default function ThankYouPage() {
-
-  // useEffect(() => {
-  //   if (typeof window !== "undefined" && window.gtag) {
-  //     window.gtag("event", "conversion", {
-  //       send_to: "AW-17273467579/h4FRCNLj86cbELvl0KxA",
-  //     });
-  //   }
-  // }, []);
-
   const { billingInfo } = useBillingStore()
   const cartItems = useCartStore((s) => s.items)
   const [orderNumber, setOrderNumber] = useState("")
   const [orderDate, setOrderDate] = useState("")
   const { shippingInfo } = useShippingStore()
-  const [paymentInfo, setPaymentInfo] = useState<{
-    method: string
-    lastFour?: string
-  }>({ method: "card" })
+  const [paymentInfo, setPaymentInfo] = useState<{ method: string; lastFour?: string }>({ method: "card" })
   const [cardType, setCardType] = useState("unknown")
   const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo)
   const { setShippingInfo } = useShippingStore()
   const { setBillingInfo } = useBillingStore()
-  const [finalOrderNumber, setFinalOrderNumber] = useState("") // Store the final order number
-
+  const [finalOrderNumber, setFinalOrderNumber] = useState("")
   const { user } = useAuthStore()
+  const [showPopup, setShowPopup] = useState(false)
+  const hasProcessed = useRef(false)
+  const hasRunRef = useRef(false)
 
-  // Card image mapping (top-level so it’s accessible)
+  // Card image mapping
   const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
     MasterCard: "mastercard_82049.png",
     "American Express": "americanexpress_82060 1.png",
     Discover: "discover_82082.png",
   }
-  const hasRunRef = useRef(false)
 
   const cardImage = cardImageMap[cardType]
-
-  // Calculate totals
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const salesTax = Math.round(subtotal * 0.029) // 2.9% tax
+  const salesTax = Math.round(subtotal * 0.029)
   const total = subtotal + salesTax
+
+  // ✅ MAIN: Run once to create order + send invoice
   useEffect(() => {
-    if (hasRunRef.current) return // prevent duplicate
+    if (hasRunRef.current) return
     hasRunRef.current = true
-    
-    // Get order data from session storage first
+
     const orderData = sessionStorage.getItem("orderData")
     let existingOrderNumber = ""
-    
+
     if (orderData) {
       try {
         const parsedOrderData = JSON.parse(orderData)
@@ -77,14 +60,10 @@ export default function ThankYouPage() {
         console.error("Error parsing order data:", error)
       }
     }
-    
-    // Use existing order number if available, otherwise generate new one
-    const orderNum = existingOrderNumber || generateOrderNumber()
-    setFinalOrderNumber(orderNum) // Store in state for use in createOrder function
+
+    const orderNum = existingOrderNumber
+    setFinalOrderNumber(orderNum)
     setOrderNumber(orderNum)
-    
-    console.log('Order number determined:', orderNum)
-    
     setOrderDate(
       new Date().toLocaleDateString("en-US", {
         year: "numeric",
@@ -93,7 +72,6 @@ export default function ThankYouPage() {
       }),
     )
 
-    // Get payment info from localStorage
     const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card"
     const storedCardData = localStorage.getItem("cardData")
 
@@ -103,7 +81,6 @@ export default function ThankYouPage() {
         const lastFour = cardData.cardNumber?.slice(-4) || "****"
         setPaymentInfo({ method: "card", lastFour })
 
-        // Detect card type from number (basic check)
         if (/^4/.test(cardData.cardNumber)) setCardType("Visa")
         else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard")
         else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express")
@@ -117,7 +94,6 @@ export default function ThankYouPage() {
 
     const createOrder = async () => {
       try {
-        // Get order data from session storage
         const orderData = sessionStorage.getItem("orderData")
         if (!orderData) {
           console.error("No order data found in session storage")
@@ -125,8 +101,6 @@ export default function ThankYouPage() {
         }
 
         const parsedOrderData = JSON.parse(orderData)
-
-        // Determine the customer email - prioritize guest email from forms over logged-in user email
         const customerEmail = parsedOrderData.customerEmail || parsedOrderData.user?.email || user?.email
 
         if (!customerEmail) {
@@ -135,17 +109,15 @@ export default function ThankYouPage() {
           return
         }
 
-        // Build user object with proper email handling
         const orderUser = user
           ? {
               id: user.id,
-              email: customerEmail, // Use the determined customer email
+              email: customerEmail,
               firstName: user.firstName,
               lastName: user.lastName,
               name: user.name,
             }
           : {
-              // For guest users, create user object from order data
               email: customerEmail,
               firstName: parsedOrderData.billing?.firstName || parsedOrderData.shipping?.firstName || "",
               lastName: parsedOrderData.billing?.lastName || parsedOrderData.shipping?.lastName || "",
@@ -158,19 +130,17 @@ export default function ThankYouPage() {
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
           cartItems: cartItems,
-          orderNumber: orderNum, // Use the local orderNum variable directly
+          orderNumber: orderNum,
           totalAmount: total,
           subtotal: subtotal,
-          customerEmail: customerEmail, // Explicitly include customer email for invoice
+          customerEmail: customerEmail,
         }
 
+        const sendingToastId = toast.loading("Please wait… sending your invoice")
         console.log("Final full order data to be sent:", fullOrderData)
-        console.log(`Invoice will be sent to: ${customerEmail}`)
-        console.log(`Order number being sent to email API: ${fullOrderData.orderNumber}`)
-        console.log(`Order number displayed on page: ${orderNum}`)
 
-        // Send order to backend
         await createOrderInBackend(fullOrderData)
+
 
         try {
           const emailResponse = await fetch("/api-2/send-order-email", {
@@ -178,27 +148,55 @@ export default function ThankYouPage() {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(fullOrderData),
           })
+          toast.dismiss(sendingToastId)
 
           if (!emailResponse.ok) {
             const errorText = await emailResponse.text()
             console.error("Failed to send order confirmation email:", errorText)
             toast.error("Order placed successfully, but failed to send confirmation email")
           } else {
-            console.log(`Order confirmation email sent successfully to: ${customerEmail}`)
             toast.success(`Order confirmation sent to ${customerEmail}`)
+         setTimeout(() => {
+          setShowPopup(true)
+
+          // Mark order as viewed
+          const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
+          if (!viewedOrders.includes(finalOrderNumber)) {
+            viewedOrders.push(finalOrderNumber)
+            localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
+          }
+
+          // Redirect after another short delay
+          setTimeout(() => {
+            window.location.href = "/"
+          }, 15000) // 3s after popup appears
+        }, 2000) // 0.5s delay to let toast appear first
+      
           }
         } catch (err) {
           console.error("Email sending failed:", err)
           toast.error("Order placed successfully, but failed to send confirmation email")
         }
 
-        // Clear session storage
         sessionStorage.removeItem("orderData")
+
+        // ✅ Now mark as viewed (after order creation)
+        const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
+        if (orderNum && viewedOrders.includes(orderNum)) {
+          setShowPopup(true)
+          setTimeout(() => {
+            window.location.href = "/"
+          }, 3000)
+        } else if (orderNum) {
+          viewedOrders.push(orderNum)
+          localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
+        }
       } catch (error) {
         console.error("Error creating order:", error)
         toast.error("Failed to process order. Please contact support.")
       }
     }
+
     createOrder()
   }, [user])
 
@@ -218,37 +216,27 @@ export default function ThankYouPage() {
       </div>
 
       <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
-        {/* Thank You Content */}
         <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
-          {/* Logo and Title */}
           <div className="flex flex-col items-center mb-6">
-            {/* <Image src="/Images/logo.svg" alt="Brand Logo" width={80} height={80} className="mb-2" priority /> */}
             <h1
-              className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide "
-              style={{
-                fontFamily: "Audiowide, sans-serif",
-                letterSpacing: "0.1em",
-              }}
+              className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide"
+              style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
             >
               Thank you
             </h1>
             <div
               className="text-white text-xl md:text-2xl lg:text-3xl font-normal text-center mt-1"
-              style={{
-                fontFamily: "Audiowide, sans-serif",
-                letterSpacing: "0.1em",
-              }}
+              style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
             >
               for shopping with us!
             </div>
           </div>
-          {/* Header: Deliver To / Payment */}
+
           <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-0 mb-1">
             <div>
               <div className="uppercase text-sm text-gray-300 font-semibold">Deliver To</div>
               <div className="text-white text-sm mt-1 leading-tight">
                 <>
-                  {/* Billing Info */}
                   {billingInfo && Object.keys(billingInfo).length > 0 && (
                     <div>
                       <strong>Billing Information</strong>
@@ -275,7 +263,6 @@ export default function ThankYouPage() {
                     </div>
                   )}
 
-                  {/* Shipping Info — Only show if addresses are different */}
                   {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
                     <div className="mt-3">
                       <strong>Shipping Information</strong>
@@ -304,6 +291,7 @@ export default function ThankYouPage() {
                 </>
               </div>
             </div>
+
             <div className="flex flex-col items-start md:items-center">
               <div className="uppercase text-sm text-gray-300 font-semibold pr-12">Payment Method</div>
               <div className="flex items-center gap-3 mt-1">
@@ -326,38 +314,33 @@ export default function ThankYouPage() {
               </div>
             </div>
           </div>
-          {/* Divider */}
+
           <div className="border-t border-white my-4" />
-          {/* Order Details */}
           <div className="flex flex-col md:flex-row justify-between items-center mb-2">
             <div className="uppercase text-sm text-white font-semibold">
-              Order Details <span className="font-normal">#{orderNumber}</span>
+              Order Details <span id="order-id" className="font-normal">#{orderNumber}</span>
             </div>
             <div className="text-sm text-white">{orderDate}</div>
           </div>
-          {/* Cart Items */}
+
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
               <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
-                  src={
-                    item.title?.includes("Transmission")
-                      ? "/catalog/Trasmission_.png"
-                      : "/catalog/Engine 1.png" 
-                  }
-                  alt={item.title||"default"}
+                  src={item.title?.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
+                  alt={item.title || "default"}
                   width={64}
                   height={64}
                   className="rounded-lg"
                 />
                 <div className="flex-1">
-                  <div className="text-base text-white font-semibold">{item.title}</div>
+                  <div className="product-title text-base text-white font-semibold">{item.title}</div>
                   <div className="text-sm text-gray-300">{item.subtitle}</div>
                   <div className="text-sm text-gray-300">
                     {item.quantity} pc{item.quantity > 1 ? "s" : ""}.
                   </div>
                 </div>
-                <div className="text-base text-white font-semibold min-w-[60px] text-right">
+                <div className="product-price text-base text-white font-semibold min-w-[60px] text-right">
                   ${item.price * item.quantity}
                 </div>
               </div>
@@ -367,8 +350,8 @@ export default function ThankYouPage() {
               <div className="text-white text-center w-full">No items in cart</div>
             </div>
           )}
+
           <div className="border-t border-white my-3" />
-          {/* Summary Totals */}
           <div className="flex flex-col gap-1 text-base text-white mt-2">
             <div className="flex justify-between">
               <span>Cart total:</span>
@@ -378,20 +361,17 @@ export default function ThankYouPage() {
               <span>Shipping:</span>
               <span className="text-white">Free Shipping</span>
             </div>
-            {/* <div className="flex justify-between">
-                <span>Sales Tax:</span>
-                <span>${salesTax}</span>
-              </div> */}
           </div>
+
           <div className="border-t border-white my-4" />
           <div className="flex justify-between items-center text-lg font-semibold text-white uppercase">
             <span>Total:</span>
-            <span>${subtotal}</span>
+            <span id="order-total">${subtotal}</span>
           </div>
-          {/* Actions */}
+
           <div className="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
             <Link href="/account/trackOrder">
-              <button className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white rounded-md py-2 px-6  w-full md:w-auto transition">
+              <button className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white rounded-md py-2 px-6 w-full md:w-auto transition">
                 Track order
               </button>
             </Link>
@@ -404,9 +384,28 @@ export default function ThankYouPage() {
           </div>
         </div>
       </main>
+
+      {/* ✅ Popup for duplicate view */}
+       {showPopup && (
+            <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-[9999]">
+              <div className="bg-white text-black p-6 rounded-lg shadow-lg text-center max-w-sm">
+                <h2 className="text-lg font-semibold mb-2">You’ve already viewed this page</h2>
+                <p className="text-sm mb-4">Redirecting you to the home page...</p>
+                <button
+                  onClick={() => (window.location.href = "/")}
+                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+                >
+                  Go Now
+                </button>
+              </div>
+            </div>
+          )}
+           {/* Hidden conversion component */}
       <div className="hidden">
-      <GtagConversion />
+        <GtagConversion />
       </div>
     </div>
+    
+     
   )
 }

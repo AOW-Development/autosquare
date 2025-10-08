@@ -82,9 +82,7 @@ export default function RootLayout({
               gtag('config', 'AW-17273467579');
             `,
           }}
-        />
-
-        
+        />     
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />

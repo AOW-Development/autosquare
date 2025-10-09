@@ -230,7 +230,8 @@ export default function EngineProductPage() {
       })
       .finally(() => setIsLoading(false))
   }, [make, model, year, part, sku, API_BASE])
-useEffect(() => {
+  
+  useEffect(() => {
     if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0) return
     const group = groupedVariants.find((g: any) => g.subPart.id === selectedSubPartId)
     if (group) {
@@ -554,11 +555,11 @@ useEffect(() => {
                   Rated <span className="font-semibold">4.6</span> out of 5 based on
                 </span>
                 <Image
-                  src="/GoogleMain.png"
+                  src="/google.jpg"
                   alt="Google"
                   width={120} // natural width
                   height={36} // natural height
-                  className="h-8 sm:h-10 md:h-12 lg:h-10 w-auto" // responsive larger heights
+                  className="h-6 sm:h-6 md:h-12 lg:h-8 w-auto" // responsive larger heights
                 />
               </div>
 
@@ -571,9 +572,9 @@ useEffect(() => {
                   <Image
                     src="/ts.webp"
                     alt="Trustpilot"
-                    width={200} // natural width
+                    width={300} // natural width
                     height={100} // natural height
-                    className="h-20 sm:h-18 md:h-20 lg:h-20 w-auto" // responsive larger heights
+                    className="h-20 sm:h-18 md:h-20 lg:h-29 w-auto lg:w-[150px]" // responsive larger heights
                   />
                 </div>
               </div>
@@ -607,12 +608,12 @@ useEffect(() => {
 
      {selectedProduct && (
      <ProductSection
-  product={selectedProduct}
-  make={selectedProduct.make ?? undefined}
-  model={selectedProduct.model ?? undefined}
-  year={selectedProduct.year ?? undefined}
-  part={selectedProduct.part ?? undefined}
-/>
+      product={selectedProduct}
+      make={selectedProduct.make ?? undefined}
+      model={selectedProduct.model ?? undefined}
+      year={selectedProduct.year ?? undefined}
+      part={selectedProduct.part ?? undefined}
+    />
 
     )}
 

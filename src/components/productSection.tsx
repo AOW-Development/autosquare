@@ -1,12 +1,12 @@
 "use client"
 
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { useRouter } from "next/navigation"
 import { useCartStore } from "@/store/cartStore"
 import { getGroupedProducts } from "@/utils/api"
 import Link from "next/link"
-
+import { motion, AnimatePresence, type Variants } from "framer-motion"
 import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup"
 import { VerifyPartPopup } from "./fitment"
 
@@ -62,6 +62,7 @@ export default function ProductSection({
   const [selectedProductForVerify, setSelectedProductForVerify] = useState<any | null>(null)
   const [showCartPopup, setShowCartPopup] = useState(false)
   const [internalSubPartsList, setInternalSubPartsList] = useState<SubPart[]>([])
+  const [direction, setDirection] = useState(0)
 
   const subPartsList = externalSubPartsList || internalSubPartsList
 
@@ -131,7 +132,7 @@ export default function ProductSection({
         }
 
         if (flattenedProducts.length === 0) {
-          console.log("[v0] No opposite part found, trying same part type as fallback")
+          console.log(" No opposite part found, trying same part type as fallback")
 
           response = await getGroupedProducts({
             make,
@@ -181,7 +182,7 @@ export default function ProductSection({
 
         console.log(" Total flattened products (excluding current):", flattenedProducts.length)
 
-        setFeaturedProducts(flattenedProducts.slice(0, 4))
+        setFeaturedProducts(flattenedProducts)
         if (!externalSubPartsList) {
           setInternalSubPartsList(allSubParts)
         }
@@ -237,6 +238,51 @@ export default function ProductSection({
     setIsVerifyPopupOpen(true)
   }
 
+const scrollRef = useRef<HTMLDivElement>(null)
+
+// const scrollLeft = () => {
+//   scrollRef.current?.scrollBy({ left: -300, behavior: "smooth" })
+// }
+
+// const scrollRight = () => {
+//   scrollRef.current?.scrollBy({ left: 300, behavior: "smooth" })
+// }
+const [currentIndex, setCurrentIndex] = useState(0)
+const productsPerPage = 3
+
+const handlePrev = () => {
+  if (currentIndex === 0) return
+    setDirection(-1)
+    setCurrentIndex((prev) => Math.max(prev - productsPerPage, 0))
+  } 
+
+const handleNext = () => {
+   if (currentIndex + productsPerPage >= featuredProducts.length) return
+  setDirection(1)
+  setCurrentIndex((prev) => prev + productsPerPage)
+}
+
+const variants: Variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 100 : -100,
+    opacity: 0,
+  }),
+  center: {
+    x: 0,
+    opacity: 1,
+    transition: { duration: 0.5, ease: ["easeInOut"] },
+  },
+  exit: (direction: number) => ({
+    x: direction > 0 ? -100 : 100,
+    opacity: 0,
+    transition: { duration: 0.5, ease: ["easeInOut"] },
+  }),
+}
+
+
+// Slice products to show only 3 at a time
+const visibleProducts = featuredProducts.slice(currentIndex, currentIndex + productsPerPage)
+
   return (
     <section className="bg-[#091b33] text-white w-full py-8 md:py-2 lg:py-2 px-2 flex flex-col gap-12">
       {showCartPopup && selectedProductForVerify && (
@@ -256,14 +302,31 @@ export default function ProductSection({
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex items-center justify-between mb-6 md:px-4">
           <h2 className="text-2xl font-bold">FEATURED PRODUCTS</h2>
-          <div className="grid grid-col-1 md:grid-col-1 lg:grid-col-2 gap-2">
-            <button className="p-2">
-              <span className="text-2xl">&#60;</span>
-            </button>
-            <button className="p-2">
-              <span className="text-2xl">&#62;</span>
-            </button>
-          </div>
+          <div className="flex gap-2">
+             <div className="flex justify-center gap-3 mt-6">
+              <button
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+                className={`p-2 rounded-full transition-all ${
+                  currentIndex === 0 ? "cursor-not-allowed" : "bg-[#0C2A4D] hover:bg-sky-600"
+                }`}
+              >
+                <span className="text-2xl">&#60;</span>
+              </button>
+              <button
+                onClick={handleNext}
+                disabled={currentIndex + productsPerPage >= featuredProducts.length}
+                className={`p-2 rounded-full transition-all ${
+                  currentIndex + productsPerPage >= featuredProducts.length
+                    ? " cursor-not-allowed"
+                    : "bg-[#0C2A4D] hover:bg-sky-600"
+                }`}
+              >
+                <span className="text-2xl">&#62;</span>
+              </button>
+            </div>
+
+            </div>
         </div>
 
         {loading ? (
@@ -279,8 +342,18 @@ export default function ProductSection({
             <p className="text-gray-400">No related products available at this time</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:px-4 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {featuredProducts.map((prod, i) => {
+          
+            <AnimatePresence custom={direction} mode="wait">
+            <motion.div
+              key={currentIndex}
+              custom={direction}
+              variants={variants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              className="grid grid-cols-1 sm:grid-cols-2 md:px-4 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-6 min-h-[400px]"
+            >
+            {visibleProducts.map((prod, i) => {
               const cartItem = cartItems.find((item) => item.id === prod.sku)
               const productImage =
                 prod.product?.images && prod.product.images.length > 0
@@ -312,7 +385,7 @@ export default function ProductSection({
                         src={productImage || "/placeholder.svg"}
                         alt={prod.part || "Product"}
                         width={250}
-                        height={160}
+                        height={190}
                         className="relative z-10 rounded-md object-contain"
                         priority
                       />
@@ -322,14 +395,14 @@ export default function ProductSection({
                     <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
 
                     <div className="relative z-20 pt-2">
-                      <h3 className="text-white text-base mb-1">
+                      <h3 className="text-white text-base lg:text-xl mb-1">
                         {prod.year || year} {prod.make || make} {prod.model || model}
                       </h3>
-                      <p className="text-sm text-gray-300 mb-1">used {prod.part || part} assembly</p>
-                      <p className="text-xs text-gray-400 mb-1">{prod.subPart?.name || prod.specification || "N/A"}</p>
-                      <p className="text-xs text-gray-400 mb-1">Genuine Used Part</p>
-                      <p className="text-xs text-gray-400 mb-1">{prod.miles || "N/A"} miles</p>
-                      <p className="text-xs text-gray-400 mb-2">{prod.warranty || "90 Days Warranty"}</p>
+                      <p className="text-sm lg:text-lg text-gray-300 mb-1">used {prod.part || part} assembly</p>
+                      <p className="text-xs lg:text-sm text-gray-400 mb-1">{prod.subPart?.name || prod.specification || "N/A"}</p>
+                      <p className="text-xs lg:text-sm text-gray-400 mb-1">Genuine Used Part</p>
+                      <p className="text-xs lg:text-sm text-gray-400 mb-1">{prod.miles || "N/A"} miles</p>
+                      <p className="text-xs lg:text-sm text-gray-400 mb-2">{prod.warranty || "90 Days Warranty"}</p>
                     </div>
                   </Link>
 
@@ -397,7 +470,9 @@ export default function ProductSection({
                 </div>
               )
             })}
-          </div>
+            </motion.div>
+            </AnimatePresence>
+          
         )}
       </div>
 

@@ -1,4 +1,3 @@
-// components/GtagConversion.tsx
 'use client';
 
 import React from 'react';
@@ -34,7 +33,7 @@ export default function GtagConversion({
             .map(
               (item) => `{
                 item_id: '${item.itemId}',
-                item_name: '${item.itemName}',
+                item_name: '${item.itemName.replace(/'/g, "\\'")}',
                 price: ${item.price},
                 quantity: ${item.quantity}
               }`
@@ -43,10 +42,11 @@ export default function GtagConversion({
         ]
       }
     });
-
-    gtag('event', 'conversion', {
-      'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA'
-    });
+    if (typeof gtag === 'function') {
+      gtag('event', 'conversion', {
+        'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA'
+      });
+    }
   `;
 
   return <script dangerouslySetInnerHTML={{ __html: dataLayerScript }} />;

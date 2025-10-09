@@ -85,7 +85,7 @@ export default function RootLayout({
           }}
         />     
 
-         <Script id="gtag-conversion" strategy="afterInteractive">
+         {/* <Script id="gtag-conversion" strategy="afterInteractive">
           {`
             function gtag_report_conversion(url) {
               var callback = function () {
@@ -100,7 +100,16 @@ export default function RootLayout({
               return false;
             }
           `}
+        </Script> */}
+
+        <Script id="gtag-phone-conversion" strategy="afterInteractive">
+          {`
+            gtag('config', 'AW-17273467579/H6LQCJmP36kbELvl0KxA', {
+              'phone_conversion_number': '(888) 338-2540'
+            });
+          `}
         </Script>
+        {/* End Google Tag Manager */}
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />

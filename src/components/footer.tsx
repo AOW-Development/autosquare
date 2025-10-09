@@ -26,10 +26,12 @@ export default function Footer() {
                 <li>
                       Toll Free:&nbsp;
                       <a
-                        href="tel:+18883382540"
+                        href="tel:8883382540"
                         onClick={() => {
-                          if (typeof window !== "undefined" && window.gtag_report_conversion) {
-                            window.gtag_report_conversion?.("tel:+18883382540");
+                          if (typeof window !== "undefined" && typeof window.gtag === "function") {
+                            window.gtag('event', 'conversion', {
+                              send_to: 'AW-17273467579/H6LQCJmP36kbELvl0KxA',
+                            });
                           }
                         }}
                         className="text-white hover:underline"

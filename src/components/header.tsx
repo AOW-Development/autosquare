@@ -219,14 +219,13 @@ export default function Header() {
           </Link>
           <div className="flex flex-col items-end text-xs ">
             <div className="flex flex-col items-end text-xs">
-                  <a
-                    href="tel:+18883382540"
+                 <a
+                    href="tel:8883382540"
                     onClick={() => {
-                      if (typeof window !== "undefined" && window.gtag_report_conversion) {
-                        window.gtag_report_conversion?.("tel:+18883382540");
+                      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+                        window.gtag('event', 'conversion', { send_to: 'AW-17273467579/H6LQCJmP36kbELvl0KxA' });
                       }
                     }}
-                    className="font-bold hover:underline"
                   >
                     (888) 338-2540
                   </a>

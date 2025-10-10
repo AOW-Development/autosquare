@@ -1,7 +1,12 @@
 'use client';
+import React, { useEffect } from 'react';
 
-import React from 'react';
 
+declare global {
+  interface Window {
+    dataLayer: any[];
+  }
+}
 interface GtagConversionProps {
   orderId: string;
   orderTotal: number;
@@ -20,32 +25,35 @@ export default function GtagConversion({
   currency = 'USD',
   items,
 }: GtagConversionProps) {
-  const dataLayerScript = `
+  useEffect(() => {
+    if (!orderId || items.length === 0) return;
+
+    // Push purchase event to dataLayer
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push({
       event: 'purchase',
       ecommerce: {
-        transaction_id: '${orderId}',
-        value: ${orderTotal},
-        currency: '${currency}',
-        items: [
-          ${items
-            .map(
-              (item) => `{
-                item_id: '${item.itemId}',
-                item_name: '${item.itemName}',
-                price: ${item.price},
-                quantity: ${item.quantity}
-              }`
-            )
-            .join(',')}
-        ]
-      }
+        transaction_id: orderId,
+        value: orderTotal,
+        currency,
+        items: items.map((item) => ({
+          item_id: item.itemId,
+          item_name: item.itemName,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+      },
     });
-    gtag('event', 'conversion', {
-      'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA'
-    });
-  `;
 
-  return <script dangerouslySetInnerHTML={{ __html: dataLayerScript }} />;
+    // Trigger Google Ads conversion
+    if (typeof window.gtag === 'function') {
+      window.gtag('event', 'conversion', {
+        send_to: 'AW-17273467579/h4FRCNLj86cbELvl0KxA',
+      });
+    }
+
+    console.log('Conversion event pushed:', orderId, items);
+  }, [orderId, orderTotal, items, currency]);
+
+  return null; // No <script> needed
 }

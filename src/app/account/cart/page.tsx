@@ -159,10 +159,21 @@ export default function Cart() {
                       height={120}
                       className="w-24 h-24 md:w-30 md:h-30 object-cover rounded"
                     />
-                    <div className="flex-1">
-                      <h3 className="font-exo2 font-bold text-white text-lg break-all">{item.title}</h3>
-                        <p className="text-sm text-white break-all">{item.subtitle}</p>
-                    </div>
+                   <div className="flex-1">
+                    <h3 className="font-exo2 font-bold text-white text-lg break-words">
+                      {item.title.includes("Used") ? (
+                        <>
+                          {item.title.split(/Used/i)[0].trim()}
+                          <br />
+                          {"Used" + item.title.split(/Used/i)[1]}
+                        </>
+                      ) : (
+                        item.title
+                      )}
+                    </h3>
+                    <p className="text-sm text-white break-words">{item.subtitle}</p>
+                  </div>
+
                   </div>
 
                   {/* Price, Qty, Subtotal (stacked on mobile) */}
@@ -206,7 +217,7 @@ export default function Cart() {
                       <span className="flex-1 md:flex-initial text-right md:text-left">${item.price * item.quantity}.00</span>
                       <button
                         onClick={() => removeItem(item.id)}
-                        className="absolute top-[-220px] right-0 text-white hover:text-red-500 md:top-[-50px] md:right-0"
+                        className="absolute top-[-240px] right-0 text-white hover:text-red-500 md:top-[-50px] md:right-0"
                       >
                         ✕
                       </button>

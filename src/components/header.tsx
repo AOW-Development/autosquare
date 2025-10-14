@@ -218,7 +218,19 @@ export default function Header() {
             />
           </Link>
           <div className="flex flex-col items-end text-xs ">
-            <span className="font-bold">(888) 338-2540</span>
+            <div className="flex flex-col items-end text-xs">
+                 <a
+                    href="tel:8883382540"
+                    onClick={() => {
+                      if (typeof window !== "undefined" && typeof window.gtag === "function") {
+                        window.gtag('event', 'conversion', { send_to: 'AW-17273467579/H6LQCJmP36kbELvl0KxA' });
+                      }
+                    }}
+                  >
+                    (888) 338-2540
+                  </a>
+                </div>
+
             <span>Mon-Fri: 8AM - 7PM EST</span>
           </div>
         </div>

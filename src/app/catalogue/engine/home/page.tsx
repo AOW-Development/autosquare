@@ -124,6 +124,9 @@ export default function CatalogPage() {
   const removeItem = useCartStore((s) => s.removeItem);
 
   useEffect(() => {
+    setSubPartFilter(null);
+    setCurrentPage(1); // Reset pagination  
+    
     if (make && model && year && part) {
       const fetchProducts = async () => {
         try {

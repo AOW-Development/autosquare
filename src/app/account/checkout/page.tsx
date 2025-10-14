@@ -829,7 +829,7 @@ export default function Checkout() {
                   >
 
                     {/* 1. LEFT SIDE: Image and Text Details Container (set to grow) */}
-                    <div className="flex items-start space-x-4 flex-grow">
+                    <div className="flex items-start space-x-3 flex-grow">
                       <Image
                         src={
                           item.title?.includes("Transmission")
@@ -847,12 +847,22 @@ export default function Checkout() {
                       <div className="flex-1 min-w-0">
 
                         {/* CRITICAL FIX: The break-all class forces the long string to wrap mid-word */}
-                        <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
-                          {item.title}
-                        </p>
-                        <p className="font-exo2 text-sm sm:text-base text-white font-medium break-all">
-                          {item.subtitle}
-                        </p>
+                        <p className="font-exo2 text-sm sm:text-base text-white font-bold break-words">
+                        {item.title.includes("Used") ? (
+                          <>
+                            {item.title.split(/Used/i)[0].trim()}
+                            <br />
+                            {"Used" + item.title.split(/Used/i)[1]}
+                          </>
+                        ) : (
+                          item.title
+                        )}
+                      </p>
+
+                      <p className="font-exo2 text-sm sm:text-base text-white font-medium break-words">
+                        {item.subtitle}
+                      </p>
+
                         <p className="font-exo2 text-xs sm:text-sm text-gray-300 mt-1">
                           {item.quantity} pc.
                         </p>
@@ -861,11 +871,14 @@ export default function Checkout() {
 
                     {/* 3. RIGHT SIDE: Price Container (Must be outside the details container) */}
                     {/* flex-shrink-0 prevents the price from being squeezed by the long title */}
-                    <div className="text-right flex-shrink-0 ml-auto">
-                      <p className="font-exo2 text-lg sm:text-xl text-white font-bold">
-                        ${item.price.toFixed(0)}
-                      </p>
-                    </div>
+                  <div className="flex-shrink-0 ml-auto max-w-[100px] sm:max-w-[120px] text-right">
+                  <p className="font-exo2 text-base sm:text-lg md:text-xl text-white font-bold truncate break-words">
+                    {item.quantity > 1
+                      ? `${item.quantity} × $${item.price.toFixed(0)}`
+                      : `$${item.price.toFixed(0)}`}
+                  </p>
+                </div>
+
 
                   </div>
                 ))}

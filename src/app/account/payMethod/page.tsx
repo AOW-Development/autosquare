@@ -83,10 +83,16 @@ export default function PayMethod() {
   const [shippingStates, setShippingStates] = useState<{ name: string; isoCode: string }[]>([])
   const [shippingUserType, setShippingUserType] = useState("Individual")
   const [shippingErrors, setShippingErrors] = useState<{ [key: string]: string }>({})
+  const [isShippingSaved, setIsShippingSaved] = useState(false)
+  const [isBillingSaved, setIsBillingSaved] = useState(false)
 
   useEffect(() => {
     const isBuyInOneClick = searchParams.get("buyInOneClick") === "true"
     setBuyInOneClick(isBuyInOneClick)
+    if (isBuyInOneClick) {
+    setIsShippingSaved(false)
+    setIsBillingSaved(false)
+  }
   }, [searchParams])
 
   useEffect(() => {
@@ -109,6 +115,9 @@ export default function PayMethod() {
         state: shippingInfo?.state || "",
         zipCode: shippingInfo?.zipCode || "",
       })
+       if (buyInOneClick) {
+      setIsBillingSaved(isShippingSaved)
+    }
     } else if (!sameAsShipping) {
       console.log(billingFormData)
 
@@ -124,8 +133,11 @@ export default function PayMethod() {
         state: "",
         zipCode: "",
       })
+      if (buyInOneClick) {
+      setIsBillingSaved(false)
     }
-  }, [sameAsShipping, shippingInfo])
+    }
+  }, [sameAsShipping, shippingInfo,isShippingSaved])
 
   useEffect(() => {
     if (buyInOneClick && sameAsShipping) {
@@ -307,6 +319,16 @@ export default function PayMethod() {
   const handlePayment = async (e: React.FormEvent) => {
     e.preventDefault()
       if (buyInOneClick) {
+          if (!isShippingSaved) {
+              toast.error("Please save your shipping information before confirming the order.")
+              return
+            }
+
+            // Check if billing info has been saved (unless same as shipping)
+            if (!sameAsShipping && !isBillingSaved) {
+              toast.error("Please save your billing information before confirming the order.")
+              return
+            }
       const shippingRequiredFields = ["firstName", "lastName", "email", "phone", "country", "address", "city", "state", "zipCode"]
       const shippingEmpty = shippingRequiredFields.some(
         (field) =>
@@ -582,6 +604,7 @@ export default function PayMethod() {
 
     setShippingInfo(shippingInfo)
     setBillingInfo(billingFormData)
+    setIsBillingSaved(true)
     toast.success("Billing details saved successfully!")
   }
 
@@ -602,6 +625,7 @@ export default function PayMethod() {
     }
 
     setShippingInfo(shippingFormData)
+    setIsShippingSaved(true) 
     toast.success("Shipping details saved successfully!")
   }
 
@@ -703,10 +727,22 @@ export default function PayMethod() {
                       height={80}
                       className="w-16 h-16 md:w-20 md:h-20 object-cover rounded"
                     />
-                    <div className="flex-1">
-                      <h4 className="font-exo2 font-semibold text-white text-base md:text-lg">{item.title}</h4>
-                      <p className="font-exo2 text-sm md:text-base text-white font-medium">{item.subtitle}</p>
-                    </div>
+                    <div className="flex-1 min-w-0">
+                    <h4 className="font-exo2 font-semibold text-white text-base md:text-lg break-words">
+                      {item.title.includes("Used") ? (
+                        <>
+                          {item.title.split(/Used/i)[0].trim()}
+                          <br />
+                          {"Used" + item.title.split(/Used/i)[1]}
+                        </>
+                      ) : (
+                        item.title
+                      )}
+                    </h4>
+                    <p className="font-exo2 text-sm md:text-base text-white font-medium break-words">
+                      {item.subtitle}
+                    </p>
+                  </div>
                   </div>
 
                   {/* Right: Qty, Price, Total */}
@@ -931,14 +967,16 @@ export default function PayMethod() {
                       )} */}
                     </div>
 
-                    <div className="mt-6">
-                      <button
-                        onClick={handleSaveShipping}
-                        className="w-full bg-[#009AFF] hover:bg-blue-600 text-white py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2"
-                      >
-                        Save Shipping Info
-                      </button>
-                    </div>
+                   <button
+                    onClick={handleSaveShipping}
+                    className={`w-full py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2 ${
+                      isShippingSaved
+                        ? "bg-green-600 hover:bg-green-700 text-white"
+                        : "bg-[#009AFF] hover:bg-blue-600 text-white"
+                    }`}
+                  >
+                    {isShippingSaved ? "✓ Shipping Info Saved" : "Save Shipping Info"}
+                  </button>
                   </div>
                 </div>
               ) : (
@@ -1142,9 +1180,20 @@ export default function PayMethod() {
                     <div className="mt-6">
                       <button
                         onClick={handleSave1}
-                        className="w-full bg-[#009AFF] hover:bg-blue-600 text-white py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2"
+                        disabled={sameAsShipping && !isShippingSaved}
+                        className={`w-full py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2 ${
+                          sameAsShipping && !isShippingSaved
+                            ? "bg-gray-600 text-gray-400 cursor-not-allowed"
+                            : isBillingSaved || (sameAsShipping && isShippingSaved)
+                              ? "bg-green-600 hover:bg-green-700 text-white"
+                              : "bg-[#009AFF] hover:bg-blue-600 text-white"
+                        }`}
                       >
-                        Save Billing Info
+                        {sameAsShipping && isShippingSaved
+                          ? "✓ Using Shipping Address"
+                          : isBillingSaved
+                            ? "✓ Billing Info Saved"
+                            : "Save Billing Info"}
                       </button>
                     </div>
                   </div>

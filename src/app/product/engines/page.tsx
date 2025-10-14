@@ -230,7 +230,7 @@ export default function EngineProductPage() {
       })
       .finally(() => setIsLoading(false))
   }, [make, model, year, part, sku, API_BASE])
-
+  
   useEffect(() => {
     if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0) return
     const group = groupedVariants.find((g: any) => g.subPart.id === selectedSubPartId)
@@ -239,16 +239,16 @@ export default function EngineProductPage() {
       if (variant) {
         setSelectedProduct({
           ...variant,
-          make: group.make,
-          model: group.model,
-          year: group.year,
-          part: group.part,
+          make: productInfo.make || make,
+          model: productInfo.model || model,
+          year: productInfo.year || year,
+          part: productInfo.part || part,
         })
       } else {
         setSelectedProduct(null)
       }
     }
-  }, [selectedSubPartId, selectedMilesSku, groupedVariants])
+  }, [selectedSubPartId, selectedMilesSku, groupedVariants, productInfo, make, model, year, part])
 
   const handleAddToCart = () => {
   if (!selectedProduct) return
@@ -452,7 +452,7 @@ export default function EngineProductPage() {
                 {selectedProduct?.inStock ? (
                   <>
                     <div className="flex items-end gap-4 mb-4">
-                      <span className="text-2xl sm:text-3xl md:text-4xl font-bold">
+                      <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
                         $
                         {selectedProduct?.discountedPrice
                           ? `${selectedProduct.discountedPrice}`
@@ -548,35 +548,39 @@ export default function EngineProductPage() {
                 </a>
               </div>
 
-              <div className="flex flex-col gap-3 text-white">
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-base">
-                  <span>
-                    Rated <span className="font-semibold text-white">4.6</span> out of 5 based on
-                  </span>
+            <div className="flex flex-col gap-3 text-white">
+              {/* Google Rating */}
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
+                <span>
+                  Rated <span className="font-semibold">4.6</span> out of 5 based on
+                </span>
+                <Image
+                  src="/google.jpg"
+                  alt="Google"
+                  width={120} // natural width
+                  height={36} // natural height
+                  className="h-6 sm:h-6 md:h-12 lg:h-8 w-auto" // responsive larger heights
+                />
+              </div>
+
+              {/* Trustpilot Rating */}
+              <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
+                <span>
+                  Rated <span className="font-semibold">4.1</span> out of 5 based on
+                </span>
+                <div className="flex items-center gap-1">
                   <Image
-                    src="/GoogleMain.png"
-                    alt="Google"
-                    width={30}
-                    height={20}
-                    className="h-6 sm:h-5 w-16 md:w-20 md:h-6 lg:w-30 lg:h-8"
+                    src="/ts.webp"
+                    alt="Trustpilot"
+                    width={300} // natural width
+                    height={100} // natural height
+                    className="h-20 sm:h-18 md:h-20 lg:h-29 w-auto lg:w-[150px]" // responsive larger heights
                   />
                 </div>
-
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-base">
-                  <span>
-                    Rated <span className="font-semibold text-white">4.1</span> out of 5 based on
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <Image
-                      src="/trustpilotMain.png"
-                      alt="Trustpilot"
-                      width={40}
-                      height={20}
-                      className="h-16 sm:h-5 w-25 md:w-40 md:h-20 lg:w-50 lg:h-24"
-                    />
-                  </div>
-                </div>
               </div>
+            </div>
+
+
             </div>
           </div>
         </div>
@@ -602,15 +606,18 @@ export default function EngineProductPage() {
         vinNumber=""
       />
 
-      {selectedProduct && (
-        <ProductSection
-          product={selectedProduct}
-          make={selectedProduct.make}
-          model={selectedProduct.model}
-          year={selectedProduct.year}
-          part={selectedProduct.part}
-        />
-      )}
+     {selectedProduct && (
+     <ProductSection
+      product={selectedProduct}
+      make={selectedProduct.make ?? undefined}
+      model={selectedProduct.model ?? undefined}
+      year={selectedProduct.year ?? undefined}
+      part={selectedProduct.part ?? undefined}
+    />
+
+    )}
+
+
     </>
   )
 }

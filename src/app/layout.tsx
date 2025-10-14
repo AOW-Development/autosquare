@@ -5,6 +5,7 @@ import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { Toaster } from "react-hot-toast";
+import Script from "next/script";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -61,15 +62,13 @@ export default function RootLayout({
         />
  
         {/* Google Tag Manager */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-            new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-            j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-            'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-            })(window,document,'script','dataLayer','GTM-MDBDJMW3');`,
-          }}
-        />
+         <Script id="google-tag-manager" strategy="afterInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','GTM-MDBDJMW3');`}
+        </Script>
         {/* End Google Tag Manager */}
 
          <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17273467579"></script>
@@ -82,9 +81,33 @@ export default function RootLayout({
               gtag('config', 'AW-17273467579');
             `,
           }}
-        />
+        />     
 
-        
+         {/* <Script id="gtag-conversion" strategy="afterInteractive">
+          {`
+            function gtag_report_conversion(url) {
+              var callback = function () {
+                if (typeof(url) != 'undefined') {
+                  window.location = url;
+                }
+              };
+              gtag('event', 'conversion', {
+                  'send_to': 'AW-17273467579/7vbwCPmGyqgbELvl0KxA',
+                  'event_callback': callback
+              });
+              return false;
+            }
+          `}
+        </Script> */}
+
+        <Script id="gtag-phone-conversion" strategy="afterInteractive">
+          {`
+            gtag('config', 'AW-17273467579/H6LQCJmP36kbELvl0KxA', {
+              'phone_conversion_number': '(888) 338-2540'
+            });
+          `}
+        </Script>
+        {/* End Google Tag Manager */}
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -22,7 +23,23 @@ export default function Footer() {
               <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-white leading-[1.5]">
                 <li>Parts Central LLC</li>
                 {/* <li>Toll Free: (888) 748–0882</li> */}
-                <li>Toll Free: (888) 338-2540</li>
+                <li>
+                      Toll Free:&nbsp;
+                      <a
+                        href="tel:8883382540"
+                        onClick={() => {
+                          if (typeof window !== "undefined" && typeof window.gtag === "function") {
+                            window.gtag('event', 'conversion', {
+                              send_to: 'AW-17273467579/H6LQCJmP36kbELvl0KxA',
+                            });
+                          }
+                        }}
+                        className="text-white hover:underline"
+                      >
+                        (888) 338-2540
+                      </a>
+                    </li>
+
                 <li>Fax: (312) 845–9711</li>
                 <li>
                   Email:{" "}

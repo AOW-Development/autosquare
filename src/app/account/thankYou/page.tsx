@@ -32,8 +32,9 @@ export default function ThankYouPage() {
   const hasProcessed = useRef(false)
   const hasRunRef = useRef(false)
 
+  // this clears the cart on unmount
   useEffect(()=>{
-    localStorage.removeItem("cartItems")
+    localStorage.removeItem("cart-storage")
   },[]);
 
   // Card image mapping

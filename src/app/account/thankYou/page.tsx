@@ -28,6 +28,9 @@ export default function ThankYouPage() {
   //     });
   //   }
   // }, []);
+  useEffect(()=>{
+    localStorage.removeItem("cartItems")
+  },[]);
 
   const { billingInfo } = useBillingStore()
   const cartItems = useCartStore((s) => s.items)

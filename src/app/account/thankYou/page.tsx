@@ -15,6 +15,7 @@ import { OrderEmailData } from "@/lib/mail"
 import GtagConversion from "@/components/GtagConversion"
 
 export default function ThankYouPage() {
+  
   const { billingInfo } = useBillingStore()
   const cartItems = useCartStore((s) => s.items)
   const [orderNumber, setOrderNumber] = useState("")
@@ -30,6 +31,11 @@ export default function ThankYouPage() {
   const [showPopup, setShowPopup] = useState(false)
   const hasProcessed = useRef(false)
   const hasRunRef = useRef(false)
+
+  // this clears the cart on unmount
+  useEffect(()=>{
+    localStorage.removeItem("cart-storage")
+  },[]);
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -231,16 +237,16 @@ export default function ThankYouPage() {
         <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
           <div className="flex flex-col items-center mb-6">
             <h1
-              className="text-white text-2xl md:text-3xl lg:text-4xl font-semibold uppercase text-center leading-tight tracking-wide"
+              className="text-white text-2xl md:text-3xl lg:text-3xl font-semibold uppercase text-center leading-tight tracking-wide"
               style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
             >
-              Thank you
+              Thank you for shopping with us!
             </h1>
             <div
-              className="text-white text-xl md:text-2xl lg:text-3xl font-normal text-center mt-1"
-              style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
+              className="text-white text-xl md:text-xl lg:text-xl font-normal text-center mt-1"
+              
             >
-              for shopping with us!
+              Your payment is protected. Our team is processing your order.
             </div>
           </div>
 

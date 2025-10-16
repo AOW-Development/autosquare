@@ -14,6 +14,38 @@ export default function Checkout() {
   const { billingInfo, setBillingInfo } = useBillingStore()
   const { shippingInfo, setShippingInfo } = useShippingStore()
   const { items } = useCartStore()
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+
+  const sendOtp = async () => {
+    if (!formData.phone) return toast.error("Enter phone number first!");
+    const res = await fetch("/api-2/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber: formData.phone }),
+    });
+    const data = await res.json();
+   if (data.status === "pending") {
+      setOtpSent(true);
+      toast.success("OTP sent successfully!");
+    } else {
+      toast.error(data.message || "Failed to send OTP");
+    }
+  };
+
+  const verifyOtp = async () => {
+    const res = await fetch("/api-2/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber: formData.phone, code: otp }),
+    });
+    const data = await res.json();
+    if (data.success) {
+      setIsVerified(true);
+      toast.success("Phone verified!");
+    } else toast.error(data.message);
+  };
 
   const [formData, setFormData] = useState(
     shippingInfo || {
@@ -36,6 +68,7 @@ export default function Checkout() {
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
   const [billingStates, setBillingStates] = useState<{ name: string; isoCode: string }[]>([])
   const [sameAsShipping, setSameAsShipping] = useState(true)
+  const [error, setError] = useState("");
 
   const US_STATES = [
   "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
@@ -156,6 +189,13 @@ export default function Checkout() {
 
     setFormData((prev) => ({ ...prev, [field]: value }))
     setErrors((prev) => ({ ...prev, [field]: error }))
+
+     // Simple check: country code usually starts with +
+    if (value && !/^\+\d{10,15}$/.test(value)) {
+      setError("Please enter a valid phone number with country code");
+    } else {
+      setError("");
+    }
   }
 
   const handleBillingInputChange = (field: string, value: string) => {
@@ -242,7 +282,7 @@ export default function Checkout() {
         billingFormData.state &&
         billingFormData.zipCode)
 
-    return shippingValid && billingValid && termsAccepted
+    return shippingValid && billingValid && termsAccepted && isVerified
   }
 
   const [termsAccepted, setTermsAccepted] = useState(false)
@@ -414,17 +454,57 @@ export default function Checkout() {
                   {/* Mobile */}
                   <div>
                     <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
-                    <input
-                      type="tel"
-                      placeholder="(555) 123-4567"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
-                      required
-                    />
-                    {errors.phone && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.phone}</p>}
-                  </div>
-                </div>
+                     <div className="flex gap-2 items-center">
+                        <input
+                          type="tel"
+                          placeholder="(555) 123-4567"
+                          value={formData.phone}
+                          onChange={(e) => handleInputChange("phone", e.target.value)}
+                          className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                          required
+                          disabled={otpSent && !isVerified} // prevent change after sending OTP
+                        />
+
+                        {!otpSent ? (
+                          <button
+                            type="button"
+                            onClick={sendOtp}
+                            className="bg-[#009AFF] px-4 rounded-md text-white font-exo2"
+                          >
+                            Send OTP
+                          </button>
+                        ) : (
+                          <button
+                            type="button"
+                            onClick={verifyOtp}
+                            className="bg-green-500 px-4 rounded-md text-white font-exo2"
+                            disabled={isVerified}
+                          >
+                            Verify
+                          </button>
+                        )}
+                         </div>
+
+                        {/* OTP input field */}
+                        {otpSent && !isVerified && (
+                          <input
+                            type="text"
+                            placeholder="Enter OTP"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            className="mt-2 w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                          />
+                        )}
+
+                        {/* Error message */}
+                        {error && <p className="mt-1 text-red-500 font-exo2 text-sm">{error}</p>}
+
+                        {/* Success message */}
+                        {isVerified && (
+                          <p className="mt-2 text-green-400 font-exo2 text-sm">Phone verified successfully ✅</p>
+                        )}
+                      </div>
+                      </div>
               </form>
             </div>
 
@@ -779,26 +859,28 @@ export default function Checkout() {
                   </span>
                 </label>
               </div>
-
               <div className="flex justify-center md:justify-start mt-6 w-full">
-                {isFormValid() ? (
-                  <Link href="/account/payMethod" className="w-full md:w-auto">
-                    <button
-                      onClick={handleContinue} // Save billing info before navigating
-                      className="bg-[#00C853] text-white px-6 py-3 rounded-md font-exo2 text-lg hover:bg-green-600 transition-colors w-full md:w-auto flex items-center justify-center"
-                    >
-                      Continue to payment →
-                    </button>
-                  </Link>
-                ) : (
-                  <button
-                    disabled
-                    className="bg-gray-600 text-gray-400 px-6 py-3 rounded-md font-exo2 text-lg cursor-not-allowed w-full md:w-auto flex items-center justify-center"
-                  >
-                    Continue to payment →
-                  </button>
-                )}
+                <button
+                  onClick={(e) => {
+                    if (isFormValid()) {
+                      handleContinue();
+                      // navigate to payment page
+                      window.location.href = "/account/payMethod";
+                    } else {
+                      e.preventDefault();
+                      toast.error("Please complete all required fields and verify your phone!");
+                    }
+                  }}
+                  className={`px-6 py-3 rounded-md font-exo2 text-lg w-full md:w-auto flex items-center justify-center ${
+                    isFormValid()
+                      ? "bg-[#00C853] text-white hover:bg-green-600"
+                      : "bg-gray-600 text-gray-400 cursor-not-allowed"
+                  }`}
+                >
+                  Continue to payment →
+                </button>
               </div>
+
             </div>
           </div>
 

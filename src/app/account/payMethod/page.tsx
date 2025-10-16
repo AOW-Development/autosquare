@@ -31,6 +31,12 @@ export default function PayMethod() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
   // default to Apple Pay
 
+const [otpSent, setOtpSent] = useState(false)
+const [otp, setOtp] = useState("")
+const [isVerified, setIsVerified] = useState(false)
+const [error, setError] = useState("")
+  
+
   const searchParams = useSearchParams()
 
   const US_STATES = [
@@ -306,7 +312,7 @@ export default function PayMethod() {
 
       if (cardType === "American Express" && (cardNumberLength !== 15 || cvvLength !== 4)) return false
 
-      return !!cardData.cardholderName && !!cardData.expirationDate
+      return !!cardData.cardholderName && !!cardData.expirationDate && (buyInOneClick ? isVerified : true)
     }
 
     // Disable for unimplemented payment methods
@@ -418,6 +424,10 @@ export default function PayMethod() {
       // Go directly to thank you page without sign-in for all users
       router.push("/account/thankYou")
     }
+    if (buyInOneClick && !isVerified) {
+      toast.error("Please verify your phone number before confirming the order.")
+      return
+}
   }
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
 
@@ -532,6 +542,11 @@ export default function PayMethod() {
       }))
     }
     setShippingErrors((prev) => ({ ...prev, [field]: error }))
+      if (value && !/^\+\d{10,15}$/.test(value)) {
+      setError("Please enter a valid phone number with country code");
+    } else {
+      setError("");
+    }
   }
 
   // useEffect(() => {
@@ -624,10 +639,45 @@ export default function PayMethod() {
       return
     }
 
+    if (!isVerified) {
+    toast.error("Please verify your phone number before saving shipping information.")
+    return
+  }
+
     setShippingInfo(shippingFormData)
     setIsShippingSaved(true) 
     toast.success("Shipping details saved successfully!")
   }
+
+  // OTP Functions
+const sendOtp = async () => {
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!")
+  const res = await fetch("/api-2/send-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phoneNumber: shippingFormData.phone }),
+  })
+  const data = await res.json()
+  if (data.status === "pending") {
+    setOtpSent(true)
+    toast.success("OTP sent successfully!")
+  } else {
+    toast.error(data.message || "Failed to send OTP")
+  }
+}
+
+const verifyOtp = async () => {
+  const res = await fetch("/api-2/verify-otp", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phoneNumber: shippingFormData.phone, code: otp }),
+  })
+  const data = await res.json()
+  if (data.success) {
+    setIsVerified(true)
+    toast.success("Phone verified!")
+  } else toast.error(data.message)
+}
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
@@ -813,8 +863,9 @@ export default function PayMethod() {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+                 <div>
+                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+                    <div className="flex gap-2 items-center">
                       <input
                         type="tel"
                         placeholder="(555) 123-4567"
@@ -822,11 +873,52 @@ export default function PayMethod() {
                         onChange={(e) => handleShippingInputChange("phone", e.target.value)}
                         className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                         required
+                        disabled={otpSent && !isVerified}
                       />
-                      {shippingErrors.phone && (
-                        <p className="text-red-500 text-xs mt-1 font-exo2">{shippingErrors.phone}</p>
+
+                      {!otpSent ? (
+                        <button
+                          type="button"
+                          onClick={sendOtp}
+                          className="bg-[#009AFF] px-4 py-3 rounded-md text-white font-exo2 whitespace-nowrap"
+                        >
+                          Send OTP
+                        </button>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={verifyOtp}
+                          className="bg-green-500 px-4 py-3 rounded-md text-white font-exo2"
+                          disabled={isVerified}
+                        >
+                          Verify
+                        </button>
                       )}
                     </div>
+
+                    {/* OTP input field */}
+                    {otpSent && !isVerified && (
+                      <input
+                        type="text"
+                        placeholder="Enter OTP"
+                        value={otp}
+                        onChange={(e) => setOtp(e.target.value)}
+                        className="mt-2 w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
+                      />
+                    )}
+
+                    {/* Error message */}
+                    {error && <p className="mt-1 text-red-500 font-exo2 text-sm">{error}</p>}
+
+                    {/* Success message */}
+                    {isVerified && (
+                      <p className="mt-2 text-green-400 font-exo2 text-sm">Phone verified successfully ✅</p>
+                    )}
+
+                    {shippingErrors.phone && (
+                      <p className="text-red-500 text-xs mt-1 font-exo2">{shippingErrors.phone}</p>
+                    )}
+                  </div>
                   </div>
                 </div>
               </div>

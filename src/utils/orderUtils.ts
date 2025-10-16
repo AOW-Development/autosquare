@@ -41,23 +41,63 @@ export const createOrderInBackend = async (orderData: any) => {
       throw new Error('Payment information is required');
     }
 
+    // --- Final parseSubtitle (keeps full text exactly as in subtitle, minus "miles") ---
+      const parseSubtitle = (subtitle: string) => {
+        let specification = '';
+        let milesPromised: number | null = null;
+
+        if (subtitle) {
+          // Extract miles (e.g., "41000 miles")
+          const milesMatch = subtitle.match(/(\d+)\s*miles/i);
+          if (milesMatch && milesMatch[1]) {
+            milesPromised = parseFloat(milesMatch[1]);
+          }
+
+          // Remove the "41000 miles" part but keep everything else exactly
+          specification = subtitle.replace(/(\d+\s*miles)/i, '').trim();
+
+          // Clean up double spaces left after removing miles
+          specification = specification.replace(/\s{2,}/g, ' ').trim();
+        }
+
+        return { specification, milesPromised };
+      };
+
+      // --- Process cart items ---
+      const processedCartItems = cartItems.map((item: any) => {
+        const { specification, milesPromised } = parseSubtitle(item.subtitle || '');
+
+        console.log('Parsed subtitle:', {
+          subtitle: item.subtitle,
+          specification,
+          milesPromised
+        });
+
+        return {
+          ...item,
+          specification: item.specification || specification,
+          milesPromised: item.milesPromised !== undefined ? item.milesPromised : milesPromised,
+        };
+      });
     // Create payload for backend
     const orderPayload = {
       orderNumber,
       billingInfo: billing,
       shippingInfo: shipping,
       customerInfo: {
-        email: user.email,
+        email: user.email || shipping.email,
         firstName: user.firstName || '',
         lastName: user.lastName || '',
-        name: user.name || `${user.firstName || ''} ${user.lastName || ''}`.trim(),
+        name: `${user.firstName || ''} ${user.lastName || ''}`.trim(),
       },
-      cartItems,
+      
+      cartItems: processedCartItems,
       paymentInfo: payment,
       totalAmount: cartItems.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0),
       subtotal: cartItems.reduce((sum: number, item: any) => sum + (item.price * item.quantity), 0),
       // Add additional fields that might be required
       status: 'pending',
+      orderDate: new Date().toISOString(),
       createdAt: new Date().toISOString(),
     };
 

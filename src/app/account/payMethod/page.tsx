@@ -436,6 +436,24 @@ const [error, setError] = useState("")
     setBillingFormData((prev) => ({ ...prev, customerType: type }))
   }
 
+   const formatPhoneNumber = (value: string, country: "US" | "IN" = "US") => {
+  // Remove all non-numeric characters
+  const cleaned = value.replace(/\D/g, "");
+
+  // Limit to 10 digits
+  const limited = cleaned.slice(0, 10);
+
+  // Format as (XXX) XXX-XXXX for all countries
+  if (limited.length <= 3) {
+    return limited;
+  } else if (limited.length <= 6) {
+    return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+  } else {
+    return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
+  }
+};
+
+
   const handleShippingUserTypeChange = (type: "Individual" | "Commercial") => {
     setShippingUserType(type)
     setShippingFormData((prev) => ({ ...prev, customerType: type }))
@@ -500,7 +518,7 @@ const [error, setError] = useState("")
     setErrors((prev) => ({ ...prev, [field]: error }))
   }
 
-  const handleShippingInputChange = (field: string, value: string) => {
+ const handleShippingInputChange = (field: string, value: string) => {
     let error = ""
     const country = shippingFormData.country
 
@@ -513,13 +531,16 @@ const [error, setError] = useState("")
         }
         break
       case "phone":
-        const phoneRegex = /^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$/
-        if (country === "US" && value && !phoneRegex.test(value)) {
-          error = "Enter a valid US phone (e.g., 555-123-4567)"
-        } else if (country === "CA" && value && !phoneRegex.test(value)) {
-          error = "Enter a valid Canadian phone (e.g., 416-123-4567)"
+        const formatted = formatPhoneNumber(value, "IN")
+        const digitsOnly = formatted.replace(/\D/g, "")
+        
+        if (digitsOnly.length > 0 && digitsOnly.length < 10) {
+          error = "Phone number must be 10 digits"
         }
-        break
+        
+        setShippingFormData((prev) => ({ ...prev, [field]: formatted }))
+        setShippingErrors((prev) => ({ ...prev, [field]: error }))
+        return
       case "zipCode":
         if (country === "US" && !/^\d{5}(-\d{4})?$/.test(value)) {
           error = "Enter a valid US ZIP (12345 or 12345-6789)"
@@ -542,13 +563,7 @@ const [error, setError] = useState("")
       }))
     }
     setShippingErrors((prev) => ({ ...prev, [field]: error }))
-      if (value && !/^\+\d{10,15}$/.test(value)) {
-      setError("Please enter a valid phone number with country code");
-    } else {
-      setError("");
-    }
   }
-
   // useEffect(() => {
   //   if (shippingFormData.country) {
   //     const fetchedStates = State.getStatesOfCountry(shippingFormData.country)
@@ -651,33 +666,59 @@ const [error, setError] = useState("")
 
   // OTP Functions
 const sendOtp = async () => {
-  if (!shippingFormData.phone) return toast.error("Enter phone number first!")
-  const res = await fetch("/api-2/send-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phoneNumber: shippingFormData.phone }),
-  })
-  const data = await res.json()
-  if (data.status === "pending") {
-    setOtpSent(true)
-    toast.success("OTP sent successfully!")
-  } else {
-    toast.error(data.message || "Failed to send OTP")
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
+
+  // Remove all non-digit characters
+  const digits = shippingFormData.phone.replace(/\D/g, "");
+  // Add +91 for India (adjust if needed)
+  const phoneNumber = `+1${digits}`;
+
+  try {
+    const res = await fetch("/api-2/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber }), // match backend
+    });
+
+    const data = await res.json();
+
+    if (data.status === "pending") {
+      setOtpSent(true);
+      toast.success("OTP sent successfully!");
+    } else {
+      toast.error(data.message || "Failed to send OTP");
+    }
+  } catch (err) {
+    toast.error("Failed to send OTP. Check server logs.");
+    console.error(err);
   }
-}
+};
 
 const verifyOtp = async () => {
-  const res = await fetch("/api-2/verify-otp", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ phoneNumber: shippingFormData.phone, code: otp }),
-  })
-  const data = await res.json()
-  if (data.success) {
-    setIsVerified(true)
-    toast.success("Phone verified!")
-  } else toast.error(data.message)
-}
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
+  if (!otp) return toast.error("Enter OTP first!");
+
+  // Remove all non-digit characters
+  const digits = shippingFormData.phone.replace(/\D/g, "");
+  const phoneNumber = `+1${digits}`; // SAME format as sendOtp
+
+  try {
+    const res = await fetch("/api-2/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber, code: otp }),
+    });
+
+    const data = await res.json();
+    if (data.success) {
+      setIsVerified(true);
+      toast.success("Phone verified!");
+    } else toast.error(data.message);
+  } catch (err) {
+    toast.error("Failed to verify OTP. Check server logs.");
+    console.error(err);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
@@ -870,7 +911,16 @@ const verifyOtp = async () => {
                         type="tel"
                         placeholder="(555) 123-4567"
                         value={shippingFormData.phone}
-                        onChange={(e) => handleShippingInputChange("phone", e.target.value)}
+                        onChange={(e) => {
+                              let value = e.target.value;
+
+                              // Remove any leading +1 if the user types it
+                              if (value.startsWith("+1")) {
+                                value = value.slice(2);
+                              }
+
+                              handleShippingInputChange("phone", value);
+                            }}
                         className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                         required
                         disabled={otpSent && !isVerified}
@@ -882,7 +932,7 @@ const verifyOtp = async () => {
                           onClick={sendOtp}
                           className="bg-[#009AFF] px-4 py-3 rounded-md text-white font-exo2 whitespace-nowrap"
                         >
-                          Send OTP
+                          Send Code
                         </button>
                       ) : (
                         <button

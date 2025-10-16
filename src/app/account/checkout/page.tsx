@@ -18,34 +18,60 @@ export default function Checkout() {
   const [otp, setOtp] = useState("");
   const [isVerified, setIsVerified] = useState(false);
 
-  const sendOtp = async () => {
-    if (!formData.phone) return toast.error("Enter phone number first!");
+const sendOtp = async () => {
+  if (!formData.phone) return toast.error("Enter phone number first!");
+
+  // Remove all non-digit characters
+  const digits = formData.phone.replace(/\D/g, "");
+  // Add +1 for US, adjust if needed
+  const phoneNumber = `+1${digits}`;
+
+  try {
     const res = await fetch("/api-2/send-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phoneNumber: formData.phone }),
+      body: JSON.stringify({ phoneNumber }), // match backend
     });
+
     const data = await res.json();
-   if (data.status === "pending") {
+
+    if (data.status === "pending") {
       setOtpSent(true);
       toast.success("OTP sent successfully!");
     } else {
       toast.error(data.message || "Failed to send OTP");
     }
-  };
+  } catch (err) {
+    toast.error("Failed to send OTP. Check server logs.");
+    console.error(err);
+  }
+};
+
 
   const verifyOtp = async () => {
+  if (!formData.phone) return toast.error("Enter phone number first!");
+  if (!otp) return toast.error("Enter OTP first!");
+
+  const digits = formData.phone.replace(/\D/g, "");
+  const phoneNumber = `+1${digits}`; // SAME format as sendOtp
+
+  try {
     const res = await fetch("/api-2/verify-otp", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phoneNumber: formData.phone, code: otp }),
+      body: JSON.stringify({ phoneNumber, code: otp }),
     });
+
     const data = await res.json();
     if (data.success) {
       setIsVerified(true);
       toast.success("Phone verified!");
     } else toast.error(data.message);
-  };
+  } catch (err) {
+    toast.error("Failed to verify OTP. Check server logs.");
+    console.error(err);
+  }
+};
 
   const [formData, setFormData] = useState(
     shippingInfo || {
@@ -158,7 +184,38 @@ export default function Checkout() {
     userType,
   ])
 
-  const handleInputChange = (field: string, value: string) => {
+ const formatPhoneNumber = (value: string, country: "US" | "IN" = "US") => {
+  // Remove all non-numeric characters
+  const cleaned = value.replace(/\D/g, "");
+
+  if (country === "US") {
+    // Limit to 10 digits
+    const limited = cleaned.slice(0, 10);
+
+    // Format as (XXX) XXX-XXXX
+    if (limited.length <= 3) {
+      return limited;
+    } else if (limited.length <= 6) {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+    } else {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
+    }
+  } else if (country === "IN") {
+    // Limit to 10 digits
+    const limited = cleaned.slice(0, 10);
+
+    // Format as XXXXX-XXXXX (common Indian mobile format)
+    if (limited.length <= 5) {
+      return limited;
+    } else {
+      return `${limited.slice(0, 5)}-${limited.slice(5)}`;
+    }
+  }
+
+  return cleaned; // fallback
+};
+
+ const handleInputChange = (field: string, value: string) => {
     let error = ""
     const country = formData.country
 
@@ -171,13 +228,16 @@ export default function Checkout() {
         }
         break
       case "phone":
-        const phoneRegex = /^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$/
-        if (country === "US" && value && !phoneRegex.test(value)) {
-          error = "Enter a valid US phone (e.g., 555-123-4567)"
-        } else if (country === "CA" && value && !phoneRegex.test(value)) {
-          error = "Enter a valid Canadian phone (e.g., 416-123-4567)"
+        const formatted = formatPhoneNumber(value)
+        const digitsOnly = formatted.replace(/\D/g, "")
+        
+        if (digitsOnly.length > 0 && digitsOnly.length < 10) {
+          error = "Phone number must be 10 digits"
         }
-        break
+        
+        setFormData((prev) => ({ ...prev, [field]: formatted }))
+        setErrors((prev) => ({ ...prev, [field]: error }))
+        return
       case "zipCode":
         if (country === "US" && !/^\d{5}(-\d{4})?$/.test(value)) {
           error = "Enter a valid US ZIP (12345 or 12345-6789)"
@@ -189,13 +249,6 @@ export default function Checkout() {
 
     setFormData((prev) => ({ ...prev, [field]: value }))
     setErrors((prev) => ({ ...prev, [field]: error }))
-
-     // Simple check: country code usually starts with +
-    if (value && !/^\+\d{10,15}$/.test(value)) {
-      setError("Please enter a valid phone number with country code");
-    } else {
-      setError("");
-    }
   }
 
   const handleBillingInputChange = (field: string, value: string) => {
@@ -455,15 +508,26 @@ export default function Checkout() {
                   <div>
                     <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
                      <div className="flex gap-2 items-center">
-                        <input
-                          type="tel"
-                          placeholder="(555) 123-4567"
-                          value={formData.phone}
-                          onChange={(e) => handleInputChange("phone", e.target.value)}
-                          className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
-                          required
-                          disabled={otpSent && !isVerified} // prevent change after sending OTP
-                        />
+                       <input
+                            type="tel"
+                            placeholder="(555) 123-4567"
+                            value={formData.phone}
+                            onChange={(e) => {
+                              let value = e.target.value;
+
+                              // Remove any leading +1 if the user types it
+                              if (value.startsWith("+1")) {
+                                value = value.slice(2);
+                              }
+
+                              handleInputChange("phone", value);
+                            }}
+                            className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF]
+                             rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] 
+                             font-exo2"
+                            required
+                            disabled={otpSent && !isVerified}
+                          />
 
                         {!otpSent ? (
                           <button
@@ -471,7 +535,7 @@ export default function Checkout() {
                             onClick={sendOtp}
                             className="bg-[#009AFF] px-4 rounded-md text-white font-exo2"
                           >
-                            Send OTP
+                            Send Code
                           </button>
                         ) : (
                           <button

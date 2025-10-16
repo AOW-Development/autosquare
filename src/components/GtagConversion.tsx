@@ -29,8 +29,16 @@ export default function GtagConversion({
   useEffect(() => {
     if (!orderId) return;
 
-    // Push purchase event to dataLayer for Google Analytics
+    // Ensure global gtag exists
+    if (typeof window === 'undefined') return;
+
+    // Initialize dataLayer if missing
     window.dataLayer = window.dataLayer || [];
+
+    // Log for debugging
+    console.log('🔹 Sending GA purchase event:', { orderId, orderTotal, currency, items });
+
+    // Push purchase event to GA4
     window.dataLayer.push({
       event: 'purchase',
       ecommerce: {
@@ -46,18 +54,19 @@ export default function GtagConversion({
       },
     });
 
-    // Trigger Google Ads conversion using the <script> format
+    // Trigger Google Ads conversion
     if (typeof window.gtag === 'function') {
-      window.gtag('event', 'conversion', {
-        send_to: 'AW-17273467579/h4FRCNLj86cbELvl0KxA',
-        value: orderTotal,        // Dynamic order total
-        currency: currency,      // Default to USD
-        transaction_id: orderId, // Dynamic order ID
+      window.gtag('event', 'purchase', {
+        send_to: 'AW-17273467579/h4FRCNLj86cbELvl0KxA', // ✅ make sure this matches your Ads conversion ID
+        value: orderTotal,
+        currency,
+        transaction_id: orderId,
       });
+      console.log('✅ Google Ads conversion event sent');
+    } else {
+      console.warn('⚠️ window.gtag not defined - check your <Script> setup.');
     }
-
-    console.log('Conversion event pushed:', orderId, orderTotal, items);
-  }, [orderId, orderTotal, items, currency]);
+  }, [orderId, orderTotal, currency, items]);
 
   return null;
 }

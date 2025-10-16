@@ -407,7 +407,7 @@ export default function ThankYouPage() {
        
       
            {/* Hidden conversion component */}
-      <div className="hidden">
+      <div className="">
         {orderNumber && cartItems.length > 0 && (
           <GtagConversion
             orderId={orderNumber}

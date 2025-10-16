@@ -505,59 +505,66 @@ const sendOtp = async () => {
                   </div>
 
                   {/* Mobile */}
-                  <div>
-                    <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
-                     <div className="flex gap-2 items-center">
-                       <input
+             <div>
+                        <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+
+                        {/* Phone input + Send Code */}
+                        <div className="flex gap-2 items-center">
+                          <input
                             type="tel"
                             placeholder="(555) 123-4567"
                             value={formData.phone}
                             onChange={(e) => {
                               let value = e.target.value;
-
-                              // Remove any leading +1 if the user types it
                               if (value.startsWith("+1")) {
                                 value = value.slice(2);
                               }
-
                               handleInputChange("phone", value);
                             }}
                             className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF]
-                             rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] 
-                             font-exo2"
+                            rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] 
+                            font-exo2 transition-all duration-200"
                             required
                             disabled={otpSent && !isVerified}
                           />
 
-                        {!otpSent ? (
-                          <button
-                            type="button"
-                            onClick={sendOtp}
-                            className="bg-[#009AFF] px-4 rounded-md text-white font-exo2"
-                          >
-                            Send Code
-                          </button>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={verifyOtp}
-                            className="bg-green-500 px-4 rounded-md text-white font-exo2"
-                            disabled={isVerified}
-                          >
-                            Verify
-                          </button>
-                        )}
-                         </div>
+                          {!otpSent && (
+                            <button
+                              type="button"
+                              onClick={sendOtp}
+                              className="bg-[#009AFF] hover:bg-[#00B8FF] active:scale-95 
+                              transition-all duration-200 px-4 py-0.5 rounded-md text-white 
+                              font-exo2 shadow-md hover:shadow-[#009AFF]/50"
+                            >
+                              Send Code
+                            </button>
+                          )}
+                        </div>
 
-                        {/* OTP input field */}
+                        {/* OTP input + Verify inline */}
                         {otpSent && !isVerified && (
-                          <input
-                            type="text"
-                            placeholder="Enter OTP"
-                            value={otp}
-                            onChange={(e) => setOtp(e.target.value)}
-                            className="mt-2 w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
-                          />
+                          <div className="flex gap-2 items-center mt-2">
+                            <input
+                              type="text"
+                              placeholder="Enter OTP"
+                              value={otp}
+                              onChange={(e) => setOtp(e.target.value)}
+                              className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] 
+                              rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] 
+                              font-exo2 transition-all duration-200"
+                            />
+
+                            <button
+                              type="button"
+                              onClick={verifyOtp}
+                              className="bg-green-500 hover:bg-green-600 active:scale-95 
+                              transition-all duration-200 px-4 py-2 rounded-md text-white 
+                              font-exo2 shadow-md hover:shadow-green-400/40"
+                              disabled={isVerified}
+                            >
+                              Verify
+                            </button>
+                          </div>
                         )}
 
                         {/* Error message */}
@@ -565,9 +572,12 @@ const sendOtp = async () => {
 
                         {/* Success message */}
                         {isVerified && (
-                          <p className="mt-2 text-green-400 font-exo2 text-sm">Phone verified successfully ✅</p>
+                          <p className="mt-2 text-green-400 font-exo2 text-sm">
+                            Phone verified successfully ✅
+                          </p>
                         )}
                       </div>
+
                       </div>
               </form>
             </div>

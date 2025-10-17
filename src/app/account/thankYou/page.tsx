@@ -1,6 +1,4 @@
 "use client"
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
@@ -13,6 +11,7 @@ import { toast } from "react-hot-toast"
 import useAuthStore from "@/store/authStore"
 import { OrderEmailData } from "@/lib/mail"
 import GtagConversion from "@/components/GtagConversion"
+import Script from "next/script"
 
 export default function ThankYouPage() {
   
@@ -219,6 +218,7 @@ export default function ThankYouPage() {
   }, [user])
 
   return (
+    
     <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
       {/* Background Car Image */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -404,7 +404,17 @@ export default function ThankYouPage() {
       </main>
 
       {/* ✅ Popup for duplicate view */}
-       
+         <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('event', 'purchase', {
+              'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA'
+            });
+          `,
+        }}
+      />
       
            {/* Hidden conversion component */}
       <div className="">
@@ -422,6 +432,7 @@ export default function ThankYouPage() {
         )}
       </div>
     </div>
+    
     
      
   )

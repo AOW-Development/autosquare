@@ -12,9 +12,10 @@ import useAuthStore from "@/store/authStore"
 import { OrderEmailData } from "@/lib/mail"
 import GtagConversion from "@/components/GtagConversion"
 import Script from "next/script"
+import { useSearchParams } from 'next/navigation'
 
 export default function ThankYouPage() {
-  
+  const searchParams = useSearchParams()
   const { billingInfo } = useBillingStore()
   const cartItems = useCartStore((s) => s.items)
   const [orderNumber, setOrderNumber] = useState("")
@@ -30,6 +31,8 @@ export default function ThankYouPage() {
   const [showPopup, setShowPopup] = useState(false)
   const hasProcessed = useRef(false)
   const hasRunRef = useRef(false)
+
+  
 
   // this clears the cart on unmount
   useEffect(()=>{
@@ -404,18 +407,22 @@ export default function ThankYouPage() {
       </main>
 
       {/* ✅ Popup for duplicate view */}
-         <script
+              <Script
+        id="google-ads-conversion"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
-            gtag('event', 'purchase', {
-              'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA'
+            gtag('event', 'conversion', {
+              'send_to': 'AW-17273467579/h4FRCNLj86cbELvl0KxA',
+              'value': ${subtotal},
+              'currency': 'USD',
+              'transaction_id': '${orderNumber}'
             });
           `,
         }}
       />
-      
            {/* Hidden conversion component */}
       <div className="">
         {orderNumber && cartItems.length > 0 && (

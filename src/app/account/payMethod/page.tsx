@@ -35,6 +35,12 @@ const [otpSent, setOtpSent] = useState(false)
 const [otp, setOtp] = useState("")
 const [isVerified, setIsVerified] = useState(false)
 const [error, setError] = useState("")
+
+const INDIAN_TEST_NUMBERS = [
+  "+918073450249",
+  "+918867303611"  // Replace with your actual test numbers
+ 
+];
   
 
   const searchParams = useSearchParams()
@@ -671,7 +677,22 @@ const sendOtp = async () => {
   // Remove all non-digit characters
   const digits = shippingFormData.phone.replace(/\D/g, "");
   // Add +91 for India (adjust if needed)
-  const phoneNumber = `+1${digits}`;
+    let phoneNumber: string;
+    let isIndianNumber = false;
+    if (digits.length === 10 && /^[6-9]/.test(digits)) {
+      // Potential Indian number
+      phoneNumber = `+91${digits}`;
+      isIndianNumber = true;
+    } else if (digits.length === 10) {
+      // US number
+      phoneNumber = `+1${digits}`;
+    } else {
+      return toast.error("Enter a valid 10-digit phone number");
+    }
+
+    if (isIndianNumber && !INDIAN_TEST_NUMBERS.includes(phoneNumber)) {
+      return toast.error("Only US numbers and specific test Indian numbers are allowed");
+    }
 
   try {
     const res = await fetch("/api-2/send-otp", {
@@ -700,7 +721,12 @@ const verifyOtp = async () => {
 
   // Remove all non-digit characters
   const digits = shippingFormData.phone.replace(/\D/g, "");
-  const phoneNumber = `+1${digits}`; // SAME format as sendOtp
+   let phoneNumber: string;
+    if (digits.length === 10 && /^[6-9]/.test(digits)) {
+      phoneNumber = `+91${digits}`;
+    } else {
+      phoneNumber = `+1${digits}`;
+    } // SAME format as sendOtp
 
   try {
     const res = await fetch("/api-2/verify-otp", {

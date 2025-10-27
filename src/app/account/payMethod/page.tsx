@@ -38,7 +38,9 @@ const [error, setError] = useState("")
 
 const INDIAN_TEST_NUMBERS = [
   "+918073450249",
-  "+918867303611"  // Replace with your actual test numbers
+  "+918867303611",
+  "+918494907891",
+  "+919358455659"// Replace with your actual test numbers
  
 ];
   

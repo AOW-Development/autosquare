@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image"
 import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
+import { use, useEffect, useRef, useState } from "react"
 import useBillingStore from "@/store/billingStore"
 import { useCartStore } from "@/store/cartStore"
 import { generateOrderNumber } from "@/utils/order"
@@ -32,13 +32,16 @@ export default function ThankYouPage() {
   const hasProcessed = useRef(false)
   const hasRunRef = useRef(false)
 
-  
-
-  // this clears the cart on unmount
-  useEffect(()=>{
+  // Clear cart when user leaves this page
+useEffect(() => {
+  return () => {
+    // This runs when component unmounts (user leaves the page)
     localStorage.removeItem("cart-storage")
-  },[]);
-
+    useCartStore.getState().clear()
+    console.log("User left Thank You page - cart cleared!")
+  }
+}, [])
+  
   // Card image mapping
   const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
@@ -64,7 +67,7 @@ export default function ThankYouPage() {
   }, [])
 
 
-  // ✅ MAIN: Run once to create order + send invoice
+  //  MAIN: Run once to create order + send invoice
   useEffect(() => {
     if (hasRunRef.current) return
     hasRunRef.current = true
@@ -211,6 +214,10 @@ export default function ThankYouPage() {
           viewedOrders.push(orderNum)
           localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
         }
+        // clear local storage and zustand cart
+        localStorage.removeItem("cart-Storage");
+        useCartStore.getState().clear()
+
       } catch (error) {
         console.error("Error creating order:", error)
         toast.error("Failed to process order. Please contact support.")

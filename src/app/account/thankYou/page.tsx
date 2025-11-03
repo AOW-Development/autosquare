@@ -14,6 +14,23 @@ import GtagConversion from "@/components/GtagConversion";
 import Script from "next/script";
 import { useSearchParams } from "next/navigation";
 
+// ✅ Helper to detect if storage is available
+const isStorageAvailable = (
+  type: "localStorage" | "sessionStorage"
+): boolean => {
+  if (typeof window === "undefined") return false;
+  try {
+    const storage = window[type];
+    const testKey = "__storage_test__";
+    storage.setItem(testKey, "test");
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    console.warn(`${type} is not available on this device:`, error);
+    return false;
+  }
+};
+
 // Helper function to safely access localStorage
 const safeLocalStorageGet = (
   key: string,
@@ -95,19 +112,82 @@ function ThankYouPageContent() {
   const [showPopup, setShowPopup] = useState(false);
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+  const [orderItems, setOrderItems] = useState<typeof cartItems>([]);
 
-  // Clear cart when user leaves this page
+  // ✅ Effect 1: Check storage availability
   useEffect(() => {
-   
-      // This runs when component unmounts (user leaves the page)
-      setTimeout(() => {
-      safeLocalStorageRemove("cart-storage");
+    const hasLocal = isStorageAvailable("localStorage");
+    const hasSession = isStorageAvailable("sessionStorage");
 
-   
-      console.log("User left Thank You page - cart cleared!");
-      }, 10000); // Delay to ensure order processing is complete
-
+    if (!hasLocal || !hasSession) {
+      toast.error(
+        "Your browser does not fully support storage. Some order features may not work properly.",
+        { duration: 6000 }
+      );
+    }
   }, []);
+
+  // ✅ Effect 2: Wait for cart hydration
+  useEffect(() => {
+    const unsubscribe = useCartStore.persist.onFinishHydration(() => {
+      console.log("Cart store hydrated successfully");
+      setIsHydrated(true);
+    });
+
+    // Fallback: Force hydration after 2 seconds
+    const timeout = setTimeout(() => {
+      if (!isHydrated) {
+        console.warn("Cart hydration timeout - forcing hydration complete");
+        setIsHydrated(true);
+      }
+    }, 2000);
+
+    return () => {
+      clearTimeout(timeout);
+      unsubscribe?.();
+    };
+  }, [isHydrated]);
+
+  // ✅ Effect 3: Load cart items (from store or sessionStorage backup)
+  useEffect(() => {
+    if (!isHydrated) {
+      console.log("Effect 3: Not hydrated yet, skipping cart load");
+      return;
+    }
+
+    console.log(
+      "Effect 3: Hydrated, checking cart items. Store has:",
+      cartItems?.length || 0
+    );
+
+    if (cartItems && cartItems.length > 0) {
+      console.log("✅ Cart items loaded from store:", cartItems.length);
+      setOrderItems(cartItems);
+    } else {
+      // Fallback: Try to get from sessionStorage backup
+      console.log("⚠️ Cart store is empty, checking sessionStorage backup...");
+      const backup = safeSessionStorageGet("checkoutCartItems");
+      if (backup) {
+        try {
+          const parsedItems = JSON.parse(backup);
+          console.log("✅ Cart items loaded from backup:", parsedItems.length);
+          setOrderItems(parsedItems);
+        } catch (e) {
+          console.error("❌ Failed to parse backup cart:", e);
+          toast.error("Unable to retrieve cart items. Please contact support.");
+        }
+      } else {
+        console.error("❌ No cart items found in store or backup");
+        toast.error(
+          "Cart items not found. Please try placing your order again or contact support."
+        );
+      }
+    }
+  }, [isHydrated, cartItems]);
+
+  // ✅ Effect 4: Removed premature cart clearing to prevent issues
+  // Cart will be cleared after successful order creation instead
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -118,41 +198,65 @@ function ThankYouPageContent() {
   };
 
   const cardImage = cardImageMap[cardType];
-  const subtotal = cartItems.reduce(
+  const subtotal = orderItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
 
-  useEffect(() => {
-    // Check if the page was reloaded - Safari iOS compatible check
-    if (typeof window !== "undefined") {
-      try {
-        const navigation = performance.getEntriesByType(
-          "navigation"
-        ) as PerformanceNavigationTiming[];
-        if (
-          navigation &&
-          navigation.length > 0 &&
-          navigation[0]?.type === "reload"
-        ) {
-          alert(
-            "You cannot reload this page. Your order has already been processed we will redirect to homepage."
-          );
-          window.location.href = "/";
-          return;
-        }
-      } catch (error) {
-        // Fallback: Just log the error, don't block the page
-        console.warn("Could not check navigation type:", error);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Check if the page was reloaded - Safari iOS compatible check
+  //   if (typeof window !== "undefined") {
+  //     try {
+  //       const navigation = performance.getEntriesByType(
+  //         "navigation"
+  //       ) as PerformanceNavigationTiming[];
+  //       if (
+  //         navigation &&
+  //         navigation.length > 0 &&
+  //         navigation[0]?.type === "reload"
+  //       ) {
+  //         alert(
+  //           "You cannot reload this page. Your order has already been processed we will redirect to homepage."
+  //         );
+  //         window.location.href = "/";
+  //         return;
+  //       }
+  //     } catch (error) {
+  //       // Fallback: Just log the error, don't block the page
+  //       console.warn("Could not check navigation type:", error);
+  //     }
+  //   }
+  // }, []);
 
-  //  MAIN: Run once to create order + send invoice
+  //  ✅ MAIN Effect 5: Run once to create order + send invoice (after hydration)
   useEffect(() => {
-    if (hasRunRef.current) return;
+    // ✅ Wait for hydration before processing
+    if (!isHydrated) {
+      console.log("Effect 5: Waiting for cart hydration...");
+      return;
+    }
+
+    // ✅ Wait for orderItems to be populated
+    if (!orderItems || orderItems.length === 0) {
+      console.log(
+        "Effect 5: Waiting for order items to load... Current:",
+        orderItems?.length || 0
+      );
+      return;
+    }
+
+    if (hasRunRef.current) {
+      console.log("Effect 5: Already processed, skipping");
+      return;
+    }
+
+    console.log(
+      "✅ Effect 5: All conditions met, starting order creation with",
+      orderItems.length,
+      "items"
+    );
     hasRunRef.current = true;
 
     const orderData = safeSessionStorageGet("orderData");
@@ -201,9 +305,58 @@ function ThankYouPageContent() {
 
     const createOrder = async () => {
       try {
+        // ✅ Double-check orderItems at execution time (prevent stale closure)
+        const currentOrderItems = orderItems;
+        console.log(
+          "🔍 CreateOrder executing with items count:",
+          currentOrderItems?.length || 0
+        );
+
+        // ✅ Validation 1: Check storage availability
+        if (
+          !isStorageAvailable("sessionStorage") ||
+          !isStorageAvailable("localStorage")
+        ) {
+          toast.error(
+            "Unable to process order — storage not supported on this device."
+          );
+          return;
+        }
+
+        // ✅ Validation 2: Check cart items (use currentOrderItems to avoid stale closure)
+        if (!currentOrderItems || currentOrderItems.length === 0) {
+          console.error(
+            "❌ Order creation attempted with empty cart. Items:",
+            currentOrderItems
+          );
+          console.error("OrderItems state:", orderItems);
+          console.error("CartItems from store:", cartItems);
+          toast.error(
+            "Cart is empty. Unable to create order. Please contact support with order #" +
+              orderNum
+          );
+          return;
+        }
+
+        // ✅ Validation 3: Check order number
+        if (!orderNum) {
+          console.error("❌ Order number is missing");
+          toast.error("Order number missing. Please contact support.");
+          return;
+        }
+
+        console.log(
+          "✅ Validation passed - Creating order with",
+          currentOrderItems.length,
+          "items"
+        );
+
         const orderData = safeSessionStorageGet("orderData");
         if (!orderData) {
           console.error("No order data found in session storage");
+          toast.error(
+            "Order data not found. Please try again or contact support."
+          );
           return;
         }
 
@@ -253,7 +406,7 @@ function ThankYouPageContent() {
           payment: parsedOrderData.payment,
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
-          cartItems: cartItems,
+          cartItems: currentOrderItems, // ✅ Use currentOrderItems to avoid stale closure
           orderNumber: orderNum,
           totalAmount: total,
           subtotal: subtotal,
@@ -335,12 +488,13 @@ function ThankYouPageContent() {
         // useCartStore.getState().clear();
       } catch (error) {
         console.error("Error creating order:", error);
-        toast.error("Failed to process order. Please contact support.");
+        // toast.error(error);
+        alert(error);
       }
     };
 
     createOrder();
-  }, [user]);
+  }, [isHydrated, orderItems, user]); // ✅ Added orderItems to trigger after population
 
   return (
     <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
@@ -476,8 +630,8 @@ function ThankYouPageContent() {
             <div className="text-sm text-white">{orderDate}</div>
           </div>
 
-          {cartItems.length > 0 ? (
-            cartItems.map((item) => (
+          {orderItems.length > 0 ? (
+            orderItems.map((item) => (
               <div
                 key={item.id}
                 className="flex flex-row items-start gap-4 py-2"
@@ -510,7 +664,7 @@ function ThankYouPageContent() {
           ) : (
             <div className="flex flex-row items-start gap-4 py-2">
               <div className="text-white text-center w-full">
-                No items in cart
+                {isHydrated ? "No items in cart" : "Loading order details..."}
               </div>
             </div>
           )}
@@ -572,11 +726,11 @@ function ThankYouPageContent() {
       )}
       {/* Hidden conversion component */}
       <div className="">
-        {orderNumber && cartItems.length > 0 && (
+        {orderNumber && orderItems.length > 0 && (
           <GtagConversion
             orderId={orderNumber}
             orderTotal={subtotal}
-            items={cartItems.map((item) => ({
+            items={orderItems.map((item) => ({
               itemId: item.id || "unknown",
               itemName: item.title || "unknown",
               price: item.price || 0,
@@ -602,4 +756,3 @@ export default function ThankYouPage() {
     </Suspense>
   );
 }
-

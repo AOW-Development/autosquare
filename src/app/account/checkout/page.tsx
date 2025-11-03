@@ -1033,7 +1033,7 @@ const sendOtp = async () => {
 
                         {/* CRITICAL FIX: The break-all class forces the long string to wrap mid-word */}
                         <p className="font-exo2 text-sm sm:text-base text-white font-bold break-words">
-                        {item.title.includes("Used") ? (
+                        {item.title?.includes("Used") ? (
                           <>
                             {item.title.split(/Used/i)[0].trim()}
                             <br />

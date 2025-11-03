@@ -1,70 +1,118 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import Image from "next/image"
-import Link from "next/link"
-import { useRouter, useSearchParams } from "next/navigation"
-import useBillingStore from "@/store/billingStore"
-import { useShippingStore } from "@/store/shippingStore"
-import useAuthStore from "@/store/authStore"
-import { useCartStore } from "@/store/cartStore"
-import type { PaymentInfo } from "@/store/paymentStore"
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
+import useBillingStore from "@/store/billingStore";
+import { useShippingStore } from "@/store/shippingStore";
+import useAuthStore from "@/store/authStore";
+import { useCartStore } from "@/store/cartStore";
+import type { PaymentInfo } from "@/store/paymentStore";
 // Remove local CartItem interface entirely, use global type
-import { getCardType, isValidCardNumber } from "@/utils/cardUtil"
-import { generateOrderNumber } from "@/utils/order"
+import { getCardType, isValidCardNumber } from "@/utils/cardUtil";
+import { generateOrderNumber } from "@/utils/order";
 // import { State } from "country-state-city"
-import toast from "react-hot-toast"
+import toast from "react-hot-toast";
 
 export default function PayMethod() {
-  const [paymentMethod, setPaymentMethod] = useState("card")
-  const [billingAddressExpanded, setBillingAddressExpanded] = useState(true)
-  const { billingInfo, setBillingInfo } = useBillingStore()
+  const [paymentMethod, setPaymentMethod] = useState("card");
+  const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
+  const { billingInfo, setBillingInfo } = useBillingStore();
   // INTENTIONAL: We need shippingInfo here for order submission
-  const { shippingInfo, setShippingInfo } = useShippingStore()
-  const { user } = useAuthStore()
-  const cartItems = useCartStore((s) => s.items)
-  const [userType, setUserType] = useState("Individual")
-  const [sameAsShipping, setSameAsShipping] = useState(false)
-  const [buyInOneClick, setBuyInOneClick] = useState(false)
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const { shippingInfo, setShippingInfo } = useShippingStore();
+  const { user } = useAuthStore();
+  const cartItems = useCartStore((s) => s.items);
+  const [userType, setUserType] = useState("Individual");
+  const [sameAsShipping, setSameAsShipping] = useState(false);
+  const [buyInOneClick, setBuyInOneClick] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   // default to Apple Pay
 
-const [otpSent, setOtpSent] = useState(false)
-const [otp, setOtp] = useState("")
-const [isVerified, setIsVerified] = useState(false)
-const [error, setError] = useState("")
+  const [otpSent, setOtpSent] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [isVerified, setIsVerified] = useState(false);
+  const [error, setError] = useState("");
 
-const INDIAN_TEST_NUMBERS = [
-  "+918073450249",
-  "+918867303611",
-  "+918494907891",
-  "+919358455659"// Replace with your actual test numbers
- 
-];
-  
+  const INDIAN_TEST_NUMBERS = [
+    "+918073450249",
+    "+918867303611",
+    "+918494907891",
+    "+919358455659", // Replace with your actual test numbers
+  ];
 
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
   const US_STATES = [
-  "Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut",
-  "Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa",
-  "Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan",
-  "Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada",
-  "New Hampshire","New Jersey","New Mexico","New York","North Carolina",
-  "North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island",
-  "South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont",
-  "Virginia","Washington","West Virginia","Wisconsin","Wyoming"
-]
+    "Alabama",
+    "Alaska",
+    "Arizona",
+    "Arkansas",
+    "California",
+    "Colorado",
+    "Connecticut",
+    "Delaware",
+    "Florida",
+    "Georgia",
+    "Hawaii",
+    "Idaho",
+    "Illinois",
+    "Indiana",
+    "Iowa",
+    "Kansas",
+    "Kentucky",
+    "Louisiana",
+    "Maine",
+    "Maryland",
+    "Massachusetts",
+    "Michigan",
+    "Minnesota",
+    "Mississippi",
+    "Missouri",
+    "Montana",
+    "Nebraska",
+    "Nevada",
+    "New Hampshire",
+    "New Jersey",
+    "New Mexico",
+    "New York",
+    "North Carolina",
+    "North Dakota",
+    "Ohio",
+    "Oklahoma",
+    "Oregon",
+    "Pennsylvania",
+    "Rhode Island",
+    "South Carolina",
+    "South Dakota",
+    "Tennessee",
+    "Texas",
+    "Utah",
+    "Vermont",
+    "Virginia",
+    "Washington",
+    "West Virginia",
+    "Wisconsin",
+    "Wyoming",
+  ];
 
   const CA_PROVINCES = [
-  "Alberta","British Columbia","Manitoba","New Brunswick",
-  "Newfoundland and Labrador","Nova Scotia","Ontario",
-  "Prince Edward Island","Quebec","Saskatchewan",
-  "Northwest Territories","Nunavut","Yukon"
-]
-
+    "Alberta",
+    "British Columbia",
+    "Manitoba",
+    "New Brunswick",
+    "Newfoundland and Labrador",
+    "Nova Scotia",
+    "Ontario",
+    "Prince Edward Island",
+    "Quebec",
+    "Saskatchewan",
+    "Northwest Territories",
+    "Nunavut",
+    "Yukon",
+  ];
 
   const [billingFormData, setBillingFormData] = useState({
     firstName: "",
@@ -78,7 +126,7 @@ const INDIAN_TEST_NUMBERS = [
     city: "",
     state: "",
     zipCode: "",
-  })
+  });
 
   const [shippingFormData, setShippingFormData] = useState({
     firstName: "",
@@ -92,28 +140,32 @@ const INDIAN_TEST_NUMBERS = [
     city: "",
     state: "",
     zipCode: "",
-  })
+  });
 
-  const [shippingStates, setShippingStates] = useState<{ name: string; isoCode: string }[]>([])
-  const [shippingUserType, setShippingUserType] = useState("Individual")
-  const [shippingErrors, setShippingErrors] = useState<{ [key: string]: string }>({})
-  const [isShippingSaved, setIsShippingSaved] = useState(false)
-  const [isBillingSaved, setIsBillingSaved] = useState(false)
+  const [shippingStates, setShippingStates] = useState<
+    { name: string; isoCode: string }[]
+  >([]);
+  const [shippingUserType, setShippingUserType] = useState("Individual");
+  const [shippingErrors, setShippingErrors] = useState<{
+    [key: string]: string;
+  }>({});
+  const [isShippingSaved, setIsShippingSaved] = useState(false);
+  const [isBillingSaved, setIsBillingSaved] = useState(false);
 
   useEffect(() => {
-    const isBuyInOneClick = searchParams.get("buyInOneClick") === "true"
-    setBuyInOneClick(isBuyInOneClick)
+    const isBuyInOneClick = searchParams.get("buyInOneClick") === "true";
+    setBuyInOneClick(isBuyInOneClick);
     if (isBuyInOneClick) {
-    setIsShippingSaved(false)
-    setIsBillingSaved(false)
-  }
-  }, [searchParams])
+      setIsShippingSaved(false);
+      setIsBillingSaved(false);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
-    console.log(shippingInfo)
+    console.log(shippingInfo);
 
-    setShippingInfo(shippingInfo)
-  }, [shippingInfo, setShippingInfo, sameAsShipping])
+    setShippingInfo(shippingInfo);
+  }, [shippingInfo, setShippingInfo, sameAsShipping]);
 
   useEffect(() => {
     if (sameAsShipping && billingInfo) {
@@ -128,12 +180,12 @@ const INDIAN_TEST_NUMBERS = [
         city: shippingInfo?.city || "",
         state: shippingInfo?.state || "",
         zipCode: shippingInfo?.zipCode || "",
-      })
-       if (buyInOneClick) {
-      setIsBillingSaved(isShippingSaved)
-    }
+      });
+      if (buyInOneClick) {
+        setIsBillingSaved(isShippingSaved);
+      }
     } else if (!sameAsShipping) {
-      console.log(billingFormData)
+      console.log(billingFormData);
 
       setBillingFormData({
         firstName: "",
@@ -146,12 +198,12 @@ const INDIAN_TEST_NUMBERS = [
         city: "",
         state: "",
         zipCode: "",
-      })
+      });
       if (buyInOneClick) {
-      setIsBillingSaved(false)
+        setIsBillingSaved(false);
+      }
     }
-    }
-  }, [sameAsShipping, shippingInfo,isShippingSaved])
+  }, [sameAsShipping, shippingInfo, isShippingSaved]);
 
   useEffect(() => {
     if (buyInOneClick && sameAsShipping) {
@@ -166,214 +218,262 @@ const INDIAN_TEST_NUMBERS = [
         city: shippingFormData.city || "",
         state: shippingFormData.state || "",
         zipCode: shippingFormData.zipCode || "",
-      })
+      });
     }
-  }, [buyInOneClick, sameAsShipping, shippingFormData])
+  }, [buyInOneClick, sameAsShipping, shippingFormData]);
 
   const [cardData, setCardData] = useState({
     cardNumber: "",
     cardholderName: "",
     expirationDate: "",
     securityCode: "",
-  })
+  });
 
   const [cardErrors, setCardErrors] = useState({
     cardNumber: "",
     cardholderName: "",
     expirationDate: "",
     securityCode: "",
-  })
+  });
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  
-  const total = subtotal
- 
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+
+  const total = subtotal;
+
   const handleCardInputChange = (field: string, value: string) => {
     if (field === "cardholderName") {
-      const onlyLetters = /^[A-Za-z\s]*$/
+      const onlyLetters = /^[A-Za-z\s]*$/;
       if (!onlyLetters.test(value)) {
         setCardErrors((prev) => ({
           ...prev,
           cardholderName: "Only letters and spaces are allowed",
-        }))
-        return
+        }));
+        return;
       } else {
-        setCardErrors((prev) => ({ ...prev, cardholderName: "" }))
+        setCardErrors((prev) => ({ ...prev, cardholderName: "" }));
       }
-      setCardData((prev) => ({ ...prev, cardholderName: value }))
-      return
+      setCardData((prev) => ({ ...prev, cardholderName: value }));
+      return;
     }
 
     if (field === "cardNumber") {
-      const cleanValue = value.replace(/\D/g, "") // Remove non-digits
-      const cardType = getCardType(cleanValue)
-      setCardType(cardType || "unknown") // <--- ADD THIS LINE
+      const cleanValue = value.replace(/\D/g, ""); // Remove non-digits
+      const cardType = getCardType(cleanValue);
+      setCardType(cardType || "unknown"); // <--- ADD THIS LINE
 
-      let formatted = cleanValue
-      let maxLength = 16
+      let formatted = cleanValue;
+      let maxLength = 16;
 
       if (cardType === "American Express") {
-        maxLength = 15
+        maxLength = 15;
         formatted = cleanValue
           .slice(0, maxLength)
-          .replace(/^(\d{0,4})(\d{0,6})(\d{0,5})/, (_m, p1, p2, p3) => [p1, p2, p3].filter(Boolean).join(" "))
+          .replace(/^(\d{0,4})(\d{0,6})(\d{0,5})/, (_m, p1, p2, p3) =>
+            [p1, p2, p3].filter(Boolean).join(" ")
+          );
       } else {
         formatted = cleanValue
           .slice(0, maxLength)
           .replace(/(\d{4})(?=\d)/g, "$1 ")
-          .trim()
+          .trim();
       }
 
-      const isValid = isValidCardNumber(cleanValue)
+      const isValid = isValidCardNumber(cleanValue);
 
       if (!cardType && cleanValue.length > 0) {
-        setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }))
+        setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
       } else if (!isValid && cleanValue.length === maxLength) {
-        setCardErrors((prev) => ({ ...prev, cardNumber: "Invalid card number" }))
+        setCardErrors((prev) => ({
+          ...prev,
+          cardNumber: "Invalid card number",
+        }));
       } else {
-        setCardErrors((prev) => ({ ...prev, cardNumber: "" }))
+        setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
       }
 
-      setCardData((prev) => ({ ...prev, cardNumber: formatted }))
-      return
+      setCardData((prev) => ({ ...prev, cardNumber: formatted }));
+      return;
     }
 
     if (field === "expirationDate") {
-      const cleaned = value.replace(/\D/g, "").slice(0, 4) // MMYY
-      let formatted = cleaned
+      const cleaned = value.replace(/\D/g, "").slice(0, 4); // MMYY
+      let formatted = cleaned;
 
       if (cleaned.length >= 3) {
-        formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`
+        formatted = `${cleaned.slice(0, 2)}/${cleaned.slice(2, 4)}`;
       }
 
-      if (formatted.length > 5) return
+      if (formatted.length > 5) return;
 
       if (formatted.length === 5) {
-        const [monthStr, yearStr] = formatted.split("/")
-        const month = Number.parseInt(monthStr, 10)
-        const year = Number.parseInt(`20${yearStr}`, 10)
+        const [monthStr, yearStr] = formatted.split("/");
+        const month = Number.parseInt(monthStr, 10);
+        const year = Number.parseInt(`20${yearStr}`, 10);
 
-        const currentDate = new Date()
-        const currentMonth = currentDate.getMonth() + 1
-        const currentYear = currentDate.getFullYear()
+        const currentDate = new Date();
+        const currentMonth = currentDate.getMonth() + 1;
+        const currentYear = currentDate.getFullYear();
 
         if (month < 1 || month > 12) {
           setCardErrors((prev) => ({
             ...prev,
             expirationDate: "Month must be between 01 and 12",
-          }))
-          return
+          }));
+          return;
         }
 
-        if (year < currentYear || (year === currentYear && month < currentMonth)) {
+        if (
+          year < currentYear ||
+          (year === currentYear && month < currentMonth)
+        ) {
           setCardErrors((prev) => ({
             ...prev,
             expirationDate: "Expiration date must be in the future",
-          }))
-          return
+          }));
+          return;
         }
 
-        setCardErrors((prev) => ({ ...prev, expirationDate: "" }))
+        setCardErrors((prev) => ({ ...prev, expirationDate: "" }));
       }
 
-      setCardData((prev) => ({ ...prev, expirationDate: formatted }))
-      return
+      setCardData((prev) => ({ ...prev, expirationDate: formatted }));
+      return;
     }
 
     if (field === "securityCode") {
-      const cardType = getCardType(cardData.cardNumber.replace(/\D/g, ""))
-      const expectedLength = cardType === "American Express" ? 4 : 3
-      const cleaned = value.replace(/\D/g, "").slice(0, expectedLength)
+      const cardType = getCardType(cardData.cardNumber.replace(/\D/g, ""));
+      const expectedLength = cardType === "American Express" ? 4 : 3;
+      const cleaned = value.replace(/\D/g, "").slice(0, expectedLength);
 
       if (cleaned.length > 0 && cleaned.length !== expectedLength) {
         setCardErrors((prev) => ({
           ...prev,
           securityCode: `CVV must be ${expectedLength} digits`,
-        }))
+        }));
       } else {
-        setCardErrors((prev) => ({ ...prev, securityCode: "" }))
+        setCardErrors((prev) => ({ ...prev, securityCode: "" }));
       }
 
-      setCardData((prev) => ({ ...prev, securityCode: cleaned }))
-      return
+      setCardData((prev) => ({ ...prev, securityCode: cleaned }));
+      return;
     }
 
     // Fallback
-    setCardData((prev) => ({ ...prev, [field]: value }))
-  }
+    setCardData((prev) => ({ ...prev, [field]: value }));
+  };
 
   const isFormValid = () => {
     if (paymentMethod === "card") {
-      const cardType = getCardType(cardData.cardNumber)
-      const validLuhn = isValidCardNumber(cardData.cardNumber)
+      const cardType = getCardType(cardData.cardNumber);
+      const validLuhn = isValidCardNumber(cardData.cardNumber);
 
-      if (!cardType || !validLuhn) return false
+      if (!cardType || !validLuhn) return false;
 
-      const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length
-      const cvvLength = cardData.securityCode.length
+      const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length;
+      const cvvLength = cardData.securityCode.length;
 
       if (
-        (cardType === "Visa" || cardType === "MasterCard" || cardType === "Discover") &&
+        (cardType === "Visa" ||
+          cardType === "MasterCard" ||
+          cardType === "Discover") &&
         (cardNumberLength !== 16 || cvvLength !== 3)
       )
-        return false
+        return false;
 
-      if (cardType === "American Express" && (cardNumberLength !== 15 || cvvLength !== 4)) return false
+      if (
+        cardType === "American Express" &&
+        (cardNumberLength !== 15 || cvvLength !== 4)
+      )
+        return false;
 
-      return !!cardData.cardholderName && !!cardData.expirationDate && (buyInOneClick ? isVerified : true)
+      return (
+        !!cardData.cardholderName &&
+        !!cardData.expirationDate &&
+        (buyInOneClick ? isVerified : true)
+      );
     }
 
     // Disable for unimplemented payment methods
-    return false
-  }
+    return false;
+  };
 
-  const router = useRouter()
+  const router = useRouter();
 
   // Build payment info
   const handlePayment = async (e: React.FormEvent) => {
-    e.preventDefault()
-      if (buyInOneClick) {
-          if (!isShippingSaved) {
-              toast.error("Please save your shipping information before confirming the order.")
-              return
-            }
+    e.preventDefault();
+    if (buyInOneClick) {
+      if (!isShippingSaved) {
+        toast.error(
+          "Please save your shipping information before confirming the order."
+        );
+        return;
+      }
 
-            // Check if billing info has been saved (unless same as shipping)
-            if (!sameAsShipping && !isBillingSaved) {
-              toast.error("Please save your billing information before confirming the order.")
-              return
-            }
-      const shippingRequiredFields = ["firstName", "lastName", "email", "phone", "country", "address", "city", "state", "zipCode"]
+      // Check if billing info has been saved (unless same as shipping)
+      if (!sameAsShipping && !isBillingSaved) {
+        toast.error(
+          "Please save your billing information before confirming the order."
+        );
+        return;
+      }
+      const shippingRequiredFields = [
+        "firstName",
+        "lastName",
+        "email",
+        "phone",
+        "country",
+        "address",
+        "city",
+        "state",
+        "zipCode",
+      ];
       const shippingEmpty = shippingRequiredFields.some(
         (field) =>
           !shippingFormData[field as keyof typeof shippingFormData] ||
-          shippingFormData[field as keyof typeof shippingFormData].toString().trim() === ""
-      )
+          shippingFormData[field as keyof typeof shippingFormData]
+            .toString()
+            .trim() === ""
+      );
 
       if (shippingEmpty) {
-        toast.error("Please save your shipping information before confirming the order.")
-        return
+        toast.error(
+          "Please save your shipping information before confirming the order."
+        );
+        return;
       }
 
       if (!sameAsShipping) {
-        const billingRequiredFields = ["country", "address", "city", "state", "zipCode"]
+        const billingRequiredFields = [
+          "country",
+          "address",
+          "city",
+          "state",
+          "zipCode",
+        ];
         const billingEmpty = billingRequiredFields.some(
           (field) =>
             !billingFormData[field as keyof typeof billingFormData] ||
-            billingFormData[field as keyof typeof billingFormData].toString().trim() === ""
-        )
+            billingFormData[field as keyof typeof billingFormData]
+              .toString()
+              .trim() === ""
+        );
 
         if (billingEmpty) {
-          toast.error("Please save your billing information before confirming the order.")
-          return
+          toast.error(
+            "Please save your billing information before confirming the order."
+          );
+          return;
         }
       }
     }
 
-  
-    localStorage.setItem("paymentMethod", paymentMethod)
+    localStorage.setItem("paymentMethod", paymentMethod);
     if (paymentMethod === "card") {
-      localStorage.setItem("cardData", JSON.stringify(cardData))
+      localStorage.setItem("cardData", JSON.stringify(cardData));
     }
 
     // Build payment info
@@ -382,14 +482,14 @@ const INDIAN_TEST_NUMBERS = [
       cardData,
       billingData: billingFormData,
       billingAddressExpanded,
-    } as PaymentInfo
+    } as PaymentInfo;
 
     if (user) {
       try {
         // IMPORTANT:
         // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
         // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
-        const orderNumber = generateOrderNumber() // Generate order number once during checkout
+        const orderNumber = generateOrderNumber(); // Generate order number once during checkout
         const orderData = {
           user,
           payment,
@@ -397,20 +497,25 @@ const INDIAN_TEST_NUMBERS = [
           billing: sameAsShipping ? shippingInfo : billingInfo, // correct billing info sent
           cartItems: cartItems.length ? cartItems : (cartItems as any),
           orderNumber, // Include the generated order number
-        }
+        };
 
         // Store order data for Thank You page
-        sessionStorage.setItem("orderData", JSON.stringify(orderData))
+        sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-        router.push("/account/thankYou")
+        // ✅ Backup cart items to sessionStorage for Thank You page
+        sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
+
+        router.push("/account/thankYou");
       } catch (error) {
-        console.error("Error processing payment:", error)
+        console.error("Error processing payment:", error);
         // Handle the error appropriately, maybe show a toast message to the user
       }
     } else {
       // Determine customer email - from buy-in-one-click form or checkout page
-      const customerEmail = buyInOneClick ? shippingFormData.email : shippingInfo?.email
-      const orderNumber = generateOrderNumber() // Generate order number for guest users too
+      const customerEmail = buyInOneClick
+        ? shippingFormData.email
+        : shippingInfo?.email;
+      const orderNumber = generateOrderNumber(); // Generate order number for guest users too
 
       const orderDataForGuest = {
         payment,
@@ -420,52 +525,58 @@ const INDIAN_TEST_NUMBERS = [
             ? shippingFormData
             : shippingInfo
           : buyInOneClick
-            ? billingFormData
-            : billingInfo,
+          ? billingFormData
+          : billingInfo,
         cartItems,
         customerEmail, // use email for invoicing regardless of flow
         orderNumber, // Include the generated order number for guest users
-      }
+      };
 
-      sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest))
+      sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
+
+      // ✅ Backup cart items to sessionStorage for Thank You page
+      sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
 
       // Go directly to thank you page without sign-in for all users
-      router.push("/account/thankYou")
+      router.push("/account/thankYou");
     }
     if (buyInOneClick && !isVerified) {
-      toast.error("Please verify your phone number before confirming the order.")
-      return
-}
-  }
-  const [states, setStates] = useState<{ name: string; isoCode: string }[]>([])
+      toast.error(
+        "Please verify your phone number before confirming the order."
+      );
+      return;
+    }
+  };
+  const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
 
   const handleUserTypeChange = (type: "Individual" | "Commercial") => {
-    setUserType(type)
-    setBillingFormData((prev) => ({ ...prev, customerType: type }))
-  }
+    setUserType(type);
+    setBillingFormData((prev) => ({ ...prev, customerType: type }));
+  };
 
-   const formatPhoneNumber = (value: string, country: "US" | "IN" = "US") => {
-  // Remove all non-numeric characters
-  const cleaned = value.replace(/\D/g, "");
+  const formatPhoneNumber = (value: string, country: "US" | "IN" = "US") => {
+    // Remove all non-numeric characters
+    const cleaned = value.replace(/\D/g, "");
 
-  // Limit to 10 digits
-  const limited = cleaned.slice(0, 10);
+    // Limit to 10 digits
+    const limited = cleaned.slice(0, 10);
 
-  // Format as (XXX) XXX-XXXX for all countries
-  if (limited.length <= 3) {
-    return limited;
-  } else if (limited.length <= 6) {
-    return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
-  } else {
-    return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(6)}`;
-  }
-};
-
+    // Format as (XXX) XXX-XXXX for all countries
+    if (limited.length <= 3) {
+      return limited;
+    } else if (limited.length <= 6) {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3)}`;
+    } else {
+      return `(${limited.slice(0, 3)}) ${limited.slice(3, 6)}-${limited.slice(
+        6
+      )}`;
+    }
+  };
 
   const handleShippingUserTypeChange = (type: "Individual" | "Commercial") => {
-    setShippingUserType(type)
-    setShippingFormData((prev) => ({ ...prev, customerType: type }))
-  }
+    setShippingUserType(type);
+    setShippingFormData((prev) => ({ ...prev, customerType: type }));
+  };
 
   const handleChange = (field: string, value: string) => {
     if (field === "country") {
@@ -473,42 +584,45 @@ const INDIAN_TEST_NUMBERS = [
         ...prev,
         country: value,
         state: "", // reset state when country changes
-      }))
+      }));
     } else {
       setBillingFormData((prev) => ({
         ...prev,
         [field]: value,
-      }))
+      }));
     }
-  }
+  };
 
   const handleBillingInputChange = (field: string, value: string) => {
-    let error = ""
-    const country = billingFormData.country
+    let error = "";
+    const country = billingFormData.country;
 
     switch (field) {
       case "firstName":
       case "lastName":
       case "city":
         if (!/^[A-Za-z\s]*$/.test(value)) {
-          error = "Only letters allowed"
+          error = "Only letters allowed";
         }
-        break
+        break;
       case "phone":
-        const phoneRegex = /^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$/
+        const phoneRegex = /^\d{3}[-.\s]?\d{3}[-.\s]?\d{4}$/;
         if (country === "US" && value && !phoneRegex.test(value)) {
-          error = "Enter a valid US phone (e.g., 555-123-4567)"
+          error = "Enter a valid US phone (e.g., 555-123-4567)";
         } else if (country === "CA" && value && !phoneRegex.test(value)) {
-          error = "Enter a valid Canadian phone (e.g., 416-123-4567)"
+          error = "Enter a valid Canadian phone (e.g., 416-123-4567)";
         }
-        break
+        break;
       case "zipCode":
         if (country === "US" && !/^\d{5}(-\d{4})?$/.test(value)) {
-          error = "Enter a valid US ZIP (12345 or 12345-6789)"
-        } else if (country === "CA" && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
-          error = "Enter a valid Canadian Postal Code (e.g., K1A 0B1)"
+          error = "Enter a valid US ZIP (12345 or 12345-6789)";
+        } else if (
+          country === "CA" &&
+          !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)
+        ) {
+          error = "Enter a valid Canadian Postal Code (e.g., K1A 0B1)";
         }
-        break
+        break;
     }
 
     if (field === "country") {
@@ -516,46 +630,49 @@ const INDIAN_TEST_NUMBERS = [
         ...prev,
         country: value,
         state: "", // reset state when country changes
-      }))
+      }));
     } else {
       setBillingFormData((prev) => ({
         ...prev,
         [field]: value,
-      }))
+      }));
     }
-    setErrors((prev) => ({ ...prev, [field]: error }))
-  }
+    setErrors((prev) => ({ ...prev, [field]: error }));
+  };
 
- const handleShippingInputChange = (field: string, value: string) => {
-    let error = ""
-    const country = shippingFormData.country
+  const handleShippingInputChange = (field: string, value: string) => {
+    let error = "";
+    const country = shippingFormData.country;
 
     switch (field) {
       case "firstName":
       case "lastName":
       case "city":
         if (!/^[A-Za-z\s]*$/.test(value)) {
-          error = "Only letters allowed"
+          error = "Only letters allowed";
         }
-        break
+        break;
       case "phone":
-        const formatted = formatPhoneNumber(value, "IN")
-        const digitsOnly = formatted.replace(/\D/g, "")
-        
+        const formatted = formatPhoneNumber(value, "IN");
+        const digitsOnly = formatted.replace(/\D/g, "");
+
         if (digitsOnly.length > 0 && digitsOnly.length < 10) {
           // error = "Phone number must be 10 digits"
         }
-        
-        setShippingFormData((prev) => ({ ...prev, [field]: formatted }))
-        setShippingErrors((prev) => ({ ...prev, [field]: error }))
-        return
+
+        setShippingFormData((prev) => ({ ...prev, [field]: formatted }));
+        setShippingErrors((prev) => ({ ...prev, [field]: error }));
+        return;
       case "zipCode":
         if (country === "US" && !/^\d{5}(-\d{4})?$/.test(value)) {
-          error = "Enter a valid US ZIP (12345 or 12345-6789)"
-        } else if (country === "CA" && !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)) {
-          error = "Enter a valid Canadian Postal Code (e.g., K1A 0B1)"
+          error = "Enter a valid US ZIP (12345 or 12345-6789)";
+        } else if (
+          country === "CA" &&
+          !/^[A-Za-z]\d[A-Za-z][ -]?\d[A-Za-z]\d$/.test(value)
+        ) {
+          error = "Enter a valid Canadian Postal Code (e.g., K1A 0B1)";
         }
-        break
+        break;
     }
 
     if (field === "country") {
@@ -563,15 +680,15 @@ const INDIAN_TEST_NUMBERS = [
         ...prev,
         country: value,
         state: "", // reset state when country changes
-      }))
+      }));
     } else {
       setShippingFormData((prev) => ({
         ...prev,
         [field]: value,
-      }))
+      }));
     }
-    setShippingErrors((prev) => ({ ...prev, [field]: error }))
-  }
+    setShippingErrors((prev) => ({ ...prev, [field]: error }));
+  };
   // useEffect(() => {
   //   if (shippingFormData.country) {
   //     const fetchedStates = State.getStatesOfCountry(shippingFormData.country)
@@ -581,20 +698,20 @@ const INDIAN_TEST_NUMBERS = [
   //   }
   // }, [shippingFormData.country])
 
-  const [cardType, setCardType] = useState("unknown")
+  const [cardType, setCardType] = useState("unknown");
   const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
     MasterCard: "mastercard_82049.png",
     "American Express": "americanexpress_82060 1.png",
     Discover: "discover_82082.png",
-  }
-  const cardImage = cardImageMap[cardType]
+  };
+  const cardImage = cardImageMap[cardType];
 
   const [paymentInfo, setPaymentInfo] = useState<{
-    method: string
-    lastFour?: string
-    cardType?: string
-  }>({ method: "card" })
+    method: string;
+    lastFour?: string;
+    cardType?: string;
+  }>({ method: "card" });
 
   // INTENTIONAL DESIGN:
   // If 'Same as shipping' is NOT selected, we save the billing form data into the shipping store.
@@ -622,63 +739,84 @@ const INDIAN_TEST_NUMBERS = [
   // };
 
   const handleSave1 = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const requiredFields = [ "country", "address", "city", "state", "zipCode"]
+    const requiredFields = ["country", "address", "city", "state", "zipCode"];
 
     const emptyFields = requiredFields.filter(
       (field) =>
         !billingFormData[field as keyof typeof billingFormData] ||
-        billingFormData[field as keyof typeof billingFormData].toString().trim() === "",
-    )
+        billingFormData[field as keyof typeof billingFormData]
+          .toString()
+          .trim() === ""
+    );
 
-    console.log("billingFormData:", billingFormData)
-    console.log("Empty fields:", emptyFields)
+    console.log("billingFormData:", billingFormData);
+    console.log("Empty fields:", emptyFields);
 
     if (emptyFields.length > 0) {
-      toast.error(`Please fill in all required fields: ${emptyFields.join(", ")}`)
-      return
+      toast.error(
+        `Please fill in all required fields: ${emptyFields.join(", ")}`
+      );
+      return;
     }
 
-    setShippingInfo(shippingInfo)
-    setBillingInfo(billingFormData)
-    setIsBillingSaved(true)
-    toast.success("Billing details saved successfully!")
-  }
+    setShippingInfo(shippingInfo);
+    setBillingInfo(billingFormData);
+    setIsBillingSaved(true);
+    toast.success("Billing details saved successfully!");
+  };
 
   const handleSaveShipping = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const requiredFields = ["firstName", "lastName", "email", "phone", "country", "address", "city", "state", "zipCode"]
+    const requiredFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "country",
+      "address",
+      "city",
+      "state",
+      "zipCode",
+    ];
 
     const emptyFields = requiredFields.filter(
       (field) =>
         !shippingFormData[field as keyof typeof shippingFormData] ||
-        shippingFormData[field as keyof typeof shippingFormData].toString().trim() === "",
-    )
+        shippingFormData[field as keyof typeof shippingFormData]
+          .toString()
+          .trim() === ""
+    );
 
     if (emptyFields.length > 0) {
-      toast.error(`Please fill in all required shipping fields: ${emptyFields.join(", ")}`)
-      return
+      toast.error(
+        `Please fill in all required shipping fields: ${emptyFields.join(", ")}`
+      );
+      return;
     }
 
     if (!isVerified) {
-    toast.error("Please verify your phone number before saving shipping information.")
-    return
-  }
+      toast.error(
+        "Please verify your phone number before saving shipping information."
+      );
+      return;
+    }
 
-    setShippingInfo(shippingFormData)
-    setIsShippingSaved(true) 
-    toast.success("Shipping details saved successfully!")
-  }
+    setShippingInfo(shippingFormData);
+    setIsShippingSaved(true);
+    toast.success("Shipping details saved successfully!");
+  };
 
   // OTP Functions
-const sendOtp = async () => {
-  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
+  const sendOtp = async () => {
+    if (!shippingFormData.phone)
+      return toast.error("Enter phone number first!");
 
-  // Remove all non-digit characters
-  const digits = shippingFormData.phone.replace(/\D/g, "");
-  // Add +91 for India (adjust if needed)
+    // Remove all non-digit characters
+    const digits = shippingFormData.phone.replace(/\D/g, "");
+    // Add +91 for India (adjust if needed)
     let phoneNumber: string;
     let isIndianNumber = false;
     if (digits.length === 10 && /^[6-9]/.test(digits)) {
@@ -693,69 +831,85 @@ const sendOtp = async () => {
     }
 
     if (isIndianNumber && !INDIAN_TEST_NUMBERS.includes(phoneNumber)) {
-      return toast.error("Only US numbers and specific test Indian numbers are allowed");
+      return toast.error(
+        "Only US numbers and specific test Indian numbers are allowed"
+      );
     }
 
-  try {
-    const res = await fetch("/api-2/send-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phoneNumber }), // match backend
-    });
+    try {
+      const res = await fetch("/api-2/send-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber }), // match backend
+      });
 
-    const data = await res.json();
+      const data = await res.json();
 
-    if (data.status === "pending") {
-      setOtpSent(true);
-      toast.success("OTP sent successfully!");
-    } else {
-      toast.error(data.message || "Failed to send OTP");
+      if (data.status === "pending") {
+        setOtpSent(true);
+        toast.success("OTP sent successfully!");
+      } else {
+        toast.error(data.message || "Failed to send OTP");
+      }
+    } catch (err) {
+      toast.error("Failed to send OTP. Check server logs.");
+      console.error(err);
     }
-  } catch (err) {
-    toast.error("Failed to send OTP. Check server logs.");
-    console.error(err);
-  }
-};
+  };
 
-const verifyOtp = async () => {
-  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
-  if (!otp) return toast.error("Enter OTP first!");
+  const verifyOtp = async () => {
+    if (!shippingFormData.phone)
+      return toast.error("Enter phone number first!");
+    if (!otp) return toast.error("Enter OTP first!");
 
-  // Remove all non-digit characters
-  const digits = shippingFormData.phone.replace(/\D/g, "");
-   let phoneNumber: string;
+    // Remove all non-digit characters
+    const digits = shippingFormData.phone.replace(/\D/g, "");
+    let phoneNumber: string;
     if (digits.length === 10 && /^[6-9]/.test(digits)) {
       phoneNumber = `+91${digits}`;
     } else {
       phoneNumber = `+1${digits}`;
     } // SAME format as sendOtp
 
-  try {
-    const res = await fetch("/api-2/verify-otp", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phoneNumber, code: otp }),
-    });
+    try {
+      const res = await fetch("/api-2/verify-otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phoneNumber, code: otp }),
+      });
 
-    const data = await res.json();
-    if (data.success) {
-      setIsVerified(true);
-      toast.success("Phone verified!");
-    } else toast.error(data.message);
-  } catch (err) {
-    toast.error("Failed to verify OTP. Check server logs.");
-    console.error(err);
-  }
-};
+      const data = await res.json();
+      if (data.success) {
+        setIsVerified(true);
+        toast.success("Phone verified!");
+      } else toast.error(data.message);
+    } catch (err) {
+      toast.error("Failed to verify OTP. Check server logs.");
+      console.error(err);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="flex items-center gap-2 py-4 mt-1 bg-[#091b33] text-[#0F1E35] text-[15px] font-medium">
-          <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
-            <Image src="/engine/HouseLine.png" alt="Home" width={24} height={24} />
+          <Link
+            href="/"
+            className="flex items-center space-x-2 hover:opacity-80 transition-opacity"
+          >
+            <Image
+              src="/engine/HouseLine.png"
+              alt="Home"
+              width={24}
+              height={24}
+            />
           </Link>
-          <Image src="/Images/arrows (1).svg" alt="Arrow" width={16} height={16} />
+          <Image
+            src="/Images/arrows (1).svg"
+            alt="Arrow"
+            width={16}
+            height={16}
+          />
           <span className="text-white">Make a payment</span>
         </div>
 
@@ -773,9 +927,13 @@ const verifyOtp = async () => {
           {/* Step 1 - Complete */}
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-[#009AFF] rounded-full flex items-center justify-center">
-              <span className="text-[#009AFF] font-exo2 font-semibold text-sm">✓</span>
+              <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
+                ✓
+              </span>
             </div>
-            <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">Cart</span>
+            <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
+              Cart
+            </span>
           </div>
 
           {/* Connector 1 */}
@@ -784,9 +942,13 @@ const verifyOtp = async () => {
           {/* Step 2 - Complete */}
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 rounded-full border border-[#009AFF] flex items-center justify-center">
-              <span className="text-[#009AFF] font-exo2 font-semibold text-sm">✓</span>
+              <span className="text-[#009AFF] font-exo2 font-semibold text-sm">
+                ✓
+              </span>
             </div>
-            <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">Information</span>
+            <span className="mt-2 font-exo2 font-semibold text-[#009AFF] text-sm">
+              Information
+            </span>
           </div>
 
           {/* Connector 2 */}
@@ -795,9 +957,13 @@ const verifyOtp = async () => {
           {/* Step 3 - Active */}
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-white bg-[#009AFF] rounded-full flex items-center justify-center">
-              <span className="text-white font-exo2 font-semibold text-sm">3</span>
+              <span className="text-white font-exo2 font-semibold text-sm">
+                3
+              </span>
             </div>
-            <span className="mt-2 font-exo2 font-semibold text-white text-sm">Payment</span>
+            <span className="mt-2 font-exo2 font-semibold text-white text-sm">
+              Payment
+            </span>
           </div>
 
           {/* Connector 3 */}
@@ -806,9 +972,13 @@ const verifyOtp = async () => {
           {/* Step 4 - Inactive */}
           <div className="flex flex-col items-center">
             <div className="w-10 h-10 border border-white rounded-full flex items-center justify-center">
-              <span className="text-white font-exo2 font-semibold text-sm">4</span>
+              <span className="text-white font-exo2 font-semibold text-sm">
+                4
+              </span>
             </div>
-            <span className="mt-2 font-exo2 font-semibold text-white text-sm">Confirm</span>
+            <span className="mt-2 font-exo2 font-semibold text-white text-sm">
+              Confirm
+            </span>
           </div>
         </div>
 
@@ -817,15 +987,22 @@ const verifyOtp = async () => {
           <div className="bg-[#02305A] border border-[#02305A] rounded-lg p-6">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold font-exo2">Total amount</h2>
-              <span className="text-2xl font-bold font-exo2">${total.toFixed(2)}</span>
+              <span className="text-2xl font-bold font-exo2">
+                ${total.toFixed(2)}
+              </span>
             </div>
           </div>
 
           {/* Your Order Section */}
           <div className="bg-[#02305A] border border-[#02305A] rounded-lg p-6">
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold font-exo2 md:text-2xl">Your Order</h3>
-              <Link href="/account/cart" className="text-base text-white hover:underline font-exo2">
+              <h3 className="text-xl font-semibold font-exo2 md:text-2xl">
+                Your Order
+              </h3>
+              <Link
+                href="/account/cart"
+                className="text-base text-white hover:underline font-exo2"
+              >
                 Edit cart
               </Link>
             </div>
@@ -840,37 +1017,45 @@ const verifyOtp = async () => {
                   {/* Left: Image + Title */}
                   <div className="flex items-center space-x-4">
                     <Image
-                      src={item.title?.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
-                      alt={item.title||"Product Image"}
+                      src={
+                        item.title?.includes("Transmission")
+                          ? "/catalog/Trasmission_.png"
+                          : "/catalog/Engine 1.png"
+                      }
+                      alt={item.title || "Product Image"}
                       width={80}
                       height={80}
                       className="w-16 h-16 md:w-20 md:h-20 object-cover rounded"
                     />
                     <div className="flex-1 min-w-0">
-                    <h4 className="font-exo2 font-semibold text-white text-base md:text-lg break-words">
-                      {item.title.includes("Used") ? (
-                        <>
-                          {item.title.split(/Used/i)[0].trim()}
-                          <br />
-                          {"Used" + item.title.split(/Used/i)[1]}
-                        </>
-                      ) : (
-                        item.title
-                      )}
-                    </h4>
-                    <p className="font-exo2 text-sm md:text-base text-white font-medium break-words">
-                      {item.subtitle}
-                    </p>
-                  </div>
+                      <h4 className="font-exo2 font-semibold text-white text-base md:text-lg break-words">
+                        {item.title?.includes("Used") ? (
+                          <>
+                            {item.title.split(/Used/i)[0].trim()}
+                            <br />
+                            {"Used" + item.title.split(/Used/i)[1]}
+                          </>
+                        ) : (
+                          item.title
+                        )}
+                      </h4>
+                      <p className="font-exo2 text-sm md:text-base text-white font-medium break-words">
+                        {item.subtitle}
+                      </p>
+                    </div>
                   </div>
 
                   {/* Right: Qty, Price, Total */}
                   <div className="flex flex-col md:flex-row md:items-center md:space-x-12 text-left md:text-right gap-2 md:gap-0">
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-white">QTY: {item.quantity}</p>
+                      <p className="font-exo2 text-sm md:text-xl text-white">
+                        QTY: {item.quantity}
+                      </p>
                     </div>
                     <div>
-                      <p className="font-exo2 text-sm md:text-xl text-white">Price: ${item.price.toFixed(2)}</p>
+                      <p className="font-exo2 text-sm md:text-xl text-white">
+                        Price: ${item.price.toFixed(2)}
+                      </p>
                     </div>
                     <div>
                       <p className="font-exo2 text-sm md:text-xl text-white">
@@ -891,48 +1076,66 @@ const verifyOtp = async () => {
                 <div className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2 font-exo2">First Name</label>
+                      <label className="block text-sm font-medium mb-2 font-exo2">
+                        First Name
+                      </label>
                       <input
                         type="text"
                         placeholder="First Name"
                         value={shippingFormData.firstName}
-                        onChange={(e) => handleShippingInputChange("firstName", e.target.value)}
+                        onChange={(e) =>
+                          handleShippingInputChange("firstName", e.target.value)
+                        }
                         className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                         required
                       />
                       {shippingErrors.firstName && (
-                        <p className="text-red-500 text-xs mt-1 font-exo2">{shippingErrors.firstName}</p>
+                        <p className="text-red-500 text-xs mt-1 font-exo2">
+                          {shippingErrors.firstName}
+                        </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2 font-exo2">Last Name</label>
+                      <label className="block text-sm font-medium mb-2 font-exo2">
+                        Last Name
+                      </label>
                       <input
                         type="text"
                         placeholder="Last Name"
                         value={shippingFormData.lastName}
-                        onChange={(e) => handleShippingInputChange("lastName", e.target.value)}
+                        onChange={(e) =>
+                          handleShippingInputChange("lastName", e.target.value)
+                        }
                         className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                         required
                       />
                       {shippingErrors.lastName && (
-                        <p className="text-red-500 text-xs mt-1 font-exo2">{shippingErrors.lastName}</p>
+                        <p className="text-red-500 text-xs mt-1 font-exo2">
+                          {shippingErrors.lastName}
+                        </p>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-sm font-medium mb-2 font-exo2">Email</label>
+                      <label className="block text-sm font-medium mb-2 font-exo2">
+                        Email
+                      </label>
                       <input
                         type="email"
                         placeholder="Email"
                         value={shippingFormData.email}
-                        onChange={(e) => handleShippingInputChange("email", e.target.value)}
+                        onChange={(e) =>
+                          handleShippingInputChange("email", e.target.value)
+                        }
                         className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                         required
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium mb-2 font-exo2">Mobile</label>
+                      <label className="block text-sm font-medium mb-2 font-exo2">
+                        Mobile
+                      </label>
 
                       {/* Phone input + Send Code */}
                       <div className="flex gap-2 items-center">
@@ -997,7 +1200,11 @@ const verifyOtp = async () => {
                       )}
 
                       {/* Error message */}
-                      {error && <p className="mt-1 text-red-500 font-exo2 text-sm">{error}</p>}
+                      {error && (
+                        <p className="mt-1 text-red-500 font-exo2 text-sm">
+                          {error}
+                        </p>
+                      )}
 
                       {/* Success message */}
                       {isVerified && (
@@ -1013,7 +1220,6 @@ const verifyOtp = async () => {
                         </p>
                       )}
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -1028,11 +1234,17 @@ const verifyOtp = async () => {
                   </h3>
 
                   <div className="mb-6">
-                    <label className="block text-sm font-medium mb-2 font-exo2">Address Type</label>
+                    <label className="block text-sm font-medium mb-2 font-exo2">
+                      Address Type
+                    </label>
                     <select
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                       value={shippingUserType}
-                      onChange={(e) => handleShippingUserTypeChange(e.target.value as "Individual" | "Commercial")}
+                      onChange={(e) =>
+                        handleShippingUserTypeChange(
+                          e.target.value as "Individual" | "Commercial"
+                        )
+                      }
                     >
                       <option value="Individual">Individual</option>
                       <option value="Commercial">Commercial</option>
@@ -1041,63 +1253,91 @@ const verifyOtp = async () => {
 
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                       {shippingUserType === "Commercial" && (
+                      {shippingUserType === "Commercial" && (
                         <div>
-                          <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                          <label className="block text-sm font-medium mb-2 font-exo2">
+                            Company Name
+                          </label>
                           <input
                             type="text"
                             placeholder="Company Name"
                             value={shippingFormData.company || ""}
-                            onChange={(e) => handleShippingInputChange("company", e.target.value)}
+                            onChange={(e) =>
+                              handleShippingInputChange(
+                                "company",
+                                e.target.value
+                              )
+                            }
                             className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                             required
                           />
                         </div>
                       )}
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Address
+                        </label>
                         <input
                           type="text"
                           placeholder="Address"
                           value={shippingFormData.address}
-                          onChange={(e) => handleShippingInputChange("address", e.target.value)}
+                          onChange={(e) =>
+                            handleShippingInputChange("address", e.target.value)
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           required
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Apartment</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Apartment
+                        </label>
                         <input
                           type="text"
                           placeholder="Apartment"
                           value={shippingFormData.apartment}
-                          onChange={(e) => handleShippingInputChange("apartment", e.target.value)}
+                          onChange={(e) =>
+                            handleShippingInputChange(
+                              "apartment",
+                              e.target.value
+                            )
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">City</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          City
+                        </label>
                         <input
                           type="text"
                           placeholder="City"
                           value={shippingFormData.city}
-                          onChange={(e) => handleShippingInputChange("city", e.target.value)}
+                          onChange={(e) =>
+                            handleShippingInputChange("city", e.target.value)
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           required
                         />
                         {shippingErrors.city && (
-                          <p className="text-red-500 text-xs mt-1 font-exo2">{shippingErrors.city}</p>
+                          <p className="text-red-500 text-xs mt-1 font-exo2">
+                            {shippingErrors.city}
+                          </p>
                         )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Country</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Country
+                        </label>
                         <select
                           className="w-full bg-[#1A263D] rounded-md px-4 py-3 text-[#FFFFFF] border border-[#484848] focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           value={shippingFormData.country}
-                          onChange={(e) => handleShippingInputChange("country", e.target.value)}
+                          onChange={(e) =>
+                            handleShippingInputChange("country", e.target.value)
+                          }
                           required
                         >
                           <option value="">Choose Country…</option>
@@ -1107,35 +1347,48 @@ const verifyOtp = async () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">State</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          State
+                        </label>
                         <select
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           value={shippingFormData.state}
-                          onChange={(e) => handleShippingInputChange("state", e.target.value)}
+                          onChange={(e) =>
+                            handleShippingInputChange("state", e.target.value)
+                          }
                           // disabled={!shippingStates.length}
                           required
                         >
-                           <option value="">Choose State…</option>
-                            {(shippingFormData.country === "US" ? US_STATES : CA_PROVINCES).map((s) => (
-                              <option key={s} value={s}>
-                                {s}
-                              </option>
-                            ))}
+                          <option value="">Choose State…</option>
+                          {(shippingFormData.country === "US"
+                            ? US_STATES
+                            : CA_PROVINCES
+                          ).map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Zip Code</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Zip Code
+                        </label>
                         <input
                           type="text"
                           placeholder="ZIP Code"
                           value={shippingFormData.zipCode}
-                          onChange={(e) => handleShippingInputChange("zipCode", e.target.value)}
+                          onChange={(e) =>
+                            handleShippingInputChange("zipCode", e.target.value)
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           required
                         />
                         {shippingErrors.zipCode && (
-                          <p className="text-red-500 text-xs mt-1 font-exo2">{shippingErrors.zipCode}</p>
+                          <p className="text-red-500 text-xs mt-1 font-exo2">
+                            {shippingErrors.zipCode}
+                          </p>
                         )}
                       </div>
 
@@ -1154,23 +1407,27 @@ const verifyOtp = async () => {
                       )} */}
                     </div>
 
-                   <button
-                    onClick={handleSaveShipping}
-                    className={`w-full py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2 ${
-                      isShippingSaved
-                        ? "bg-green-600 hover:bg-green-700 text-white"
-                        : "bg-[#009AFF] hover:bg-blue-600 text-white"
-                    }`}
-                  >
-                    {isShippingSaved ? "✓ Shipping Info Saved" : "Save Shipping Info"}
-                  </button>
+                    <button
+                      onClick={handleSaveShipping}
+                      className={`w-full py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2 ${
+                        isShippingSaved
+                          ? "bg-green-600 hover:bg-green-700 text-white"
+                          : "bg-[#009AFF] hover:bg-blue-600 text-white"
+                      }`}
+                    >
+                      {isShippingSaved
+                        ? "✓ Shipping Info Saved"
+                        : "Save Shipping Info"}
+                    </button>
                   </div>
                 </div>
               ) : (
                 /* Original Shipping Address Display */
                 <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-6 sm:p-8 text-white">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2 sm:gap-0">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-exo2">Shipping Address</h3>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-exo2">
+                      Shipping Address
+                    </h3>
                     <Link
                       href="/account/checkout"
                       className="text-sm sm:text-base text-white hover:underline font-exo2"
@@ -1180,25 +1437,35 @@ const verifyOtp = async () => {
                   </div>
                   <div className="space-y-2 sm:space-y-3 text-sm sm:text-base md:text-base font-exo2">
                     {(() => {
-                      const shipping = useShippingStore.getState().shippingInfo
-                      if (!shipping) return <p>No shipping address on file</p>
+                      const shipping = useShippingStore.getState().shippingInfo;
+                      if (!shipping) return <p>No shipping address on file</p>;
                       return (
                         <>
                           <p className="text-sm sm:text-base md:text-lg">
                             {shipping.firstName} {shipping.lastName}
                           </p>
-                          <p className="text-sm sm:text-base md:text-lg">{shipping.company}</p>
-                          <p className="text-sm sm:text-base md:text-lg">{shipping.address}</p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {shipping.company}
+                          </p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {shipping.address}
+                          </p>
                           {shipping.apartment && (
-                            <p className="text-sm sm:text-base md:text-lg">{shipping.apartment}</p>
+                            <p className="text-sm sm:text-base md:text-lg">
+                              {shipping.apartment}
+                            </p>
                           )}
                           <p className="text-sm sm:text-base md:text-lg">
                             {shipping.city}, {shipping.state} {shipping.zipCode}
                           </p>
-                          <p className="text-sm sm:text-base md:text-lg">{shipping.country}</p>
-                          <p className="text-sm sm:text-base md:text-lg">{shipping.phone}</p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {shipping.country}
+                          </p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {shipping.phone}
+                          </p>
                         </>
-                      )
+                      );
                     })()}
                   </div>
                 </div>
@@ -1228,11 +1495,17 @@ const verifyOtp = async () => {
                   </div>
 
                   <div className="mb-6">
-                    <label className="block text-sm font-medium mb-2 font-exo2">Address Type</label>
+                    <label className="block text-sm font-medium mb-2 font-exo2">
+                      Address Type
+                    </label>
                     <select
                       className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                       value={userType}
-                      onChange={(e) => handleUserTypeChange(e.target.value as "Individual" | "Commercial")}
+                      onChange={(e) =>
+                        handleUserTypeChange(
+                          e.target.value as "Individual" | "Commercial"
+                        )
+                      }
                       disabled={sameAsShipping}
                     >
                       <option value="Individual">Individual</option>
@@ -1244,12 +1517,19 @@ const verifyOtp = async () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {userType === "Commercial" && (
                         <div>
-                          <label className="block text-sm font-medium mb-2 font-exo2">Company Name</label>
+                          <label className="block text-sm font-medium mb-2 font-exo2">
+                            Company Name
+                          </label>
                           <input
                             type="text"
                             placeholder="Company Name"
                             value={billingFormData.company || ""}
-                            onChange={(e) => handleBillingInputChange("company", e.target.value)}
+                            onChange={(e) =>
+                              handleBillingInputChange(
+                                "company",
+                                e.target.value
+                              )
+                            }
                             className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                             disabled={sameAsShipping}
                             required
@@ -1257,12 +1537,16 @@ const verifyOtp = async () => {
                         </div>
                       )}
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Address</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Address
+                        </label>
                         <input
                           type="text"
                           placeholder="Address"
                           value={billingFormData.address}
-                          onChange={(e) => handleBillingInputChange("address", e.target.value)}
+                          onChange={(e) =>
+                            handleBillingInputChange("address", e.target.value)
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           disabled={sameAsShipping}
                           required
@@ -1270,37 +1554,56 @@ const verifyOtp = async () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Apartment</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Apartment
+                        </label>
                         <input
                           type="text"
                           placeholder="Apartment"
                           value={billingFormData.apartment}
-                          onChange={(e) => handleBillingInputChange("apartment", e.target.value)}
+                          onChange={(e) =>
+                            handleBillingInputChange(
+                              "apartment",
+                              e.target.value
+                            )
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           disabled={sameAsShipping}
                         />
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">City</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          City
+                        </label>
                         <input
                           type="text"
                           placeholder="City"
                           value={billingFormData.city}
-                          onChange={(e) => handleBillingInputChange("city", e.target.value)}
+                          onChange={(e) =>
+                            handleBillingInputChange("city", e.target.value)
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           disabled={sameAsShipping}
                           required
                         />
-                        {errors.city && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.city}</p>}
+                        {errors.city && (
+                          <p className="text-red-500 text-xs mt-1 font-exo2">
+                            {errors.city}
+                          </p>
+                        )}
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Country</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Country
+                        </label>
                         <select
                           className="w-full bg-[#1A263D] rounded-md px-4 py-3 text-[#FFFFFF] border border-[#484848] focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           value={billingFormData.country}
-                          onChange={(e) => handleBillingInputChange("country", e.target.value)}
+                          onChange={(e) =>
+                            handleBillingInputChange("country", e.target.value)
+                          }
                           disabled={sameAsShipping}
                           required
                         >
@@ -1311,11 +1614,15 @@ const verifyOtp = async () => {
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">State</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          State
+                        </label>
                         <select
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           value={billingFormData.state}
-                          onChange={(e) => handleBillingInputChange("state", e.target.value)}
+                          onChange={(e) =>
+                            handleBillingInputChange("state", e.target.value)
+                          }
                           disabled={sameAsShipping}
                           required
                         >
@@ -1325,27 +1632,38 @@ const verifyOtp = async () => {
                               {state.name}
                             </option>
                           ))} */}
-                           <option value="">Choose State…</option>
-                              {(billingFormData.country === "US" ? US_STATES : CA_PROVINCES).map((s) => (
-                                <option key={s} value={s}>
-                                  {s}
-                                </option>
-                              ))}
+                          <option value="">Choose State…</option>
+                          {(billingFormData.country === "US"
+                            ? US_STATES
+                            : CA_PROVINCES
+                          ).map((s) => (
+                            <option key={s} value={s}>
+                              {s}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
                       <div>
-                        <label className="block text-sm font-medium mb-2 font-exo2">Zip Code</label>
+                        <label className="block text-sm font-medium mb-2 font-exo2">
+                          Zip Code
+                        </label>
                         <input
                           type="text"
                           placeholder="ZIP Code"
                           value={billingFormData.zipCode}
-                          onChange={(e) => handleBillingInputChange("zipCode", e.target.value)}
+                          onChange={(e) =>
+                            handleBillingInputChange("zipCode", e.target.value)
+                          }
                           className="w-full bg-[#1A263D] border border-[#484848] text-[#FFFFFF] rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#009AFF] font-exo2"
                           disabled={sameAsShipping}
                           required
                         />
-                        {errors.zipCode && <p className="text-red-500 text-xs mt-1 font-exo2">{errors.zipCode}</p>}
+                        {errors.zipCode && (
+                          <p className="text-red-500 text-xs mt-1 font-exo2">
+                            {errors.zipCode}
+                          </p>
+                        )}
                       </div>
 
                       {/* {userType === "Commercial" && (
@@ -1371,16 +1689,17 @@ const verifyOtp = async () => {
                         className={`w-full py-3 px-6 rounded-md font-semibold transition-colors duration-200 font-exo2 ${
                           sameAsShipping && !isShippingSaved
                             ? "bg-gray-600 text-gray-400 cursor-not-allowed"
-                            : isBillingSaved || (sameAsShipping && isShippingSaved)
-                              ? "bg-green-600 hover:bg-green-700 text-white"
-                              : "bg-[#009AFF] hover:bg-blue-600 text-white"
+                            : isBillingSaved ||
+                              (sameAsShipping && isShippingSaved)
+                            ? "bg-green-600 hover:bg-green-700 text-white"
+                            : "bg-[#009AFF] hover:bg-blue-600 text-white"
                         }`}
                       >
                         {sameAsShipping && isShippingSaved
                           ? "✓ Using Shipping Address"
                           : isBillingSaved
-                            ? "✓ Billing Info Saved"
-                            : "Save Billing Info"}
+                          ? "✓ Billing Info Saved"
+                          : "Save Billing Info"}
                       </button>
                     </div>
                   </div>
@@ -1389,7 +1708,9 @@ const verifyOtp = async () => {
                 /* Original Billing Address Display */
                 <div className="bg-[#252525E5] border border-[#252525E5] rounded-lg p-6 sm:p-8 text-white">
                   <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-2 sm:gap-0">
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-exo2">Billing Address</h3>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-semibold font-exo2">
+                      Billing Address
+                    </h3>
                     <Link
                       href="/account/checkout"
                       className="text-sm sm:text-base text-white hover:underline font-exo2"
@@ -1399,23 +1720,35 @@ const verifyOtp = async () => {
                   </div>
                   <div className="space-y-2 sm:space-y-3 text-sm sm:text-base md:text-base font-exo2">
                     {(() => {
-                      const billing = useBillingStore.getState().billingInfo
-                      if (!billing) return <p>No billing address on file</p>
+                      const billing = useBillingStore.getState().billingInfo;
+                      if (!billing) return <p>No billing address on file</p>;
                       return (
                         <>
                           <p className="text-sm sm:text-base md:text-lg">
                             {billing.firstName} {billing.lastName}
                           </p>
-                          <p className="text-sm sm:text-base md:text-lg">{billing.company}</p>
-                          <p className="text-sm sm:text-base md:text-lg">{billing.address}</p>
-                          {billing.apartment && <p className="text-sm sm:text-base md:text-lg">{billing.apartment}</p>}
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {billing.company}
+                          </p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {billing.address}
+                          </p>
+                          {billing.apartment && (
+                            <p className="text-sm sm:text-base md:text-lg">
+                              {billing.apartment}
+                            </p>
+                          )}
                           <p className="text-sm sm:text-base md:text-lg">
                             {billing.city}, {billing.state} {billing.zipCode}
                           </p>
-                          <p className="text-sm sm:text-base md:text-lg">{billing.country}</p>
-                          <p className="text-sm sm:text-base md:text-lg">{billing.phone}</p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {billing.country}
+                          </p>
+                          <p className="text-sm sm:text-base md:text-lg">
+                            {billing.phone}
+                          </p>
                         </>
-                      )
+                      );
                     })()}
                   </div>
                 </div>
@@ -1425,7 +1758,9 @@ const verifyOtp = async () => {
 
           <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full ">
             <div className="max-w-xl ml-0">
-              <h2 className="text-2xl font-semibold mb-8 font-exo2">Select Payment Method</h2>
+              <h2 className="text-2xl font-semibold mb-8 font-exo2">
+                Select Payment Method
+              </h2>
 
               <div className="space-y-6">
                 {/* Credit/Debit Card */}
@@ -1442,7 +1777,9 @@ const verifyOtp = async () => {
                         onChange={(e) => setPaymentMethod(e.target.value)}
                         className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4" // Increased size slightly for easier mobile tapping
                       />
-                      <span className="font-exo2 text-base sm:text-lg">Pay with Credit or Debit Card</span>{" "}
+                      <span className="font-exo2 text-base sm:text-lg">
+                        Pay with Credit or Debit Card
+                      </span>{" "}
                       {/* Adjusted text size for mobile */}
                     </div>
                   </label>
@@ -1452,16 +1789,23 @@ const verifyOtp = async () => {
                       {/* Reduced space-y and padding on small screens */}
                       {/* Card Number */}
                       <div className="relative w-full">
-                        <label htmlFor="cardNumber" className="block text-sm sm:text-lg mb-2 font-exo2 text-gray-200">
+                        <label
+                          htmlFor="cardNumber"
+                          className="block text-sm sm:text-lg mb-2 font-exo2 text-gray-200"
+                        >
                           Card Number
                         </label>
                         <input
                           type="text"
                           placeholder="XXXX XXXX XXXX XXXX"
                           value={cardData.cardNumber}
-                          onChange={(e) => handleCardInputChange("cardNumber", e.target.value)}
+                          onChange={(e) =>
+                            handleCardInputChange("cardNumber", e.target.value)
+                          }
                           className={`w-full bg-[#FFFFFFD1] border ${
-                            cardErrors.cardNumber ? "border-red-500" : "border-gray-700"
+                            cardErrors.cardNumber
+                              ? "border-red-500"
+                              : "border-gray-700"
                           } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300 pr-12 sm:pr-16`} // Adjusted padding/font/pr for mobile
                         />
 
@@ -1469,13 +1813,19 @@ const verifyOtp = async () => {
                           <div className="absolute md:top-16 top-12 right-4 sm:right-6 transform -translate-y-1/2">
                             {" "}
                             {/* Adjusted right position for mobile */}
-                            <img src={`/images/home/${cardImage}`} alt="cardType" className="w-8 h-auto sm:w-10" />{" "}
+                            <img
+                              src={`/images/home/${cardImage}`}
+                              alt="cardType"
+                              className="w-8 h-auto sm:w-10"
+                            />{" "}
                             {/* Adjusted image size for mobile */}
                           </div>
                         )}
 
                         {cardErrors.cardNumber && (
-                          <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.cardNumber}</p>
+                          <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">
+                            {cardErrors.cardNumber}
+                          </p>
                         )}
                       </div>
                       <div className="w-full grid grid-cols-1 gap-4 sm:grid-cols-2">
@@ -1492,9 +1842,16 @@ const verifyOtp = async () => {
                             type="text"
                             placeholder="MM/YY"
                             value={cardData.expirationDate}
-                            onChange={(e) => handleCardInputChange("expirationDate", e.target.value)}
+                            onChange={(e) =>
+                              handleCardInputChange(
+                                "expirationDate",
+                                e.target.value
+                              )
+                            }
                             className={`w-full bg-[#FFFFFFD1] border ${
-                              cardErrors.expirationDate ? "border-red-500" : "border-gray-700"
+                              cardErrors.expirationDate
+                                ? "border-red-500"
+                                : "border-gray-700"
                             } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`} // Adjusted padding/font
                           />
                           {cardErrors.expirationDate && (
@@ -1514,13 +1871,22 @@ const verifyOtp = async () => {
                             type="text"
                             placeholder="CVV"
                             value={cardData.securityCode}
-                            onChange={(e) => handleCardInputChange("securityCode", e.target.value)}
+                            onChange={(e) =>
+                              handleCardInputChange(
+                                "securityCode",
+                                e.target.value
+                              )
+                            }
                             className={`w-full bg-[#FFFFFFD1] border ${
-                              cardErrors.securityCode ? "border-red-500" : "border-gray-700"
+                              cardErrors.securityCode
+                                ? "border-red-500"
+                                : "border-gray-700"
                             } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`} // Adjusted padding/font
                           />
                           {cardErrors.securityCode && (
-                            <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.securityCode}</p>
+                            <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">
+                              {cardErrors.securityCode}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -1536,13 +1902,22 @@ const verifyOtp = async () => {
                           type="text"
                           placeholder="Enter Name"
                           value={cardData.cardholderName}
-                          onChange={(e) => handleCardInputChange("cardholderName", e.target.value)}
+                          onChange={(e) =>
+                            handleCardInputChange(
+                              "cardholderName",
+                              e.target.value
+                            )
+                          }
                           className={`w-full bg-[#FFFFFFD1] border ${
-                            cardErrors.cardholderName ? "border-red-500" : "border-gray-700"
+                            cardErrors.cardholderName
+                              ? "border-red-500"
+                              : "border-gray-700"
                           } text-black rounded-md px-4 py-3 sm:px-6 sm:py-4 font-exo2 text-base sm:text-lg focus:outline-none focus:ring-2 focus:ring-blue-300`} // Adjusted padding/font
                         />
                         {cardErrors.cardholderName && (
-                          <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">{cardErrors.cardholderName}</p>
+                          <p className="text-red-500 text-xs sm:text-sm mt-2 font-exo2">
+                            {cardErrors.cardholderName}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -1607,5 +1982,5 @@ const verifyOtp = async () => {
         </div>
       </div>
     </div>
-  )
+  );
 }

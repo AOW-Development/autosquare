@@ -161,7 +161,7 @@ export default function Cart() {
                     />
                    <div className="flex-1">
                     <h3 className="font-exo2 font-bold text-white text-lg break-words">
-                      {item.title.includes("Used") ? (
+                      {item.title?.includes("Used") ? (
                         <>
                           {item.title.split(/Used/i)[0].trim()}
                           <br />

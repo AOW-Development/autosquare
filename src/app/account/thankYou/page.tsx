@@ -135,13 +135,28 @@ function ThankYouPageContent() {
       setIsHydrated(true);
     });
 
-    // Fallback: Force hydration after 2 seconds
+    // ✅ iOS devices may be slower - detect and adjust timeout
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const hydrationTimeout = isIOS ? 3000 : 2000; // 3s for iOS, 2s for others
+
+    if (isIOS) {
+      console.log(
+        "📱 iOS detected: Using extended hydration timeout:",
+        hydrationTimeout,
+        "ms"
+      );
+    }
+
+    // Fallback: Force hydration after timeout
     const timeout = setTimeout(() => {
       if (!isHydrated) {
-        console.warn("Cart hydration timeout - forcing hydration complete");
+        console.warn(
+          `Cart hydration timeout (${hydrationTimeout}ms) - forcing hydration complete`
+        );
         setIsHydrated(true);
       }
-    }, 2000);
+    }, hydrationTimeout);
 
     return () => {
       clearTimeout(timeout);
@@ -161,6 +176,13 @@ function ThankYouPageContent() {
       cartItems?.length || 0
     );
 
+    // ✅ iOS Detection
+    const isIOS =
+      /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    if (isIOS) {
+      console.log("📱 iOS device detected - using enhanced storage fallbacks");
+    }
+
     if (cartItems && cartItems.length > 0) {
       console.log("✅ Cart items loaded from store:", cartItems.length);
       setOrderItems(cartItems);
@@ -171,17 +193,48 @@ function ThankYouPageContent() {
       if (backup) {
         try {
           const parsedItems = JSON.parse(backup);
-          console.log("✅ Cart items loaded from backup:", parsedItems.length);
-          setOrderItems(parsedItems);
+          if (parsedItems && parsedItems.length > 0) {
+            console.log(
+              "✅ Cart items loaded from backup:",
+              parsedItems.length
+            );
+            setOrderItems(parsedItems);
+          } else {
+            console.error("❌ Backup cart is empty");
+          }
         } catch (e) {
           console.error("❌ Failed to parse backup cart:", e);
           toast.error("Unable to retrieve cart items. Please contact support.");
         }
       } else {
         console.error("❌ No cart items found in store or backup");
-        toast.error(
-          "Cart items not found. Please try placing your order again or contact support."
-        );
+        // On iOS, sometimes there's a delay - try one more time
+        if (isIOS) {
+          console.log("🔄 iOS: Retrying storage access after delay...");
+          setTimeout(() => {
+            const retryBackup = safeSessionStorageGet("checkoutCartItems");
+            if (retryBackup) {
+              try {
+                const retryItems = JSON.parse(retryBackup);
+                if (retryItems && retryItems.length > 0) {
+                  console.log("✅ iOS retry successful:", retryItems.length);
+                  setOrderItems(retryItems);
+                  return;
+                }
+              } catch (e) {
+                console.error("❌ iOS retry parse failed:", e);
+              }
+            }
+            // If still nothing after retry, show error
+            toast.error(
+              "Cart items not found. Please try placing your order again or contact support."
+            );
+          }, 500);
+        } else {
+          toast.error(
+            "Cart items not found. Please try placing your order again or contact support."
+          );
+        }
       }
     }
   }, [isHydrated, cartItems]);
@@ -487,9 +540,25 @@ function ThankYouPageContent() {
         safeLocalStorageRemove("cart-storage");
         // useCartStore.getState().clear();
       } catch (error) {
-        console.error("Error creating order:", error);
-        // toast.error(error);
-        alert(error);
+        console.error("❌ Error creating order:", error);
+
+        // Better error message for debugging
+        let errorMessage = "Failed to create order";
+        if (error instanceof Error) {
+          errorMessage = error.message;
+          console.error("Error stack:", error.stack);
+        }
+
+        console.error("Debug info:");
+        console.error("- Order items count:", orderItems?.length || 0);
+        console.error("- Order number:", orderNum);
+        console.error("- User:", user ? "logged in" : "guest");
+
+        toast.error(
+          `Order creation failed: ${errorMessage}. Please contact support with order #${
+            orderNum || "N/A"
+          }`
+        );
       }
     };
 

@@ -505,6 +505,28 @@ export default function PayMethod() {
         // ✅ Backup cart items to sessionStorage for Thank You page
         sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
 
+        // ✅ iOS: Verify storage was successful
+        const isIOS =
+          /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+          !(window as any).MSStream;
+        if (isIOS) {
+          console.log("📱 iOS detected: Verifying sessionStorage...");
+          const verifyBackup = sessionStorage.getItem("checkoutCartItems");
+          if (!verifyBackup) {
+            console.error("❌ iOS: Failed to store cart backup, retrying...");
+            // Try one more time with a small delay
+            setTimeout(() => {
+              sessionStorage.setItem(
+                "checkoutCartItems",
+                JSON.stringify(cartItems)
+              );
+              console.log("✅ iOS: Cart backup retry completed");
+            }, 100);
+          } else {
+            console.log("✅ iOS: Cart backup verified");
+          }
+        }
+
         router.push("/account/thankYou");
       } catch (error) {
         console.error("Error processing payment:", error);
@@ -536,6 +558,29 @@ export default function PayMethod() {
 
       // ✅ Backup cart items to sessionStorage for Thank You page
       sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
+
+      // ✅ iOS: Verify storage was successful
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+        !(window as any).MSStream;
+      if (isIOS) {
+        console.log("📱 iOS detected (guest): Verifying sessionStorage...");
+        const verifyBackup = sessionStorage.getItem("checkoutCartItems");
+        if (!verifyBackup) {
+          console.error(
+            "❌ iOS (guest): Failed to store cart backup, retrying..."
+          );
+          setTimeout(() => {
+            sessionStorage.setItem(
+              "checkoutCartItems",
+              JSON.stringify(cartItems)
+            );
+            console.log("✅ iOS (guest): Cart backup retry completed");
+          }, 100);
+        } else {
+          console.log("✅ iOS (guest): Cart backup verified");
+        }
+      }
 
       // Go directly to thank you page without sign-in for all users
       router.push("/account/thankYou");

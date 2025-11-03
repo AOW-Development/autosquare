@@ -14,6 +14,23 @@ import GtagConversion from "@/components/GtagConversion";
 import Script from "next/script";
 import { useSearchParams } from "next/navigation";
 
+
+// ✅ Helper to detect if storage is available
+const isStorageAvailable = (type: "localStorage" | "sessionStorage"): boolean => {
+  if (typeof window === "undefined") return false;
+  try {
+    const storage = window[type];
+    const testKey = "__storage_test__";
+    storage.setItem(testKey, "test");
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    console.warn(`${type} is not available on this device:`, error);
+    return false;
+  }
+};
+
+
 // Helper function to safely access localStorage
 const safeLocalStorageGet = (
   key: string,
@@ -96,6 +113,21 @@ function ThankYouPageContent() {
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
 
+
+  useEffect(() => {
+  // Check localStorage and sessionStorage support
+  const hasLocal = isStorageAvailable("localStorage");
+  const hasSession = isStorageAvailable("sessionStorage");
+
+  if (!hasLocal || !hasSession) {
+    toast.error(
+      "Your browser does not fully support storage. Some order features may not work properly.",
+      { duration: 6000 }
+    );
+  }
+}, []);
+
+
   // Clear cart when user leaves this page
   useEffect(() => {
    
@@ -125,30 +157,30 @@ function ThankYouPageContent() {
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
 
-  useEffect(() => {
-    // Check if the page was reloaded - Safari iOS compatible check
-    if (typeof window !== "undefined") {
-      try {
-        const navigation = performance.getEntriesByType(
-          "navigation"
-        ) as PerformanceNavigationTiming[];
-        if (
-          navigation &&
-          navigation.length > 0 &&
-          navigation[0]?.type === "reload"
-        ) {
-          alert(
-            "You cannot reload this page. Your order has already been processed we will redirect to homepage."
-          );
-          window.location.href = "/";
-          return;
-        }
-      } catch (error) {
-        // Fallback: Just log the error, don't block the page
-        console.warn("Could not check navigation type:", error);
-      }
-    }
-  }, []);
+  // useEffect(() => {
+  //   // Check if the page was reloaded - Safari iOS compatible check
+  //   if (typeof window !== "undefined") {
+  //     try {
+  //       const navigation = performance.getEntriesByType(
+  //         "navigation"
+  //       ) as PerformanceNavigationTiming[];
+  //       if (
+  //         navigation &&
+  //         navigation.length > 0 &&
+  //         navigation[0]?.type === "reload"
+  //       ) {
+  //         alert(
+  //           "You cannot reload this page. Your order has already been processed we will redirect to homepage."
+  //         );
+  //         window.location.href = "/";
+  //         return;
+  //       }
+  //     } catch (error) {
+  //       // Fallback: Just log the error, don't block the page
+  //       console.warn("Could not check navigation type:", error);
+  //     }
+  //   }
+  // }, []);
 
   //  MAIN: Run once to create order + send invoice
   useEffect(() => {
@@ -201,6 +233,11 @@ function ThankYouPageContent() {
 
     const createOrder = async () => {
       try {
+                  if (!isStorageAvailable("sessionStorage") || !isStorageAvailable("localStorage")) {
+            toast.error("Unable to process order — storage not supported on this device.");
+            return;
+          }
+
         const orderData = safeSessionStorageGet("orderData");
         if (!orderData) {
           console.error("No order data found in session storage");

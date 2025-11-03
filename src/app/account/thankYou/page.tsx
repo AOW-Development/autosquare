@@ -372,7 +372,7 @@ function ThankYouPageContent() {
         // useCartStore.getState().clear();
       } catch (error) {
         console.error("Error creating order:", error);
-        toast.error("Failed to process order. Please contact support.");
+        toast.error("Failed to process order. Please contact support.",error);
       }
     };
 

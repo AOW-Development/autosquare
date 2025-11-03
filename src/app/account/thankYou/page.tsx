@@ -1,18 +1,17 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { use, useEffect, useRef, useState, Suspense } from "react";
+import { useEffect, useRef, useState, Suspense } from "react";
+import { toast } from "react-hot-toast";
+import { useSearchParams } from "next/navigation";
+import Script from "next/script";
+
 import useBillingStore from "@/store/billingStore";
 import { useCartStore } from "@/store/cartStore";
-import { generateOrderNumber } from "@/utils/order";
 import { useShippingStore } from "@/store/shippingStore";
-import { createOrderInBackend } from "@/utils/orderUtils";
-import { toast } from "react-hot-toast";
 import useAuthStore from "@/store/authStore";
-import { OrderEmailData } from "@/lib/mail";
+import { createOrderInBackend } from "@/utils/orderUtils";
 import GtagConversion from "@/components/GtagConversion";
-import Script from "next/script";
-import { useSearchParams } from "next/navigation";
 
 
 // ✅ Helper to detect if storage is available
@@ -30,12 +29,8 @@ const isStorageAvailable = (type: "localStorage" | "sessionStorage"): boolean =>
   }
 };
 
-
-// Helper function to safely access localStorage
-const safeLocalStorageGet = (
-  key: string,
-  defaultValue: string = ""
-): string => {
+// ✅ Safe storage helpers
+const safeLocalStorageGet = (key: string, defaultValue: string = ""): string => {
   if (typeof window === "undefined") return defaultValue;
   try {
     return localStorage.getItem(key) || defaultValue;
@@ -45,7 +40,6 @@ const safeLocalStorageGet = (
   }
 };
 
-// Helper function to safely set localStorage
 const safeLocalStorageSet = (key: string, value: string): boolean => {
   if (typeof window === "undefined") return false;
   try {
@@ -57,7 +51,6 @@ const safeLocalStorageSet = (key: string, value: string): boolean => {
   }
 };
 
-// Helper function to safely remove from localStorage
 const safeLocalStorageRemove = (key: string): void => {
   if (typeof window === "undefined") return;
   try {
@@ -67,7 +60,6 @@ const safeLocalStorageRemove = (key: string): void => {
   }
 };
 
-// Helper function to safely access sessionStorage
 const safeSessionStorageGet = (
   key: string,
   defaultValue: string | null = null
@@ -81,7 +73,6 @@ const safeSessionStorageGet = (
   }
 };
 
-// Helper function to safely remove from sessionStorage
 const safeSessionStorageRemove = (key: string): void => {
   if (typeof window === "undefined") return;
   try {
@@ -91,57 +82,52 @@ const safeSessionStorageRemove = (key: string): void => {
   }
 };
 
+
+// ✅ MAIN COMPONENT
 function ThankYouPageContent() {
   const searchParams = useSearchParams();
-  const { billingInfo } = useBillingStore();
+  const { billingInfo, setBillingInfo } = useBillingStore();
+  const { shippingInfo, setShippingInfo } = useShippingStore();
+  const { user } = useAuthStore();
+
   const cartItems = useCartStore((s) => s.items);
+
   const [orderNumber, setOrderNumber] = useState("");
   const [orderDate, setOrderDate] = useState("");
-  const { shippingInfo } = useShippingStore();
-  const [paymentInfo, setPaymentInfo] = useState<{
-    method: string;
-    lastFour?: string;
-  }>({ method: "card" });
+  const [paymentInfo, setPaymentInfo] = useState<{ method: string; lastFour?: string }>({
+    method: "card",
+  });
   const [cardType, setCardType] = useState("unknown");
-  const isSameAddress =
-    JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
-  const { setShippingInfo } = useShippingStore();
-  const { setBillingInfo } = useBillingStore();
   const [finalOrderNumber, setFinalOrderNumber] = useState("");
-  const { user } = useAuthStore();
   const [showPopup, setShowPopup] = useState(false);
-  const hasProcessed = useRef(false);
+
   const hasRunRef = useRef(false);
 
+  const isSameAddress =
+    JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
 
+  // ✅ Check storage support
   useEffect(() => {
-  // Check localStorage and sessionStorage support
-  const hasLocal = isStorageAvailable("localStorage");
-  const hasSession = isStorageAvailable("sessionStorage");
+    const hasLocal = isStorageAvailable("localStorage");
+    const hasSession = isStorageAvailable("sessionStorage");
 
-  if (!hasLocal || !hasSession) {
-    toast.error(
-      "Your browser does not fully support storage. Some order features may not work properly.",
-      { duration: 6000 }
-    );
-  }
-}, []);
-
-
-  // Clear cart when user leaves this page
-  useEffect(() => {
-   
-      // This runs when component unmounts (user leaves the page)
-      setTimeout(() => {
-      safeLocalStorageRemove("cart-storage");
-
-   
-      console.log("User left Thank You page - cart cleared!");
-      }, 10000); // Delay to ensure order processing is complete
-
+    if (!hasLocal || !hasSession) {
+      toast.error(
+        "Your browser does not fully support storage. Some order features may not work properly.",
+        { duration: 6000 }
+      );
+    }
   }, []);
 
-  // Card image mapping
+  // ✅ Clear cart a few seconds after leaving this page
+  useEffect(() => {
+    setTimeout(() => {
+      safeLocalStorageRemove("cart-storage");
+      console.log("User left Thank You page - cart cleared!");
+    }, 10000);
+  }, []);
+
+  // ✅ Card image mapping
   const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
     MasterCard: "mastercard_82049.png",
@@ -150,39 +136,13 @@ function ThankYouPageContent() {
   };
 
   const cardImage = cardImageMap[cardType];
-  const subtotal = cartItems.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0
-  );
+
+  // ✅ Totals
+  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
 
-  // useEffect(() => {
-  //   // Check if the page was reloaded - Safari iOS compatible check
-  //   if (typeof window !== "undefined") {
-  //     try {
-  //       const navigation = performance.getEntriesByType(
-  //         "navigation"
-  //       ) as PerformanceNavigationTiming[];
-  //       if (
-  //         navigation &&
-  //         navigation.length > 0 &&
-  //         navigation[0]?.type === "reload"
-  //       ) {
-  //         alert(
-  //           "You cannot reload this page. Your order has already been processed we will redirect to homepage."
-  //         );
-  //         window.location.href = "/";
-  //         return;
-  //       }
-  //     } catch (error) {
-  //       // Fallback: Just log the error, don't block the page
-  //       console.warn("Could not check navigation type:", error);
-  //     }
-  //   }
-  // }, []);
-
-  //  MAIN: Run once to create order + send invoice
+  // ✅ Main Effect - Create order once
   useEffect(() => {
     if (hasRunRef.current) return;
     hasRunRef.current = true;
@@ -210,6 +170,7 @@ function ThankYouPageContent() {
       })
     );
 
+    // ✅ Detect stored payment details
     const storedPaymentMethod = safeLocalStorageGet("paymentMethod", "card");
     const storedCardData = safeLocalStorageGet("cardData");
 
@@ -221,8 +182,7 @@ function ThankYouPageContent() {
 
         if (/^4/.test(cardData.cardNumber)) setCardType("Visa");
         else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard");
-        else if (/^3[47]/.test(cardData.cardNumber))
-          setCardType("American Express");
+        else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express");
         else if (/^6/.test(cardData.cardNumber)) setCardType("Discover");
       } catch {
         setPaymentInfo({ method: "card", lastFour: "****" });
@@ -231,12 +191,13 @@ function ThankYouPageContent() {
       setPaymentInfo({ method: storedPaymentMethod });
     }
 
+    // ✅ Create Order
     const createOrder = async () => {
       try {
-                  if (!isStorageAvailable("sessionStorage") || !isStorageAvailable("localStorage")) {
-            toast.error("Unable to process order — storage not supported on this device.");
-            return;
-          }
+        if (!isStorageAvailable("sessionStorage") || !isStorageAvailable("localStorage")) {
+          toast.error("Unable to process order — storage not supported on this device.");
+          return;
+        }
 
         const orderData = safeSessionStorageGet("orderData");
         if (!orderData) {
@@ -285,21 +246,36 @@ function ThankYouPageContent() {
               }`.trim(),
             };
 
+        // ✅ Recover cart items if Zustand store empty
+        let currentCartItems = cartItems;
+        if (!currentCartItems || currentCartItems.length === 0) {
+          try {
+            const storedCart = safeLocalStorageGet("cart-storage", "[]");
+            currentCartItems = JSON.parse(storedCart);
+          } catch {
+            currentCartItems = [];
+          }
+        }
+
+        if (!currentCartItems || currentCartItems.length === 0) {
+          console.error("No cart items found for order creation.");
+          toast.error("Your cart is empty — unable to process order.");
+          return;
+        }
+
         const fullOrderData = {
           user: orderUser,
           payment: parsedOrderData.payment,
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
-          cartItems: cartItems,
+          cartItems: currentCartItems,
           orderNumber: orderNum,
           totalAmount: total,
           subtotal: subtotal,
           customerEmail: customerEmail,
         };
 
-        const sendingToastId = toast.loading(
-          "Please wait… sending your invoice"
-        );
+        const sendingToastId = toast.loading("Please wait… sending your invoice");
         console.log("Final full order data to be sent:", fullOrderData);
 
         await createOrderInBackend(fullOrderData);
@@ -314,50 +290,26 @@ function ThankYouPageContent() {
 
           if (!emailResponse.ok) {
             const errorText = await emailResponse.text();
-            console.error(
-              "Failed to send order confirmation email:",
-              errorText
-            );
-            toast.error(
-              "Order placed successfully, but failed to send confirmation email"
-            );
+            console.error("Failed to send order confirmation email:", errorText);
+            toast.error("Order placed successfully, but failed to send confirmation email");
           } else {
             toast.success(`Order confirmation sent to ${customerEmail}`);
-
-            //   setShowPopup(true)
-
-            //   // Mark order as viewed
-            //   const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
-            //   if (!viewedOrders.includes(finalOrderNumber)) {
-            //     viewedOrders.push(finalOrderNumber)
-            //     localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
-            //   }
-
-            //   // Redirect after another short delay
-            //   setTimeout(() => {
-            //     window.location.href = "/"
-            //   }, 15000) // 3s after popup appears
-            // }, 2000) // 0.5s delay to let toast appear first
           }
         } catch (err) {
           console.error("Email sending failed:", err);
-          toast.error(
-            "Order placed successfully, but failed to send confirmation email"
-          );
+          toast.error("Order placed successfully, but failed to send confirmation email");
         }
 
         safeSessionStorageRemove("orderData");
 
-        // ✅ Now mark as viewed (after order creation)
+        // ✅ Mark viewed orders
         try {
           const viewedOrdersStr = safeLocalStorageGet("viewedOrders", "[]");
           const viewedOrders = JSON.parse(viewedOrdersStr);
           if (orderNum && viewedOrders.includes(orderNum)) {
             setShowPopup(true);
             setTimeout(() => {
-              if (typeof window !== "undefined") {
-                window.location.href = "/";
-              }
+              if (typeof window !== "undefined") window.location.href = "/";
             }, 3000);
           } else if (orderNum) {
             viewedOrders.push(orderNum);
@@ -366,14 +318,12 @@ function ThankYouPageContent() {
         } catch (error) {
           console.warn("Could not update viewed orders:", error);
         }
-        // clear local storage and zustand cart
-        safeLocalStorageRemove("cart-Storage");
+
+        // ✅ clear localStorage cart
         safeLocalStorageRemove("cart-storage");
-        // useCartStore.getState().clear();
       } catch (error) {
         console.error("Error creating order:", error);
-        // toast.error(error);
-        alert(error);
+        toast.error("Failed to process order. Please contact support.");
       }
     };
 
@@ -399,20 +349,17 @@ function ThankYouPageContent() {
         <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
           <div className="flex flex-col items-center mb-6">
             <h1
-              className="text-white text-2xl md:text-3xl lg:text-3xl font-semibold uppercase text-center leading-tight tracking-wide"
-              style={{
-                fontFamily: "Audiowide, sans-serif",
-                letterSpacing: "0.1em",
-              }}
+              className="text-white text-2xl md:text-3xl font-semibold uppercase text-center leading-tight tracking-wide"
+              style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
             >
               Thank you for shopping with us!
             </h1>
-            <div className="text-white text-xl md:text-xl lg:text-xl font-normal text-center mt-1">
+            <div className="text-white text-xl text-center mt-1">
               Your payment is protected. Our team is processing your order.
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-0 mb-1">
+          <div className="flex flex-col md:flex-row md:justify-between gap-6 mb-1">
             <div>
               <div className="uppercase text-sm text-gray-300 font-semibold">
                 Deliver To
@@ -426,54 +373,31 @@ function ThankYouPageContent() {
                       {shippingInfo.firstName} {shippingInfo.lastName}
                       <br />
                       {billingInfo.address}
-                      {billingInfo.apartment && (
-                        <>
-                          <br />
-                          {billingInfo.apartment}
-                        </>
-                      )}
+                      {billingInfo.apartment && <><br />{billingInfo.apartment}</>}
                       <br />
-                      {billingInfo.company && (
-                        <>
-                          {billingInfo.company}
-                          <br />
-                        </>
-                      )}
+                      {billingInfo.company && <>{billingInfo.company}<br /></>}
                       {billingInfo.city}, {billingInfo.state},{" "}
                       {billingInfo.zipCode}, {billingInfo.country}
                       <br />
                       {billingInfo.phone}
                     </div>
                   )}
-
-                  {!isSameAddress &&
-                    shippingInfo &&
-                    Object.keys(shippingInfo).length > 0 && (
-                      <div className="mt-3">
-                        <strong>Shipping Information</strong>
-                        <br />
-                        {shippingInfo.firstName} {shippingInfo.lastName}
-                        <br />
-                        {shippingInfo.address}
-                        {shippingInfo.apartment && (
-                          <>
-                            <br />
-                            {shippingInfo.apartment}
-                          </>
-                        )}
-                        <br />
-                        {shippingInfo.company && (
-                          <>
-                            {shippingInfo.company}
-                            <br />
-                          </>
-                        )}
-                        {shippingInfo.city}, {shippingInfo.state},{" "}
-                        {shippingInfo.zipCode}, {shippingInfo.country}
-                        <br />
-                        {shippingInfo.phone}
-                      </div>
-                    )}
+                  {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+                    <div className="mt-3">
+                      <strong>Shipping Information</strong>
+                      <br />
+                      {shippingInfo.firstName} {shippingInfo.lastName}
+                      <br />
+                      {shippingInfo.address}
+                      {shippingInfo.apartment && <><br />{shippingInfo.apartment}</>}
+                      <br />
+                      {shippingInfo.company && <>{shippingInfo.company}<br /></>}
+                      {shippingInfo.city}, {shippingInfo.state},{" "}
+                      {shippingInfo.zipCode}, {shippingInfo.country}
+                      <br />
+                      {shippingInfo.phone}
+                    </div>
+                  )}
                 </>
               </div>
             </div>
@@ -492,7 +416,7 @@ function ThankYouPageContent() {
                       <img
                         src={`/images/home/${cardImage}`}
                         alt={cardType}
-                        className="h-auto w-6 sm:w-8 md:w-10 lg:w-12 object-contain"
+                        className="h-auto w-8 object-contain"
                       />
                     )}
                   </>
@@ -506,20 +430,14 @@ function ThankYouPageContent() {
           <div className="border-t border-white my-4" />
           <div className="flex flex-col md:flex-row justify-between items-center mb-2">
             <div className="uppercase text-sm text-white font-semibold">
-              Order Details{" "}
-              <span id="order-id" className="font-normal">
-                #{orderNumber}
-              </span>
+              Order Details <span className="font-normal">#{orderNumber}</span>
             </div>
             <div className="text-sm text-white">{orderDate}</div>
           </div>
 
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-row items-start gap-4 py-2"
-              >
+              <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
                   src={
                     item.title?.includes("Transmission")
@@ -547,9 +465,7 @@ function ThankYouPageContent() {
             ))
           ) : (
             <div className="flex flex-row items-start gap-4 py-2">
-              <div className="text-white text-center w-full">
-                No items in cart
-              </div>
+              <div className="text-white text-center w-full">No items in cart</div>
             </div>
           )}
 
@@ -579,7 +495,7 @@ function ThankYouPageContent() {
             </Link>
             <Link
               href="/"
-              className="text-blue-400 cursor-pointer hover:underline ml-0 md:ml-4 mt-2 md:mt-0 inline-block text-base"
+              className="text-blue-400 cursor-pointer hover:underline inline-block text-base"
             >
               Continue shopping
             </Link>
@@ -587,7 +503,8 @@ function ThankYouPageContent() {
         </div>
       </main>
 
-      {/* ✅ Popup for duplicate view */}
+      {/* Google conversion tracking */}
+     {/* ✅ Popup for duplicate view */}
       {orderNumber && typeof window !== "undefined" && (
         <Script
           id="google-ads-conversion"
@@ -627,17 +544,11 @@ function ThankYouPageContent() {
   );
 }
 
+// ✅ Wrap in Suspense
 export default function ThankYouPage() {
   return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen w-full bg-[#0B1422] flex items-center justify-center">
-          <div className="text-white text-xl">Loading...</div>
-        </div>
-      }
-    >
+    <Suspense fallback={<div className="text-white p-8">Loading...</div>}>
       <ThankYouPageContent />
     </Suspense>
   );
 }
-

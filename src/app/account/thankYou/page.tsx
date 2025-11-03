@@ -372,7 +372,8 @@ function ThankYouPageContent() {
         // useCartStore.getState().clear();
       } catch (error) {
         console.error("Error creating order:", error);
-        toast.error(error);
+        // toast.error(error);
+        alert(error);
       }
     };
 

@@ -1,4 +1,6 @@
+"use client";
 import Image from "next/image"
+
 import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import useBillingStore from "@/store/billingStore"

@@ -151,49 +151,53 @@ export default function ThankYouPage() {
           customerEmail: customerEmail,
         }
 
+        // Start the loading toast only after we've confirmed orderData exists and built the payload
         const sendingToastId = toast.loading("Please wait… sending your invoice")
         console.log("Final full order data to be sent:", fullOrderData)
 
-        await createOrderInBackend(fullOrderData)
-
-
+        // 1) Create order in backend
+        let createdOrderResult = null
         try {
-            const emailResponse = await fetch("/api-2/send-order-email", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(fullOrderData),
-            })
-            toast.dismiss(sendingToastId)
-
-            if (!emailResponse.ok) {
-              const errorText = await emailResponse.text()
-              console.error("Failed to send order confirmation email:", errorText)
-              toast.error("Order placed successfully, but failed to send confirmation email")
-            } else {
-              toast.success(`Order confirmation sent to ${customerEmail}`)
-            
-            //   setShowPopup(true)
-
-            //   // Mark order as viewed
-            //   const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
-            //   if (!viewedOrders.includes(finalOrderNumber)) {
-            //     viewedOrders.push(finalOrderNumber)
-            //     localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
-            //   }
-
-            //   // Redirect after another short delay
-            //   setTimeout(() => {
-            //     window.location.href = "/"
-            //   }, 15000) // 3s after popup appears
-            // }, 2000) // 0.5s delay to let toast appear first
-        
-            }
-          } catch (err) {
-            console.error("Email sending failed:", err)
-            toast.error("Order placed successfully, but failed to send confirmation email")
+          createdOrderResult = await createOrderInBackend(fullOrderData)
+          console.log('createOrderInBackend result:', createdOrderResult)
+        } catch (err) {
+          // Ensure loading toast is dismissed and keep orderData for retry
+          toast.dismiss(sendingToastId)
+          console.error('createOrderInBackend failed:', err)
+          toast.error('Failed to create order. Please try again or contact support.')
+          return
         }
 
-        sessionStorage.removeItem("orderData")
+        // 2) Send confirmation email - require success before clearing sessionStorage
+        try {
+          const emailResponse = await fetch("/api-2/send-order-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullOrderData),
+          })
+
+          if (!emailResponse.ok) {
+            const errorText = await emailResponse.text()
+            toast.dismiss(sendingToastId)
+            console.error("Failed to send order confirmation email:", errorText)
+            toast.error("Order placed successfully, but failed to send confirmation email")
+            // Do NOT remove sessionStorage so the orderData can be retried
+            return
+          }
+
+          // Both backend order creation and email succeeded
+          toast.dismiss(sendingToastId)
+          toast.success(`Order confirmation sent to ${customerEmail}`)
+          // Remove orderData now that both steps succeeded
+          sessionStorage.removeItem("orderData")
+
+        } catch (err) {
+          toast.dismiss(sendingToastId)
+          console.error("Email sending failed:", err)
+          toast.error("Order placed successfully, but failed to send confirmation email")
+          // Do NOT remove sessionStorage so the orderData can be retried
+          return
+        }
 
         // ✅ Now mark as viewed (after order creation)
         const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")

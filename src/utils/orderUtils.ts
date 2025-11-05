@@ -3,7 +3,9 @@ import { orders } from './api';
 
 export const createOrderInBackend = async (orderData: any) => {
   try {
-    console.log('createOrderInBackend received orderData:', orderData);
+    console.log('[Order Creation Started] ==================');
+    console.log('Timestamp:', new Date().toISOString());
+    console.log('Full Payload:', JSON.stringify(orderData, null, 2));
     
     const {
       user,
@@ -118,8 +120,14 @@ export const createOrderInBackend = async (orderData: any) => {
       console.log('Created order:', createdOrder);
       return createdOrder.data;
     } catch (orderError: any) {
-      console.error('Order creation error:', orderError.response?.data || orderError);
-      throw new Error(orderError.response?.data?.error || 'Failed to create order');
+      // Verbose logging to help trace backend failures in the browser console
+      const status = orderError?.response?.status;
+      const data = orderError?.response?.data;
+      console.error('Order creation HTTP status:', status);
+      console.error('Order creation response data:', data || orderError);
+      // Include status and response body (if available) in the thrown error so UI can show useful info
+      const detail = typeof data === 'string' ? data : JSON.stringify(data || {});
+      throw new Error(`Failed to create order (status ${status}): ${detail}`);
     }
 
   } catch (error) {

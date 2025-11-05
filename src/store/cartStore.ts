@@ -23,12 +23,16 @@ type CartState = {
   updateQuantity: (id: string, quantity: number) => void;
   clear: () => void;
   setItemExpiry: (id: string, expiresAt: number) => void;
+  hasHydrated: boolean;
+  setHasHydrated: (hydrated: boolean) => void;
 };
 
 export const useCartStore = create<CartState>()(
   persist(
     (set) => ({
-      items: [],
+  items: [],
+  hasHydrated: false,
+  setHasHydrated: (hydrated: boolean) => set({ hasHydrated: hydrated }),
       addItem: (item) =>
         set((state) => {
           const existing = state.items.find((i) => i.id === item.id);
@@ -80,9 +84,12 @@ export const useCartStore = create<CartState>()(
       storage: createJSONStorage(() => localStorage), // (optional) by default, 'localStorage' is used
       onRehydrateStorage: (state) => {
         console.log('Hydration finished.');
-        return (state, error) => {
+        return (rehydratedState, error) => {
           if (error) {
             console.log('an error happened during hydration', error);
+          }
+          if (rehydratedState && typeof rehydratedState.setHasHydrated === 'function') {
+            rehydratedState.setHasHydrated(true);
           }
         };
       },

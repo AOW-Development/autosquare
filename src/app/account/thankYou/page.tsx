@@ -34,12 +34,6 @@ export default function ThankYouPage() {
   const hasRunRef = useRef(false)
 
   
-
-  // this clears the cart on unmount
-  useEffect(()=>{
-    localStorage.removeItem("cart-storage")
-  },[]);
-
   // Card image mapping
   const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
@@ -65,7 +59,7 @@ export default function ThankYouPage() {
   }, [])
 
 
-  // ✅ MAIN: Run once to create order + send invoice
+  //  MAIN: Run once to create order + send invoice
   useEffect(() => {
     if (hasRunRef.current) return
     hasRunRef.current = true
@@ -164,39 +158,39 @@ export default function ThankYouPage() {
 
 
         try {
-          const emailResponse = await fetch("/api-2/send-order-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullOrderData),
-          })
-          toast.dismiss(sendingToastId)
+            const emailResponse = await fetch("/api-2/send-order-email", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(fullOrderData),
+            })
+            toast.dismiss(sendingToastId)
 
-          if (!emailResponse.ok) {
-            const errorText = await emailResponse.text()
-            console.error("Failed to send order confirmation email:", errorText)
-            toast.error("Order placed successfully, but failed to send confirmation email")
-          } else {
-            toast.success(`Order confirmation sent to ${customerEmail}`)
+            if (!emailResponse.ok) {
+              const errorText = await emailResponse.text()
+              console.error("Failed to send order confirmation email:", errorText)
+              toast.error("Order placed successfully, but failed to send confirmation email")
+            } else {
+              toast.success(`Order confirmation sent to ${customerEmail}`)
+            
+            //   setShowPopup(true)
+
+            //   // Mark order as viewed
+            //   const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
+            //   if (!viewedOrders.includes(finalOrderNumber)) {
+            //     viewedOrders.push(finalOrderNumber)
+            //     localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
+            //   }
+
+            //   // Redirect after another short delay
+            //   setTimeout(() => {
+            //     window.location.href = "/"
+            //   }, 15000) // 3s after popup appears
+            // }, 2000) // 0.5s delay to let toast appear first
         
-        //   setShowPopup(true)
-
-        //   // Mark order as viewed
-        //   const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
-        //   if (!viewedOrders.includes(finalOrderNumber)) {
-        //     viewedOrders.push(finalOrderNumber)
-        //     localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
-        //   }
-
-        //   // Redirect after another short delay
-        //   setTimeout(() => {
-        //     window.location.href = "/"
-        //   }, 15000) // 3s after popup appears
-        // }, 2000) // 0.5s delay to let toast appear first
-      
-          }
-        } catch (err) {
-          console.error("Email sending failed:", err)
-          toast.error("Order placed successfully, but failed to send confirmation email")
+            }
+          } catch (err) {
+            console.error("Email sending failed:", err)
+            toast.error("Order placed successfully, but failed to send confirmation email")
         }
 
         sessionStorage.removeItem("orderData")

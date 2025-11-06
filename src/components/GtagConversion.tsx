@@ -55,23 +55,23 @@ export default function GtagConversion({
     });
 
     // ✅ 2️⃣ Send Google Ads Conversion Event (AW Tag)
-    if (typeof window.gtag === 'function') {
-      window.gtag('event', 'conversion', {
-        send_to: 'AW-17273467579/qtoECO6FibkbELvl0KxA',
-        value: orderTotal,
-        currency,
-        transaction_id: orderId,
-      });
-    } else {
-      // fallback if gtag not yet loaded
-      window.dataLayer.push({
-        event: 'conversion',
-        send_to: 'AW-17273467579/qtoECO6FibkbELvl0KxA',
-        value: orderTotal,
-        currency,
-        transaction_id: orderId,
-      });
-    }
+    // if (typeof window.gtag === 'function') {
+    //   window.gtag('event', 'conversion', {
+    //     send_to: 'AW-17273467579/qtoECO6FibkbELvl0KxA',
+    //     value: orderTotal,
+    //     currency,
+    //     transaction_id: orderId,
+    //   });
+    // } else {
+    //   // fallback if gtag not yet loaded
+    //   window.dataLayer.push({
+    //     event: 'conversion',
+    //     send_to: 'AW-17273467579/qtoECO6FibkbELvl0KxA',
+    //     value: orderTotal,
+    //     currency,
+    //     transaction_id: orderId,
+    //   });
+    // }
   }, [orderId, orderTotal, currency, items]);
 
   return null;

@@ -25,6 +25,7 @@ const audiowide = Audiowide({
   variable: "--font-audiowide",
 });
 import { getMetadataForPath } from "@/utils/metadata";
+import RouteChangeTracker from "@/components/RouteChangeTracker";
 
 // Generate metadata based on the current path
 export async function generateMetadata({
@@ -111,6 +112,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />
+         
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -121,7 +123,7 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         {/* End Google Tag Manager (noscript) */}
-
+             <RouteChangeTracker />
         <Header />
         {children}
         <Footer />

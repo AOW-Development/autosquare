@@ -105,7 +105,8 @@ export default function EngineProductPage() {
       quantity,
     })
 
-    router.push("/account/payMethod?buyInOneClick=true")
+    // router.push("/account/payMethod?buyInOneClick=true")
+    window.location.href = "/account/payMethod?buyInOneClick=true"
   }
 
   const accordionData = [

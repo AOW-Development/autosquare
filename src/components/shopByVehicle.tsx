@@ -108,7 +108,8 @@ useEffect(() => {
       path === "/autoParts";
 
     if (isInitialSearchPage) {
-      router.push(newUrl);
+      // router.push(newUrl);
+      window.location.href = newUrl;
     } else if (path.startsWith("/catalogue/")) {
       window.history.pushState(null, '', newUrl);
     }

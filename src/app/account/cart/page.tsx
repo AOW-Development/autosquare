@@ -39,7 +39,8 @@ export default function Cart() {
       setError("No Products in the cart");
       setTimeout(() => setError(""), 2000);
     } else {
-      router.push("/account/checkout");
+      // router.push("/account/checkout");
+       window.location.href = "/account/checkout";
     }
   };
 

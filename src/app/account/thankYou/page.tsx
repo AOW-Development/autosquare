@@ -19,6 +19,8 @@ export default function ThankYouPage() {
   const searchParams = useSearchParams()
   const { billingInfo } = useBillingStore()
   const cartItems = useCartStore((s) => s.items)
+  const cartHasHydrated = useCartStore((s) => s.hasHydrated)
+  const setCartHasHydrated = useCartStore((s) => s.setHasHydrated)
   const [orderNumber, setOrderNumber] = useState("")
   const [orderDate, setOrderDate] = useState("")
   const { shippingInfo } = useShippingStore()
@@ -61,7 +63,19 @@ export default function ThankYouPage() {
 
   //  MAIN: Run once to create order + send invoice
   useEffect(() => {
+    // Wait for cart store hydration and non-empty cart
     if (hasRunRef.current) return
+    if (!cartHasHydrated) {
+      // Try to force hydration if not hydrated
+      setCartHasHydrated(true)
+      console.log("Cart store not hydrated yet, waiting...")
+      return
+    }
+    if (!cartItems || cartItems.length === 0) {
+      console.error("Cart is empty or not loaded, aborting order creation.")
+      toast.error("Your cart is empty. Please add items before placing an order.")
+      return
+    }
     hasRunRef.current = true
 
     const orderData = sessionStorage.getItem("orderData")
@@ -112,6 +126,7 @@ export default function ThankYouPage() {
         const orderData = sessionStorage.getItem("orderData")
         if (!orderData) {
           console.error("No order data found in session storage")
+          toast.error("No order data found. Please try again.")
           return
         }
 
@@ -217,7 +232,7 @@ export default function ThankYouPage() {
     }
 
     createOrder()
-  }, [user])
+  }, [user, cartHasHydrated, cartItems, setCartHasHydrated])
 
   return (
     

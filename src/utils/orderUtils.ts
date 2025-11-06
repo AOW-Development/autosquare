@@ -118,7 +118,8 @@ export const createOrderInBackend = async (orderData: any) => {
     try {
       const createdOrder = await orders.create(orderPayload);
       console.log('Created order:', createdOrder);
-      return createdOrder.data;
+      // Always return { success: true, order: ... } for 2xx
+      return { success: true, order: createdOrder.data };
     } catch (orderError: any) {
       // Verbose logging to help trace backend failures in the browser console
       const status = orderError?.response?.status;
@@ -127,7 +128,7 @@ export const createOrderInBackend = async (orderData: any) => {
       console.error('Order creation response data:', data || orderError);
       // Include status and response body (if available) in the thrown error so UI can show useful info
       const detail = typeof data === 'string' ? data : JSON.stringify(data || {});
-      throw new Error(`Failed to create order (status ${status}): ${detail}`);
+      return { success: false, error: `Failed to create order (status ${status}): ${detail}` };
     }
 
   } catch (error) {

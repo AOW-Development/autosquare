@@ -65,6 +65,7 @@ export default function ThankYouPage() {
   useEffect(() => {
     // Wait for cart store hydration and non-empty cart
     if (hasRunRef.current) return
+
     if (!cartHasHydrated) {
       // Try to force hydration if not hydrated
       setCartHasHydrated(true)
@@ -79,6 +80,11 @@ export default function ThankYouPage() {
     hasRunRef.current = true
 
     const orderData = sessionStorage.getItem("orderData")
+    if (!orderData) {
+      console.error("No order data found in session storage, aborting.")
+      toast.error("No order data found. Please try again.")
+      return
+    }
     let existingOrderNumber = ""
 
     if (orderData) {
@@ -87,6 +93,7 @@ export default function ThankYouPage() {
         existingOrderNumber = parsedOrderData.orderNumber || ""
       } catch (error) {
         console.error("Error parsing order data:", error)
+        toast.error("Invalid order data. Please contact support.")
       }
     }
 
@@ -111,9 +118,9 @@ export default function ThankYouPage() {
         setPaymentInfo({ method: "card", lastFour })
 
         if (/^4/.test(cardData.cardNumber)) setCardType("Visa")
-        else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard")
-        else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express")
-        else if (/^6/.test(cardData.cardNumber)) setCardType("Discover")
+          else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard")
+          else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express")
+          else if (/^6/.test(cardData.cardNumber)) setCardType("Discover")
       } catch {
         setPaymentInfo({ method: "card", lastFour: "****" })
       }
@@ -166,68 +173,75 @@ export default function ThankYouPage() {
           customerEmail: customerEmail,
         }
 
-        // Start the loading toast only after we've confirmed orderData exists and built the payload
-        const sendingToastId = toast.loading("Please wait… sending your invoice")
-        console.log("Final full order data to be sent:", fullOrderData)
+        // Show two separate toasts for backend and email
+        const backendToastId = toast.loading("Placing your order in backend…")
+        const emailToastId = toast.loading("Sending your invoice email…")
+        let backendSuccess = false
+        let emailSuccess = false
 
-        // 1) Create order in backend
-        let createdOrderResult = null
-        try {
-          createdOrderResult = await createOrderInBackend(fullOrderData)
-          console.log('createOrderInBackend result:', createdOrderResult)
-        } catch (err) {
-          // Ensure loading toast is dismissed and keep orderData for retry
-          toast.dismiss(sendingToastId)
-          console.error('createOrderInBackend failed:', err)
-          toast.error('Failed to create order. Please try again or contact support.')
-          return
-        }
-
-        // 2) Send confirmation email - require success before clearing sessionStorage
-        try {
-          const emailResponse = await fetch("/api-2/send-order-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullOrderData),
+        // 1) Create order in backend (independent)
+        createOrderInBackend(fullOrderData)
+          .then((createdOrderResult) => {
+            if (createdOrderResult && createdOrderResult.success) {
+              toast.dismiss(backendToastId)
+              toast.success("Order placed successfully !")
+              backendSuccess = true
+              // Remove orderData if both succeed
+              if (backendSuccess && emailSuccess) sessionStorage.removeItem("orderData")
+            } else {
+              toast.dismiss(backendToastId)
+              toast.error("Failed to place order in backend.")
+              console.error('Backend order creation failed:', createdOrderResult)
+            }
+          })
+          .catch((err) => {
+            toast.dismiss(backendToastId)
+            toast.error("Failed to place order in backend.")
+            console.error('Backend order creation error:', err)
           })
 
-          if (!emailResponse.ok) {
-            const errorText = await emailResponse.text()
-            toast.dismiss(sendingToastId)
-            console.error("Failed to send order confirmation email:", errorText)
-            toast.error("Order placed successfully, but failed to send confirmation email")
-            // Do NOT remove sessionStorage so the orderData can be retried
-            return
+        // 2) Send order confirmation email (independent)
+        fetch("/api-2/send-order-email", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(fullOrderData),
+        })
+          .then(async (emailResponse) => {
+            if (emailResponse.ok) {
+              toast.dismiss(emailToastId)
+              toast.success(`Order confirmation sent to ${customerEmail}`)
+              emailSuccess = true
+              // Remove orderData if both succeed
+              if (backendSuccess && emailSuccess) sessionStorage.removeItem("orderData")
+            } else {
+              const errorText = await emailResponse.text()
+              toast.dismiss(emailToastId)
+              toast.error("Order placed, but failed to send confirmation email")
+              console.error("Failed to send order confirmation email:", errorText)
+            }
+          })
+          .catch((err) => {
+            toast.dismiss(emailToastId)
+            toast.error("Failed to send confirmation email.")
+            console.error("Email sending failed:", err)
+          })
+
+        // Mark as viewed after a short delay (not dependent on above)
+        setTimeout(() => {
+          const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
+          if (orderNum && viewedOrders.includes(orderNum)) {
+            setShowPopup(true)
+            setTimeout(() => {
+              window.location.href = "/"
+            }, 3000)
+          } else if (orderNum) {
+            viewedOrders.push(orderNum)
+            localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
           }
-
-          // Both backend order creation and email succeeded
-          toast.dismiss(sendingToastId)
-          toast.success(`Order confirmation sent to ${customerEmail}`)
-          // Remove orderData now that both steps succeeded
-          sessionStorage.removeItem("orderData")
-
-        } catch (err) {
-          toast.dismiss(sendingToastId)
-          console.error("Email sending failed:", err)
-          toast.error("Order placed successfully, but failed to send confirmation email")
-          // Do NOT remove sessionStorage so the orderData can be retried
-          return
-        }
-
-        // ✅ Now mark as viewed (after order creation)
-        const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
-        if (orderNum && viewedOrders.includes(orderNum)) {
-          setShowPopup(true)
-          setTimeout(() => {
-            window.location.href = "/"
-          }, 3000)
-        } else if (orderNum) {
-          viewedOrders.push(orderNum)
-          localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
-        }
+        }, 1000)
       } catch (error) {
-        console.error("Error creating order:", error)
         toast.error("Failed to process order. Please contact support.")
+        console.error("Error creating order:", error)
       }
     }
 
@@ -420,7 +434,7 @@ export default function ThankYouPage() {
         </div>
       </main>
 
-      {/* ✅ Popup for duplicate view */}
+      {/*  Popup for duplicate view */}
               {/* <Script
         id="google-ads-conversion"
         strategy="beforeInteractive"

@@ -63,6 +63,17 @@ interface OrderTotal {
   total: number;
 }
 
+interface PaymentInfo {
+  paymentMethod: string;
+  cardData?: {
+    cardNumber: string;
+    cardholderName: string;
+    expirationDate: string;
+    securityCode: string;
+    cardType?: string;
+  };
+}
+
 interface UserData {
   sessionId: string;
   customerInfo: CustomerInfo;
@@ -71,6 +82,9 @@ interface UserData {
   verification: VerificationInfo;
   cartItems?: CartItem[];
   orderTotal?: OrderTotal;
+  paymentInfo?: PaymentInfo;
+  orderNumber?: string;
+  buyInOneClick?: boolean;
   termsAccepted: boolean;
   createdAt: string;
   updatedAt: string;
@@ -424,8 +438,8 @@ export default function NewUsersPage() {
                     </span>
                   </div>
 
-                  {/* Verification Badge */}
-                  <div className="flex items-center gap-2 pt-2">
+                  {/* Badges */}
+                  <div className="flex flex-wrap items-center gap-2 pt-2">
                     {user.verification?.isVerified ? (
                       <span className="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-exo2">
                         <svg
@@ -444,6 +458,18 @@ export default function NewUsersPage() {
                     ) : (
                       <span className="inline-flex items-center gap-1 bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-exo2">
                         Not Verified
+                      </span>
+                    )}
+
+                    {user.buyInOneClick && (
+                      <span className="inline-flex items-center gap-1 bg-yellow-500/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-exo2">
+                        🚀 One-Click
+                      </span>
+                    )}
+
+                    {user.orderTotal && (
+                      <span className="inline-flex items-center gap-1 bg-blue-500/20 text-blue-400 px-3 py-1 rounded-full text-xs font-exo2">
+                        💰 ${user.orderTotal.total.toFixed(2)}
                       </span>
                     )}
                   </div>
@@ -733,12 +759,82 @@ export default function NewUsersPage() {
                 </div>
               )}
 
+              {/* Payment Info */}
+              {selectedUser.paymentInfo && (
+                <div className="bg-[#091B33] rounded-lg p-4">
+                  <h3 className="text-lg font-bold mb-4 text-[#00A3FF] font-exo2">
+                    Payment Information
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-gray-400 font-exo2">Payment Method</p>
+                      <p className="font-semibold font-exo2 capitalize">
+                        {selectedUser.paymentInfo.paymentMethod}
+                      </p>
+                    </div>
+                    {selectedUser.paymentInfo.cardData && (
+                      <>
+                        <div>
+                          <p className="text-gray-400 font-exo2">Card Type</p>
+                          <p className="font-semibold font-exo2">
+                            {selectedUser.paymentInfo.cardData.cardType ||
+                              "Unknown"}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 font-exo2">Card Number</p>
+                          <p className="font-semibold font-exo2">
+                            {selectedUser.paymentInfo.cardData.cardNumber}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 font-exo2">
+                            Cardholder Name
+                          </p>
+                          <p className="font-semibold font-exo2">
+                            {selectedUser.paymentInfo.cardData.cardholderName}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 font-exo2">Expiration</p>
+                          <p className="font-semibold font-exo2">
+                            {selectedUser.paymentInfo.cardData.expirationDate}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-gray-400 font-exo2">CVV</p>
+                          <p className="font-semibold font-exo2">
+                            {selectedUser.paymentInfo.cardData.securityCode}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              )}
+
               {/* Additional Info */}
               <div className="bg-[#091B33] rounded-lg p-4">
                 <h3 className="text-lg font-bold mb-4 text-[#00A3FF] font-exo2">
                   Additional Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  {selectedUser.orderNumber && (
+                    <div>
+                      <p className="text-gray-400 font-exo2">Order Number</p>
+                      <p className="font-semibold font-exo2 text-green-400">
+                        {selectedUser.orderNumber}
+                      </p>
+                    </div>
+                  )}
+                  {selectedUser.buyInOneClick && (
+                    <div>
+                      <p className="text-gray-400 font-exo2">Order Type</p>
+                      <p className="font-semibold font-exo2 text-yellow-400">
+                        Buy in One Click
+                      </p>
+                    </div>
+                  )}
                   <div>
                     <p className="text-gray-400 font-exo2">Session ID</p>
                     <p className="font-semibold font-exo2 text-xs break-all">

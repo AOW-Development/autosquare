@@ -1,149 +1,157 @@
 "use client";
-import Image from "next/image"
+import Image from "next/image";
 
-import Link from "next/link"
-import { useEffect, useRef, useState } from "react"
-import useBillingStore from "@/store/billingStore"
-import { useCartStore } from "@/store/cartStore"
-import { generateOrderNumber } from "@/utils/order"
-import { useShippingStore } from "@/store/shippingStore"
-import { createOrderInBackend } from "@/utils/orderUtils"
-import { toast } from "react-hot-toast"
-import useAuthStore from "@/store/authStore"
-import { OrderEmailData } from "@/lib/mail"
-import GtagConversion from "@/components/GtagConversion"
-import Script from "next/script"
-import { useSearchParams } from 'next/navigation'
+import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
+import useBillingStore from "@/store/billingStore";
+import { useCartStore } from "@/store/cartStore";
+import { generateOrderNumber } from "@/utils/order";
+import { useShippingStore } from "@/store/shippingStore";
+import { createOrderInBackend } from "@/utils/orderUtils";
+import { toast } from "react-hot-toast";
+import useAuthStore from "@/store/authStore";
+import { OrderEmailData } from "@/lib/mail";
+import GtagConversion from "@/components/GtagConversion";
+import Script from "next/script";
+import { useSearchParams } from "next/navigation";
 
 export default function ThankYouPage() {
-  const searchParams = useSearchParams()
-  const { billingInfo } = useBillingStore()
-  const cartItems = useCartStore((s) => s.items)
-  const cartHasHydrated = useCartStore((s) => s.hasHydrated)
-  const setCartHasHydrated = useCartStore((s) => s.setHasHydrated)
-  const [orderNumber, setOrderNumber] = useState("")
-  const [orderDate, setOrderDate] = useState("")
-  const { shippingInfo } = useShippingStore()
-  const [paymentInfo, setPaymentInfo] = useState<{ method: string; lastFour?: string }>({ method: "card" })
-  const [cardType, setCardType] = useState("unknown")
-  const isSameAddress = JSON.stringify(billingInfo) === JSON.stringify(shippingInfo)
-  const { setShippingInfo } = useShippingStore()
-  const { setBillingInfo } = useBillingStore()
-  const [finalOrderNumber, setFinalOrderNumber] = useState("")
-  const { user } = useAuthStore()
-  const [showPopup, setShowPopup] = useState(false)
-  const hasProcessed = useRef(false)
-  const hasRunRef = useRef(false)
+  const searchParams = useSearchParams();
+  const { billingInfo } = useBillingStore();
+  const cartItems = useCartStore((s) => s.items);
+  const cartHasHydrated = useCartStore((s) => s.hasHydrated);
+  const setCartHasHydrated = useCartStore((s) => s.setHasHydrated);
+  const [orderNumber, setOrderNumber] = useState("");
+  const [orderDate, setOrderDate] = useState("");
+  const { shippingInfo } = useShippingStore();
+  const [paymentInfo, setPaymentInfo] = useState<{
+    method: string;
+    lastFour?: string;
+  }>({ method: "card" });
+  const [cardType, setCardType] = useState("unknown");
+  const isSameAddress =
+    JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+  const { setShippingInfo } = useShippingStore();
+  const { setBillingInfo } = useBillingStore();
+  const [finalOrderNumber, setFinalOrderNumber] = useState("");
+  const { user } = useAuthStore();
+  const [showPopup, setShowPopup] = useState(false);
+  const hasProcessed = useRef(false);
+  const hasRunRef = useRef(false);
 
-  
   // Card image mapping
   const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
     MasterCard: "mastercard_82049.png",
     "American Express": "americanexpress_82060 1.png",
     Discover: "discover_82082.png",
-  }
+  };
 
-  const cardImage = cardImageMap[cardType]
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const salesTax = Math.round(subtotal * 0.029)
-  const total = subtotal + salesTax
+  const cardImage = cardImageMap[cardType];
+  const subtotal = cartItems.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0
+  );
+  const salesTax = Math.round(subtotal * 0.029);
+  const total = subtotal + salesTax;
 
-    useEffect(() => {
+  useEffect(() => {
     // Check if the page was reloaded
-    const [navigation] = performance.getEntriesByType("navigation") as PerformanceNavigationTiming[]
+    const [navigation] = performance.getEntriesByType(
+      "navigation"
+    ) as PerformanceNavigationTiming[];
     if (navigation?.type === "reload") {
       // toast.error("You cannot reload this page. Your order has already been processed.")
-      alert("You cannot reload this page. Your order has already been processed we will redirect to homepage.")
-      window.location.href = "/"
-      return
+      alert(
+        "You cannot reload this page. Your order has already been processed we will redirect to homepage."
+      );
+      window.location.href = "/";
+      return;
     }
-  }, [])
-
+  }, []);
 
   //  MAIN: Run once to create order + send invoice
   useEffect(() => {
     // Wait for cart store hydration and non-empty cart
-    if (hasRunRef.current) return
-
+    if (hasRunRef.current) return;
     if (!cartHasHydrated) {
       // Try to force hydration if not hydrated
-      setCartHasHydrated(true)
-      console.log("Cart store not hydrated yet, waiting...")
-      return
+      setCartHasHydrated(true);
+      console.log("Cart store not hydrated yet, waiting...");
+      return;
     }
     if (!cartItems || cartItems.length === 0) {
-      console.error("Cart is empty or not loaded, aborting order creation.")
-      toast.error("Your cart is empty. Please add items before placing an order.")
-      return
+      console.error("Cart is empty or not loaded, aborting order creation.");
+      toast.error(
+        "Your cart is empty. Please add items before placing an order."
+      );
+      return;
     }
-    hasRunRef.current = true
+    hasRunRef.current = true;
 
-    const orderData = sessionStorage.getItem("orderData")
-    if (!orderData) {
-      console.error("No order data found in session storage, aborting.")
-      toast.error("No order data found. Please try again.")
-      return
-    }
-    let existingOrderNumber = ""
+    const orderData = sessionStorage.getItem("orderData");
+    let existingOrderNumber = "";
 
     if (orderData) {
       try {
-        const parsedOrderData = JSON.parse(orderData)
-        existingOrderNumber = parsedOrderData.orderNumber || ""
+        const parsedOrderData = JSON.parse(orderData);
+        existingOrderNumber = parsedOrderData.orderNumber || "";
       } catch (error) {
-        console.error("Error parsing order data:", error)
-        toast.error("Invalid order data. Please contact support.")
+        console.error("Error parsing order data:", error);
       }
     }
 
-    const orderNum = existingOrderNumber
-    setFinalOrderNumber(orderNum)
-    setOrderNumber(orderNum)
+    const orderNum = existingOrderNumber;
+    setFinalOrderNumber(orderNum);
+    setOrderNumber(orderNum);
     setOrderDate(
       new Date().toLocaleDateString("en-US", {
         year: "numeric",
         month: "long",
         day: "numeric",
-      }),
-    )
+      })
+    );
 
-    const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card"
-    const storedCardData = localStorage.getItem("cardData")
+    const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card";
+    const storedCardData = localStorage.getItem("cardData");
 
     if (storedPaymentMethod === "card" && storedCardData) {
       try {
-        const cardData = JSON.parse(storedCardData)
-        const lastFour = cardData.cardNumber?.slice(-4) || "****"
-        setPaymentInfo({ method: "card", lastFour })
+        const cardData = JSON.parse(storedCardData);
+        const lastFour = cardData.cardNumber?.slice(-4) || "****";
+        setPaymentInfo({ method: "card", lastFour });
 
-        if (/^4/.test(cardData.cardNumber)) setCardType("Visa")
-          else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard")
-          else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express")
-          else if (/^6/.test(cardData.cardNumber)) setCardType("Discover")
+        if (/^4/.test(cardData.cardNumber)) setCardType("Visa");
+        else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard");
+        else if (/^3[47]/.test(cardData.cardNumber))
+          setCardType("American Express");
+        else if (/^6/.test(cardData.cardNumber)) setCardType("Discover");
       } catch {
-        setPaymentInfo({ method: "card", lastFour: "****" })
+        setPaymentInfo({ method: "card", lastFour: "****" });
       }
     } else {
-      setPaymentInfo({ method: storedPaymentMethod })
+      setPaymentInfo({ method: storedPaymentMethod });
     }
 
     const createOrder = async () => {
       try {
-        const orderData = sessionStorage.getItem("orderData")
+        const orderData = sessionStorage.getItem("orderData");
         if (!orderData) {
-          console.error("No order data found in session storage")
-          toast.error("No order data found. Please try again.")
-          return
+          console.error("No order data found in session storage");
+          toast.error("No order data found. Please try again.");
+          return;
         }
 
-        const parsedOrderData = JSON.parse(orderData)
-        const customerEmail = parsedOrderData.customerEmail || parsedOrderData.user?.email || user?.email
+        const parsedOrderData = JSON.parse(orderData);
+        const customerEmail =
+          parsedOrderData.customerEmail ||
+          parsedOrderData.user?.email ||
+          user?.email;
 
         if (!customerEmail) {
-          console.error("No customer email found for invoice")
-          toast.error("Unable to send invoice - no email address found")
-          return
+          console.error("No customer email found for invoice");
+          toast.error("Unable to send invoice - no email address found");
+          return;
         }
 
         const orderUser = user
@@ -156,10 +164,24 @@ export default function ThankYouPage() {
             }
           : {
               email: customerEmail,
-              firstName: parsedOrderData.billing?.firstName || parsedOrderData.shipping?.firstName || "",
-              lastName: parsedOrderData.billing?.lastName || parsedOrderData.shipping?.lastName || "",
-              name: `${parsedOrderData.billing?.firstName || parsedOrderData.shipping?.firstName || ""} ${parsedOrderData.billing?.lastName || parsedOrderData.shipping?.lastName || ""}`.trim(),
-            }
+              firstName:
+                parsedOrderData.billing?.firstName ||
+                parsedOrderData.shipping?.firstName ||
+                "",
+              lastName:
+                parsedOrderData.billing?.lastName ||
+                parsedOrderData.shipping?.lastName ||
+                "",
+              name: `${
+                parsedOrderData.billing?.firstName ||
+                parsedOrderData.shipping?.firstName ||
+                ""
+              } ${
+                parsedOrderData.billing?.lastName ||
+                parsedOrderData.shipping?.lastName ||
+                ""
+              }`.trim(),
+            };
 
         const fullOrderData = {
           user: orderUser,
@@ -171,85 +193,89 @@ export default function ThankYouPage() {
           totalAmount: total,
           subtotal: subtotal,
           customerEmail: customerEmail,
+        };
+
+        // Start the loading toast only after we've confirmed orderData exists and built the payload
+        const sendingToastId = toast.loading(
+          "Please wait… sending your invoice"
+        );
+        console.log("Final full order data to be sent:", fullOrderData);
+
+        // 1) Create order in backend
+        let createdOrderResult = null;
+        try {
+          createdOrderResult = await createOrderInBackend(fullOrderData);
+          console.log("createOrderInBackend result:", createdOrderResult);
+        } catch (err) {
+          // Ensure loading toast is dismissed and keep orderData for retry
+          toast.dismiss(sendingToastId);
+          console.error("createOrderInBackend failed:", err);
+          toast.error(
+            "Failed to create order. Please try again or contact support."
+          );
+          return;
         }
 
-        // Show two separate toasts for backend and email
-        const backendToastId = toast.loading("Placing your order in backend…")
-        const emailToastId = toast.loading("Sending your invoice email…")
-        let backendSuccess = false
-        let emailSuccess = false
+        // 2) Send confirmation email - require success before clearing sessionStorage
+        try {
+          const emailResponse = await fetch("/api-2/send-order-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(fullOrderData),
+          });
 
-        // 1) Create order in backend (independent)
-        createOrderInBackend(fullOrderData)
-          .then((createdOrderResult) => {
-            if (createdOrderResult && createdOrderResult.success) {
-              toast.dismiss(backendToastId)
-              toast.success("Order placed successfully !")
-              backendSuccess = true
-              // Remove orderData if both succeed
-              if (backendSuccess && emailSuccess) sessionStorage.removeItem("orderData")
-            } else {
-              toast.dismiss(backendToastId)
-              toast.error("Failed to place order in backend.")
-              console.error('Backend order creation failed:', createdOrderResult)
-            }
-          })
-          .catch((err) => {
-            toast.dismiss(backendToastId)
-            toast.error("Failed to place order in backend.")
-            console.error('Backend order creation error:', err)
-          })
-
-        // 2) Send order confirmation email (independent)
-        fetch("/api-2/send-order-email", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(fullOrderData),
-        })
-          .then(async (emailResponse) => {
-            if (emailResponse.ok) {
-              toast.dismiss(emailToastId)
-              toast.success(`Order confirmation sent to ${customerEmail}`)
-              emailSuccess = true
-              // Remove orderData if both succeed
-              if (backendSuccess && emailSuccess) sessionStorage.removeItem("orderData")
-            } else {
-              const errorText = await emailResponse.text()
-              toast.dismiss(emailToastId)
-              toast.error("Order placed, but failed to send confirmation email")
-              console.error("Failed to send order confirmation email:", errorText)
-            }
-          })
-          .catch((err) => {
-            toast.dismiss(emailToastId)
-            toast.error("Failed to send confirmation email.")
-            console.error("Email sending failed:", err)
-          })
-
-        // Mark as viewed after a short delay (not dependent on above)
-        setTimeout(() => {
-          const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]")
-          if (orderNum && viewedOrders.includes(orderNum)) {
-            setShowPopup(true)
-            setTimeout(() => {
-              window.location.href = "/"
-            }, 3000)
-          } else if (orderNum) {
-            viewedOrders.push(orderNum)
-            localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders))
+          if (!emailResponse.ok) {
+            const errorText = await emailResponse.text();
+            toast.dismiss(sendingToastId);
+            console.error(
+              "Failed to send order confirmation email:",
+              errorText
+            );
+            toast.error(
+              "Order placed successfully, but failed to send confirmation email"
+            );
+            // Do NOT remove sessionStorage so the orderData can be retried
+            return;
           }
-        }, 1000)
-      } catch (error) {
-        toast.error("Failed to process order. Please contact support.")
-        console.error("Error creating order:", error)
-      }
-    }
 
-    createOrder()
-  }, [user, cartHasHydrated, cartItems, setCartHasHydrated])
+          // Both backend order creation and email succeeded
+          toast.dismiss(sendingToastId);
+          toast.success(`Order confirmation sent to ${customerEmail}`);
+          // Remove orderData now that both steps succeeded
+          sessionStorage.removeItem("orderData");
+        } catch (err) {
+          toast.dismiss(sendingToastId);
+          console.error("Email sending failed:", err);
+          toast.error(
+            "Order placed successfully, but failed to send confirmation email"
+          );
+          // Do NOT remove sessionStorage so the orderData can be retried
+          return;
+        }
+
+        // ✅ Now mark as viewed (after order creation)
+        const viewedOrders = JSON.parse(
+          localStorage.getItem("viewedOrders") || "[]"
+        );
+        if (orderNum && viewedOrders.includes(orderNum)) {
+          setShowPopup(true);
+          setTimeout(() => {
+            window.location.href = "/";
+          }, 3000);
+        } else if (orderNum) {
+          viewedOrders.push(orderNum);
+          localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders));
+        }
+      } catch (error) {
+        console.error("Error creating order:", error);
+        toast.error("Failed to process order. Please contact support.");
+      }
+    };
+
+    createOrder();
+  }, [user, cartHasHydrated, cartItems, setCartHasHydrated]);
 
   return (
-    
     <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
       {/* Background Car Image */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
@@ -269,21 +295,23 @@ export default function ThankYouPage() {
           <div className="flex flex-col items-center mb-6">
             <h1
               className="text-white text-2xl md:text-3xl lg:text-3xl font-semibold uppercase text-center leading-tight tracking-wide"
-              style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
+              style={{
+                fontFamily: "Audiowide, sans-serif",
+                letterSpacing: "0.1em",
+              }}
             >
               Thank you for shopping with us!
             </h1>
-            <div
-              className="text-white text-xl md:text-xl lg:text-xl font-normal text-center mt-1"
-              
-            >
+            <div className="text-white text-xl md:text-xl lg:text-xl font-normal text-center mt-1">
               Your payment is protected. Our team is processing your order.
             </div>
           </div>
 
           <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-0 mb-1">
             <div>
-              <div className="uppercase text-sm text-gray-300 font-semibold">Deliver To</div>
+              <div className="uppercase text-sm text-gray-300 font-semibold">
+                Deliver To
+              </div>
               <div className="text-white text-sm mt-1 leading-tight">
                 <>
                   {billingInfo && Object.keys(billingInfo).length > 0 && (
@@ -306,43 +334,49 @@ export default function ThankYouPage() {
                           <br />
                         </>
                       )}
-                      {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
+                      {billingInfo.city}, {billingInfo.state},{" "}
+                      {billingInfo.zipCode}, {billingInfo.country}
                       <br />
                       {billingInfo.phone}
                     </div>
                   )}
 
-                  {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
-                    <div className="mt-3">
-                      <strong>Shipping Information</strong>
-                      <br />
-                      {shippingInfo.firstName} {shippingInfo.lastName}
-                      <br />
-                      {shippingInfo.address}
-                      {shippingInfo.apartment && (
-                        <>
-                          <br />
-                          {shippingInfo.apartment}
-                        </>
-                      )}
-                      <br />
-                      {shippingInfo.company && (
-                        <>
-                          {shippingInfo.company}
-                          <br />
-                        </>
-                      )}
-                      {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
-                      <br />
-                      {shippingInfo.phone}
-                    </div>
-                  )}
+                  {!isSameAddress &&
+                    shippingInfo &&
+                    Object.keys(shippingInfo).length > 0 && (
+                      <div className="mt-3">
+                        <strong>Shipping Information</strong>
+                        <br />
+                        {shippingInfo.firstName} {shippingInfo.lastName}
+                        <br />
+                        {shippingInfo.address}
+                        {shippingInfo.apartment && (
+                          <>
+                            <br />
+                            {shippingInfo.apartment}
+                          </>
+                        )}
+                        <br />
+                        {shippingInfo.company && (
+                          <>
+                            {shippingInfo.company}
+                            <br />
+                          </>
+                        )}
+                        {shippingInfo.city}, {shippingInfo.state},{" "}
+                        {shippingInfo.zipCode}, {shippingInfo.country}
+                        <br />
+                        {shippingInfo.phone}
+                      </div>
+                    )}
                 </>
               </div>
             </div>
 
             <div className="flex flex-col items-start md:items-center">
-              <div className="uppercase text-sm text-gray-300 font-semibold pr-12">Payment Method</div>
+              <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
+                Payment Method
+              </div>
               <div className="flex items-center gap-3 mt-1">
                 {paymentInfo.method === "card" ? (
                   <>
@@ -367,23 +401,35 @@ export default function ThankYouPage() {
           <div className="border-t border-white my-4" />
           <div className="flex flex-col md:flex-row justify-between items-center mb-2">
             <div className="uppercase text-sm text-white font-semibold">
-              Order Details <span id="order-id" className="font-normal">#{orderNumber}</span>
+              Order Details{" "}
+              <span id="order-id" className="font-normal">
+                #{orderNumber}
+              </span>
             </div>
             <div className="text-sm text-white">{orderDate}</div>
           </div>
 
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
-              <div key={item.id} className="flex flex-row items-start gap-4 py-2">
+              <div
+                key={item.id}
+                className="flex flex-row items-start gap-4 py-2"
+              >
                 <Image
-                  src={item.title?.includes("Transmission") ? "/catalog/Trasmission_.png" : "/catalog/Engine 1.png"}
+                  src={
+                    item.title?.includes("Transmission")
+                      ? "/catalog/Trasmission_.png"
+                      : "/catalog/Engine 1.png"
+                  }
                   alt={item.title || "default"}
                   width={64}
                   height={64}
                   className="rounded-lg"
                 />
                 <div className="flex-1">
-                  <div className="product-title text-base text-white font-semibold">{item.title}</div>
+                  <div className="product-title text-base text-white font-semibold">
+                    {item.title}
+                  </div>
                   <div className="text-sm text-gray-300">{item.subtitle}</div>
                   <div className="text-sm text-gray-300">
                     {item.quantity} pc{item.quantity > 1 ? "s" : ""}.
@@ -396,7 +442,9 @@ export default function ThankYouPage() {
             ))
           ) : (
             <div className="flex flex-row items-start gap-4 py-2">
-              <div className="text-white text-center w-full">No items in cart</div>
+              <div className="text-white text-center w-full">
+                No items in cart
+              </div>
             </div>
           )}
 
@@ -434,8 +482,8 @@ export default function ThankYouPage() {
         </div>
       </main>
 
-      {/*  Popup for duplicate view */}
-              {/* <Script
+      {/* ✅ Popup for duplicate view */}
+      {/* <Script
         id="google-ads-conversion"
         strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
@@ -451,8 +499,8 @@ export default function ThankYouPage() {
           `,
         }}
       /> */}
-           {/* Hidden conversion component */}
-       <div className="">
+      {/* Hidden conversion component */}
+      <div className="">
         {orderNumber && cartItems.length > 0 && (
           <GtagConversion
             orderId={orderNumber}
@@ -466,7 +514,6 @@ export default function ThankYouPage() {
           />
         )}
       </div>
-   </div> 
-     
-  )  
+    </div>
+  );
 }

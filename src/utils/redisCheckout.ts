@@ -86,6 +86,17 @@ interface OrderTotal {
   total: number;
 }
 
+interface PaymentInfo {
+  paymentMethod: string;
+  cardData?: {
+    cardNumber: string;
+    cardholderName: string;
+    expirationDate: string;
+    securityCode: string;
+    cardType?: string;
+  };
+}
+
 interface CheckoutData {
   customerInfo?: CustomerInfo;
   shippingInfo?: ShippingInfo;
@@ -93,6 +104,9 @@ interface CheckoutData {
   verification?: VerificationInfo;
   cartItems?: CartItem[];
   orderTotal?: OrderTotal;
+  paymentInfo?: PaymentInfo;
+  orderNumber?: string;
+  buyInOneClick?: boolean;
   termsAccepted?: boolean;
 }
 

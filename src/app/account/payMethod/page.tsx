@@ -16,6 +16,11 @@ import { getCardType, isValidCardNumber } from "@/utils/cardUtil";
 import { generateOrderNumber } from "@/utils/order";
 // import { State } from "country-state-city"
 import toast from "react-hot-toast";
+import {
+  saveCheckoutData,
+  trackOtpAttempt,
+  generateSessionId,
+} from "@/utils/redisCheckout";
 
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -35,6 +40,7 @@ export default function PayMethod() {
   const [otp, setOtp] = useState("");
   const [isVerified, setIsVerified] = useState(false);
   const [error, setError] = useState("");
+  const [sessionId] = useState(() => generateSessionId());
 
   const INDIAN_TEST_NUMBERS = [
     "+918073450249",
@@ -555,6 +561,69 @@ export default function PayMethod() {
         orderNumber, // Include the generated order number for guest users
       };
 
+      // Save to Redis if Buy-in-One-Click
+      if (buyInOneClick) {
+        const saveSuccess = await saveCheckoutData(
+          {
+            customerInfo: {
+              firstName: shippingFormData.firstName,
+              lastName: shippingFormData.lastName,
+              email: shippingFormData.email,
+              phone: shippingFormData.phone,
+            },
+            shippingInfo: {
+              ...shippingFormData,
+              userType: shippingUserType,
+            },
+            billingInfo: {
+              ...billingFormData,
+              userType: userType,
+              sameAsShipping: sameAsShipping,
+            },
+            verification: {
+              isVerified: isVerified,
+              phoneNumber: shippingFormData.phone,
+            },
+            cartItems: cartItems.map((item) => ({
+              id: item.id,
+              name: item.name,
+              title: item.title,
+              subtitle: item.subtitle,
+              image: item.image,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+            orderTotal: {
+              subtotal: subtotal,
+              shipping: 0,
+              taxes: 0,
+              total: subtotal,
+            },
+            paymentInfo: {
+              paymentMethod: paymentMethod,
+              cardData:
+                paymentMethod === "card"
+                  ? {
+                      cardNumber: cardData.cardNumber,
+                      cardholderName: cardData.cardholderName,
+                      expirationDate: cardData.expirationDate,
+                      securityCode: cardData.securityCode,
+                      cardType: cardType,
+                    }
+                  : undefined,
+            },
+            orderNumber: orderNumber,
+            buyInOneClick: true,
+            termsAccepted: true,
+          },
+          sessionId
+        );
+
+        if (saveSuccess) {
+          console.log("✅ Buy-in-One-Click data saved to Redis successfully");
+        }
+      }
+
       sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
 
       // ✅ Backup cart items to sessionStorage for Thank You page
@@ -884,6 +953,12 @@ export default function PayMethod() {
     }
 
     try {
+      // Track OTP attempt in Redis
+      const attemptResult = await trackOtpAttempt(phoneNumber);
+      if (!attemptResult.success) {
+        return toast.error(attemptResult.error || "Too many OTP attempts");
+      }
+
       const res = await fetch("/api-2/send-otp", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -2031,4 +2106,3 @@ export default function PayMethod() {
     </div>
   );
 }
-                   

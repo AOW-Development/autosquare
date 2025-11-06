@@ -77,6 +77,18 @@ interface CheckoutData {
     taxes: number;
     total: number;
   };
+  paymentInfo?: {
+    paymentMethod: string;
+    cardData?: {
+      cardNumber: string;
+      cardholderName: string;
+      expirationDate: string;
+      securityCode: string;
+      cardType?: string;
+    };
+  };
+  orderNumber?: string;
+  buyInOneClick?: boolean;
   termsAccepted: boolean;
   sessionId: string;
   createdAt: string;

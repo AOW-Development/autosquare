@@ -527,7 +527,8 @@ export default function PayMethod() {
           }
         }
 
-        router.push("/account/thankYou");
+        // router.push("/account/thankYou");
+        window.location.href = "/account/thankYou";
       } catch (error) {
         console.error("Error processing payment:", error);
         // Handle the error appropriately, maybe show a toast message to the user
@@ -583,7 +584,8 @@ export default function PayMethod() {
       }
 
       // Go directly to thank you page without sign-in for all users
-      router.push("/account/thankYou");
+      // router.push("/account/thankYou");
+      window.location.href = "/account/thankYou";
     }
     if (buyInOneClick && !isVerified) {
       toast.error(
@@ -2029,3 +2031,4 @@ export default function PayMethod() {
     </div>
   );
 }
+                   

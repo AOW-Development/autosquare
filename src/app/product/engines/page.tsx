@@ -289,6 +289,7 @@ export default function EngineProductPage() {
       setSelectedProductForVerify(null)
       setShowCartPopup(false)
       router.push("/account/cart")
+      window.location.href = "/account/cart"
     }, 100)
   }
 

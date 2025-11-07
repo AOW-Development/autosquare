@@ -72,42 +72,46 @@ export default function RootLayout({
         </Script>
         {/* End Google Tag Manager */}
 
-         <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17273467579"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('js', new Date());
-              gtag('config', 'AW-17273467579');
-            `,
-          }}
-        />     
+         {/* 
+            <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17273467579"></script>
+            <script
+              dangerouslySetInnerHTML={{
+                __html: `
+                  window.dataLayer = window.dataLayer || [];
+                  function gtag(){dataLayer.push(arguments);}
+                  gtag('js', new Date());
+                  gtag('config', 'AW-17273467579');
+                `,
+              }}
+            /> 
+            */}
 
-         {/* <Script id="gtag-conversion" strategy="afterInteractive">
+
+        
+
+       <Script id="gtag-phone-conversion" strategy="afterInteractive">
           {`
-            function gtag_report_conversion(url) {
-              var callback = function () {
-                if (typeof(url) != 'undefined') {
-                  window.location = url;
-                }
-              };
-              gtag('event', 'conversion', {
-                  'send_to': 'AW-17273467579/7vbwCPmGyqgbELvl0KxA',
-                  'event_callback': callback
-              });
-              return false;
+            // ✅ Ensure gtag and dataLayer exist before using them
+            window.dataLayer = window.dataLayer || [];
+            window.gtag = window.gtag || function(){ dataLayer.push(arguments); };
+
+            // ✅ Load the gtag library if it hasn't been loaded yet
+            if (!document.getElementById('gtag-js')) {
+              const gtagScript = document.createElement('script');
+              gtagScript.id = 'gtag-js';
+              gtagScript.async = true;
+              gtagScript.src = 'https://www.googletagmanager.com/gtag/js?id=AW-17273467579';
+              document.head.appendChild(gtagScript);
             }
-          `}
-        </Script> */}
 
-        <Script id="gtag-phone-conversion" strategy="afterInteractive">
-          {`
+            // ✅ Initialize and fire phone conversion config
+            gtag('js', new Date());
             gtag('config', 'AW-17273467579/H6LQCJmP36kbELvl0KxA', {
               'phone_conversion_number': '(888) 338-2540'
             });
           `}
         </Script>
+
         {/* End Google Tag Manager */}
       </head>
       <body className="antialiased">

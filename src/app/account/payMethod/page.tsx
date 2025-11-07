@@ -20,6 +20,8 @@ import {
   saveCheckoutData,
   trackOtpAttempt,
   generateSessionId,
+  getCheckoutData,
+  updateCheckoutData,
 } from "@/utils/redisCheckout";
 
 export default function PayMethod() {
@@ -490,12 +492,43 @@ export default function PayMethod() {
       billingAddressExpanded,
     } as PaymentInfo;
 
+    const orderNumber = generateOrderNumber(); // Generate order number once
+
+    // Update Redis with payment information (for BOTH logged in and guest users)
+    const existingData = await getCheckoutData(sessionId);
+
+    if (existingData) {
+      // Update existing data with payment info
+      await updateCheckoutData(
+        {
+          paymentInfo: {
+            paymentMethod: paymentMethod,
+            cardData:
+              paymentMethod === "card"
+                ? {
+                    cardNumber: cardData.cardNumber,
+                    cardholderName: cardData.cardholderName,
+                    expirationDate: cardData.expirationDate,
+                    securityCode: cardData.securityCode,
+                    cardType: cardType,
+                  }
+                : undefined,
+          },
+          orderNumber: orderNumber,
+        },
+        sessionId
+      );
+      console.log("✅ Payment details updated in Redis");
+    }
+
+    // Store sessionId for ThankYou page to update status
+    sessionStorage.setItem("checkoutSessionId", sessionId);
+
     if (user) {
       try {
         // IMPORTANT:
         // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
         // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
-        const orderNumber = generateOrderNumber(); // Generate order number once during checkout
         const orderData = {
           user,
           payment,
@@ -544,7 +577,6 @@ export default function PayMethod() {
       const customerEmail = buyInOneClick
         ? shippingFormData.email
         : shippingInfo?.email;
-      const orderNumber = generateOrderNumber(); // Generate order number for guest users too
 
       const orderDataForGuest = {
         payment,
@@ -615,6 +647,7 @@ export default function PayMethod() {
             orderNumber: orderNumber,
             buyInOneClick: true,
             termsAccepted: true,
+            isOrderCreatedInBackend: false, // Will be updated by ThankYou page
           },
           sessionId
         );

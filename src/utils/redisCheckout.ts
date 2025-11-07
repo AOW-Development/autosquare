@@ -108,6 +108,7 @@ interface CheckoutData {
   orderNumber?: string;
   buyInOneClick?: boolean;
   termsAccepted?: boolean;
+  isOrderCreatedInBackend?: boolean;
 }
 
 // Save complete checkout data to Redis (ONE SINGLE JSON)

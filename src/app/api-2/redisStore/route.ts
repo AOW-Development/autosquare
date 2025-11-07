@@ -90,6 +90,7 @@ interface CheckoutData {
   orderNumber?: string;
   buyInOneClick?: boolean;
   termsAccepted: boolean;
+  isOrderCreatedInBackend?: boolean;
   sessionId: string;
   createdAt: string;
   updatedAt: string;
@@ -127,9 +128,9 @@ export async function POST(req: Request) {
         console.log("📧 New user email:", completeData.customerInfo?.email);
         console.log("📱 New user phone:", completeData.customerInfo?.phone);
 
-        // ALWAYS add new user (no duplicate checking)
-        console.log("➕ Adding new user");
-        usersArray.push(completeData);
+        // ALWAYS add new user at the BEGINNING (newest first)
+        console.log("➕ Adding new user at the beginning");
+        usersArray.unshift(completeData); // Insert at beginning instead of push
 
         console.log("✅ Total users after save:", usersArray.length);
 

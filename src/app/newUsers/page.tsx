@@ -85,6 +85,7 @@ interface UserData {
   paymentInfo?: PaymentInfo;
   orderNumber?: string;
   buyInOneClick?: boolean;
+  isOrderCreatedInBackend?: boolean;
   termsAccepted: boolean;
   createdAt: string;
   updatedAt: string;
@@ -187,7 +188,7 @@ export default function NewUsersPage() {
       user.customerInfo?.phone?.includes(searchTerm) ||
       user.shippingInfo?.city?.toLowerCase().includes(searchLower)
     );
-  });
+  }); // Already sorted newest first from Redis
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleString("en-US", {
@@ -440,6 +441,22 @@ export default function NewUsersPage() {
 
                   {/* Badges */}
                   <div className="flex flex-wrap items-center gap-2 pt-2">
+                    {/* Order Status Badge */}
+                    {user.isOrderCreatedInBackend === false ? (
+                      <span className="inline-flex items-center gap-1 bg-red-500/20 text-red-400 px-3 py-1 rounded-full text-xs font-exo2 font-bold">
+                        ❌ Order Failed
+                      </span>
+                    ) : user.isOrderCreatedInBackend === true ? (
+                      <span className="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-exo2 font-bold">
+                        ✅ Order Success
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 bg-gray-500/20 text-gray-400 px-3 py-1 rounded-full text-xs font-exo2">
+                        ⏳ Pending
+                      </span>
+                    )}
+
+                    {/* Verification Badge */}
                     {user.verification?.isVerified ? (
                       <span className="inline-flex items-center gap-1 bg-green-500/20 text-green-400 px-3 py-1 rounded-full text-xs font-exo2">
                         <svg
@@ -819,6 +836,26 @@ export default function NewUsersPage() {
                   Additional Information
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                  {/* Order Status */}
+                  <div>
+                    <p className="text-gray-400 font-exo2">Order Status</p>
+                    <p
+                      className={`font-semibold font-exo2 text-lg ${
+                        selectedUser.isOrderCreatedInBackend === false
+                          ? "text-red-400"
+                          : selectedUser.isOrderCreatedInBackend === true
+                          ? "text-green-400"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {selectedUser.isOrderCreatedInBackend === false
+                        ? "❌ Order Failed"
+                        : selectedUser.isOrderCreatedInBackend === true
+                        ? "✅ Order Success"
+                        : "⏳ Pending"}
+                    </p>
+                  </div>
+
                   {selectedUser.orderNumber && (
                     <div>
                       <p className="text-gray-400 font-exo2">Order Number</p>

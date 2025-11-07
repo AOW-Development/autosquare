@@ -14,6 +14,7 @@ import {
   trackOtpAttempt,
   getCheckoutData,
   generateSessionId,
+  // updateCheckoutData,
 } from "@/utils/redisCheckout";
 
 export default function Checkout() {
@@ -514,6 +515,7 @@ export default function Checkout() {
           total: orderTotal,
         },
         termsAccepted: termsAccepted,
+        isOrderCreatedInBackend: false,
       },
       sessionId
     );

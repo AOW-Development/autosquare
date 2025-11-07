@@ -14,6 +14,7 @@ import { OrderEmailData } from "@/lib/mail";
 import GtagConversion from "@/components/GtagConversion";
 import Script from "next/script";
 import { useSearchParams } from "next/navigation";
+import { updateCheckoutData } from "@/utils/redisCheckout";
 
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
@@ -134,11 +135,22 @@ export default function ThankYouPage() {
     }
 
     const createOrder = async () => {
+      // Get sessionId from sessionStorage
+      const checkoutSessionId = sessionStorage.getItem("checkoutSessionId");
+
       try {
         const orderData = sessionStorage.getItem("orderData");
         if (!orderData) {
           console.error("No order data found in session storage");
           toast.error("No order data found. Please try again.");
+
+          // Update Redis to mark as failed
+          if (checkoutSessionId) {
+            await updateCheckoutData(
+              { isOrderCreatedInBackend: false },
+              checkoutSessionId
+            );
+          }
           return;
         }
 
@@ -151,6 +163,14 @@ export default function ThankYouPage() {
         if (!customerEmail) {
           console.error("No customer email found for invoice");
           toast.error("Unable to send invoice - no email address found");
+
+          // Update Redis to mark as failed
+          if (checkoutSessionId) {
+            await updateCheckoutData(
+              { isOrderCreatedInBackend: false },
+              checkoutSessionId
+            );
+          }
           return;
         }
 
@@ -205,6 +225,13 @@ export default function ThankYouPage() {
         let createdOrderResult = null;
         try {
           createdOrderResult = await createOrderInBackend(fullOrderData);
+          if (checkoutSessionId) {
+            await updateCheckoutData(
+              { isOrderCreatedInBackend: true },
+              checkoutSessionId
+            );
+            console.log("✅ Order created successfully - updated Redis");
+          }
           console.log("createOrderInBackend result:", createdOrderResult);
         } catch (err) {
           // Ensure loading toast is dismissed and keep orderData for retry
@@ -213,6 +240,15 @@ export default function ThankYouPage() {
           toast.error(
             "Failed to create order. Please try again or contact support."
           );
+
+          // Update Redis to mark as failed
+          if (checkoutSessionId) {
+            await updateCheckoutData(
+              { isOrderCreatedInBackend: false },
+              checkoutSessionId
+            );
+            console.log("❌ Order creation failed - updated Redis");
+          }
           return;
         }
 
@@ -234,6 +270,15 @@ export default function ThankYouPage() {
             toast.error(
               "Order placed successfully, but failed to send confirmation email"
             );
+
+            // Update Redis - backend order created but email failed
+            if (checkoutSessionId) {
+              await updateCheckoutData(
+                { isOrderCreatedInBackend: true },
+                checkoutSessionId
+              );
+              console.log("⚠️ Order created but email failed - updated Redis");
+            }
             // Do NOT remove sessionStorage so the orderData can be retried
             return;
           }
@@ -241,6 +286,16 @@ export default function ThankYouPage() {
           // Both backend order creation and email succeeded
           toast.dismiss(sendingToastId);
           toast.success(`Order confirmation sent to ${customerEmail}`);
+
+          // Update Redis to mark as successful
+          if (checkoutSessionId) {
+            await updateCheckoutData(
+              { isOrderCreatedInBackend: true },
+              checkoutSessionId
+            );
+            console.log("✅ Order created successfully - updated Redis");
+          }
+
           // Remove orderData now that both steps succeeded
           sessionStorage.removeItem("orderData");
         } catch (err) {
@@ -249,6 +304,15 @@ export default function ThankYouPage() {
           toast.error(
             "Order placed successfully, but failed to send confirmation email"
           );
+
+          // Update Redis - backend order created but email failed
+          if (checkoutSessionId) {
+            await updateCheckoutData(
+              { isOrderCreatedInBackend: true },
+              checkoutSessionId
+            );
+            console.log("⚠️ Order created but email failed - updated Redis");
+          }
           // Do NOT remove sessionStorage so the orderData can be retried
           return;
         }

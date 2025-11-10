@@ -225,6 +225,33 @@ export default function ThankYouPage() {
         let createdOrderResult = null;
         try {
           createdOrderResult = await createOrderInBackend(fullOrderData);
+          console.log("Order created in backend:", createdOrderResult);
+          // ✅ Send SMS notification (TypeScript safe)
+          if(createdOrderResult.success) {
+            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+            if (phoneNumber) {
+              try {
+                const formattedPhone =
+                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
+                const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
+
+                await fetch("/api-2/sendsms", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    to: formattedPhone,
+                    message: smsText,
+                  }),
+                });
+
+                console.log("✅ SMS sent successfully to", formattedPhone);
+              } catch (smsErr) {
+                console.error("❌ Failed to send SMS:", smsErr);
+              }
+            } else {
+              console.warn("⚠️ No phone number found — SMS not sent.");
+            }
+          }
           if (checkoutSessionId) {
             await updateCheckoutData(
               { isOrderCreatedInBackend: true },
@@ -232,14 +259,42 @@ export default function ThankYouPage() {
             );
             console.log("✅ Order created successfully - updated Redis");
           }
+
           console.log("createOrderInBackend result:", createdOrderResult);
-        } catch (err) {
+          
+        } 
+        catch (err) {
           // Ensure loading toast is dismissed and keep orderData for retry
           toast.dismiss(sendingToastId);
           console.error("createOrderInBackend failed:", err);
           toast.error(
             "Failed to create order. Please try again or contact support."
           );
+           // ✅ Send SMS notification (TypeScript safe)
+            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+
+            if (phoneNumber) {
+              try {
+                const formattedPhone =
+                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
+                const smsText = `"Dear Customer, your order #${orderNum} couldn’t be processed successfully. Our team will connect with you shortly to assist.`;
+
+                await fetch("/api-2/sendsms", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    to: formattedPhone,
+                    message: smsText,
+                  }),
+                });
+
+                console.log("✅ SMS sent successfully to", formattedPhone);
+              } catch (smsErr) {
+                console.error("❌ Failed to send SMS:", smsErr);
+              }
+            } else {
+              console.warn("⚠️ No phone number found — SMS not sent.");
+            }
 
           // Update Redis to mark as failed
           if (checkoutSessionId) {
@@ -286,7 +341,6 @@ export default function ThankYouPage() {
           // Both backend order creation and email succeeded
           toast.dismiss(sendingToastId);
           toast.success(`Order confirmation sent to ${customerEmail}`);
-
           // Update Redis to mark as successful
           if (checkoutSessionId) {
             await updateCheckoutData(
@@ -305,6 +359,7 @@ export default function ThankYouPage() {
             "Order placed successfully, but failed to send confirmation email"
           );
 
+        
           // Update Redis - backend order created but email failed
           if (checkoutSessionId) {
             await updateCheckoutData(

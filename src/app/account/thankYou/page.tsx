@@ -227,31 +227,7 @@ export default function ThankYouPage() {
           createdOrderResult = await createOrderInBackend(fullOrderData);
           console.log("Order created in backend:", createdOrderResult);
           // ✅ Send SMS notification (TypeScript safe)
-          if(createdOrderResult.success) {
-            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
-            if (phoneNumber) {
-              try {
-                const formattedPhone =
-                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
-                const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
-
-                await fetch("/api-2/sendsms", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    to: formattedPhone,
-                    message: smsText,
-                  }),
-                });
-
-                console.log("✅ SMS sent successfully to", formattedPhone);
-              } catch (smsErr) {
-                console.error("❌ Failed to send SMS:", smsErr);
-              }
-            } else {
-              console.warn("⚠️ No phone number found — SMS not sent.");
-            }
-          }
+        
           if (checkoutSessionId) {
             await updateCheckoutData(
               { isOrderCreatedInBackend: true },
@@ -349,7 +325,31 @@ export default function ThankYouPage() {
             );
             console.log("✅ Order created successfully - updated Redis");
           }
+            
+            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+            if (phoneNumber) {
+              try {
+                const formattedPhone =
+                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
+                const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
 
+                await fetch("/api-2/sendsms", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    to: formattedPhone,
+                    message: smsText,
+                  }),
+                });
+
+                console.log("✅ SMS sent successfully to", formattedPhone);
+              } catch (smsErr) {
+                console.error("❌ Failed to send SMS:", smsErr);
+              }
+            } else {
+              console.warn("⚠️ No phone number found — SMS not sent.");
+            }
+          
           // Remove orderData now that both steps succeeded
           sessionStorage.removeItem("orderData");
         } catch (err) {

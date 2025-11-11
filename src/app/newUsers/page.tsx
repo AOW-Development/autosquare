@@ -489,6 +489,11 @@ export default function NewUsersPage() {
                         💰 ${user.orderTotal.total.toFixed(2)}
                       </span>
                     )}
+                    {!user.paymentInfo && (
+                      <span className="inline-flex items-center gap-1 bg-gray-500/20 text-yellow-400 px-3 py-1 rounded-full text-xs font-exo2">
+                        💳 Abandoned Cart
+                      </span>
+                    )}
                   </div>
                 </div>
 

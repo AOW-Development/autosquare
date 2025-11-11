@@ -14,7 +14,7 @@ import { OrderEmailData } from "@/lib/mail";
 import GtagConversion from "@/components/GtagConversion";
 import Script from "next/script";
 import { useSearchParams } from "next/navigation";
-import { updateCheckoutData } from "@/utils/redisCheckout";
+import { clearSessionId, updateCheckoutData } from "@/utils/redisCheckout";
 
 export default function ThankYouPage() {
   const searchParams = useSearchParams();
@@ -150,6 +150,7 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: false },
               checkoutSessionId
             );
+            clearSessionId();
           }
           return;
         }
@@ -170,6 +171,7 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: false },
               checkoutSessionId
             );
+            clearSessionId();
           }
           return;
         }
@@ -227,50 +229,58 @@ export default function ThankYouPage() {
           createdOrderResult = await createOrderInBackend(fullOrderData);
           console.log("Order created in backend:", createdOrderResult);
           // ✅ Send SMS notification (TypeScript safe)
-        
+
           if (checkoutSessionId) {
             await updateCheckoutData(
               { isOrderCreatedInBackend: true },
               checkoutSessionId
             );
+            clearSessionId();
             console.log("✅ Order created successfully - updated Redis");
           }
 
           console.log("createOrderInBackend result:", createdOrderResult);
-          
-        } 
-        catch (err) {
+        } catch (err) {
+          await fetch("/api-2/send-order-email", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...fullOrderData,
+              status: "failed",
+            }),
+          });
           // Ensure loading toast is dismissed and keep orderData for retry
           toast.dismiss(sendingToastId);
           console.error("createOrderInBackend failed:", err);
           toast.error(
             "Failed to create order. Please try again or contact support."
           );
-           // ✅ Send SMS notification (TypeScript safe)
-            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+          // ✅ Send SMS notification (TypeScript safe)
+          const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
 
-            if (phoneNumber) {
-              try {
-                const formattedPhone =
-                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
-                const smsText = `"Dear Customer, your order #${orderNum} couldn’t be processed successfully. Our team will connect with you shortly to assist.`;
+          if (phoneNumber) {
+            try {
+              const formattedPhone = phoneNumber.startsWith("+")
+                ? phoneNumber
+                : `+91${phoneNumber}`;
+              const smsText = `"Dear Customer, your order #${orderNum} couldn’t be processed successfully. Our team will connect with you shortly to assist.`;
 
-                await fetch("/api-2/sendsms", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    to: formattedPhone,
-                    message: smsText,
-                  }),
-                });
+              await fetch("/api-2/sendsms", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  to: formattedPhone,
+                  message: smsText,
+                }),
+              });
 
-                console.log("✅ SMS sent successfully to", formattedPhone);
-              } catch (smsErr) {
-                console.error("❌ Failed to send SMS:", smsErr);
-              }
-            } else {
-              console.warn("⚠️ No phone number found — SMS not sent.");
+              console.log("✅ SMS sent successfully to", formattedPhone);
+            } catch (smsErr) {
+              console.error("❌ Failed to send SMS:", smsErr);
             }
+          } else {
+            console.warn("⚠️ No phone number found — SMS not sent.");
+          }
 
           // Update Redis to mark as failed
           if (checkoutSessionId) {
@@ -278,6 +288,7 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: false },
               checkoutSessionId
             );
+            clearSessionId();
             console.log("❌ Order creation failed - updated Redis");
           }
           return;
@@ -308,6 +319,7 @@ export default function ThankYouPage() {
                 { isOrderCreatedInBackend: true },
                 checkoutSessionId
               );
+              clearSessionId();
               console.log("⚠️ Order created but email failed - updated Redis");
             }
             // Do NOT remove sessionStorage so the orderData can be retried
@@ -323,33 +335,35 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: true },
               checkoutSessionId
             );
+            clearSessionId();
             console.log("✅ Order created successfully - updated Redis");
           }
-            
-            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
-            if (phoneNumber) {
-              try {
-                const formattedPhone =
-                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
-                const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
 
-                await fetch("/api-2/sendsms", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    to: formattedPhone,
-                    message: smsText,
-                  }),
-                });
+          const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+          if (phoneNumber) {
+            try {
+              const formattedPhone = phoneNumber.startsWith("+")
+                ? phoneNumber
+                : `+91${phoneNumber}`;
+              const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
 
-                console.log("✅ SMS sent successfully to", formattedPhone);
-              } catch (smsErr) {
-                console.error("❌ Failed to send SMS:", smsErr);
-              }
-            } else {
-              console.warn("⚠️ No phone number found — SMS not sent.");
+              await fetch("/api-2/sendsms", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  to: formattedPhone,
+                  message: smsText,
+                }),
+              });
+
+              console.log("✅ SMS sent successfully to", formattedPhone);
+            } catch (smsErr) {
+              console.error("❌ Failed to send SMS:", smsErr);
             }
-          
+          } else {
+            console.warn("⚠️ No phone number found — SMS not sent.");
+          }
+
           // Remove orderData now that both steps succeeded
           sessionStorage.removeItem("orderData");
         } catch (err) {
@@ -359,13 +373,13 @@ export default function ThankYouPage() {
             "Order placed successfully, but failed to send confirmation email"
           );
 
-        
           // Update Redis - backend order created but email failed
           if (checkoutSessionId) {
             await updateCheckoutData(
               { isOrderCreatedInBackend: true },
               checkoutSessionId
             );
+            clearSessionId();
             console.log("⚠️ Order created but email failed - updated Redis");
           }
           // Do NOT remove sessionStorage so the orderData can be retried
@@ -388,6 +402,13 @@ export default function ThankYouPage() {
       } catch (error) {
         console.error("Error creating order:", error);
         toast.error("Failed to process order. Please contact support.");
+        if (checkoutSessionId) {
+          await updateCheckoutData(
+            { isOrderCreatedInBackend: false },
+            checkoutSessionId
+          );
+          clearSessionId();
+        }
       }
     };
 

@@ -8,12 +8,12 @@
 export const generateSessionId = (): string => {
   if (typeof window !== "undefined") {
     // Check if session ID already exists in localStorage
-    let sessionId = localStorage.getItem("checkout_session_id");
+    let sessionId = localStorage.getItem("session_id");
     if (!sessionId) {
       sessionId = `session_${Date.now()}_${Math.random()
         .toString(36)
         .substring(7)}`;
-      localStorage.setItem("checkout_session_id", sessionId);
+      localStorage.setItem("session_id", sessionId);
     }
     return sessionId;
   }
@@ -23,7 +23,7 @@ export const generateSessionId = (): string => {
 // Clear session ID from localStorage
 export const clearSessionId = (): void => {
   if (typeof window !== "undefined") {
-    localStorage.removeItem("checkout_session_id");
+    localStorage.removeItem("session_id");
   }
 };
 

@@ -226,41 +226,41 @@ export default function ThankYouPage() {
         try {
           createdOrderResult = await createOrderInBackend(fullOrderData);
           console.log("Order created in backend:", createdOrderResult);
-          // ✅ Send SMS notification (TypeScript safe)
-          if(createdOrderResult.success) {
-            const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
-            if (phoneNumber) {
-              try {
-                const formattedPhone =
-                  phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
-                const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
+          //  Send SMS notification (TypeScript safe)
+          // if(createdOrderResult.success) {
+          //   const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+          //   if (phoneNumber) {
+          //     try {
+          //       const formattedPhone =
+          //         phoneNumber.startsWith("+") ? phoneNumber : `+91${phoneNumber}`;
+          //       const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
 
-                await fetch("/api-2/sendsms", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    to: formattedPhone,
-                    message: smsText,
-                  }),
-                });
+          //       await fetch("/api-2/sendsms", {
+          //         method: "POST",
+          //         headers: { "Content-Type": "application/json" },
+          //         body: JSON.stringify({
+          //           to: formattedPhone,
+          //           message: smsText,
+          //         }),
+          //       });
 
-                console.log("✅ SMS sent successfully to", formattedPhone);
-              } catch (smsErr) {
-                console.error("❌ Failed to send SMS:", smsErr);
-              }
-            } else {
-              console.warn("⚠️ No phone number found — SMS not sent.");
-            }
-          }
-          if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: true },
-              checkoutSessionId
-            );
-            console.log("✅ Order created successfully - updated Redis");
-          }
+          //       console.log(" SMS sent successfully to", formattedPhone);
+          //     } catch (smsErr) {
+          //       console.error(" Failed to send SMS:", smsErr);
+          //     }
+          //   } else {
+          //     console.warn(" No phone number found — SMS not sent.");
+          //   }
+          // }
+          // if (checkoutSessionId) {
+          //   await updateCheckoutData(
+          //     { isOrderCreatedInBackend: true },
+          //     checkoutSessionId
+          //   );
+          //   console.log(" Order created successfully - updated Redis");
+          // }
 
-          console.log("createOrderInBackend result:", createdOrderResult);
+          // console.log("createOrderInBackend result:", createdOrderResult);
           
         } 
         catch (err) {
@@ -270,7 +270,7 @@ export default function ThankYouPage() {
           toast.error(
             "Failed to create order. Please try again or contact support."
           );
-           // ✅ Send SMS notification (TypeScript safe)
+           //  Send SMS notification (TypeScript safe)
             const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
 
             if (phoneNumber) {
@@ -288,12 +288,12 @@ export default function ThankYouPage() {
                   }),
                 });
 
-                console.log("✅ SMS sent successfully to", formattedPhone);
+                console.log(" SMS sent successfully to", formattedPhone);
               } catch (smsErr) {
-                console.error("❌ Failed to send SMS:", smsErr);
+                console.error(" Failed to send SMS:", smsErr);
               }
             } else {
-              console.warn("⚠️ No phone number found — SMS not sent.");
+              console.warn(" No phone number found — SMS not sent.");
             }
 
           // Update Redis to mark as failed
@@ -302,7 +302,7 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: false },
               checkoutSessionId
             );
-            console.log("❌ Order creation failed - updated Redis");
+            console.log(" Order creation failed - updated Redis");
           }
           return;
         }
@@ -332,7 +332,7 @@ export default function ThankYouPage() {
                 { isOrderCreatedInBackend: true },
                 checkoutSessionId
               );
-              console.log("⚠️ Order created but email failed - updated Redis");
+              console.log(" Order created but email failed - updated Redis");
             }
             // Do NOT remove sessionStorage so the orderData can be retried
             return;
@@ -347,7 +347,7 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: true },
               checkoutSessionId
             );
-            console.log("✅ Order created successfully - updated Redis");
+            console.log(" Order created successfully - updated Redis");
           }
 
           // Remove orderData now that both steps succeeded
@@ -366,13 +366,13 @@ export default function ThankYouPage() {
               { isOrderCreatedInBackend: true },
               checkoutSessionId
             );
-            console.log("⚠️ Order created but email failed - updated Redis");
+            console.log(" Order created but email failed - updated Redis");
           }
           // Do NOT remove sessionStorage so the orderData can be retried
           return;
         }
 
-        // ✅ Now mark as viewed (after order creation)
+        //  Now mark as viewed (after order creation)
         const viewedOrders = JSON.parse(
           localStorage.getItem("viewedOrders") || "[]"
         );
@@ -601,7 +601,7 @@ export default function ThankYouPage() {
         </div>
       </main>
 
-      {/* ✅ Popup for duplicate view */}
+      {/*  Popup for duplicate view */}
       {/* <Script
         id="google-ads-conversion"
         strategy="beforeInteractive"

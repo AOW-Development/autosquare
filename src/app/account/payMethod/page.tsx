@@ -518,7 +518,7 @@ export default function PayMethod() {
         },
         sessionId
       );
-      console.log("✅ Payment details updated in Redis");
+      console.log(" Payment details updated in Redis");
     }
 
     // Store sessionId for ThankYou page to update status
@@ -541,10 +541,10 @@ export default function PayMethod() {
         // Store order data for Thank You page
         sessionStorage.setItem("orderData", JSON.stringify(orderData));
 
-        // ✅ Backup cart items to sessionStorage for Thank You page
+        //  Backup cart items to sessionStorage for Thank You page
         sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
 
-        // ✅ iOS: Verify storage was successful
+        //  iOS: Verify storage was successful
         const isIOS =
           /iPad|iPhone|iPod/.test(navigator.userAgent) &&
           !(window as any).MSStream;
@@ -552,17 +552,17 @@ export default function PayMethod() {
           console.log("📱 iOS detected: Verifying sessionStorage...");
           const verifyBackup = sessionStorage.getItem("checkoutCartItems");
           if (!verifyBackup) {
-            console.error("❌ iOS: Failed to store cart backup, retrying...");
+            console.error(" iOS: Failed to store cart backup, retrying...");
             // Try one more time with a small delay
             setTimeout(() => {
               sessionStorage.setItem(
                 "checkoutCartItems",
                 JSON.stringify(cartItems)
               );
-              console.log("✅ iOS: Cart backup retry completed");
+              console.log(" iOS: Cart backup retry completed");
             }, 100);
           } else {
-            console.log("✅ iOS: Cart backup verified");
+            console.log(" iOS: Cart backup verified");
           }
         }
 
@@ -653,16 +653,16 @@ export default function PayMethod() {
         );
 
         if (saveSuccess) {
-          console.log("✅ Buy-in-One-Click data saved to Redis successfully");
+          console.log(" Buy-in-One-Click data saved to Redis successfully");
         }
       }
 
       sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
 
-      // ✅ Backup cart items to sessionStorage for Thank You page
+      //  Backup cart items to sessionStorage for Thank You page
       sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
 
-      // ✅ iOS: Verify storage was successful
+      //  iOS: Verify storage was successful
       const isIOS =
         /iPad|iPhone|iPod/.test(navigator.userAgent) &&
         !(window as any).MSStream;
@@ -671,17 +671,17 @@ export default function PayMethod() {
         const verifyBackup = sessionStorage.getItem("checkoutCartItems");
         if (!verifyBackup) {
           console.error(
-            "❌ iOS (guest): Failed to store cart backup, retrying..."
+            " iOS (guest): Failed to store cart backup, retrying..."
           );
           setTimeout(() => {
             sessionStorage.setItem(
               "checkoutCartItems",
               JSON.stringify(cartItems)
             );
-            console.log("✅ iOS (guest): Cart backup retry completed");
+            console.log(" iOS (guest): Cart backup retry completed");
           }, 100);
         } else {
-          console.log("✅ iOS (guest): Cart backup verified");
+          console.log(" iOS (guest): Cart backup verified");
         }
       }
 
@@ -1364,7 +1364,7 @@ export default function PayMethod() {
                       {/* Success message */}
                       {isVerified && (
                         <p className="mt-2 text-green-400 font-exo2 text-sm">
-                          Phone verified successfully ✅
+                          Phone verified successfully 
                         </p>
                       )}
 

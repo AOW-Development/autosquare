@@ -128,7 +128,10 @@ export const createOrderInBackend = async (orderData: any) => {
       console.error('Order creation response data:', data || orderError);
       // Include status and response body (if available) in the thrown error so UI can show useful info
       const detail = typeof data === 'string' ? data : JSON.stringify(data || {});
-      return { success: false, error: `Failed to create order (status ${status}): ${detail}` };
+      // return { success: false, error: `Failed to create order (status ${status}): ${detail}` };
+      const err = new Error(`Failed to create order (status ${status}): ${detail}`);
+      (err as any).status = status;
+      throw err;
     }
 
   } catch (error) {

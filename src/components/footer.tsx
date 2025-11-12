@@ -162,7 +162,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/account/warrantyAndPolicy"
+                    href="/account/warrantyAndReturn"
                     className="hover:text-white"
                   >
                     Warranty and Returns

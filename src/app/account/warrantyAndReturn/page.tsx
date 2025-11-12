@@ -76,7 +76,11 @@ export default function WarrantyAndReturn() {
                 </h3>
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
                   You can return or cancel your order by calling our customer
-                  service desk at (888) 338-2540. Note all returns and
+                  service desk at {""}
+                   <a href="tel:+18883382540" className="">
+                    (888) 338-2540
+                    </a>. Note all returns and
+                    
                   cancellations require a prior authorization and are subjected
                   to a 30% restocking fee. The return address where the part
                   needs to be returned is 76 Imperial Dr Suite E Evanston, WY
@@ -102,8 +106,10 @@ export default function WarrantyAndReturn() {
                   customer prior to shipping. No returns without prior
                   authorization from the Supplier (see Contact Us page). You
                   need to contact a customer service representative to arrange
-                  for a Return Merchandise Authorization form: Call (888)
-                  338-2540 Press 2 for 'Returns' (open Monday–Friday 8 am – 5 pm
+                  for a Return Merchandise Authorization form: Call {" "}
+                    <a href="tel:+18883382540" className="underline "> 
+                    (888) 338-2540
+                  </a> Press 2 for 'Returns' (open Monday–Friday 8 am – 5 pm
                   EST) Reference your 5 digit Order Number.
                 </p>
               </div>
@@ -124,7 +130,10 @@ export default function WarrantyAndReturn() {
                   initial cost of the original auto part (minus the initial
                   shipping cost). If you have any questions about the shipping
                   back of the original part, please contact your personal sales
-                  representative or the customer service team at (888) 338-2540
+                  representative or the customer service team at {" "}
+                    <a href="tel:+18883382540" className=" "> 
+                    (888) 338-2540
+                  </a> 
                   Press 2 for 'Returns' (open Monday–Friday 8 am – 5 pm EST) Or
                   email partscentralus@gmail.com
                 </p>
@@ -156,7 +165,10 @@ export default function WarrantyAndReturn() {
                   Customer Service:
                 </h3>
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
-                  (888) 338-2540
+                  {" "}
+                    <a href="tel:+18883382540" className=""> 
+                    (888) 338-2540
+                  </a> 
                 </p>
               </div>
 
@@ -203,7 +215,10 @@ export default function WarrantyAndReturn() {
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
                   We offer extended warrantees on most parts, engines and
                   transmission, at competitive prices. Inquire directly with our
-                  sales agent at (888) 338-2540 for options and availability.
+                  sales agent at {" "}
+                    <a href="tel:+18883382540" className=" "> 
+                    (888) 338-2540
+                  </a>  for options and availability.
                 </p>
               </div>
 

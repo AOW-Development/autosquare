@@ -5,7 +5,7 @@ import type React from "react";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { redirect, useRouter, useSearchParams } from "next/navigation";
 import useBillingStore from "@/store/billingStore";
 import { useShippingStore } from "@/store/shippingStore";
 import useAuthStore from "@/store/authStore";
@@ -23,6 +23,8 @@ import {
   getCheckoutData,
   updateCheckoutData,
 } from "@/utils/redisCheckout";
+import { StripeCheckoutRequest, StripeCheckoutResponse } from "@/types/stripe";
+import getStripe from "@/lib/stripe-client";
 
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -411,7 +413,7 @@ export default function PayMethod() {
   const router = useRouter();
 
   // Build payment info
-  const handlePayment = async (e: React.FormEvent) => {
+  const handlePayment = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     if (buyInOneClick) {
       if (!isShippingSaved) {
@@ -685,16 +687,80 @@ export default function PayMethod() {
         }
       }
 
-      // Go directly to thank you page without sign-in for all users
-      // router.push("/account/thankYou");
-      window.location.href = "/account/thankYou";
-    }
-    if (buyInOneClick && !isVerified) {
+      if (buyInOneClick && !isVerified) {
       toast.error(
         "Please verify your phone number before confirming the order."
       );
       return;
     }
+
+      // Go directly to thank you page without sign-in for all users
+      // router.push("/account/thankYou");
+      // window.location.href = "/account/thankYou";
+       // NOW REDIRECT TO STRIPE CHECKOUT
+   try {
+  // Start loading toast
+  const loadingToast = toast.loading("Redirecting to secure payment...");
+
+  const checkoutRequest: StripeCheckoutRequest = {
+    cartItems: cartItems.map(item => ({
+      id: item.id,
+      title: item.title,
+      name: item.name,
+      subtitle: item.subtitle,
+      image: item.image,
+      price: item.price,
+      quantity: item.quantity,
+    })),
+    customerEmail,
+    orderNumber,
+    metadata: {
+      sessionId: sessionId,
+      buyInOneClick: buyInOneClick.toString(),
+    },
+  };
+
+  const response = await fetch('/api-2/checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(checkoutRequest),
+  });
+
+  // Handle non-200 responses
+  if (!response.ok) {
+    toast.dismiss(loadingToast);
+    throw new Error(`Payment request failed (status: ${response.status})`);
+  }
+
+  const data: StripeCheckoutResponse = await response.json();
+
+  // Always dismiss loading toast once response is received
+  toast.dismiss(loadingToast);
+
+  // Handle Stripe errors
+  if (data.error) {
+    toast.error(data.error);
+    return;
+  }
+
+  // Redirect to Stripe Checkout page
+  if (data.url) {
+    toast.success("Redirecting to secure Stripe checkout...");
+    window.location.href = data.url;
+    return;
+  }
+
+  // Fallback error
+  toast.error("Failed to create checkout session. Please try again.");
+
+} catch (error: any) {
+  // Catch network or logic errors
+  console.error("Error processing payment:", error);
+  toast.dismiss(); // Ensure no loading toasts remain
+  toast.error(error?.message || "Something went wrong. Please try again.");
+}
+    }
+    
   };
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
 

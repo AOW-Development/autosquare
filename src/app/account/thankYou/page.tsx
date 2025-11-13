@@ -335,6 +335,14 @@ export default function ThankYouPage() {
           // Both backend order creation and email succeeded
           toast.dismiss(sendingToastId);
           toast.success(`Order confirmation sent to ${customerEmail}`);
+          await fetch("/api-2/send-order-email", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({  
+                    ...fullOrderData,
+                    
+                  }),
+                }); 
           // Update Redis to mark as successful
           if (checkoutSessionId) {
             await updateCheckoutData(

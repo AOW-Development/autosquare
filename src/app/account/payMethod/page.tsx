@@ -688,79 +688,81 @@ export default function PayMethod() {
       }
 
       if (buyInOneClick && !isVerified) {
-      toast.error(
-        "Please verify your phone number before confirming the order."
-      );
-      return;
-    }
+        toast.error(
+          "Please verify your phone number before confirming the order."
+        );
+        return;
+      }
 
       // Go directly to thank you page without sign-in for all users
       // router.push("/account/thankYou");
       // window.location.href = "/account/thankYou";
-       // NOW REDIRECT TO STRIPE CHECKOUT
-   try {
-  // Start loading toast
-  const loadingToast = toast.loading("Redirecting to secure payment...");
+      // NOW REDIRECT TO STRIPE CHECKOUT
+      try {
+        // Start loading toast
+        const loadingToast = toast.loading("Redirecting to secure payment...");
 
-  const checkoutRequest: StripeCheckoutRequest = {
-    cartItems: cartItems.map(item => ({
-      id: item.id,
-      title: item.title,
-      name: item.name,
-      subtitle: item.subtitle,
-      image: item.image,
-      price: item.price,
-      quantity: item.quantity,
-    })),
-    customerEmail,
-    orderNumber,
-    metadata: {
-      sessionId: sessionId,
-      buyInOneClick: buyInOneClick.toString(),
-    },
-  };
+        const checkoutRequest: StripeCheckoutRequest = {
+          cartItems: cartItems.map((item) => ({
+            id: item.id,
+            title: item.title,
+            name: item.name,
+            subtitle: item.subtitle,
+            image: item.image,
+            price: item.price,
+            quantity: item.quantity,
+          })),
+          customerEmail,
+          orderNumber,
+          metadata: {
+            sessionId: sessionId,
+            buyInOneClick: buyInOneClick.toString(),
+          },
+        };
 
-  const response = await fetch('/api-2/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(checkoutRequest),
-  });
+        const response = await fetch("/api-2/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(checkoutRequest),
+        });
 
-  // Handle non-200 responses
-  if (!response.ok) {
-    toast.dismiss(loadingToast);
-    throw new Error(`Payment request failed (status: ${response.status})`);
-  }
+        // Handle non-200 responses
+        if (!response.ok) {
+          toast.dismiss(loadingToast);
+          throw new Error(
+            `Payment request failed (status: ${response.status})`
+          );
+        }
 
-  const data: StripeCheckoutResponse = await response.json();
+        const data: StripeCheckoutResponse = await response.json();
 
-  // Always dismiss loading toast once response is received
-  toast.dismiss(loadingToast);
+        // Always dismiss loading toast once response is received
+        toast.dismiss(loadingToast);
 
-  // Handle Stripe errors
-  if (data.error) {
-    toast.error(data.error);
-    return;
-  }
+        // Handle Stripe errors
+        if (data.error) {
+          toast.error(data.error);
+          return;
+        }
 
-  // Redirect to Stripe Checkout page
-  if (data.url) {
-    toast.success("Redirecting to secure Stripe checkout...");
-    window.location.href = data.url;
-    return;
-  }
+        // Redirect to Stripe Checkout page
+        if (data.url) {
+          toast.success("Redirecting to secure Stripe checkout...");
+          window.location.href = data.url;
+          return;
+        }
 
-  // Fallback error
-  toast.error("Failed to create checkout session. Please try again.");
-
-} catch (error: any) {
-  // Catch network or logic errors
-  console.error("Error processing payment:", error);
-  toast.dismiss(); // Ensure no loading toasts remain
-  toast.error(error?.message || "Something went wrong. Please try again.");
-}
+        // Fallback error
+        toast.error("Failed to create checkout session. Please try again.");
+      } catch (error: any) {
+        // Catch network or logic errors
+        console.error("Error processing payment:", error);
+        toast.dismiss(); // Ensure no loading toasts remain
+        toast.error(
+          error?.message || "Something went wrong. Please try again."
+        );
+      }
     }
-    
   };
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
 
@@ -812,7 +814,7 @@ export default function PayMethod() {
     let error = "";
     const country = billingFormData.country;
 
-    switch (field) {
+    switch (field) {                
       case "firstName":
       case "lastName":
       case "city":
@@ -1430,7 +1432,7 @@ export default function PayMethod() {
                       {/* Success message */}
                       {isVerified && (
                         <p className="mt-2 text-green-400 font-exo2 text-sm">
-                          Phone verified successfully 
+                          Phone verified successfully
                         </p>
                       )}
 

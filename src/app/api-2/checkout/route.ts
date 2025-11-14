@@ -6,7 +6,8 @@ export async function POST(
   request: NextRequest
 ): Promise<NextResponse<StripeCheckoutResponse>> {
   try {
-    const { cartItems, customerEmail, orderNumber, metadata }: StripeCheckoutRequest = await request.json();
+    const { cartItems, customerEmail, orderNumber, metadata = {} }: StripeCheckoutRequest =
+      await request.json();
 
     if (!cartItems || !Array.isArray(cartItems) || cartItems.length === 0) {
       return NextResponse.json({ error: 'Cart items are required' }, { status: 400 });
@@ -19,7 +20,7 @@ export async function POST(
     const origin = request.headers.get('origin') || 'http://localhost:3000';
 
     // ✅ Fix image URLs
-    const lineItems = cartItems.map(item => {
+    const lineItems = cartItems.map((item) => {
       let imageUrl = item.image || '';
       if (imageUrl && !imageUrl.startsWith('http')) {
         imageUrl = `${origin}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
@@ -27,7 +28,7 @@ export async function POST(
 
       return {
         price_data: {
-          currency:"usd",
+          currency: 'usd',
           product_data: {
             name: item.title || item.name || 'Product',
             description: item.subtitle || '',
@@ -44,17 +45,25 @@ export async function POST(
       line_items: lineItems,
       mode: 'payment',
       customer_email: customerEmail,
+      customer_creation: 'if_required', // create a customer record if one doesn't exist
       payment_method_types: [
-        'card',            // enables Card + Apple Pay + Google Pay
+        'card', // enables Card + Apple Pay + Google Pay
         'us_bank_account', // enables Bank Transfer (ACH in US)
-        'link',            // enables Link (Stripe's one-click checkout)
+        'link', // enables Link (Stripe's one-click checkout)
       ],
-      success_url: `${origin}/account/thankYou?session_id={CHECKOUT_SESSION_ID}&order=${orderNumber}`,
-      cancel_url: `${origin}/account/paymentInfo?canceled=true`,
-      metadata: { orderNumber, ...metadata },
-      billing_address_collection: 'auto',
+      billing_address_collection: 'required',
       shipping_address_collection: {
         allowed_countries: ['US', 'CA'],
+      },
+      success_url: `${origin}/account/thankYou?session_id={CHECKOUT_SESSION_ID}&order=${orderNumber}`,
+      cancel_url: `${origin}/account/paymentInfo?canceled=true`,
+
+      // ✅ Store all relevant info in metadata
+      metadata: {
+        orderNumber,
+        ...metadata,
+        customerName: `${metadata.firstName || ''} ${metadata.lastName || ''}`.trim(),
+        customerAddress: `${metadata.address || ''}, ${metadata.city || ''}, ${metadata.state || ''}, ${metadata.zipCode || ''}, ${metadata.country || ''}`,
       },
     });
 

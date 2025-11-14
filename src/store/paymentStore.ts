@@ -26,6 +26,8 @@ export type PaymentInfo = {
   cardData: CardData; // Made optional
   billingData: BillingData;
   billingAddressExpanded: boolean;
+
+  paymentIntentId?: string;
 };
 
 type PaymentState = {

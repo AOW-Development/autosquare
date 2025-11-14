@@ -39,6 +39,7 @@ export default function ThankYouPage() {
   const [showPopup, setShowPopup] = useState(false);
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
+  const paymentIntentId = searchParams.get('payment_intent');
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -55,6 +56,25 @@ export default function ThankYouPage() {
   );
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
+
+
+  useEffect(() => {
+  if (paymentIntentId) {
+    verifyPayment(paymentIntentId);
+  }
+},  [paymentIntentId]);
+
+
+  const verifyPayment = async (id: string) => {
+  const response = await fetch(`/api-2/confirm-payment`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ paymentIntentId: id }),
+  });
+  
+  const data = await response.json();
+  console.log('Payment verification:', data);
+};
 
   useEffect(() => {
     // Check if the page was reloaded
@@ -159,6 +179,8 @@ export default function ThankYouPage() {
         const customerEmail =
           parsedOrderData.customerEmail ||
           parsedOrderData.user?.email ||
+          parsedOrderData.shipping?.email ||  
+           parsedOrderData.billing?.email ||   
           user?.email;
 
         if (!customerEmail) {

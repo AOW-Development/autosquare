@@ -95,6 +95,7 @@ interface PaymentInfo {
     securityCode: string;
     cardType?: string;
   };
+  paymentIntentId?: string;
 }
 
 interface CheckoutData {

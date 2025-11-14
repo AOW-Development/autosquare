@@ -180,3 +180,68 @@ export const defaultMetadata: Metadata = {
 export function getMetadataForPath(pathname: string): Metadata {
   return metadataMap[pathname] || defaultMetadata;
 }
+
+export function generateDynamicEngineMetadata(searchParams: {
+  make?: string | null;
+  model?: string | null;
+  year?: string | null;
+  part?: string | null;
+  sku?: string | null;
+}): Metadata {
+  const { make, model, year, part, sku } = searchParams;
+
+  // Debug: log the search params
+  console.log("generateDynamicEngineMetadata called with:", {
+    make,
+    model,
+    year,
+    part,
+    sku,
+  });
+
+  // If we have all the necessary params, generate a dynamic title
+  if (make && model && year && part) {
+    // Format the title: "2012 BMW 1M Used Transmission | Parts Central"
+    const partName = part === "Transmission" ? "Transmission" : part;
+    const title = `${year} ${make} ${model} Used ${partName} | Parts Central`;
+
+    // Generate description
+    const description = `Buy quality ${year} ${make} ${model} used ${partName} in United States. Affordable, tested, and reliable ${partName.toLowerCase()} with warranty. Shop now at Parts Central!`;
+
+    // Generate keywords
+    const keywords = `${year} ${make} ${model} ${partName.toLowerCase()}, ${make} ${model} ${partName.toLowerCase()} for sale, used ${partName.toLowerCase()} ${make} ${model}, ${year} ${make} ${model} replacement ${partName.toLowerCase()}, buy ${make} ${model} ${partName.toLowerCase()} USA, Parts Central ${make} ${model}`;
+
+    // Build canonical URL with search params
+    const canonicalParams = new URLSearchParams();
+    if (make) canonicalParams.set("make", make);
+    if (model) canonicalParams.set("model", model);
+    if (year) canonicalParams.set("year", year);
+    if (part) canonicalParams.set("part", part);
+    if (sku) canonicalParams.set("sku", sku);
+
+    const canonical = `https://partscentral.us/product/engines?${canonicalParams.toString()}`;
+
+    // Debug: log the generated metadata
+    console.log("Generated dynamic metadata:", { title, description });
+
+    return {
+      title,
+      description,
+      keywords,
+      alternates: {
+        canonical,
+      },
+    };
+  }
+
+  // Debug: log fallback
+  console.log("Falling back to default engine metadata - missing params:", {
+    make,
+    model,
+    year,
+    part,
+  });
+
+  // Fallback to default engine metadata
+  return metadataMap["/engine"] || defaultMetadata;
+}

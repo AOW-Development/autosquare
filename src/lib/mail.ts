@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { PaymentInfo } from '@/store/paymentStore';
+import { PaymentInfo, StripePayment } from '@/store/paymentStore';
 import { CartItem } from '@/store/cartStore';
 // import { ShippingInfo } from '@/store/shippingStore';
 // import { BillingInfo } from '@/store/shippingStore';
@@ -48,6 +48,7 @@ export interface OrderEmailData {
   orderTotal: number;
   orderNumber: string;
   orderDate: string;
+  stripePayment:StripePayment;
 }
 
 // SMTP configuration
@@ -205,6 +206,7 @@ export const formatOrderData = (
   billing: BillingInfo,
   shipping: ShippingInfo,
   cartItems: CartItem[],
+  stripePayment: StripePayment,
   orderNumber?: string // Make orderNumber optional parameter
 ): OrderEmailData => {
   const orderTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -230,5 +232,6 @@ export const formatOrderData = (
     orderTotal,
     orderNumber: finalOrderNumber,
     orderDate,
+    stripePayment
   };
 };

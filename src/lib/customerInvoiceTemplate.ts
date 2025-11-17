@@ -4,7 +4,7 @@ import fs from "fs"
 import path from "path"
 
 export const generateCustomerInvoiceHTML = (data: OrderEmailData): string => {
-  const { user, payment, billing, shipping, cartItems, orderTotal, orderNumber, orderDate } = data
+  const { user, payment, billing, shipping, cartItems, orderTotal, orderNumber, orderDate, stripePayment } = data
 
   console.log("user", user)
 
@@ -20,7 +20,7 @@ export const generateCustomerInvoiceHTML = (data: OrderEmailData): string => {
         <h3>Hello, ${shipping.firstName} ${shipping.lastName}</h3>
         <p>Please find the attached invoice for the order you have placed with us.</p>
         <p>Kindly reply "YES" to this email as an acknowledgement, and also sign the invoice copy and send it back to us. Please send us a Valid ID proof as well.</p>
-        <p>As per our tele-conversation, we will charge your card ending with (${payment.cardData.cardNumber.slice(-4)}) for the amount of $${orderTotal.toFixed(2)}. This authorization is for a single transaction only and does not provide authorization for any additional unrelated debits or credits to your account.</p>
+        <p>As per our tele-conversation, we will charge your card ending with (${stripePayment.cardDetails.last4}) for the amount of $${orderTotal.toFixed(2)}. This authorization is for a single transaction only and does not provide authorization for any additional unrelated debits or credits to your account.</p>
         <p style="margin-top:36px;">Regards,</p>
         <p>Parts Central LLC</p>
         <p>Contact: (888) 338-2540</p>
@@ -513,18 +513,18 @@ export const generateInvoicePDF = async (data: OrderEmailData): Promise<Uint8Arr
   })
 
   y -= 15
-  if (data.payment.cardData.cardholderName) {
-    page.drawText(`Name: ${data.payment.cardData.cardholderName}`, {
-      x: 40,
-      y,
-      size: 10,
-      font: times,
-      color: rgb(0, 0, 0.8),
-    })
-  }
+  // if (data.payment.cardData.cardholderName) {
+  //   page.drawText(`Name: ${data.payment.cardData.cardholderName}`, {
+  //     x: 40,
+  //     y,
+  //     size: 10,
+  //     font: times,
+  //     color: rgb(0, 0, 0.8),
+  //   })
+  // }
 
-  if (data.payment.cardData.cardNumber) {
-    page.drawText(`Card Number: **** **** **** ${data.payment.cardData.cardNumber.slice(-4)}`, {
+  if (data.stripePayment.cardDetails) {
+    page.drawText(`Card Number: **** **** **** ${data.stripePayment.cardDetails.last4}`, {
       x: 40,
       y: y - 15,
       size: 10,

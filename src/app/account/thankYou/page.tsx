@@ -40,6 +40,29 @@ export default function ThankYouPage() {
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
   const paymentIntentId = searchParams.get('payment_intent');
+  const [stripePaymentData, setStripePaymentData] = useState({
+    paymentIntentId: "",
+    amount: 0,
+    currency: "",
+    status: "",
+    created: 0,
+    customer: null,
+    cardDetails: {
+      brand: "",
+      country:"",
+      exp_month:"",
+      exp_year:"",
+      last4:"",
+    },
+    billingDetails: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    },
+    paymentMethod: "",
+    paymentIntent: "",
+  });
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -75,6 +98,41 @@ export default function ThankYouPage() {
   const data = await response.json();
   console.log('Payment verification:', data);
 };
+
+useEffect(() => {
+  if (paymentIntentId) {
+    fetch(`/api-2/stripData?payment_intent=${paymentIntentId}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log('Stripe payment data1:', data);
+      setStripePaymentData({
+        
+        paymentIntent: paymentIntentId,
+        paymentMethod: "card",
+        cardDetails: {
+          brand: data.cardDetails.brand,
+          last4: data.cardDetails.last4,
+          exp_month: data.cardDetails.exp_month,
+          exp_year: data.cardDetails.exp_year,
+          country: data.cardDetails.country,
+        },
+        billingDetails: {
+          name: data.billingDetails.name,
+          email: data.billingDetails.email,
+          phone: data.billingDetails.phone,
+          address: data.billingDetails.address,
+        },
+        
+      } as any);
+      
+  
+    })
+  }
+}, [paymentIntentId]);
+
+useEffect(() => {
+  console.log("Stripe payment data2:", stripePaymentData);
+}, [stripePaymentData]);
 
   useEffect(() => {
     // Check if the page was reloaded
@@ -237,6 +295,31 @@ export default function ThankYouPage() {
           totalAmount: total,
           subtotal: subtotal,
           customerEmail: customerEmail,
+
+          stripePayment: {
+            paymentIntentId: stripePaymentData.paymentIntent,
+            paymentMethod: stripePaymentData.paymentMethod,
+            
+            cardDetails: {
+              brand: stripePaymentData.cardDetails.brand,
+              last4: stripePaymentData.cardDetails.last4,
+              expMonth: stripePaymentData.cardDetails.exp_month,
+              expYear: stripePaymentData.cardDetails.exp_year,
+              country: stripePaymentData.cardDetails.country,
+            },
+        
+            billingDetails: {
+              name: stripePaymentData.billingDetails.name,
+              email: stripePaymentData.billingDetails.email,
+              phone: stripePaymentData.billingDetails.phone,
+              address: stripePaymentData.billingDetails.address,
+            },
+        
+            status: stripePaymentData.status,
+            created: stripePaymentData.created,
+            currency: stripePaymentData.currency,
+            amount: stripePaymentData.amount
+          }
         };
 
         // Start the loading toast only after we've confirmed orderData exists and built the payload
@@ -559,10 +642,10 @@ export default function ThankYouPage() {
                 Payment Method
               </div>
               <div className="flex items-center gap-3 mt-1">
-                {paymentInfo.method === "card" ? (
+                {stripePaymentData.paymentMethod === "card" ? (
                   <>
                     <span className="text-white text-sm tracking-widest">
-                      **** **** **** {paymentInfo.lastFour || "****"}
+                      **** **** **** {stripePaymentData.cardDetails.last4|| "****"}
                     </span>
                     {cardImage && (
                       <img

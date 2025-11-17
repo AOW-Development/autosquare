@@ -19,7 +19,7 @@ export async function POST(
 
     // Create PaymentIntent with automatic payment methods
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(amount * 100), // Convert dollars to cents
+      amount: amount, // Convert dollars to cents
       currency: 'usd',
       receipt_email: customerEmail,
       metadata: {

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -60,7 +61,9 @@ export default function StripePaymentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6 border-[#252525E5] p-6 bg-[#252525E5] ">
+
+
       <PaymentElement
         options={{
           layout: 'tabs',

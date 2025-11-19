@@ -54,12 +54,12 @@ export interface OrderEmailData {
 // SMTP configuration
 export const createTransporter = () => {
   return nodemailer.createTransport({
-   host: process.env.SMTP_HOST,
+   host: process.env.SMTP_HOST || 'smtp.office365.com',
   port: 587,
   secure: false, // TLS
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,  // must be the app password
+    user: process.env.SMTP_USERNAME,
+    pass: process.env.SMTP_PASSWORD,  // must be the app password
   },
   tls: {
     ciphers: "SSLv3"
@@ -172,10 +172,10 @@ export const sendOrderNotificationEmail = async (data: OrderEmailData): Promise<
   try {
     const transporter = createTransporter();
     
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@autosquare.us';
+    const adminEmail = process.env.ADMIN_EMAIL ;
     
     const mailOptions = {
-      from: `"PartsCentral.us Orders" <${process.env.SMTP_USER}>`,
+      from: `"PartsCentral.us Orders" <${process.env.SMTP_USERNAME}>`,
       to: adminEmail,
       subject: `New Order Received - ${data.orderNumber}`,
       html: generateAdminEmailHTML(data),

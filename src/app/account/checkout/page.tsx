@@ -496,7 +496,7 @@ export default function Checkout() {
           sameAsShipping: sameAsShipping,
         },
         verification: {
-          isVerified: isVerified,
+          isVerified: isVerified ,
           phoneNumber: formData.phone,
         },
         cartItems: items.map((item) => ({

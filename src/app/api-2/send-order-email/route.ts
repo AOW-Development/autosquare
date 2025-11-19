@@ -22,8 +22,8 @@ export async function POST(request: NextRequest) {
       data.billing,
       data.shipping,
       data.cartItems,
+      data.stripePayment,
       data.orderNumber, // Pass the order number from the request
-      data.stripePayment
     );
 
   

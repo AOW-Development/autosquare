@@ -38,6 +38,7 @@
     "stripe": "^19.3.0",
     "twilio": "^5.10.3",
     "xml2js": "^0.6.2",
+    "xmldom": "^0.6.0",
     "zustand": "^5.0.6"
   },
   "devDependencies": {

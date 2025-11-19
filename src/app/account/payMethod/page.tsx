@@ -1,3 +1,4 @@
+
 "use client";
 
 import type React from "react";
@@ -257,7 +258,7 @@ const handlePaymentSuccess = async (paymentIntentId: string) => {
   // Store data for Thank You page
   const orderData = {
     user,
-    payment: { paymentMethod: 'stripe_elements', paymentIntentId },
+    payment: { paymentMethod: 'stripe_elements', paymentIntentId, cardData },
      shipping: buyInOneClick ? shippingFormData : shippingInfo,
     billing: sameAsShipping 
       ? (buyInOneClick ? shippingFormData : shippingInfo)
@@ -552,8 +553,8 @@ const handlePaymentError = (error: string) => {
     if (!isVerified) return false;
     return true; // ✅ All checks passed
   }
-  
-  // For Regular Checkout (coming from checkout page)
+
+// For Regular Checkout (coming from checkout page)
  
   
   if (!sameAsShipping && (!billingInfo || !billingInfo.address)) {
@@ -562,6 +563,20 @@ const handlePaymentError = (error: string) => {
   
   return true; // ✅ Valid!
 };
+
+useEffect(() => {
+  if (isFormValid() && !clientSecret && !isLoadingPayment) {
+    createPaymentIntent();
+  }
+}, [
+  isShippingSaved,
+  isBillingSaved,
+  isVerified,
+  sameAsShipping,
+  buyInOneClick,
+  billingInfo,
+  shippingInfo,
+]);
 
   const router = useRouter();
 
@@ -2162,66 +2177,132 @@ const handlePaymentError = (error: string) => {
           </div>
 
             {/* Payment Section - Stripe Elements */}
-            <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full">
-              <div className="max-w-xl ml-0">
-                <h2 className="text-2xl font-semibold mb-8 font-exo2">
-                  Payment Information
-                </h2>
+            {/* Payment Section - Stripe Elements */}
+          <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full">
+            <div className="max-w-xl ml-0">
+              <h2 className="text-2xl font-semibold mb-8 font-exo2">
+                Payment Information
+              </h2>
 
-                {/* Initialize Payment Intent Button */}
-                {!clientSecret && (
-                  <button
-                    onClick={createPaymentIntent}
-                    disabled={isLoadingPayment || !isFormValid()}
-                    className={`w-full py-3 sm:py-4 rounded-md font-exo2 text-lg sm:text-xl transition-colors ${
-                      isLoadingPayment || !isFormValid()
-                        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-                        : 'bg-[#009AFF] text-white hover:bg-blue-500'
-                    }`}
-                  >
-                    {isLoadingPayment ? 'Loading...' : 'Continue to Payment'}
-                  </button>
-                )}
-
-                {/* Stripe Elements Form */}
-                {clientSecret && (
-                  <Elements
-                    stripe={stripePromise}
-                    options={{
-                      clientSecret,
-                      appearance: {
-                        theme: 'night',
-                        variables: {
-                          colorPrimary: '#009AFF',
-                          colorBackground: '#252525E5',
-                          colorText: '#ffffff',
-                          colorDanger: '#df1b41',
-                          fontFamily: 'Exo 2, sans-serif',
-                          borderRadius: '8px',
-                        },
-                      },
-                    }}
-                  >
-                    <StripePaymentForm
-                      onSuccess={handlePaymentSuccess}
-                      onError={handlePaymentError}
-                      orderNumber={orderNumber}
-                      total={total}
-                    />
-                  </Elements>
-                )}
-
-                {/* Back Link */}
-                <div className="text-center mt-6">
-                  <Link
-                    href="/account/checkout"
-                    className="text-sm sm:text-base text-gray-400 hover:underline font-exo2 cursor-pointer"
-                  >
-                    Back
-                  </Link>
+              {/* Show loading state while initializing */}
+              {isLoadingPayment && (
+                <div className="text-center py-8">
+                  <p className="text-white font-exo2">Initializing secure payment...</p>
                 </div>
+              )}
+
+              {/* Show Stripe Elements Form when ready */}
+              {clientSecret && !isLoadingPayment && (
+              <Elements
+                stripe={stripePromise}
+                options={{
+                  clientSecret,
+                  appearance: {
+                    theme: 'night',
+                    variables: {
+                      // Colors
+                      colorPrimary: '#009AFF',
+                      colorBackground: '#1A263D',
+                      colorText: '#ffffff',
+                      colorDanger: '#df1b41',
+                      colorTextPlaceholder: '#9CA3AF',
+                      
+                      // Fonts
+                      fontFamily: 'Exo 2, sans-serif',
+                      fontSizeBase: '16px',
+                      fontWeightNormal: '400',
+                      fontWeightBold: '600',
+                      
+                      // Borders
+                      borderRadius: '8px',
+                      
+                      // Spacing
+                      spacingUnit: '4px',
+                      
+                      // Input specific
+                     
+                      
+                    },
+                    rules: {
+                      '.Input': {
+                        backgroundColor: '#FFFFFF',   // <-- white background
+                        border: '1px solid #484848',
+                        padding: '14px 16px',
+                        color: '#000000',             // <-- black text
+                        fontSize: '16px',
+                      },
+                      '.Input:focus': {
+                        border: '2px solid #009AFF',
+                        boxShadow: '0 0 0 1px #009AFF',
+                        outline: 'none',
+                      },
+                      '.Input::placeholder': {
+                        color: '#00000099',           // <-- black placeholder (slightly lighter)
+                      },
+                      '.Label': {
+                        color: '#ffffff',
+                        fontSize: '18px',
+                        fontWeight: '500',
+                        marginBottom: '14px',
+                      },
+                      '.Error': {
+                        color: '#df1b41',
+                        fontSize: '13px',
+                        marginTop: '4px',
+                      },
+                      '.Tab': {
+                        border: '1px solid #484848',
+                        backgroundColor: '#1A263D',
+                        padding: '12px 16px',
+                        color: '#ffffff',
+                      },
+                      '.Tab:hover': {
+                        backgroundColor: '#2A3650',
+                        borderColor: '#009AFF',
+                      },
+                      '.Tab--selected': {
+                        border: '2px solid #009AFF',
+                        backgroundColor: '#1A263D',
+                        color: '#ffffff',
+                      },
+                      '.TabIcon': {
+                        fill: '#ffffff',
+                      },
+                      '.TabIcon--selected': {
+                        fill: '#009AFF',
+                      },
+                    },
+
+                  },
+                }}
+              >
+                <StripePaymentForm
+                  onSuccess={handlePaymentSuccess}
+                  onError={handlePaymentError}
+                  orderNumber={orderNumber}
+                  total={total}
+                />
+              </Elements>
+            )}
+
+              {/* Show message if form is not valid yet */}
+              {!isFormValid() && !isLoadingPayment && (
+                <div className="bg-yellow-900/20 border border-yellow-600 rounded-md p-4 text-yellow-200 font-exo2">
+                  Please complete all required information above before proceeding to payment.
+                </div>
+              )}
+
+              {/* Back Link */}
+              <div className="text-center mt-6">
+                <Link
+                  href="/account/checkout"
+                  className="text-sm sm:text-base text-gray-400 hover:underline font-exo2 cursor-pointer"
+                >
+                  Back
+                </Link>
               </div>
             </div>
+          </div>
         </div>
       </div>
     </div>

@@ -39,7 +39,31 @@ export default function ThankYouPage() {
   const [showPopup, setShowPopup] = useState(false);
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
-  const paymentIntentId = searchParams.get('payment_intent');
+  const paymentIntentId = searchParams.get("payment_intent");
+  const [stripePaymentData, setStripePaymentData] = useState({
+    paymentIntentId: "",
+    amount: 0,
+    currency: "",
+    status: "",
+    created: 0,
+    customer: null,
+    cardDetails: {
+      brand: "",
+      country: "",
+      exp_month: "",
+      exp_year: "",
+      last4: "",
+    },
+    billingDetails: {
+      name: "",
+      email: "",
+      phone: "",
+      address: "",
+    },
+    paymentMethod: "",
+    paymentIntent: "",
+  });
+  const [isStripePaymentReady, setIsStripePaymentReady] = useState(false);
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -57,24 +81,61 @@ export default function ThankYouPage() {
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
 
-
   useEffect(() => {
-  if (paymentIntentId) {
-    verifyPayment(paymentIntentId);
-  }
-},  [paymentIntentId]);
-
+    if (paymentIntentId) {
+      verifyPayment(paymentIntentId);
+    }
+  }, [paymentIntentId]);
 
   const verifyPayment = async (id: string) => {
-  const response = await fetch(`/api-2/confirm-payment`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ paymentIntentId: id }),
-  });
-  
-  const data = await response.json();
-  console.log('Payment verification:', data);
-};
+    const response = await fetch(`/api-2/confirm-payment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ paymentIntentId: id }),
+    });
+
+    const data = await response.json();
+    console.log("Payment verification:", data);
+  };
+
+  useEffect(() => {
+    if (paymentIntentId) {
+      setIsStripePaymentReady(false);
+      fetch(`/api-2/stripData?payment_intent=${paymentIntentId}`)
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("Stripe payment data1:", data);
+          setStripePaymentData({
+            paymentIntent: paymentIntentId,
+            paymentMethod: "card",
+            cardDetails: {
+              brand: data.cardDetails.brand,
+              last4: data.cardDetails.last4,
+              exp_month: data.cardDetails.exp_month,
+              exp_year: data.cardDetails.exp_year,
+              country: data.cardDetails.country,
+            },
+            billingDetails: {
+              name: data.billingDetails.name,
+              email: data.billingDetails.email,
+              phone: data.billingDetails.phone,
+              address: data.billingDetails.address,
+            },
+          } as any);
+          setIsStripePaymentReady(true);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch Stripe data:", error);
+          setIsStripePaymentReady(false);
+        });
+    } else {
+      setIsStripePaymentReady(false);
+    }
+  }, [paymentIntentId]);
+
+  useEffect(() => {
+    console.log("Stripe payment data2:", stripePaymentData);
+  }, [stripePaymentData]);
 
   useEffect(() => {
     // Check if the page was reloaded
@@ -92,6 +153,7 @@ export default function ThankYouPage() {
   }, []);
 
   //  MAIN: Run once to create order + send invoice
+
   useEffect(() => {
     // Wait for cart store hydration and non-empty cart
     if (hasRunRef.current) return;
@@ -108,7 +170,6 @@ export default function ThankYouPage() {
       );
       return;
     }
-    hasRunRef.current = true;
 
     const orderData = sessionStorage.getItem("orderData");
     let existingOrderNumber = "";
@@ -121,6 +182,12 @@ export default function ThankYouPage() {
         console.error("Error parsing order data:", error);
       }
     }
+
+    if (!isStripePaymentReady || !stripePaymentData.paymentIntent) {
+      console.log("Stripe payment data not ready yet, waiting…");
+      return;
+    }
+    hasRunRef.current = true;
 
     const orderNum = existingOrderNumber;
     setFinalOrderNumber(orderNum);
@@ -174,13 +241,24 @@ export default function ThankYouPage() {
           }
           return;
         }
+        // console.log("orderData", JSON.parse(orderData).payment);
+        const lastOrderData = (JSON.parse(orderData).payment.cardData = {
+          cardNumber: stripePaymentData.cardDetails.last4,
+          cardholderName:
+            stripePaymentData.billingDetails.name || "ONLINE PAYMENT",
+          expirationDate: `${
+            stripePaymentData.cardDetails.exp_month
+          }/${stripePaymentData.cardDetails.exp_year.toString().slice(-2)}`,
+          securityCode: stripePaymentData.cardDetails.brand,
+        });
+        console.log("lastOrderData", lastOrderData);
 
         const parsedOrderData = JSON.parse(orderData);
         const customerEmail =
           parsedOrderData.customerEmail ||
           parsedOrderData.user?.email ||
-          parsedOrderData.shipping?.email ||  
-           parsedOrderData.billing?.email ||   
+          parsedOrderData.shipping?.email ||
+          parsedOrderData.billing?.email ||
           user?.email;
 
         if (!customerEmail) {
@@ -226,10 +304,13 @@ export default function ThankYouPage() {
                 ""
               }`.trim(),
             };
-
+        console.log("stripePaymentData", stripePaymentData);
         const fullOrderData = {
           user: orderUser,
-          payment: parsedOrderData.payment,
+          payment: {
+            ...parsedOrderData.payment,
+            cardData: lastOrderData,
+          },
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
           cartItems: cartItems,
@@ -237,6 +318,31 @@ export default function ThankYouPage() {
           totalAmount: total,
           subtotal: subtotal,
           customerEmail: customerEmail,
+
+          stripePayment: {
+            paymentIntentId: stripePaymentData.paymentIntent,
+            paymentMethod: stripePaymentData.paymentMethod,
+
+            cardDetails: {
+              brand: stripePaymentData.cardDetails.brand,
+              last4: stripePaymentData.cardDetails.last4,
+              expMonth: stripePaymentData.cardDetails.exp_month,
+              expYear: stripePaymentData.cardDetails.exp_year,
+              country: stripePaymentData.cardDetails.country,
+            },
+
+            billingDetails: {
+              name: stripePaymentData.billingDetails.name,
+              email: stripePaymentData.billingDetails.email,
+              phone: stripePaymentData.billingDetails.phone,
+              address: stripePaymentData.billingDetails.address,
+            },
+
+            status: stripePaymentData.status,
+            created: stripePaymentData.created,
+            currency: stripePaymentData.currency,
+            amount: stripePaymentData.amount,
+          },
         };
 
         // Start the loading toast only after we've confirmed orderData exists and built the payload
@@ -248,8 +354,17 @@ export default function ThankYouPage() {
         // 1) Create order in backend
         let createdOrderResult = null;
         try {
-          createdOrderResult = await createOrderInBackend(fullOrderData);
-          console.log("Order created in backend:", createdOrderResult);
+          if (
+            stripePaymentData.paymentIntent &&
+            stripePaymentData.paymentMethod === "card"
+          ) {
+            createdOrderResult = await createOrderInBackend(fullOrderData);
+            console.log("Order created in backend:", createdOrderResult);
+          } else {
+            console.log(
+              "No stripe payment data found, skipping order creation"
+            );
+          }
         } catch (err) {
           //  Send SMS notification (TypeScript safe)
 
@@ -321,50 +436,49 @@ export default function ThankYouPage() {
 
         // 2) Send confirmation email - require success before clearing sessionStorage
         try {
-          const emailResponse = await fetch("/api-2/send-order-email", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(fullOrderData),
-          });
+          // const emailResponse = await fetch("/api-2/send-order-email", {
+          //   method: "POST",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify(fullOrderData),
+          // });
 
-          if (!emailResponse.ok) {
-            const errorText = await emailResponse.text();
-            toast.dismiss(sendingToastId);
-            console.error(
-              "Failed to send order confirmation email:",
-              errorText
-            );
-            toast.error(
-              "Order placed successfully, but failed to send confirmation email"
-            );
+          // if (!emailResponse.ok) {
+          //   const errorText = await emailResponse.text();
+          //   toast.dismiss(sendingToastId);
+          //   console.error(
+          //     "Failed to send order confirmation email:",
+          //     errorText
+          //   );
+          //   toast.error(
+          //     "Order placed successfully, but failed to send confirmation email"
+          //   );
 
-            // Update Redis - backend order created but email failed
-            if (checkoutSessionId) {
-              await updateCheckoutData(
-                { isOrderCreatedInBackend: true },
-                checkoutSessionId
-              );
+          // Update Redis - backend order created but email failed
+          // if (checkoutSessionId) {
+          //   await updateCheckoutData(
+          //     { isOrderCreatedInBackend: true },
+          //     checkoutSessionId
+          //   );
 
-              console.log(" Order created but email failed - updated Redis");
+          //   console.log(" Order created but email failed - updated Redis");
 
-              clearSessionId();
-              console.log(" Order created but email failed - updated Redis");
-            }
-            // Do NOT remove sessionStorage so the orderData can be retried
-            return;
-          }
+          //   clearSessionId();
+          //   console.log(" Order created but email failed - updated Redis");
+          // }
+          // Do NOT remove sessionStorage so the orderData can be retried
+          //   return;
+          // }
 
           // Both backend order creation and email succeeded
           toast.dismiss(sendingToastId);
           toast.success(`Order confirmation sent to ${customerEmail}`);
           await fetch("/api-2/send-order-email", {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({  
-                    ...fullOrderData,
-                    
-                  }),
-                }); 
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...fullOrderData,
+            }),
+          });
           // Update Redis to mark as successful
           if (checkoutSessionId) {
             await updateCheckoutData(
@@ -453,8 +567,16 @@ export default function ThankYouPage() {
       }
     };
 
+    console.log("stripePaymentData", stripePaymentData);
     createOrder();
-  }, [user, cartHasHydrated, cartItems, setCartHasHydrated]);
+  }, [
+    user,
+    cartHasHydrated,
+    cartItems,
+    setCartHasHydrated,
+    stripePaymentData,
+    isStripePaymentReady,
+  ]);
 
   return (
     <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
@@ -559,10 +681,11 @@ export default function ThankYouPage() {
                 Payment Method
               </div>
               <div className="flex items-center gap-3 mt-1">
-                {paymentInfo.method === "card" ? (
+                {stripePaymentData.paymentMethod === "card" ? (
                   <>
                     <span className="text-white text-sm tracking-widest">
-                      **** **** **** {paymentInfo.lastFour || "****"}
+                      **** **** ****{" "}
+                      {stripePaymentData.cardDetails.last4 || "****"}
                     </span>
                     {cardImage && (
                       <img

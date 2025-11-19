@@ -30,6 +30,31 @@ export type PaymentInfo = {
   paymentIntentId?: string;
 };
 
+export type StripePayment={
+  paymentIntentId: string;
+    paymentMethod: string;
+    cardDetails: {
+        brand: string;
+        last4: string;
+        expMonth: string;
+        expYear: string;
+        country: string;
+    };
+    billingDetails: {
+        name: string;
+        email: string;
+        phone: string;
+        address: string;
+    };
+    status: string;
+    created: number;
+    currency: string;
+    amount: number;
+}
+    
+
+
+
 type PaymentState = {
   paymentInfo: PaymentInfo;
   setPaymentMethod: (method: PaymentMethod) => void;

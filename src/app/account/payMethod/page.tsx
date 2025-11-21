@@ -1225,89 +1225,91 @@ useEffect(() => {
 
   // OTP Functions
   const sendOtp = async () => {
-    if (!shippingFormData.phone)
-      return toast.error("Enter phone number first!");
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
 
-    // Remove all non-digit characters
-    const digits = shippingFormData.phone.replace(/\D/g, "");
-    // Add +91 for India (adjust if needed)
-    let phoneNumber: string;
-    let isIndianNumber = false;
-    if (digits.length === 10 && /^[6-9]/.test(digits)) {
-      // Potential Indian number
-      phoneNumber = `+91${digits}`;
-      isIndianNumber = true;
-    } else if (digits.length === 10) {
-      // US number
-      phoneNumber = `+1${digits}`;
+  // Remove all non-digit characters
+  const digits = shippingFormData.phone.replace(/\D/g, "");
+  let phoneNumber: string;
+  let isIndianNumber = false;
+
+  if (digits.length !== 10) {
+    return toast.error("Enter a valid 10-digit phone number");
+  }
+
+  // Check if it's a known Indian test number (by checking against the list with +91 prefix)
+  const potentialIndianNumber = `+91${digits}`;
+  if (INDIAN_TEST_NUMBERS.includes(potentialIndianNumber)) {
+    phoneNumber = potentialIndianNumber;
+    isIndianNumber = true;
+  } else {
+    // Default to US number
+    phoneNumber = `+1${digits}`;
+  }
+
+  try {
+    // Track OTP attempt in Redis
+    const attemptResult = await trackOtpAttempt(phoneNumber);
+    if (!attemptResult.success) {
+      return toast.error(attemptResult.error || "Too many OTP attempts");
+    }
+
+    const res = await fetch("/api-2/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber }), // match backend
+    });
+
+    const data = await res.json();
+
+    if (data.status === "pending") {
+      setOtpSent(true);
+      toast.success("OTP sent successfully!");
     } else {
-      return toast.error("Enter a valid 10-digit phone number");
+      toast.error(data.message || "Failed to send OTP");
     }
+  } catch (err) {
+    toast.error("Failed to send OTP. Check server logs.");
+    console.error(err);
+  }
+};
 
-    if (isIndianNumber && !INDIAN_TEST_NUMBERS.includes(phoneNumber)) {
-      return toast.error(
-        "Only US numbers and specific test Indian numbers are allowed"
-      );
-    }
+const verifyOtp = async () => {
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
+  if (!otp) return toast.error("Enter OTP first!");
 
-    try {
-      // Track OTP attempt in Redis
-      const attemptResult = await trackOtpAttempt(phoneNumber);
-      if (!attemptResult.success) {
-        return toast.error(attemptResult.error || "Too many OTP attempts");
-      }
+  const digits = shippingFormData.phone.replace(/\D/g, "");
+  let phoneNumber: string;
 
-      const res = await fetch("/api-2/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber }), // match backend
-      });
+  if (digits.length !== 10) {
+    return toast.error("Enter a valid 10-digit phone number");
+  }
 
-      const data = await res.json();
+  // Check if it's a known Indian test number
+  const potentialIndianNumber = `+91${digits}`;
+  if (INDIAN_TEST_NUMBERS.includes(potentialIndianNumber)) {
+    phoneNumber = potentialIndianNumber;
+  } else {
+    phoneNumber = `+1${digits}`;
+  }
 
-      if (data.status === "pending") {
-        setOtpSent(true);
-        toast.success("OTP sent successfully!");
-      } else {
-        toast.error(data.message || "Failed to send OTP");
-      }
-    } catch (err) {
-      toast.error("Failed to send OTP. Check server logs.");
-      console.error(err);
-    }
-  };
+  try {
+    const res = await fetch("/api-2/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber, code: otp }),
+    });
 
-  const verifyOtp = async () => {
-    if (!shippingFormData.phone)
-      return toast.error("Enter phone number first!");
-    if (!otp) return toast.error("Enter OTP first!");
+    const data = await res.json();
+    if (data.success) {
+      setIsVerified(true);
+      toast.success("Phone verified!");
+    } else toast.error(data.message);
+  } catch (err) {
+    toast.error("Failed to verify OTP. Check server logs.");
+    console.error(err);
+  }
+};
 
-    // Remove all non-digit characters
-    const digits = shippingFormData.phone.replace(/\D/g, "");
-    let phoneNumber: string;
-    if (digits.length === 10 && /^[6-9]/.test(digits)) {
-      phoneNumber = `+91${digits}`;
-    } else {
-      phoneNumber = `+1${digits}`;
-    } // SAME format as sendOtp
-
-    try {
-      const res = await fetch("/api-2/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber, code: otp }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setIsVerified(true);
-        toast.success("Phone verified!");
-      } else toast.error(data.message);
-    } catch (err) {
-      toast.error("Failed to verify OTP. Check server logs.");
-      console.error(err);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">

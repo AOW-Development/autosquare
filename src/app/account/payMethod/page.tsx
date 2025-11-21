@@ -43,9 +43,9 @@ export default function PayMethod() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   // default to Apple Pay
 
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(true);
   const [otp, setOtp] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(true);
   const [error, setError] = useState("");
   const [sessionId] = useState(() => generateSessionId());
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -1631,7 +1631,7 @@ const verifyOtp = async () => {
                       {/* Success message */}
                       {isVerified && (
                         <p className="mt-2 text-green-400 font-exo2 text-sm">
-                          Phone verified successfully
+                          {/* Phone verified successfully */}
                         </p>
                       )}
 

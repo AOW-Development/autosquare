@@ -16,6 +16,8 @@ export async function POST(
       metadata = {},
     }: CreatePaymentIntentRequest = await request.json();
 
+    console.log('🔍 Creating Payment Intent:', { amount, customerEmail, orderNumber });
+
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Valid amount is required" },
@@ -35,53 +37,59 @@ export async function POST(
       amount: Math.round(amount * 100), // Convert dollars to cents
       currency: "usd",
       receipt_email: customerEmail,
+      
       metadata: {
         orderNumber,
         customerEmail,
         ...metadata,
-        customerName: `${metadata.firstName || ""} ${
-          metadata.lastName || ""
-        }`.trim(),
-        customerAddress: `${metadata.address || ""}, ${metadata.city || ""}, ${
-          metadata.state || ""
-        }, ${metadata.zipCode || ""}, US`,
+        customerName: `${metadata.firstName || ""} ${metadata.lastName || ""}`.trim(),
+        customerAddress: `${metadata.address || ""}, ${metadata.city || ""}, ${metadata.state || ""}, ${metadata.zipCode || ""}, US`,
       },
+      
+      // ✅ THIS IS KEY - Enables Card, Apple Pay, Google Pay, Link
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never", // Keep users on your site
+        // Remove "allow_redirects" to enable Apple Pay & Google Pay
+        // allow_redirects: "never" blocks wallet payments!
       },
-       payment_method_options: {
-          card: {
-            request_three_d_secure: "automatic",
-          },
+      
+      // Optional: Enable 3D Secure for cards
+      payment_method_options: {
+        card: {
+          request_three_d_secure: "automatic",
         },
-      shipping: metadata.address
-        ? {
-            name: `${metadata.firstName || ""} ${
-              metadata.lastName || ""
-            }`.trim(),
-            address: {
-              line1: metadata.address || "",
-              line2: metadata.apartment || "",
-              city: metadata.city || "",
-              state: metadata.state || "",
-              postal_code: metadata.zipCode || "",
-              country: "US",
-            },
-          }
-        : undefined,
+      },
+      
+      // Optional: Shipping address (helps with Apple/Google Pay)
+      shipping: metadata.address ? {
+        name: `${metadata.firstName || ""} ${metadata.lastName || ""}`.trim(),
+        address: {
+          line1: metadata.address || "",
+          line2: metadata.apartment || "",
+          city: metadata.city || "",
+          state: metadata.state || "",
+          postal_code: metadata.zipCode || "",
+          country: "US",
+        },
+      } : undefined,
     });
 
     if (!paymentIntent.client_secret) {
       throw new Error("Failed to create payment intent");
     }
 
+    console.log('✅ Payment Intent created:', {
+      id: paymentIntent.id,
+      amount: paymentIntent.amount,
+      payment_method_types: paymentIntent.payment_method_types,
+    });
+
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
     } as CreatePaymentIntentResponse);
   } catch (error: any) {
-    console.error("Create PaymentIntent error:", error);
+    console.error("❌ Create PaymentIntent error:", error);
     return NextResponse.json(
       { error: error?.message || "Error creating payment intent" },
       { status: 500 }

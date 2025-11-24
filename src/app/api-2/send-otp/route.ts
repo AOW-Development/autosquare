@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import twilio from "twilio";
 import { parsePhoneNumberFromString } from "libphonenumber-js";
+import { log } from "console";
 
 export async function POST(req: Request) {
   try {
@@ -15,6 +16,9 @@ export async function POST(req: Request) {
 
     // Auto-detect country instead of forcing "CA"
     const parsedNumber = parsePhoneNumberFromString(phoneNumber);
+    console.log("Parsed Number:", parsedNumber);
+    console.log("valid:",parsedNumber?.isValid());
+    
     if (!parsedNumber || !parsedNumber.isValid()) {
       return NextResponse.json(
         { error: "Invalid phone number format" },

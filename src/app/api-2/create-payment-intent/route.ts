@@ -44,12 +44,17 @@ export async function POST(
         }`.trim(),
         customerAddress: `${metadata.address || ""}, ${metadata.city || ""}, ${
           metadata.state || ""
-        }, ${metadata.zipCode || ""}, ${metadata.country || ""}`,
+        }, ${metadata.zipCode || ""}, US`,
       },
       automatic_payment_methods: {
         enabled: true,
         allow_redirects: "never", // Keep users on your site
       },
+       payment_method_options: {
+          card: {
+            request_three_d_secure: "automatic",
+          },
+        },
       shipping: metadata.address
         ? {
             name: `${metadata.firstName || ""} ${
@@ -61,7 +66,7 @@ export async function POST(
               city: metadata.city || "",
               state: metadata.state || "",
               postal_code: metadata.zipCode || "",
-              country: metadata.country || "US",
+              country: "US",
             },
           }
         : undefined,

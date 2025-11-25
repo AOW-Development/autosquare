@@ -2276,6 +2276,7 @@ const verifyOtp = async () => {
                     },
 
                   },
+                  
                 }}
               >
                 <StripePaymentForm
@@ -2305,7 +2306,7 @@ const verifyOtp = async () => {
               </div>
             </div>
           </div>
-        </div>
+          </div>
       </div>
     </div>
   );

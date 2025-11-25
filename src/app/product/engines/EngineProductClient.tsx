@@ -222,6 +222,14 @@ export default function EngineProductClient() {
                 part: data.part,
                 subPart: group.subPart,
                 product: variant.product || group.product || null,
+                title: variant.title,
+                seoTitle: variant.seoTitle,
+                seoSlug: variant.seoSlug,
+                seoCanonical: variant.seoCanonical,
+                seoDescription: variant.seoDescription,
+                warranty: variant.warranty,
+                media: (variant.product?.media) || [],
+                description: variant.description,
               });
             });
           });
@@ -449,15 +457,17 @@ export default function EngineProductClient() {
                     fontFamily: "Audiowide, sans-serif",
                     letterSpacing: "0.1em",
                   }}
-                >
-                  {productInfo.year ||
+                  >
+                  {/* {productInfo.year ||
                   productInfo.make ||
                   productInfo.model ||
                   productInfo.part
                     ? `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${productInfo.part}`
                         .replace(/\s+/g, " ")
                         .trim()
-                    : "ENGINE ASSEMBLY"}
+                    : "ENGINE ASSEMBLY"} */}
+                    {(selectedProduct?.title ??
+                      `${productInfo.year || ""} ${productInfo.make || ""} ${productInfo.model || ""} Used ${productInfo.part || ""}`).replace(/\s+/g, " ").trim() || "ENGINE ASSEMBLY"}
                 </h1>
 
                 <div className="text-sm sm:text-base text-gray-400 font-semibold">
@@ -604,7 +614,16 @@ export default function EngineProductClient() {
           </div>
 
           <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
-            {accordionData[activeTab].content}
+            {/* {accordionData[activeTab].content} */}
+             {activeTab === 0 ? (
+            <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
+              {selectedProduct?.description || accordionData[0].content}
+            </div>
+          ) : (
+            <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
+              {accordionData[activeTab].content}
+            </div>
+          )}
           </div>
         </div>
         <div className="w-full py-8 sm:py-12">
@@ -694,6 +713,7 @@ export default function EngineProductClient() {
           model={selectedProduct.model ?? undefined}
           year={selectedProduct.year ?? undefined}
           part={selectedProduct.part ?? undefined}
+          // seoDescription= {selectedProduct.seoDescription ?? undefined }
         />
       )}
     </>

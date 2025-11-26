@@ -3,8 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "prebuild": "node scripts/inject-firebase-config.js",
-    "predev": "node scripts/inject-firebase-config.js",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",

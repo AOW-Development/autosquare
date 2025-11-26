@@ -200,7 +200,7 @@ export async function POST(req: NextRequest) {
     // The 'notification' field triggers the system tray notification
     // The 'data' field is passed to the service worker
     const siteUrl =
-      process.env.NEXT_PUBLIC_SITE_URL || "https://partscentral.us/";
+      process.env.NEXT_PUBLIC_SITE_URL || "https://partscentral.us";
     const fullUrl = url
       ? url.startsWith("http")
         ? url

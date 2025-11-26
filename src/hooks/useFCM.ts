@@ -73,12 +73,12 @@ export const useFCM = () => {
       if (permissionResult === "granted") {
         return true;
       } else {
-        toast.error("Notification permission denied");
+        // toast.error("Notification permission denied");
         return false;
       }
     } catch (error) {
       console.error("Error requesting notification permission:", error);
-      toast.error("Failed to request notification permission");
+      // toast.error("Failed to request notification permission");
       return false;
     }
   };
@@ -92,9 +92,9 @@ export const useFCM = () => {
       currentMessaging = await initializeMessaging();
       if (!currentMessaging) {
         console.error("❌ Firebase Messaging is not available");
-        toast.error(
-          "Failed to initialize notifications. Please refresh the page."
-        );
+        // toast.error(
+        //   "Failed to initialize notifications. Please refresh the page."
+        // );
         return null;
       }
     }

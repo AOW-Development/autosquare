@@ -9,8 +9,8 @@ export const sendOrderFailedEmail = async (
     const transporter = createTransporter();
 
     const mailOptions = {
-      from: process.env.SMTP_USER,
-      to: process.env.SMTP_USER, // send to the customer
+      from: process.env.SMTP_USERNAME,
+      to: process.env.SMTP_USERNAME, // send to the customer
       // send to the customer
       subject: `Order Failed - #${data.orderNumber}`,
       html: `

@@ -12,6 +12,10 @@ type Props = {
     year?: string;
     part?: string;
     sku?: string;
+    seotitle?: string;
+    seoslug?: string;
+    seocanonical?: string;
+    seodescription?: string;
   }>;
 };
 

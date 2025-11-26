@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
       data.shipping,
       data.cartItems,
       data.stripePayment,
-      data.orderNumber // Pass the order number from the request
+      data.orderNumber, // Pass the order number from the request
     );
 
     if (data.status === "failed") {

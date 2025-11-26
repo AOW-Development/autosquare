@@ -43,9 +43,9 @@ export default function PayMethod() {
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   // default to Apple Pay
 
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(true);
   const [otp, setOtp] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(true);
   const [error, setError] = useState("");
   const [sessionId] = useState(() => generateSessionId());
   const [clientSecret, setClientSecret] = useState<string | null>(null);
@@ -856,88 +856,110 @@ useEffect(() => {
       }
 
       if (buyInOneClick && !isVerified) {
-      toast.error(
-        "Please verify your phone number before confirming the order."
-      );
-      return;
-    }
+        toast.error(
+          "Please verify your phone number before confirming the order."
+        );
+        return;
+      }
 
       // Go directly to thank you page without sign-in for all users
       // router.push("/account/thankYou");
       // window.location.href = "/account/thankYou";
-       // NOW REDIRECT TO STRIPE CHECKOUT
-   try {
-  // Start loading toast
-  const loadingToast = toast.loading("Redirecting to secure payment...");
-
-  const checkoutRequest: StripeCheckoutRequest = {
-    cartItems: cartItems.map(item => ({
-      id: item.id,
-      title: item.title,
-      name: item.name,
-      subtitle: item.subtitle,
-      image: item.image,
-      price: item.price,
-      quantity: item.quantity,
-    })),
-    customerEmail,
-    orderNumber,
-     metadata: {
-    sessionId: sessionId,
-    buyInOneClick: buyInOneClick.toString(),
-    firstName: shippingFormData.firstName,
-    lastName: shippingFormData.lastName,
-    address: shippingFormData.address,
-    apartment: shippingFormData.apartment,
-    city: shippingFormData.city,
-    state: shippingFormData.state,
-    zipCode: shippingFormData.zipCode,
-    country: shippingFormData.country,
-  },
-};
+      // NOW REDIRECT TO STRIPE CHECKOUT
+      try {
+        // Start loading toast
+        const loadingToast = toast.loading("Redirecting to secure payment...");
 
 
-  const response = await fetch('/api-2/checkout', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(checkoutRequest),
-  });
+        // const checkoutRequest: StripeCheckoutRequest = {
+        //   cartItems: cartItems.map((item) => ({
+        //     id: item.id,
+        //     title: item.title,
+        //     name: item.name,
+        //     subtitle: item.subtitle,
+        //     image: item.image,
+        //     price: item.price,
+        //     quantity: item.quantity,
+        //   })),
+        //   customerEmail,
+        //   orderNumber,
+        //   metadata: {
+        //     sessionId: sessionId,
+        //     buyInOneClick: buyInOneClick.toString(),
+        //   },
+        // };
 
-  // Handle non-200 responses
-  if (!response.ok) {
-    toast.dismiss(loadingToast);
-    throw new Error(`Payment request failed (status: ${response.status})`);
-  }
+              const checkoutRequest: StripeCheckoutRequest = {
+                cartItems: cartItems.map(item => ({
+                  id: item.id,
+                  title: item.title,
+                  name: item.name,
+                  subtitle: item.subtitle,
+                  image: item.image,
+                  price: item.price,
+                  quantity: item.quantity,
+                })),
+                customerEmail,
+                orderNumber,
+                metadata: {
+                sessionId: sessionId,
+                buyInOneClick: buyInOneClick.toString(),
+                firstName: shippingFormData.firstName,
+                lastName: shippingFormData.lastName,
+                address: shippingFormData.address,
+                apartment: shippingFormData.apartment,
+                city: shippingFormData.city,
+                state: shippingFormData.state,
+                zipCode: shippingFormData.zipCode,
+                country: shippingFormData.country,
+              },
+            };
 
-  const data: StripeCheckoutResponse = await response.json();
 
-  // Always dismiss loading toast once response is received
-  toast.dismiss(loadingToast);
 
-  // Handle Stripe errors
-  if (data.error) {
-    toast.error(data.error);
-    return;
-  }
+        const response = await fetch("/api-2/checkout", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(checkoutRequest),
+        });
 
-  // Redirect to Stripe Checkout page
-  if (data.url) {
-    toast.success("Redirecting to secure Stripe checkout...");
-    window.location.href = data.url;
-    return;
-  }
+        // Handle non-200 responses
+        if (!response.ok) {
+          toast.dismiss(loadingToast);
+          throw new Error(
+            `Payment request failed (status: ${response.status})`
+          );
+        }
 
-  // Fallback error
-  toast.error("Failed to create checkout session. Please try again.");
+        const data: StripeCheckoutResponse = await response.json();
 
-} catch (error: any) {
-  // Catch network or logic errors
-  console.error("Error processing payment:", error);
-  toast.dismiss(); // Ensure no loading toasts remain
-  toast.error(error?.message || "Something went wrong. Please try again.");
-}
+        // Always dismiss loading toast once response is received
+        toast.dismiss(loadingToast);
+
+        // Handle Stripe errors
+        if (data.error) {
+          toast.error(data.error);
+          return;
+        }
+
+        // Redirect to Stripe Checkout page
+        if (data.url) {
+          toast.success("Redirecting to secure Stripe checkout...");
+          window.location.href = data.url;
+          return;
+        }
+
+        // Fallback error
+        toast.error("Failed to create checkout session. Please try again.");
+      } catch (error: any) {
+        // Catch network or logic errors
+        console.error("Error processing payment:", error);
+        toast.dismiss(); // Ensure no loading toasts remain
+        toast.error(
+          error?.message || "Something went wrong. Please try again."
+        );
+      }
     }
-    
   };
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
 
@@ -989,7 +1011,7 @@ useEffect(() => {
     let error = "";
     const country = billingFormData.country;
 
-    switch (field) {
+    switch (field) {                
       case "firstName":
       case "lastName":
       case "city":
@@ -1203,89 +1225,91 @@ useEffect(() => {
 
   // OTP Functions
   const sendOtp = async () => {
-    if (!shippingFormData.phone)
-      return toast.error("Enter phone number first!");
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
 
-    // Remove all non-digit characters
-    const digits = shippingFormData.phone.replace(/\D/g, "");
-    // Add +91 for India (adjust if needed)
-    let phoneNumber: string;
-    let isIndianNumber = false;
-    if (digits.length === 10 && /^[6-9]/.test(digits)) {
-      // Potential Indian number
-      phoneNumber = `+91${digits}`;
-      isIndianNumber = true;
-    } else if (digits.length === 10) {
-      // US number
-      phoneNumber = `+1${digits}`;
+  // Remove all non-digit characters
+  const digits = shippingFormData.phone.replace(/\D/g, "");
+  let phoneNumber: string;
+  let isIndianNumber = false;
+
+  if (digits.length !== 10) {
+    return toast.error("Enter a valid 10-digit phone number");
+  }
+
+  // Check if it's a known Indian test number (by checking against the list with +91 prefix)
+  const potentialIndianNumber = `+91${digits}`;
+  if (INDIAN_TEST_NUMBERS.includes(potentialIndianNumber)) {
+    phoneNumber = potentialIndianNumber;
+    isIndianNumber = true;
+  } else {
+    // Default to US number
+    phoneNumber = `+1${digits}`;
+  }
+
+  try {
+    // Track OTP attempt in Redis
+    const attemptResult = await trackOtpAttempt(phoneNumber);
+    if (!attemptResult.success) {
+      return toast.error(attemptResult.error || "Too many OTP attempts");
+    }
+
+    const res = await fetch("/api-2/send-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber }), // match backend
+    });
+
+    const data = await res.json();
+
+    if (data.status === "pending") {
+      setOtpSent(true);
+      toast.success("OTP sent successfully!");
     } else {
-      return toast.error("Enter a valid 10-digit phone number");
+      toast.error(data.message || "Failed to send OTP");
     }
+  } catch (err) {
+    toast.error("Failed to send OTP. Check server logs.");
+    console.error(err);
+  }
+};
 
-    if (isIndianNumber && !INDIAN_TEST_NUMBERS.includes(phoneNumber)) {
-      return toast.error(
-        "Only US numbers and specific test Indian numbers are allowed"
-      );
-    }
+const verifyOtp = async () => {
+  if (!shippingFormData.phone) return toast.error("Enter phone number first!");
+  if (!otp) return toast.error("Enter OTP first!");
 
-    try {
-      // Track OTP attempt in Redis
-      const attemptResult = await trackOtpAttempt(phoneNumber);
-      if (!attemptResult.success) {
-        return toast.error(attemptResult.error || "Too many OTP attempts");
-      }
+  const digits = shippingFormData.phone.replace(/\D/g, "");
+  let phoneNumber: string;
 
-      const res = await fetch("/api-2/send-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber }), // match backend
-      });
+  if (digits.length !== 10) {
+    return toast.error("Enter a valid 10-digit phone number");
+  }
 
-      const data = await res.json();
+  // Check if it's a known Indian test number
+  const potentialIndianNumber = `+91${digits}`;
+  if (INDIAN_TEST_NUMBERS.includes(potentialIndianNumber)) {
+    phoneNumber = potentialIndianNumber;
+  } else {
+    phoneNumber = `+1${digits}`;
+  }
 
-      if (data.status === "pending") {
-        setOtpSent(true);
-        toast.success("OTP sent successfully!");
-      } else {
-        toast.error(data.message || "Failed to send OTP");
-      }
-    } catch (err) {
-      toast.error("Failed to send OTP. Check server logs.");
-      console.error(err);
-    }
-  };
+  try {
+    const res = await fetch("/api-2/verify-otp", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ phoneNumber, code: otp }),
+    });
 
-  const verifyOtp = async () => {
-    if (!shippingFormData.phone)
-      return toast.error("Enter phone number first!");
-    if (!otp) return toast.error("Enter OTP first!");
+    const data = await res.json();
+    if (data.success) {
+      setIsVerified(true);
+      toast.success("Phone verified!");
+    } else toast.error(data.message);
+  } catch (err) {
+    toast.error("Failed to verify OTP. Check server logs.");
+    console.error(err);
+  }
+};
 
-    // Remove all non-digit characters
-    const digits = shippingFormData.phone.replace(/\D/g, "");
-    let phoneNumber: string;
-    if (digits.length === 10 && /^[6-9]/.test(digits)) {
-      phoneNumber = `+91${digits}`;
-    } else {
-      phoneNumber = `+1${digits}`;
-    } // SAME format as sendOtp
-
-    try {
-      const res = await fetch("/api-2/verify-otp", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phoneNumber, code: otp }),
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setIsVerified(true);
-        toast.success("Phone verified!");
-      } else toast.error(data.message);
-    } catch (err) {
-      toast.error("Failed to verify OTP. Check server logs.");
-      console.error(err);
-    }
-  };
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
@@ -1607,7 +1631,7 @@ useEffect(() => {
                       {/* Success message */}
                       {isVerified && (
                         <p className="mt-2 text-green-400 font-exo2 text-sm">
-                          Phone verified successfully 
+                          {/* Phone verified successfully */}
                         </p>
                       )}
 
@@ -2252,6 +2276,7 @@ useEffect(() => {
                     },
 
                   },
+                  
                 }}
               >
                 <StripePaymentForm
@@ -2281,7 +2306,7 @@ useEffect(() => {
               </div>
             </div>
           </div>
-        </div>
+          </div>
       </div>
     </div>
   );

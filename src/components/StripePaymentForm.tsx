@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -41,8 +40,18 @@ export default function StripePaymentForm({
         elements,
         confirmParams: {
           return_url: `${window.location.origin}/account/thankYou?order=${orderNumber}`,
+
+          // REQUIRED because you are hiding billing fields
+          payment_method_data: {
+            billing_details: {
+              address: {
+                country: 'US',
+                postal_code: '00000',
+              },
+            },
+          },
         },
-        redirect: 'if_required', // Only redirect if required by payment method
+        redirect: 'if_required',
       });
 
       if (error) {
@@ -63,17 +72,37 @@ export default function StripePaymentForm({
   return (
     <form onSubmit={handleSubmit} className="space-y-6 border-[#252525E5] p-6 bg-[#252525E5] ">
 
-
       <PaymentElement
         options={{
           layout: 'tabs',
-          wallets: {
-            applePay: 'auto',
-            googlePay: 'auto',
+
+          // REQUIRED FIX FOR GOOGLE PAY + APPLE PAY
+        wallets: {
+              applePay: "auto",
+              googlePay: "auto",
+            } ,
+
+          // You kept billing fields hidden, leaving as is
+          fields: {
+            billingDetails: {
+              address: {
+                country: 'never',
+                postalCode: 'never',
+              },
+            },
+          },
+
+          // Keep your default country
+          defaultValues: {
+            billingDetails: {
+              address: {
+                country: 'US',
+              },
+            },
           },
         }}
       />
-      
+
       <button
         type="submit"
         disabled={!stripe || isProcessing}

@@ -16,6 +16,8 @@ export async function POST(
       metadata = {},
     }: CreatePaymentIntentRequest = await request.json();
 
+    console.log(' Creating Payment Intent:', { amount, customerEmail, orderNumber });
+
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Valid amount is required" },
@@ -32,7 +34,7 @@ export async function POST(
 
     // Create PaymentIntent with automatic payment methods
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount, // Convert dollars to cents
+      amount: Math.round(amount * 100), // Convert dollars to cents
       currency: "usd",
       receipt_email: customerEmail,
       metadata: {
@@ -44,12 +46,19 @@ export async function POST(
         }`.trim(),
         customerAddress: `${metadata.address || ""}, ${metadata.city || ""}, ${
           metadata.state || ""
-        }, ${metadata.zipCode || ""}, ${metadata.country || ""}`,
+        }, ${metadata.zipCode || ""}, US`,
       },
+      
+      //  THIS IS KEY - Enables Card, Apple Pay, Google Pay, Link
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never", // Keep users on your site
+        // allow_redirects: "never", // Keep users on your site
       },
+       payment_method_options: {
+          card: {
+            request_three_d_secure: "automatic",
+          },
+        },
       shipping: metadata.address
         ? {
             name: `${metadata.firstName || ""} ${
@@ -61,7 +70,7 @@ export async function POST(
               city: metadata.city || "",
               state: metadata.state || "",
               postal_code: metadata.zipCode || "",
-              country: metadata.country || "US",
+              country: "US",
             },
           }
         : undefined,
@@ -71,12 +80,18 @@ export async function POST(
       throw new Error("Failed to create payment intent");
     }
 
+    console.log(' Payment Intent created:', {
+      id: paymentIntent.id,
+      amount: paymentIntent.amount,
+      payment_method_types: paymentIntent.payment_method_types,
+    });
+
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
     } as CreatePaymentIntentResponse);
   } catch (error: any) {
-    console.error("Create PaymentIntent error:", error);
+    console.error(" Create PaymentIntent error:", error);
     return NextResponse.json(
       { error: error?.message || "Error creating payment intent" },
       { status: 500 }

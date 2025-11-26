@@ -19,7 +19,8 @@ export async function POST(
 
     const origin = request.headers.get('origin') || 'http://localhost:3000';
 
-    // ✅ Fix image URLs
+
+    //  Fix image URLs
     const lineItems = cartItems.map((item) => {
       let imageUrl = item.image || '';
       if (imageUrl && !imageUrl.startsWith('http')) {
@@ -40,7 +41,7 @@ export async function POST(
       };
     });
 
-    // ✅ Create Stripe Checkout Session with all payment options
+    //  Create Stripe Checkout Session with all payment options
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       mode: 'payment',

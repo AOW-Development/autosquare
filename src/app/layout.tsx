@@ -26,6 +26,8 @@ const audiowide = Audiowide({
 });
 import { getMetadataForPath } from "@/utils/metadata";
 import RouteChangeTracker from "@/components/RouteChangeTracker";
+import FCMProvider from "@/components/FCMProvider";
+import AbandonedCartNotifier from "@/components/AbandonedCartNotifier";
 
 // Generate metadata based on the current path
 export async function generateMetadata({
@@ -57,13 +59,13 @@ export default function RootLayout({
           name="google-site-verification"
           content="mOkOiIA-Z0XcSgcmnQZ4nfwfqDWnm8W4UinaW5fpf8I"
         />
-        <meta 
-        name="google-site-verification" 
-        content="cbWtFgAaDKGwqHjipxrO9D_8KrKucA6ZTzSbB4QMbJE" 
+        <meta
+          name="google-site-verification"
+          content="cbWtFgAaDKGwqHjipxrO9D_8KrKucA6ZTzSbB4QMbJE"
         />
- 
+
         {/* Google Tag Manager */}
-         <Script id="google-tag-manager" strategy="afterInteractive">
+        <Script id="google-tag-manager" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
           new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
           j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -72,7 +74,7 @@ export default function RootLayout({
         </Script>
         {/* End Google Tag Manager */}
 
-         {/* 
+        {/* 
             <script async src="https://www.googletagmanager.com/gtag/js?id=AW-17273467579"></script>
             <script
               dangerouslySetInnerHTML={{
@@ -86,10 +88,7 @@ export default function RootLayout({
             /> 
             */}
 
-
-        
-
-       <Script id="gtag-phone-conversion" strategy="afterInteractive">
+        <Script id="gtag-phone-conversion" strategy="afterInteractive">
           {`
             // ✅ Ensure gtag and dataLayer exist before using them
             window.dataLayer = window.dataLayer || [];
@@ -116,7 +115,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased">
         <Toaster position="top-center" />
-         
+
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe
@@ -127,10 +126,13 @@ export default function RootLayout({
           ></iframe>
         </noscript>
         {/* End Google Tag Manager (noscript) */}
-             <RouteChangeTracker />
-        <Header />
-        {children}
-        <Footer />
+        <RouteChangeTracker />
+        <FCMProvider>
+          <AbandonedCartNotifier />
+          <Header />
+          {children}
+          <Footer />
+        </FCMProvider>
       </body>
     </html>
   );

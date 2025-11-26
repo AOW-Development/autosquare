@@ -258,7 +258,7 @@ const handlePaymentSuccess = async (paymentIntentId: string) => {
   // Store data for Thank You page
   const orderData = {
     user,
-    payment: { paymentMethod: 'stripe_elements', paymentIntentId },
+    payment: { paymentMethod: 'stripe_elements', paymentIntentId, cardData },
      shipping: buyInOneClick ? shippingFormData : shippingInfo,
     billing: sameAsShipping 
       ? (buyInOneClick ? shippingFormData : shippingInfo)

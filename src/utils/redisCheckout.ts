@@ -4,6 +4,23 @@
  * ALL DATA STORED IN ONE SINGLE JSON OBJECT
  */
 
+// Helper function to get the base URL for API calls
+// Works in both client-side and server-side contexts
+const getBaseUrl = (): string => {
+  // Client-side: use relative URLs
+  if (typeof window !== "undefined") {
+    return "";
+  }
+
+  // Server-side: use absolute URL
+  // Try NEXT_PUBLIC_SITE_URL first, then fallback to localhost for development
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+  if (siteUrl) {
+    return siteUrl;
+  }
+  return "http://localhost:3000";
+};
+
 // Generate a unique session ID for the checkout
 export const generateSessionId = (): string => {
   if (typeof window !== "undefined") {
@@ -119,7 +136,8 @@ export const saveCheckoutData = async (
 ): Promise<boolean> => {
   try {
     const sid = sessionId || generateSessionId();
-    const response = await fetch("/api-2/redisStore", {
+    const baseUrl = getBaseUrl();
+    const response = await fetch(`${baseUrl}/api-2/redisStore`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -145,7 +163,8 @@ export const trackOtpAttempt = async (
   phoneNumber: string
 ): Promise<{ success: boolean; attempts?: number; error?: string }> => {
   try {
-    const response = await fetch("/api-2/redisStore", {
+    const baseUrl = getBaseUrl();
+    const response = await fetch(`${baseUrl}/api-2/redisStore`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -172,7 +191,10 @@ export const getCheckoutData = async (
 ): Promise<CheckoutData | null> => {
   try {
     const sid = sessionId || generateSessionId();
-    const response = await fetch(`/api-2/redisStore?sessionId=${sid}`);
+    const baseUrl = getBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api-2/redisStore?sessionId=${sid}`
+    );
     const result = await response.json();
     return result.data;
   } catch (error) {
@@ -184,7 +206,10 @@ export const getCheckoutData = async (
 // Get ALL users checkout data from Redis array
 export const getAllUsers = async (): Promise<CheckoutData[]> => {
   try {
-    const response = await fetch(`/api-2/redisStore?type=all&sessionId=temp`);
+    const baseUrl = getBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api-2/redisStore?type=all&sessionId=temp`
+    );
     const result = await response.json();
     return result.allUsers || [];
   } catch (error) {
@@ -199,8 +224,9 @@ export const getAllCheckoutData = getCheckoutData;
 // Get OTP attempts for a phone number
 export const getOtpAttempts = async (phoneNumber: string): Promise<number> => {
   try {
+    const baseUrl = getBaseUrl();
     const response = await fetch(
-      `/api-2/redisStore?phoneNumber=${encodeURIComponent(
+      `${baseUrl}/api-2/redisStore?phoneNumber=${encodeURIComponent(
         phoneNumber
       )}&type=otpAttempts`
     );
@@ -218,9 +244,13 @@ export const clearCheckoutData = async (
 ): Promise<boolean> => {
   try {
     const sid = sessionId || generateSessionId();
-    const response = await fetch(`/api-2/redisStore?sessionId=${sid}`, {
-      method: "DELETE",
-    });
+    const baseUrl = getBaseUrl();
+    const response = await fetch(
+      `${baseUrl}/api-2/redisStore?sessionId=${sid}`,
+      {
+        method: "DELETE",
+      }
+    );
     const result = await response.json();
 
     // Also clear local session ID
@@ -240,7 +270,8 @@ export const updateCheckoutData = async (
 ): Promise<boolean> => {
   try {
     const sid = sessionId || generateSessionId();
-    const response = await fetch("/api-2/redisStore", {
+    const baseUrl = getBaseUrl();
+    const response = await fetch(`${baseUrl}/api-2/redisStore`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

@@ -3,6 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "prebuild": "node scripts/inject-firebase-config.js",
+    "predev": "node scripts/inject-firebase-config.js",
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
@@ -19,6 +21,7 @@
     "country-state-city": "^3.2.1",
     "dotenv": "^17.2.2",
     "firebase": "^12.4.0",
+    "firebase-admin": "^13.0.1",
     "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
     "ioredis": "^5.8.2",

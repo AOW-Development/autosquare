@@ -21,9 +21,9 @@ export default function Checkout() {
   const { billingInfo, setBillingInfo } = useBillingStore();
   const { shippingInfo, setShippingInfo } = useShippingStore();
   const { items } = useCartStore();
-  const [otpSent, setOtpSent] = useState(false);
+  const [otpSent, setOtpSent] = useState(true);
   const [otp, setOtp] = useState("");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState(true);
   const [sessionId] = useState(() => generateSessionId());
 
   // Add this array at the top of your component (after state declarations)

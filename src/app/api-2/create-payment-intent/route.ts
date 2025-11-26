@@ -52,7 +52,7 @@ export async function POST(
       //  THIS IS KEY - Enables Card, Apple Pay, Google Pay, Link
       automatic_payment_methods: {
         enabled: true,
-        // allow_redirects: "never", // Keep users on your site
+        allow_redirects: "never", // Keep users on your site
       },
        payment_method_options: {
           card: {

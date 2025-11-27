@@ -26,8 +26,6 @@ export async function POST(request: NextRequest) {
       data.orderNumber, // Pass the order number from the request
     );
 
-  
-
     if (data.status === "failed") {
       const failedResult = await sendOrderFailedEmail(orderData);
       return NextResponse.json({

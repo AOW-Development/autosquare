@@ -16,6 +16,8 @@ export async function POST(
       metadata = {},
     }: CreatePaymentIntentRequest = await request.json();
 
+    console.log(' Creating Payment Intent:', { amount, customerEmail, orderNumber });
+
     if (!amount || amount <= 0) {
       return NextResponse.json(
         { error: "Valid amount is required" },
@@ -46,9 +48,11 @@ export async function POST(
           metadata.state || ""
         }, ${metadata.zipCode || ""}, US`,
       },
+      
+      //  THIS IS KEY - Enables Card, Apple Pay, Google Pay, Link
       automatic_payment_methods: {
         enabled: true,
-        allow_redirects: "never", // Keep users on your site
+        // allow_redirects: "never", // Keep users on your site
       },
        payment_method_options: {
           card: {
@@ -76,12 +80,18 @@ export async function POST(
       throw new Error("Failed to create payment intent");
     }
 
+    console.log(' Payment Intent created:', {
+      id: paymentIntent.id,
+      amount: paymentIntent.amount,
+      payment_method_types: paymentIntent.payment_method_types,
+    });
+
     return NextResponse.json({
       clientSecret: paymentIntent.client_secret,
       paymentIntentId: paymentIntent.id,
     } as CreatePaymentIntentResponse);
   } catch (error: any) {
-    console.error("Create PaymentIntent error:", error);
+    console.error(" Create PaymentIntent error:", error);
     return NextResponse.json(
       { error: error?.message || "Error creating payment intent" },
       { status: 500 }

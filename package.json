@@ -19,6 +19,7 @@
     "country-state-city": "^3.2.1",
     "dotenv": "^17.2.2",
     "firebase": "^12.4.0",
+    "firebase-admin": "^13.0.1",
     "framer-motion": "^12.23.22",
     "gsap": "^3.13.0",
     "ioredis": "^5.8.2",

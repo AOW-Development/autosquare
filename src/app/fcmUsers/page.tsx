@@ -612,7 +612,7 @@ export default function FCMUsersPage() {
             </div> */}
             <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
               <div className="text-2xl font-bold text-purple-600">
-                {analytics.totalNotifications}
+                {analytics.totalNotifications / 2}
               </div>
               <div className="text-xs text-slate-500">Notifications (7d)</div>
             </div>
@@ -626,7 +626,7 @@ export default function FCMUsersPage() {
               <div className="text-2xl font-bold text-emerald-600">
                 {/* {analytics.conversionRate}% */}
                 {(
-                  (analytics.totalClicks / analytics.totalNotifications) *
+                  (analytics.totalClicks / (analytics.totalNotifications / 2)) *
                     100 || 0
                 ).toFixed(2)}
                 %
@@ -692,7 +692,7 @@ export default function FCMUsersPage() {
                         <tr key={day.date}>
                           <td className="px-4 py-3 font-medium">{day.date}</td>
                           <td className="px-4 py-3 text-right text-purple-600">
-                            {day.notifications}
+                            {day.notifications / 2}
                           </td>
                           <td className="px-4 py-3 text-right text-cyan-600">
                             {day.clicks}

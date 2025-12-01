@@ -358,7 +358,7 @@ export default function CatalogPage() {
         setSelectedProductForVerify(null); // Clear the selected product
         setShowCartPopup(false); // Hide the success popup
         // router.push('/account/cart'); // Redirect to the specified checkout URL
-        window.location.href = '/account/cart'; // Redirect to the specified checkout URL
+        window.location.href = `/account/cart?make=${make}&model=${model}&year=${year}&part=${part}`; // Redirect to the specified checkout URL
     }, 100); 
   };
 
@@ -559,11 +559,22 @@ export default function CatalogPage() {
                       className="block cursor-pointer"
                       tabIndex={-1}
                     > */}
-                    <Link
+                    {/* <Link
                         href={`/product/engines?make=${make}&model=${model}&year=${year}&part=${part}&sku=${item.sku}`}
                         className="block cursor-pointer"
                         tabIndex={-1}
-                      >
+                      > */}
+                      <a
+                            href={`/product/engines?make=${make}&model=${model}&year=${year}&part=${part}&sku=${item.sku}`}
+                            className="block cursor-pointer"
+                            tabIndex={-1}
+                            onClick={(e) => {
+                              e.preventDefault();
+
+                              window.location.href = `/product/engines?make=${make}&model=${model}&year=${year}&part=${part}&sku=${item.sku}`;
+                            }}
+                          >
+
                       {/* Image container */}
                       <div
                         className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
@@ -625,7 +636,9 @@ export default function CatalogPage() {
                           {item.warranty || '90 Days Warranty'}
                         </p>
                       </div>
-                    </Link>
+                    {/* </Link> */}
+
+                    </a>
                     <div className="flex justify-between items-center mt-3 relative z-30">
                       {item.inStock ? (
                         <>

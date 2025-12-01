@@ -1,4 +1,3 @@
-
 "use client";
 
 import type React from "react";
@@ -2181,7 +2180,7 @@ const verifyOtp = async () => {
             {/* Payment Section - Stripe Elements */}
             {/* Payment Section - Stripe Elements */}
           <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full">
-            <div className="max-w-xl ml-0">
+            <div className="max-w-[600px] ml-0">
               <h2 className="text-2xl font-semibold mb-8 font-exo2">
                 Payment Information
               </h2>

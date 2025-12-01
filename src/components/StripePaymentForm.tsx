@@ -69,51 +69,106 @@ export default function StripePaymentForm({
     }
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6 border-[#252525E5] p-6 bg-[#252525E5] ">
+ return (
+ <form
+  onSubmit={handleSubmit}
+  className="rounded-xl bg-[#1f1f1f] border border-[#2e2e2e] p-6 sm:p-8 space-y-6"
+>
+  {/* HEADER */}
 
-      <PaymentElement
-        options={{
-          layout: 'tabs',
+  <div className="flex items-center justify-between space-y-0">
+    <div className="space-y-1">
+      <h2 className="text-xl sm:text-2xl font-semibold text-white font-exo2">
+        Secure payment
+      </h2>
+      <p className="text-base sm:text-lg text-gray-400 font-exo2">
+        Complete your purchase using a secure payment method.
+      </p>
+    </div>
+    <img
+      src="/stripe2.png"
+      alt="Stripe"
+      className="h-8 sm:h-12 opacity-95"
+    />
+  </div>
 
-          // REQUIRED FIX FOR GOOGLE PAY + APPLE PAY
+
+  {/* PAYMENT ELEMENT */}
+  <div className="rounded-lg bg-[#252525] border border-[#333] p-4">
+    <PaymentElement
+      options={{
+        layout: 'tabs',
         wallets: {
-              applePay: "auto",
-              googlePay: "auto",
-            } ,
-
-          // You kept billing fields hidden, leaving as is
-          fields: {
-            billingDetails: {
-              address: {
-                country: 'never',
-                postalCode: 'never',
-              },
+          applePay: 'auto',
+          googlePay: 'auto',
+        },
+        fields: {
+          billingDetails: {
+            address: {
+              country: 'never',
+              postalCode: 'never',
             },
           },
-
-          // Keep your default country
-          defaultValues: {
-            billingDetails: {
-              address: {
-                country: 'US',
-              },
+        },
+        defaultValues: {
+          billingDetails: {
+            address: {
+              country: 'US',
             },
           },
-        }}
-      />
+        },
+      }}
+    />
+  </div>
 
-      <button
-        type="submit"
-        disabled={!stripe || isProcessing}
-        className={`w-full py-3 sm:py-4 rounded-md font-exo2 text-lg sm:text-xl transition-colors ${
-          !stripe || isProcessing
-            ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
-            : 'bg-[#009AFF] text-white hover:bg-blue-500'
-        }`}
-      >
-        {isProcessing ? 'Processing...' : `Pay $${total.toFixed(2)}`}
-      </button>
-    </form>
-  );
+  {/* SECURITY INFO */}
+  <div className="flex items-start gap-2 text-sm text-gray-300 font-exo2">
+    <span className="mt-[2px]">🔒</span>
+          <p className="text-base sm:text-[16px] text-gray-200 font-exo2 leading-relaxed">
+        Payments are securely processed by{' '}
+        <span className="text-white font-semibold">Stripe</span> (PCI-DSS Level 1) with{' '}
+        <span className="font-medium">SSL encryption</span>.
+      </p>
+
+  </div>
+
+  {/* PAY BUTTON */}
+  <button
+    type="submit"
+    disabled={!stripe || isProcessing}
+    className={`w-full rounded-lg py-3.5 text-lg font-semibold font-exo2 transition-all ${
+      !stripe || isProcessing
+        ? 'bg-gray-600 text-gray-400 cursor-not-allowed'
+        : 'bg-[#009AFF] text-white hover:bg-[#007fe0]'
+    }`}
+  >
+    {isProcessing ? 'Processing payment…' : `Pay $${total.toFixed(2)}`}
+  </button>
+
+  {/* SUPPORT */}
+  <div className="text-center text-lg text-gray-300 font-exo2">
+    Need assistance?{' '}
+    <a
+      href="tel:18883382540"
+      className="text-[#009AFF] font-medium underline"
+    >
+      (888) 338-2540 {''}
+    </a>
+   - we’re here to help!  
+  </div>
+
+  {/* POLICY */}
+  <div className="text-center text-sm text-gray-400 font-exo2">
+    Free shipping · Easy returns ·{' '}
+    <a
+      href="/account/warrantyAndReturn"
+      className="text-[#009AFF] underline font-medium"
+    >
+      Warranty & return policy
+    </a>
+  </div>
+</form>
+
+);
+
 }

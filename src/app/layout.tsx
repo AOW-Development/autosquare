@@ -26,8 +26,8 @@ const audiowide = Audiowide({
 });
 import { getMetadataForPath } from "@/utils/metadata";
 import RouteChangeTracker from "@/components/RouteChangeTracker";
-import FCMProvider from "@/components/FCMProvider";
-import AbandonedCartNotifier from "@/components/AbandonedCartNotifier";
+// import FCMProvider from "@/components/FCMProvider";
+// import AbandonedCartNotifier from "@/components/AbandonedCartNotifier";
 
 // Generate metadata based on the current path
 export async function generateMetadata({
@@ -127,12 +127,12 @@ export default function RootLayout({
         </noscript>
         {/* End Google Tag Manager (noscript) */}
         <RouteChangeTracker />
-        <FCMProvider>
-          <AbandonedCartNotifier />
+        {/* <FCMProvider> */}
+          {/* <AbandonedCartNotifier /> */}
           <Header />
           {children}
           <Footer />
-        </FCMProvider>
+        {/* </FCMProvider> */}
       </body>
     </html>
   );

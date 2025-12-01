@@ -74,8 +74,11 @@ export default function EngineProductClient() {
   const [selectedProductForVerify, setSelectedProductForVerify] = useState<
     any | null
   >(null);
-
-  useEffect(() => {
+ const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+ const [mediaLoading, setMediaLoading] = useState<boolean>(false);
+ 
+ const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+useEffect(() => {
     if (showPopup) {
       const scrollY = window.scrollY;
       document.body.style.position = "fixed";
@@ -272,6 +275,47 @@ export default function EngineProductClient() {
   }, [make, model, year, part, sku, API_BASE]);
 
   useEffect(() => {
+    if (!selectedProduct?.media?.length) {
+      setMediaUrls([]);
+      setMediaLoading(false);
+      setImageLoaded(false);
+      return;
+    }
+
+    setMediaLoading(true);
+    setImageLoaded(false);
+    (async() => {
+      try {
+        const urls = await Promise.all(
+          (selectedProduct.media as string []).map((key) => getPresignedUrl(key))
+        );
+        setMediaUrls(urls);
+        
+      } catch (error) {
+        console.error("Error fetching media URLs:", error);
+        setMediaUrls([]);
+      }finally {
+        setMediaLoading(false);
+      }
+  })();
+
+  }, [selectedProduct]);
+
+
+  const getPresignedUrl = async (key: string): Promise<string> => {
+  //   GET /api/s3/presigned?key=<url‑encoded-key>
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(
+      key
+    )}`
+  );
+  if (!res.ok) throw new Error(`Presign failed for ${key}`);
+  const data = await res.json();               // { url: string }
+  return data.url;
+};
+
+
+  useEffect(() => {
     if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
       return;
     const group = groupedVariants.find(
@@ -347,12 +391,64 @@ export default function EngineProductClient() {
       setSelectedProductForVerify(null);
       setShowCartPopup(false);
       router.push("/account/cart");
-      window.location.href = "/account/cart";
+      window.location.href = `/account/cart?make=${selectedProduct.make}&model=${selectedProduct.model}&year=${selectedProduct.year}&part=${selectedProduct.part}`;
     }, 100);
   };
 
+
+  useEffect(() => {
+  if (!selectedProduct) return;
+
+  // Ensure dataLayer exists
+  (window as any).dataLayer = (window as any).dataLayer || [];
+
+  (window as any).dataLayer.push({
+    event: "product_view", // or "view_item" if using GA4 standard
+    ecommerce: {
+      items: [
+        {
+          item_id: selectedProduct.sku,
+          item_name:
+            selectedProduct.title ||
+            `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
+              selectedProduct.year || ""
+            } ${selectedProduct.part || ""}`.trim(),
+          item_url: window.location.href,
+          price:
+            selectedProduct.discountedPrice ??
+            selectedProduct.actualprice ??
+            0,
+          item_category: selectedProduct.part || "",
+          item_category2:
+            groupedVariants.find(
+              (g) => g.subPart.id === selectedSubPartId
+            )?.subPart?.name || "",
+        },
+      ],
+    },
+  });
+}, [selectedProduct]);
+
+
   return (
     <>
+    <style jsx>{
+          `.spinner {
+          border: 3px solid rgba(255, 255, 255, 0.3);
+          border-top: 3px solid #fff;
+          border-radius: 50%;
+          width: 24px;
+          height: 24px;
+          animation: spin 0.8s linear infinite;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          }
+          @keyframes spin {
+            to { transform: rotate(360deg) translate(-50%, -50%); }
+          }`
+      }</style>
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}
@@ -417,7 +513,25 @@ export default function EngineProductClient() {
             <div className="flex flex-col md:flex-row gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
               <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
                 <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
-                  {part === "Engine" && (
+                  { mediaUrls.length > 0 ? (
+                    <>
+                      <Image
+                        src={mediaUrls[0]}
+                        alt={`${selectedProduct?.title || part } image`}
+                        width={250}
+                        height={160}
+                        className={`object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350 
+                          ${imageLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-200`}
+                        priority
+                        onLoadingComplete={() => setImageLoaded(true)}
+                        
+                      />  
+                      <span className="absolute bottom-2 right-2 text-xs text-gray-300">
+                          *Stock image
+                      </span>
+                    </>
+                  
+                  ) : part === "Engine" ? (
                     <>
                       <Image
                         src="/catalog/Engine 1.png"
@@ -431,8 +545,7 @@ export default function EngineProductClient() {
                         *Stock image
                       </span>
                     </>
-                  )}
-                  {part === "Transmission" && (
+                  ) : part === "Transmission" ? (
                     <>
                       <Image
                         src="/catalog/Trasmission_.png"
@@ -446,6 +559,9 @@ export default function EngineProductClient() {
                         *Stock image
                       </span>
                     </>
+                  ) : null}
+                   {(mediaLoading || (mediaUrls.length > 0 && !imageLoaded)) && (
+                    <div className="spinner" />
                   )}
                 </div>
               </div>

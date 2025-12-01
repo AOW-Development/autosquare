@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import Image from "next/image";
@@ -28,6 +28,7 @@ export default function Cart() {
   const removeItem = useCartStore((s) => s.removeItem);
   const isCartEmpty = cartItems.length === 0;
    const { items } = useCartStore()
+   const addToCartFiredRef = useRef(false);
 
   const total = cartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
@@ -43,6 +44,46 @@ export default function Cart() {
        window.location.href = "/account/checkout";
     }
   };
+
+useEffect(() => {
+  if (typeof window === "undefined") return;
+  if (!cartItems || cartItems.length === 0) return;
+
+  // prevent duplicate firing
+  if (addToCartFiredRef.current) return;
+  // let itemUrl=`/product/engines/?make=${cartItems[0].make}&model=${cartItems[0].model}&year=${cartItems[0].year}&part=${cartItems[0].part}`;
+  const urlParams = new URLSearchParams(window.location.search);
+  const make = urlParams.get("make") 
+  const model = urlParams.get("model")
+  const year = urlParams.get("year") 
+  const part = urlParams.get("part") 
+
+  const ecommerceItems = cartItems.map((item) => ({
+    item_id: item.id.toString(),          // GA4 requires string
+    item_name: item.title,
+    item_url: `https://partscentral.us/product/engines/?make=${make}&model=${model}&year=${year}&part=${part}`, 
+    price: item.price,
+    quantity: item.quantity,
+  }));
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "add_to_cart",
+    ecommerce: {
+      currency: "USD",
+      value: ecommerceItems.reduce(
+        (sum, item) => sum + item.price * item.quantity,
+        0
+      ),
+      items: ecommerceItems,
+    },
+  });
+
+  addToCartFiredRef.current = true;
+
+  console.log("✅ GA4 add_to_cart fired", ecommerceItems);
+}, [cartItems]);
+
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-8 pb-22">

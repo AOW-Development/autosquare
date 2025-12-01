@@ -253,12 +253,47 @@ export async function POST(req: NextRequest) {
       },
     };
 
+    // Generate notification ID for tracking
+    const notificationId = `notif_${Date.now()}_${Math.random()
+      .toString(36)
+      .substring(7)}`;
+
+    // Add notificationId to data for click tracking
+    message.data.notificationId = notificationId;
+
     // Send notification
     const response = await messaging.sendEachForMulticast(message);
+
+    // Track the notification in analytics
+    try {
+      const today = new Date().toISOString().split("T")[0];
+      const dailyNotifsKey = `fcm:daily:notifications:${today}`;
+      await redis.incr(dailyNotifsKey);
+      await redis.expire(dailyNotifsKey, 60 * 60 * 24 * 90); // 90 days
+
+      // Store notification details
+      const notifData = {
+        notificationId,
+        title,
+        body,
+        url: fullUrl,
+        sentAt: new Date().toISOString(),
+        targetType: sendToAll ? "all" : token ? "single" : "session",
+        targetCount: tokens.length,
+        successCount: response.successCount,
+        failureCount: response.failureCount,
+      };
+      const notifsKey = "fcm:notifications:sent";
+      await redis.lpush(notifsKey, JSON.stringify(notifData));
+      await redis.ltrim(notifsKey, 0, 499);
+    } catch (trackError) {
+      console.warn("Failed to track notification:", trackError);
+    }
 
     return NextResponse.json({
       success: true,
       message: "Notification sent",
+      notificationId,
       successCount: response.successCount,
       failureCount: response.failureCount,
       responses: response.responses,
@@ -296,9 +331,29 @@ export async function GET(req: NextRequest) {
     const usersArray = JSON.parse(existingData);
     const usersWithTokens = usersArray.filter((user: any) => user.fcmToken);
 
+    // Enrich user data with timestamp and url from fcm:token:{sessionId} keys
+    const enrichedUsers = await Promise.all(
+      usersWithTokens.map(async (user: any) => {
+        if (user.sessionId) {
+          const tokenKey = `fcm:token:${user.sessionId}`;
+          const tokenData = await redis.get(tokenKey);
+          if (tokenData) {
+            const parsed = JSON.parse(tokenData);
+            return {
+              ...user,
+              timestamp: user.timestamp || parsed.timestamp || parsed.updatedAt,
+              url: user.url || parsed.url,
+              userAgent: user.userAgent || parsed.userAgent,
+            };
+          }
+        }
+        return user;
+      })
+    );
+
     return NextResponse.json({
-      users: usersWithTokens,
-      count: usersWithTokens.length,
+      users: enrichedUsers,
+      count: enrichedUsers.length,
     });
   } catch (error: any) {
     console.error("Error retrieving users:", error);

@@ -487,6 +487,49 @@ export default function ThankYouPage() {
             );
             console.log(" Order created successfully - updated Redis");
 
+            // Track order completion in FCM analytics
+            try {
+              // Get sessionId from localStorage (FCM uses this) or use checkoutSessionId
+              const fcmSessionId =
+                localStorage.getItem("session_id") || checkoutSessionId;
+
+              if (fcmSessionId) {
+                // Check if user came from a notification click (check last 1 hour)
+                const recentClicksResponse = await fetch(
+                  `/api-2/fcm-analytics?type=clicks`
+                );
+                const clicksData = await recentClicksResponse.json();
+                const recentClicks = clicksData.clicks || [];
+
+                // Check if there's a click from this session in the last hour
+                const oneHourAgo = Date.now() - 60 * 60 * 1000;
+                const cameFromNotification = recentClicks.some((click: any) => {
+                  const clickTime = new Date(click.clickedAt).getTime();
+                  return (
+                    click.sessionId === fcmSessionId && clickTime > oneHourAgo
+                  );
+                });
+
+                // Track order completion
+                await fetch("/api-2/fcm-analytics", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    action: "trackOrderCompleted",
+                    data: {
+                      sessionId: fcmSessionId,
+                      orderNumber: orderNum,
+                      total: total,
+                      fromNotification: cameFromNotification,
+                    },
+                  }),
+                });
+                console.log("✅ Order completion tracked in FCM analytics");
+              }
+            } catch (trackError) {
+              console.warn("Failed to track order completion:", trackError);
+            }
+
             clearSessionId();
             console.log(" Order created successfully - updated Redis");
           }

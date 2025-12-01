@@ -70,12 +70,15 @@ export async function POST(req: NextRequest) {
     );
 
     if (userIndex !== -1) {
-      // Update existing user
+      // Update existing user with FCM token data including url and timestamp
       usersArray[userIndex] = {
         ...usersArray[userIndex],
         fcmToken: token,
         fcmTokenUpdatedAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
+        url: url || usersArray[userIndex].url,
+        timestamp: timestamp || new Date().toISOString(),
+        userAgent: userAgent || usersArray[userIndex].userAgent,
       };
     } else {
       // Create new anonymous user entry
@@ -84,6 +87,7 @@ export async function POST(req: NextRequest) {
         fcmToken: token,
         userAgent,
         url,
+        timestamp: timestamp || new Date().toISOString(),
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         isAnonymous: true,

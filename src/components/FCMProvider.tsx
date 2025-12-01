@@ -5,6 +5,29 @@ import { useFCM } from "@/hooks/useFCM";
 import { useCartStore } from "@/store/cartStore";
 import { generateSessionId } from "@/utils/redisCheckout";
 
+/**
+ * Check if the current device is iOS (iPhone, iPad, iPod)
+ */
+const isIOSDevice = (): boolean => {
+  if (typeof window === "undefined" || typeof navigator === "undefined") {
+    return false;
+  }
+  const userAgent = navigator.userAgent || navigator.vendor || "";
+  return /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+};
+
+/**
+ * Check if the app is running as a PWA (added to home screen)
+ * iOS only supports Web Push for PWAs
+ */
+const isRunningAsPWA = (): boolean => {
+  if (typeof window === "undefined") return false;
+  return (
+    window.matchMedia("(display-mode: standalone)").matches ||
+    (window.navigator as any).standalone === true
+  );
+};
+
 export default function FCMProvider({
   children,
 }: {
@@ -15,6 +38,16 @@ export default function FCMProvider({
 
   useEffect(() => {
     if (typeof window === "undefined") return;
+
+    // Skip FCM initialization on iOS Safari (non-PWA) - not supported
+    if (isIOSDevice() && !isRunningAsPWA()) {
+      console.log(
+        "📱 iOS Safari detected (non-PWA) - FCM push notifications not supported. Add to home screen to enable."
+      );
+      // Mark that user has visited anyway
+      localStorage.setItem("hasVisitedBefore", "true");
+      return;
+    }
 
     // Register service worker and wait for it to be ready
     const registerServiceWorker =
@@ -27,18 +60,28 @@ export default function FCMProvider({
         try {
           // First, verify the service worker file is accessible
           try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
             const response = await fetch("/firebase-messaging-sw.js", {
               method: "HEAD",
               cache: "no-cache",
+              signal: controller.signal,
             });
+            clearTimeout(timeoutId);
+
             if (!response.ok) {
               throw new Error(
                 `Service worker file not found: ${response.status}`
               );
             }
             console.log("✅ Service worker file is accessible");
-          } catch (error) {
-            console.error("❌ Service worker file not accessible:", error);
+          } catch (error: any) {
+            if (error.name === "AbortError") {
+              console.error("❌ Service worker file check timed out");
+            } else {
+              console.error("❌ Service worker file not accessible:", error);
+            }
             return null;
           }
 

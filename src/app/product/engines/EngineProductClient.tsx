@@ -391,9 +391,44 @@ useEffect(() => {
       setSelectedProductForVerify(null);
       setShowCartPopup(false);
       router.push("/account/cart");
-      window.location.href = "/account/cart";
+      window.location.href = `/account/cart?make=${selectedProduct.make}&model=${selectedProduct.model}&year=${selectedProduct.year}&part=${selectedProduct.part}`;
     }, 100);
   };
+
+
+  useEffect(() => {
+  if (!selectedProduct) return;
+
+  // Ensure dataLayer exists
+  (window as any).dataLayer = (window as any).dataLayer || [];
+
+  (window as any).dataLayer.push({
+    event: "product_view", // or "view_item" if using GA4 standard
+    ecommerce: {
+      items: [
+        {
+          item_id: selectedProduct.sku,
+          item_name:
+            selectedProduct.title ||
+            `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
+              selectedProduct.year || ""
+            } ${selectedProduct.part || ""}`.trim(),
+          item_url: window.location.href,
+          price:
+            selectedProduct.discountedPrice ??
+            selectedProduct.actualprice ??
+            0,
+          item_category: selectedProduct.part || "",
+          item_category2:
+            groupedVariants.find(
+              (g) => g.subPart.id === selectedSubPartId
+            )?.subPart?.name || "",
+        },
+      ],
+    },
+  });
+}, [selectedProduct]);
+
 
   return (
     <>

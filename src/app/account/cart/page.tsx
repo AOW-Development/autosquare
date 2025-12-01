@@ -51,11 +51,17 @@ useEffect(() => {
 
   // prevent duplicate firing
   if (addToCartFiredRef.current) return;
+  // let itemUrl=`/product/engines/?make=${cartItems[0].make}&model=${cartItems[0].model}&year=${cartItems[0].year}&part=${cartItems[0].part}`;
+  const urlParams = new URLSearchParams(window.location.search);
+  const make = urlParams.get("make") 
+  const model = urlParams.get("model")
+  const year = urlParams.get("year") 
+  const part = urlParams.get("part") 
 
   const ecommerceItems = cartItems.map((item) => ({
     item_id: item.id.toString(),          // GA4 requires string
     item_name: item.title,
-    item_url: window.location.href, 
+    item_url: `https://partscentral.us/product/engines/?make=${make}&model=${model}&year=${year}&part=${part}`, 
     price: item.price,
     quantity: item.quantity,
   }));

@@ -594,6 +594,37 @@ const verifyOtp = async () => {
     toast.success("Billing details saved successfully!");
   };
 
+  const cartItemsArray = cartItems.map((item) => ({
+  item_id: item.id,
+  item_name: item.title || item.name,
+  item_url: typeof window !== "undefined" ? window.location.href : "",
+  price: item.price,
+  quantity: item.quantity,
+}));
+
+
+useEffect(() => {
+  if (
+    typeof window === "undefined" ||
+    !cartItems.length ||
+    (window as any).__beginCheckoutFired
+  ) {
+    return;
+  }
+
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "begin_checkout",
+    ecommerce: {
+      items: cartItemsArray,
+    },
+  });
+
+  // ✅ Prevent duplicate firing
+  (window as any).__beginCheckoutFired = true;
+}, [cartItemsArray, cartItems.length]);
+
+
   return (
     <div className="min-h-screen bg-[#091B33] text-[#FFFFFF] pt-16 md:pt-14 pb-22 overflow-hidden ">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 py-10">

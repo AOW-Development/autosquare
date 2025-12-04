@@ -159,7 +159,31 @@ export default function PayMethod() {
     state: "",
     zipCode: "",
   });
+const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
+  window.dataLayer = window.dataLayer || [];
+  
+  const items = cartItems.map((item, index) => ({
+    item_id: item.id || `item_${index}`,
+    item_name: item.title || item.name || 'Unknown Item',
+    item_category: item.title?.includes('Transmission') ? 'Transmissions' : 'Engines',
+    item_variant: item.subtitle || '',
+    price: item.price,
+    quantity: item.quantity,
+    index: index
+  }));
 
+  window.dataLayer.push({
+    event: 'begin_payment',
+    ecommerce: {
+      currency: 'USD',
+      value: total,
+      payment_type: 'card',
+      items: items
+    }
+  });
+
+  console.log('✅ GA4 begin_payment event pushed', { items, total });
+};
 
  const createPaymentIntent = async () => {
   if (isLoadingPayment || clientSecret) return; // Prevent duplicate calls
@@ -225,6 +249,7 @@ export default function PayMethod() {
     setClientSecret(data.clientSecret);
     setPaymentIntentId(data.paymentIntentId);
     toast.success('Ready to accept payment');
+     pushBeginPaymentEvent(cartItems, total);
   } catch (error: any) {
     console.error('Failed to initialize payment:', error);
     toast.error('Failed to initialize payment. Please try again.');

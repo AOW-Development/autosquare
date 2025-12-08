@@ -159,10 +159,6 @@ export default function PayMethod() {
     state: "",
     zipCode: "",
   });
-
-
-  // Add this around line 150, after all your useState declarations
-
 const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
   window.dataLayer = window.dataLayer || [];
   
@@ -188,7 +184,6 @@ const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
 
   console.log('✅ GA4 begin_payment event pushed', { items, total });
 };
-
 
  const createPaymentIntent = async () => {
   if (isLoadingPayment || clientSecret) return; // Prevent duplicate calls
@@ -254,7 +249,7 @@ const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
     setClientSecret(data.clientSecret);
     setPaymentIntentId(data.paymentIntentId);
     toast.success('Ready to accept payment');
-    pushBeginPaymentEvent(cartItems, total);
+     pushBeginPaymentEvent(cartItems, total);
   } catch (error: any) {
     console.error('Failed to initialize payment:', error);
     toast.error('Failed to initialize payment. Please try again.');

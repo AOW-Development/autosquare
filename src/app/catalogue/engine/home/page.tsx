@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // IMPORTING useRouter ALONGSIDE useSearchParams
-import { useSearchParams, useRouter } from 'next/navigation'; 
+import { useSearchParams, useRouter } from "next/navigation";
 import ShopByVehicle from "@/components/shopByVehicle";
 import EngineFilterSidebar from "@/components/EngineFilterSidebar";
 import { useCartStore } from "@/store/cartStore";
@@ -35,7 +35,7 @@ interface Product {
   Availability: string | null;
   warranty: string | null;
   categoryId: number | null;
-  images: any[]; 
+  images: any[];
   inventory: any | null;
   subParts: SubPart[];
   subPart?: SubPart;
@@ -67,39 +67,37 @@ const accordionData = [
 ];
 
 export default function CatalogPage() {
-
-  
   // --- Initialize Router ---
-  const router = useRouter(); 
-  
+  const router = useRouter();
+
   // --- SubPart Filter State ---
-  const [subPartsList, setSubPartsList] = useState<SubPart[]>([]); 
-  const [subPartFilter, setSubPartFilter] = useState<number | null>(null); 
+  const [subPartsList, setSubPartsList] = useState<SubPart[]>([]);
+  const [subPartFilter, setSubPartFilter] = useState<number | null>(null);
 
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // showCartPopup will now be used to display the success message BEFORE redirecting, 
+  // showCartPopup will now be used to display the success message BEFORE redirecting,
   // though typically in this flow, redirection happens immediately.
-  const [showCartPopup, setShowCartPopup] = useState(false); 
+  const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCartIdx, setInCartIdx] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-  
-  const searchParams = useSearchParams();
-  const make = searchParams.get('make');
-  const model = searchParams.get('model');
-  const year = searchParams.get('year');
-  const part = searchParams.get('part');
-  const subPartId = searchParams.get('subPartId');
-  const subPartParam = searchParams.get("subPartFilter")
 
-   useEffect(() => {
+  const searchParams = useSearchParams();
+  const make = searchParams.get("make");
+  const model = searchParams.get("model");
+  const year = searchParams.get("year");
+  const part = searchParams.get("part");
+  const subPartId = searchParams.get("subPartId");
+  const subPartParam = searchParams.get("subPartFilter");
+
+  useEffect(() => {
     if (subPartParam) {
-      setSubPartFilter(Number(subPartParam)) // preselect based on query
+      setSubPartFilter(Number(subPartParam)); // preselect based on query
     }
-  }, [subPartParam])
+  }, [subPartParam]);
 
   // useEffect(() => {
   //   if (make && model && year && part) {
@@ -112,7 +110,8 @@ export default function CatalogPage() {
 
   // --- Verify Part Popup State ---
   const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [selectedProductForVerify, setSelectedProductForVerify] = useState<Product | null>(null); 
+  const [selectedProductForVerify, setSelectedProductForVerify] =
+    useState<Product | null>(null);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -125,14 +124,19 @@ export default function CatalogPage() {
 
   useEffect(() => {
     setSubPartFilter(null);
-    setCurrentPage(1); // Reset pagination  
-    
+    setCurrentPage(1); // Reset pagination
+
     if (make && model && year && part) {
       const fetchProducts = async () => {
         try {
           setLoading(true);
-          const response = await getGroupedProducts({ make, model, year, part });
-          
+          const response = await getGroupedProducts({
+            make,
+            model,
+            year,
+            part,
+          });
+
           interface IVariant {
             id: number;
             sku: string;
@@ -141,7 +145,16 @@ export default function CatalogPage() {
             discountedPrice?: number | null;
             inStock: boolean;
             productId?: number;
-            product: { images: any[]; description: string | null; id: number; sku: string; title: string; price: number; modelYearId: number; partTypeId: number; }; // Add necessary fields
+            product: {
+              images: any[];
+              description: string | null;
+              id: number;
+              sku: string;
+              title: string;
+              price: number;
+              modelYearId: number;
+              partTypeId: number;
+            }; // Add necessary fields
             make: string;
             model: string;
             modelYear: string;
@@ -157,48 +170,51 @@ export default function CatalogPage() {
             variants: IVariant[];
           }
 
-          const flattenedProducts: Product[] = response.data.groupedVariants.flatMap((group: IGroupedVariant) => 
-            group.variants.map((variant: IVariant) => ({
-              // Map IVariant to Product interface fields
-              id: variant.product.id, // Using product ID for main ID
-              sku: variant.sku,
-              title: variant.title,
-              price: variant.product.price,
-              modelYearId: variant.product.modelYearId,
-              partTypeId: variant.product.partTypeId,
-              inStock: variant.inStock,
-              description: variant.product.description,
-              actualprice: variant.actualprice || variant.product.price,
-              discountedPrice: variant.discountedPrice || null,
-              status: null, // Assuming default or fetch from API
-              miles: variant.miles,
-              specifications:variant.specification || null,
-              Availability: null, // Assuming default or fetch from API
-              warranty: null, // Assuming default or fetch from API
-              categoryId: null, // Assuming default or fetch from API
-              images: variant.product.images || [],
-              inventory: null, // Assuming default or fetch from API
-              subParts: [group.subPart], // Single subPart from group
-              subPart: group.subPart,
-              // Add convenience fields
-              make: response.data.make,
-              model: response.data.model,
-              modelYear: response.data.year,
-              part: response.data.part,
-              partType: group.subPart?.name || null,
-            }))
-          );
-          
+          const flattenedProducts: Product[] =
+            response.data.groupedVariants.flatMap((group: IGroupedVariant) =>
+              group.variants.map((variant: IVariant) => ({
+                // Map IVariant to Product interface fields
+                id: variant.product.id, // Using product ID for main ID
+                sku: variant.sku,
+                title: variant.title,
+                price: variant.product.price,
+                modelYearId: variant.product.modelYearId,
+                partTypeId: variant.product.partTypeId,
+                inStock: variant.inStock,
+                description: variant.product.description,
+                actualprice: variant.actualprice || variant.product.price,
+                discountedPrice: variant.discountedPrice || null,
+                status: null, // Assuming default or fetch from API
+                miles: variant.miles,
+                specifications: variant.specification || null,
+                Availability: null, // Assuming default or fetch from API
+                warranty: null, // Assuming default or fetch from API
+                categoryId: null, // Assuming default or fetch from API
+                images: variant.product.images || [],
+                inventory: null, // Assuming default or fetch from API
+                subParts: [group.subPart], // Single subPart from group
+                subPart: group.subPart,
+                // Add convenience fields
+                make: response.data.make,
+                model: response.data.model,
+                modelYear: response.data.year,
+                part: response.data.part,
+                partType: group.subPart?.name || null,
+              }))
+            );
+
           const dedupedSubParts = Array.from(
             new Map(
-              (response.data.groupedVariants || []).map((g: IGroupedVariant) => [g.subPart.id, g.subPart])
+              (response.data.groupedVariants || []).map(
+                (g: IGroupedVariant) => [g.subPart.id, g.subPart]
+              )
             ).values()
           );
-          setSubPartsList(dedupedSubParts as SubPart[]); 
-          setProducts(flattenedProducts); 
+          setSubPartsList(dedupedSubParts as SubPart[]);
+          setProducts(flattenedProducts);
           setError(null);
         } catch (err) {
-          setError('Failed to fetch products. Please try again later.');
+          setError("Failed to fetch products. Please try again later.");
           console.error(err);
         } finally {
           setLoading(false);
@@ -210,24 +226,30 @@ export default function CatalogPage() {
     }
   }, [make, model, year, part]);
 
-
   // --- Apply subPart filter before pagination ---
   // Filter products by subPartId if filter is set
-  const filteredProducts = subPartFilter !== null
-    ? products.filter(p => typeof p.subPart?.id === 'number' && p.subPart?.id === subPartFilter)
-    : products;
-  
+  const filteredProducts =
+    subPartFilter !== null
+      ? products.filter(
+          (p) =>
+            typeof p.subPart?.id === "number" && p.subPart?.id === subPartFilter
+        )
+      : products;
+
   // Pagination values based on filtered list
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredProducts.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredProducts.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const renderPaginationButtons = () => {
     const pageNumbers = [];
-    const maxPageButtons = 5; 
+    const maxPageButtons = 5;
     let startPage = Math.max(1, currentPage - Math.floor(maxPageButtons / 2));
     let endPage = Math.min(totalPages, startPage + maxPageButtons - 1);
 
@@ -264,7 +286,7 @@ export default function CatalogPage() {
               className={`flex items-center justify-center w-8 h-8 rounded-md bg-transparent ${
                 currentPage === 1
                   ? "text-gray-600 cursor-not-allowed"
-                  : "text-white hover:text-gray-300 transition-colors" 
+                  : "text-white hover:text-gray-300 transition-colors"
               }`}
             >
               <svg
@@ -293,8 +315,8 @@ export default function CatalogPage() {
                   onClick={() => paginate(Number(number))}
                   className={`flex items-center justify-center w-8 h-8 rounded-md font-bold ${
                     Number(number) === currentPage
-                      ? "bg-black text-white" 
-                      : "bg-transparent text-gray-500 hover:text-gray-300 transition-colors" 
+                      ? "bg-black text-white"
+                      : "bg-transparent text-gray-500 hover:text-gray-300 transition-colors"
                   }`}
                 >
                   {number}
@@ -312,7 +334,7 @@ export default function CatalogPage() {
               className={`flex items-center justify-center w-8 h-8 rounded-md bg-transparent ${
                 currentPage === totalPages
                   ? "text-gray-600 cursor-not-allowed"
-                  : "text-white hover:text-gray-300 transition-colors" 
+                  : "text-white hover:text-gray-300 transition-colors"
               }`}
             >
               <svg
@@ -335,31 +357,39 @@ export default function CatalogPage() {
   };
 
   // NEW function to handle the cart addition AND REDIRECTION after verification
-  const handleAddToCartAndRedirect = (product: Product, quantity: number = 1) => {
+  const handleAddToCartAndRedirect = (
+    product: Product,
+    quantity: number = 1
+  ) => {
     // 1. Add item to cart
     addItem({
       id: product.sku,
-      name: `${make} ${model} ${year} ${part || 'Engine assembly'}`,
+      name: `${make} ${model} ${year} ${part || "Engine assembly"}`,
       title: `${product.title}` || `${year} ${make} ${model}  ${part}`,
-      subtitle: product.specifications+" "+ product.miles +" miles",
-      image: product.images && product.images.length > 0 ? product.images[0] : (part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"),
+      subtitle: product.specifications + " " + product.miles + " miles",
+      image:
+        product.images && product.images.length > 0
+          ? product.images[0]
+          : part === "Engine"
+          ? "/catalog/Engine 1.png"
+          : "/catalog/Trasmission_.png",
       quantity: quantity,
-      price: product.discountedPrice || 0
+      price: product.discountedPrice || 0,
     });
-    
+
     // 2. Show success popup briefly (optional, as we're redirecting immediately)
     // We'll show it for a fraction of a second just to confirm the action visually.
     setShowCartPopup(true);
-    
+
     // 3. Navigate to the checkout page
     // Using a very short timeout to allow the cart update to register and the popup to flash
     setTimeout(() => {
-        setIsPopupOpen(false); // Close the verify popup
-        setSelectedProductForVerify(null); // Clear the selected product
-        setShowCartPopup(false); // Hide the success popup
-        // router.push('/account/cart'); // Redirect to the specified checkout URL
-        window.location.href = `/account/cart?make=${make}&model=${model}&year=${year}&part=${part}`; // Redirect to the specified checkout URL
-    }, 100); 
+      setIsPopupOpen(false); // Close the verify popup
+      setSelectedProductForVerify(null); // Clear the selected product
+      setShowCartPopup(false); // Hide the success popup
+      // router.push('/account/cart'); // Redirect to the specified checkout URL
+      window.location.href = `/account/cart?make=${make}&model=${model}&year=${year}&part=${part}`; // Redirect to the specified checkout URL
+    }, 100);
   };
 
   return (
@@ -367,7 +397,6 @@ export default function CatalogPage() {
       {/* Breadcrumbs */}
       <div className="px-2 pt-4 md:py-0">
         <nav className="max-w-7xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 mb-8 pt-4 text-sm text-gray-300 flex items-center space-x-2">
-
           <Link
             href="/"
             className="flex items-center gap-2 hover:text-white transition-colors"
@@ -415,7 +444,10 @@ export default function CatalogPage() {
 
         {/* Mobile SubPart Filter Dropdown */}
         <div className="lg:hidden mb-8 px-2 md:px-4 lg:px-0 mt-6 ">
-          <label htmlFor="subpart-filter" className="block text-sm text-gray-300 mb-1 ">
+          <label
+            htmlFor="subpart-filter"
+            className="block text-sm text-gray-300 mb-1 "
+          >
             Select Specification
           </label>
           <select
@@ -423,14 +455,14 @@ export default function CatalogPage() {
             name="subpart-filter"
             className="w-full bg-[#1C2A3A] text-white border border-gray-600 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-500"
             value={subPartFilter !== null ? String(subPartFilter) : "ALL"}
-            onChange={e => {
+            onChange={(e) => {
               const val = e.target.value;
               setSubPartFilter(val === "ALL" ? null : Number(val));
               setCurrentPage(1); // Reset to page 1 on filter change
             }}
           >
             <option value="ALL">All Specification</option>
-            {subPartsList.map(sp => (
+            {subPartsList.map((sp) => (
               <option key={sp.id} value={String(sp.id)}>
                 {sp.name}
               </option>
@@ -454,7 +486,7 @@ export default function CatalogPage() {
         <div className="flex gap-6 px-3">
           {/* Filter Sidebar (Desktop) */}
           <aside className="hidden md:block w-[250px] text-sm flex-shrink-0">
-            <EngineFilterSidebar 
+            <EngineFilterSidebar
               subPartsList={subPartsList}
               subPartFilter={subPartFilter}
               setSubPartFilter={(id) => {
@@ -463,7 +495,7 @@ export default function CatalogPage() {
               }}
             />
           </aside>
-          
+
           {/* Product Cards Grid */}
           <main className="flex-1">
             {/* Quantity and Sort */}
@@ -508,7 +540,7 @@ export default function CatalogPage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Mobile Filter Modal */}
             {showMobileFilter && (
               <div className="fixed justify-end inset-0 z-50 backdrop-blur-sm flex items-center md:hidden h-screen">
@@ -520,7 +552,7 @@ export default function CatalogPage() {
                   >
                     &times;
                   </button>
-                  <EngineFilterSidebar 
+                  <EngineFilterSidebar
                     subPartsList={subPartsList}
                     subPartFilter={subPartFilter}
                     setSubPartFilter={(id) => {
@@ -532,19 +564,26 @@ export default function CatalogPage() {
                 </div>
               </div>
             )}
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-10">
               {currentItems.map((item, index) => {
                 const cartItem = cartItems.find(
                   (i) => i.id === item.sku // Use unique ID for item
                 );
-                
+
                 const getEngineSpecs = (subParts: SubPart[]) => {
-                    if (!subParts || subParts.length === 0) return 'N/A';
-                    const name = subParts[0].name;
-                    const match = name.match(/(\d+\.\d+L)/);
-                    return match ? match[1] : 'N/A';
+                  if (!subParts || subParts.length === 0) return "N/A";
+                  const name = subParts[0].name;
+                  const match = name.match(/(\d+\.\d+L)/);
+                  return match ? match[1] : "N/A";
                 };
+
+              let regexSpecification = item.subPart?.name;
+                let engineSpecification = regexSpecification
+                  ?.replace(/[ ,()]/g, "-")  
+                  .replace(/-+/g, "-")        
+                  .replace(/^-|-$/g, "");
+
 
                 return (
                   <div
@@ -564,17 +603,17 @@ export default function CatalogPage() {
                         className="block cursor-pointer"
                         tabIndex={-1}
                       > */}
-                      <a
-                            href={`/product/engines?make=${make}&model=${model}&year=${year}&part=${part}&sku=${item.sku}`}
-                            className="block cursor-pointer"
-                            tabIndex={-1}
-                            onClick={(e) => {
-                              e.preventDefault();
+                    <a
+                      href={`/product/${year}-${make}-${model}-${part}-${engineSpecification}-${item.miles}`}
+                      className="block cursor-pointer"
+                      tabIndex={-1}
 
-                              window.location.href = `/product/engines?make=${make}&model=${model}&year=${year}&part=${part}&sku=${item.sku}`;
-                            }}
-                          >
+                      onClick={(e) => {
+                        e.preventDefault();
 
+                        window.location.href = `/product/${year}-${make}-${model}-${part}-${engineSpecification}-${item.miles}`;
+                      }}
+                    >
                       {/* Image container */}
                       <div
                         className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
@@ -585,43 +624,47 @@ export default function CatalogPage() {
                           height: "160px",
                         }}
                       >
-                        {part=="Engine"&&(
+                        {part == "Engine" && (
                           <>
-                          <Image
-                          src="/catalog/Engine 1.png"
-                          alt="Engine"
-                          width={250}
-                          height={160}
-                          className="relative z-10 rounded-md object-contain"
-                          priority
-                          />
-                          <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                            Stock image
-                          </p></>)}
-                        {part=="Transmission"&&(
+                            <Image
+                              src="/catalog/Engine 1.png"
+                              alt="Engine"
+                              width={250}
+                              height={160}
+                              className="relative z-10 rounded-md object-contain"
+                              priority
+                            />
+                            <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                              Stock image
+                            </p>
+                          </>
+                        )}
+                        {part == "Transmission" && (
                           <>
-                          <Image
-                          src="/catalog/Trasmission_.png"
-                          alt="Transmission"
-                          width={250}
-                          height={160}
-                          className="relative z-10 rounded-md object-contain"
-                          priority
-                          />
-                          <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                            Stock image
-                          </p></>)}
+                            <Image
+                              src="/catalog/Trasmission_.png"
+                              alt="Transmission"
+                              width={250}
+                              height={160}
+                              className="relative z-10 rounded-md object-contain"
+                              priority
+                            />
+                            <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
+                              Stock image
+                            </p>
+                          </>
+                        )}
                       </div>
                       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
                       <div className="relative z-20 pt-2">
                         <h3 className="text-white text-base mb-1">
-                        {year}  {make} {model} 
+                          {year} {make} {model}
                         </h3>
                         <p className="text-sm text-gray-300 mb-1">
-                        {'used'} {part || 'Engine/Transmission assembly'} 
+                          {"used"} {part || "Engine/Transmission assembly"}
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
-                            {item.subPart?.name || 'N/A'}
+                          {item.subPart?.name || "N/A"}
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
                           Genuine Used Part
@@ -630,26 +673,23 @@ export default function CatalogPage() {
                           {/* {subPart[0].name} */}
                         </p>
                         <p className="text-xs text-gray-400 mb-1">
-                          {item.miles} {'miles'}
+                          {item.miles} {"miles"}
                         </p>
                         <p className="text-xs text-gray-400 mb-2">
-                          {item.warranty || '90 Days Warranty'}
+                          {item.warranty || "90 Days Warranty"}
                         </p>
                       </div>
-                    {/* </Link> */}
-
+                      {/* </Link> */}
                     </a>
                     <div className="flex justify-between items-center mt-3 relative z-30">
                       {item.inStock ? (
                         <>
-                         <span className="text-2xl font-bold text-white">
+                          <span className="text-2xl font-bold text-white">
                             ${item.discountedPrice}
                           </span>
                           <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">
                             $ {item.actualprice}
                           </span>
-
-                         
 
                           {cartItem ? (
                             // Quantity Controls
@@ -657,7 +697,7 @@ export default function CatalogPage() {
                               className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
                               style={{ minWidth: 120 }}
                               tabIndex={0}
-                              onClick={(e) => e.preventDefault()} 
+                              onClick={(e) => e.preventDefault()}
                             >
                               <span
                                 className="cursor-pointer select-none text-3xl px-1"
@@ -721,20 +761,26 @@ export default function CatalogPage() {
                   </div>
                 );
               })}
-              
+
               {/* AddedCartPopup - Only shows success message *after* verification and actual cart add */}
               {showCartPopup && selectedProductForVerify && (
                 <AddedCartPopup
-                  title={`${make} ${model} ${year} ${part || 'Engine assembly'}`}
+                  title={`${make} ${model} ${year} ${
+                    part || "Engine assembly"
+                  }`}
                   subtitle={selectedProductForVerify.sku}
                   price={selectedProductForVerify.actualprice || 0}
-                  image={part === "Engine" ? "/catalog/Engine 1.png" : "/catalog/Trasmission_.png"}
+                  image={
+                    part === "Engine"
+                      ? "/catalog/Engine 1.png"
+                      : "/catalog/Trasmission_.png"
+                  }
                 />
               )}
             </div>
-            
+
             {totalPages > 1 && renderPaginationButtons()}
-            
+
             {/* Part Request Popup */}
             {showPopup && <PartRequestPopup setClosePopup={setShowPopup} />}
 
@@ -746,21 +792,21 @@ export default function CatalogPage() {
                 setSelectedProductForVerify(null);
               }}
               // Pass the current product data
-              make={make || ''}
-              model={model || ''}
-              year={year || ''}
-              part={part || ''}
+              make={make || ""}
+              model={model || ""}
+              year={year || ""}
+              part={part || ""}
               subPartsList={subPartsList}
               selectedProduct={selectedProductForVerify}
               // This prop now calls the function to add to cart AND redirect to checkout
               onConfirm={() => {
                 if (selectedProductForVerify) {
-                    handleAddToCartAndRedirect(selectedProductForVerify);
+                  handleAddToCartAndRedirect(selectedProductForVerify);
                 }
               }}
               // You can pass the VIN number if you have it from a user session or input elsewhere
-              vinNumber="" 
-            />  
+              vinNumber=""
+            />
           </main>
         </div>
       </div>

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, useParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { useRouter } from "next/navigation";
@@ -38,7 +38,13 @@ const galleryImages = [
   "/Images/var.png",
 ];
 
-export default function EngineProductClient() {
+interface EngineProductClientProps {
+  initialItem?: string;
+}
+
+export default function EngineProductClient(
+  { initialItem }: EngineProductClientProps = {} as EngineProductClientProps
+) {
   const [productInfo, setProductInfo] = useState({
     make: "",
     model: "",
@@ -61,11 +67,47 @@ export default function EngineProductClient() {
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const searchParams = useSearchParams();
-  const make = searchParams.get("make");
-  const model = searchParams.get("model");
-  const year = searchParams.get("year");
-  const part = searchParams.get("part");
-  const sku = searchParams.get("sku");
+  const params = useParams();
+  const item = initialItem || (params?.item as string | undefined);
+
+  // Debug logging
+  useEffect(() => {
+    console.log("EngineProductClient - item:", item);
+    console.log("EngineProductClient - params:", params);
+    console.log("EngineProductClient - searchParams:", {
+      make: searchParams.get("make"),
+      model: searchParams.get("model"),
+      year: searchParams.get("year"),
+      part: searchParams.get("part"),
+      sku: searchParams.get("sku"),
+    });
+  }, [item, params, searchParams]);
+
+  // Try to get from searchParams first, then parse from route param if needed
+  let make = searchParams.get("make") || undefined;
+  let model = searchParams.get("model") || undefined;
+  let year = searchParams.get("year") || undefined;
+  let part = searchParams.get("part") || undefined;
+  let sku = searchParams.get("sku") || undefined;
+
+  // If searchParams are not available, try to parse from route parameter
+  if (!make && item) {
+    const parts = item.split("-");
+    // Try to extract make, model, year, part from the item string
+    // Format might be: BMW-1M-2025-Engine-...
+    if (parts.length >= 4) {
+      year = parts[0] || undefined;
+      make = parts[1] || undefined;
+      model = parts[2] || undefined;
+      part = parts[3] || undefined;
+      // SKU might be in later parts
+      if (parts.length > 4) {
+        sku = parts.slice(4).join("-") || undefined;
+      }
+    }
+    console.log("Parsed from item:", { make, model, year, part, sku });
+  }
+
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
   const addItem = useCartStore((s) => s.addItem);
   const [showPopup, setShowPopup] = useState(false);
@@ -74,11 +116,11 @@ export default function EngineProductClient() {
   const [selectedProductForVerify, setSelectedProductForVerify] = useState<
     any | null
   >(null);
- const [mediaUrls, setMediaUrls] = useState<string[]>([]);
- const [mediaLoading, setMediaLoading] = useState<boolean>(false);
- 
- const [imageLoaded, setImageLoaded] = useState<boolean>(false);
-useEffect(() => {
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [mediaLoading, setMediaLoading] = useState<boolean>(false);
+
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  useEffect(() => {
     if (showPopup) {
       const scrollY = window.scrollY;
       document.body.style.position = "fixed";
@@ -231,7 +273,7 @@ useEffect(() => {
                 seoCanonical: variant.seoCanonical,
                 seoDescription: variant.seoDescription,
                 warranty: variant.warranty,
-                media: (variant.product?.media) || [],
+                media: variant.product?.media || [],
                 description: variant.description,
               });
             });
@@ -246,8 +288,14 @@ useEffect(() => {
           part: data.part || "",
         });
 
-        let defaultGroup, defaultVariant;
-        if (sku) {
+       // IMPROVED LOGIC: Try to match from URL params first
+        let defaultGroup = null;
+        let defaultVariant = null;
+
+        /***********************
+         * 1. MATCH USING SKU
+         ***********************/
+        if (sku && data.groupedVariants) {
           for (const group of data.groupedVariants) {
             const variant = group.variants.find((v: any) => v.sku === sku);
             if (variant) {
@@ -257,19 +305,98 @@ useEffect(() => {
             }
           }
         }
-        if (
-          !defaultVariant &&
-          data.groupedVariants &&
-          data.groupedVariants.length > 0
-        ) {
+
+        /****************************************
+         * 2. PARSE URL PARAM (item)
+         ****************************************/
+        let milesValue = "";
+        let specFromUrl = "";
+
+        if (!defaultVariant && item) {
+          const parts = item.split("-");
+
+          // last part = miles
+          const lastPart = parts[parts.length - 1];
+          if (/^\d+$/.test(lastPart)) {
+            milesValue = lastPart.replace(/[^\d]/g, "");
+          }
+
+          // spec between part and miles
+          const partIndex = parts.findIndex(
+            (p) => p.toLowerCase() === part.toLowerCase()
+          );
+          if (partIndex !== -1) {
+            specFromUrl = parts
+              .slice(partIndex + 1, parts.length - 1)
+              .join(" ")
+              .replace(/-/g, " ")
+              .trim()
+              .toLowerCase();
+          }
+        }
+
+        /****************************************
+         * 3. FIRST TRY MATCH BY MILES
+         ****************************************/
+        if (!defaultVariant && milesValue) {
+          for (const group of data.groupedVariants) {
+            const found = group.variants.find((v: any) => {
+              const vm = v.miles?.toString().replace(/[^\d]/g, "");
+              return vm === milesValue;
+            });
+
+            if (found) {
+              defaultGroup = group;
+              defaultVariant = found;
+              break;
+            }
+          }
+        }
+
+        /****************************************
+         * 4. MATCH SPEC ONLY IF MILES FAILED
+         ****************************************/
+        if (!defaultVariant && specFromUrl) {
+          for (const group of data.groupedVariants) {
+            const groupSpec = group.subPart.name
+              .replace(/[,()]/g, "")
+              .replace(/\s+/g, " ")
+              .trim()
+              .toLowerCase();
+
+            if (
+              groupSpec.includes(specFromUrl) ||
+              specFromUrl.includes(groupSpec)
+            ) {
+              defaultGroup = group;
+              defaultVariant = group.variants[0];
+              break;
+            }
+          }
+        }
+
+        /****************************************
+         * 5. FALLBACK
+         ****************************************/
+        if (!defaultVariant) {
           defaultGroup = data.groupedVariants[0];
           defaultVariant = defaultGroup.variants[0];
         }
-        if (defaultGroup && defaultVariant) {
-          setSelectedSubPartId(defaultGroup.subPart.id);
-          setSelectedMilesSku(defaultVariant.sku);
-          setSelectedProduct(defaultVariant);
-        }
+
+        /****************************************
+         * 6. SET SELECTED VALUES
+         ****************************************/
+        setSelectedSubPartId(defaultGroup.subPart.id);
+        setSelectedMilesSku(defaultVariant.sku);
+
+        setSelectedProduct({
+          ...defaultVariant,
+          make: data.make,
+          model: data.model,
+          year: data.year,
+          part: data.part,
+        });
+
       })
       .finally(() => setIsLoading(false));
   }, [make, model, year, part, sku, API_BASE]);
@@ -284,36 +411,32 @@ useEffect(() => {
 
     setMediaLoading(true);
     setImageLoaded(false);
-    (async() => {
+    (async () => {
       try {
         const urls = await Promise.all(
-          (selectedProduct.media as string []).map((key) => getPresignedUrl(key))
+          (selectedProduct.media as string[]).map((key) => getPresignedUrl(key))
         );
         setMediaUrls(urls);
-        
       } catch (error) {
         console.error("Error fetching media URLs:", error);
         setMediaUrls([]);
-      }finally {
+      } finally {
         setMediaLoading(false);
       }
-  })();
-
+    })();
   }, [selectedProduct]);
 
-
   const getPresignedUrl = async (key: string): Promise<string> => {
-  //   GET /api/s3/presigned?key=<url‑encoded-key>
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(
-      key
-    )}`
-  );
-  if (!res.ok) throw new Error(`Presign failed for ${key}`);
-  const data = await res.json();               // { url: string }
-  return data.url;
-};
-
+    //   GET /api/s3/presigned?key=<url‑encoded-key>
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(
+        key
+      )}`
+    );
+    if (!res.ok) throw new Error(`Presign failed for ${key}`);
+    const data = await res.json(); // { url: string }
+    return data.url;
+  };
 
   useEffect(() => {
     if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
@@ -395,45 +518,45 @@ useEffect(() => {
     }, 100);
   };
 
-
   useEffect(() => {
-  if (!selectedProduct) return;
+    if (!selectedProduct) return;
 
-  // Ensure dataLayer exists
-  (window as any).dataLayer = (window as any).dataLayer || [];
+    // Ensure dataLayer exists
+    (window as any).dataLayer = (window as any).dataLayer || [];
 
-  (window as any).dataLayer.push({
-    event: "product_view", // or "view_item" if using GA4 standard
-    ecommerce: {
-      items: [
-        {
-          item_id: selectedProduct.sku,
-          item_name:
-            selectedProduct.title ||
-            `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
-              selectedProduct.year || ""
-            } ${selectedProduct.part || ""}`.trim(),
-          item_url: window.location.href,
-          price:
-            selectedProduct.discountedPrice ??
-            selectedProduct.actualprice ??
-            0,
-          item_category: selectedProduct.part || "",
-          item_category2:
-            groupedVariants.find(
-              (g) => g.subPart.id === selectedSubPartId
-            )?.subPart?.name || "",
-        },
-      ],
-    },
-  });
-}, [selectedProduct]);
+    (window as any).dataLayer.push({
+      event: "product_view", // or "view_item" if using GA4 standard
+      ecommerce: {
+        items: [
+          {
+            item_id: selectedProduct.sku,
+            item_name:
+              selectedProduct.title ||
+              `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
+                selectedProduct.year || ""
+              } ${selectedProduct.part || ""}`.trim(),
+            item_url: window.location.href,
+            price:
+              selectedProduct.discountedPrice ??
+              selectedProduct.actualprice ??
+              0,
+            item_category: selectedProduct.part || "",
+            item_category2:
+              groupedVariants.find((g) => g.subPart.id === selectedSubPartId)
+                ?.subPart?.name || "",
+          },
+        ],
+      },
+    });
+  }, [selectedProduct]);
+  const cleanMiles = (m: any) =>
+  m?.toString().replace(/[^\d]/g, "");
 
 
   return (
     <>
-    <style jsx>{
-          `.spinner {
+      <style jsx>{`
+        .spinner {
           border: 3px solid rgba(255, 255, 255, 0.3);
           border-top: 3px solid #fff;
           border-radius: 50%;
@@ -444,11 +567,13 @@ useEffect(() => {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
+        }
+        @keyframes spin {
+          to {
+            transform: rotate(360deg) translate(-50%, -50%);
           }
-          @keyframes spin {
-            to { transform: rotate(360deg) translate(-50%, -50%); }
-          }`
-      }</style>
+        }
+      `}</style>
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}
@@ -513,24 +638,24 @@ useEffect(() => {
             <div className="flex flex-col md:flex-row gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
               <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
                 <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
-                  { mediaUrls.length > 0 ? (
+                  {mediaUrls.length > 0 ? (
                     <>
                       <Image
                         src={mediaUrls[0]}
-                        alt={`${selectedProduct?.title || part } image`}
+                        alt={`${selectedProduct?.title || part} image`}
                         width={250}
                         height={160}
                         className={`object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350 
-                          ${imageLoaded ? "opacity-100" : "opacity-0"} transition-opacity duration-200`}
+                          ${
+                            imageLoaded ? "opacity-100" : "opacity-0"
+                          } transition-opacity duration-200`}
                         priority
                         onLoadingComplete={() => setImageLoaded(true)}
-                        
-                      />  
+                      />
                       <span className="absolute bottom-2 right-2 text-xs text-gray-300">
-                          *Stock image
+                        *Stock image
                       </span>
                     </>
-                  
                   ) : part === "Engine" ? (
                     <>
                       <Image
@@ -560,7 +685,7 @@ useEffect(() => {
                       </span>
                     </>
                   ) : null}
-                   {(mediaLoading || (mediaUrls.length > 0 && !imageLoaded)) && (
+                  {(mediaLoading || (mediaUrls.length > 0 && !imageLoaded)) && (
                     <div className="spinner" />
                   )}
                 </div>
@@ -573,7 +698,7 @@ useEffect(() => {
                     fontFamily: "Audiowide, sans-serif",
                     letterSpacing: "0.1em",
                   }}
-                  >
+                >
                   {/* {productInfo.year ||
                   productInfo.make ||
                   productInfo.model ||
@@ -582,17 +707,22 @@ useEffect(() => {
                         .replace(/\s+/g, " ")
                         .trim()
                     : "ENGINE ASSEMBLY"} */}
-                    {(selectedProduct?.title ??
-                      `${productInfo.year || ""} ${productInfo.make || ""} ${productInfo.model || ""} Used ${productInfo.part || ""}`).replace(/\s+/g, " ").trim() || "ENGINE ASSEMBLY"}
+                  {(
+                    selectedProduct?.title ??
+                    `${productInfo.year || ""} ${productInfo.make || ""} ${
+                      productInfo.model || ""
+                    } Used ${productInfo.part || ""}`
+                  )
+                    .replace(/\s+/g, " ")
+                    .trim() || "ENGINE ASSEMBLY"}
                 </h1>
 
                 <div className="text-sm sm:text-base text-gray-400 font-semibold">
-                  Option:{" "}
-                  {groupedVariants.find(
-                    (g) => g.subPart.id === selectedSubPartId
-                  )?.subPart.name || "-"}
-                </div>
-
+                options:{" "}
+                {groupedVariants.find(
+                  (g) => g.subPart.id === selectedSubPartId
+                )?.subPart.name || "Select a specification"}
+              </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   <select
                     value={selectedSubPartId ?? ""}
@@ -622,23 +752,44 @@ useEffect(() => {
                     ))}
                   </select>
 
-                  {selectedProduct?.inStock && (
-                    <select
-                      value={selectedMilesSku}
-                      onChange={(e) => setSelectedMilesSku(e.target.value)}
-                      className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto"
-                    >
-                      <option value="">Select Miles</option>
-                      {groupedVariants
-                        .find((g: any) => g.subPart.id === selectedSubPartId)
-                        ?.variants.map((variant: any) => (
-                          <option key={variant.sku} value={variant.sku}>
-                            {variant.miles}
-                          </option>
-                        ))}
-                    </select>
-                  )}
-                </div>
+                <select
+              value={selectedMilesSku}
+              onChange={(e) => {
+                const sku = e.target.value;
+                setSelectedMilesSku(sku);
+
+                const group = groupedVariants.find((g: any) => g.subPart.id === selectedSubPartId);
+                if (group) {
+                  const variant = group.variants.find((v: any) => v.sku === sku);
+                  if (variant) {
+                    setSelectedProduct({
+                      ...variant,
+                      miles: cleanMiles(variant.miles),   // FIXED
+                      make: productInfo.make,
+                      model: productInfo.model,
+                      year: productInfo.year,
+                      part: productInfo.part,
+                    });
+                  }
+                }
+              }}
+              className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={!selectedSubPartId}
+            >
+              <option value="">
+                {selectedSubPartId ? "Select Miles" : "Select specification first"}
+              </option>
+
+              {selectedSubPartId &&
+                groupedVariants
+                  .find((g: any) => g.subPart.id === selectedSubPartId)
+                  ?.variants.map((variant: any) => (
+                    <option key={variant.sku} value={variant.sku}>
+                      {cleanMiles(variant.miles)} miles   {/* FIXED */}
+                    </option>
+                  ))}
+            </select>
+                            </div>
 
                 <div className="text-sm text-white mb-2">
                   Availability:{" "}
@@ -731,15 +882,15 @@ useEffect(() => {
 
           <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
             {/* {accordionData[activeTab].content} */}
-             {activeTab === 0 ? (
-            <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
-              {selectedProduct?.description || accordionData[0].content}
-            </div>
-          ) : (
-            <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
-              {accordionData[activeTab].content}
-            </div>
-          )}
+            {activeTab === 0 ? (
+              <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
+                {selectedProduct?.description || accordionData[0].content}
+              </div>
+            ) : (
+              <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
+                {accordionData[activeTab].content}
+              </div>
+            )}
           </div>
         </div>
         <div className="w-full py-8 sm:py-12">
@@ -835,16 +986,3 @@ useEffect(() => {
     </>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

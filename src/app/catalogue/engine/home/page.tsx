@@ -86,10 +86,10 @@ export default function CatalogPage() {
   const [showPopup, setShowPopup] = useState(false);
 
   const searchParams = useSearchParams();
-  const make = searchParams.get("make");
-  const model = searchParams.get("model");
+  const make = searchParams.get("make")?.toLowerCase();
+  const model = searchParams.get("model")?.toLowerCase();
   const year = searchParams.get("year");
-  const part = searchParams.get("part");
+  const part = searchParams.get("part")?.toLowerCase()
   const subPartId = searchParams.get("subPartId");
   const subPartParam = searchParams.get("subPartFilter");
 
@@ -582,7 +582,8 @@ export default function CatalogPage() {
                 let engineSpecification = regexSpecification
                   ?.replace(/[ ,()]/g, "-")  
                   .replace(/-+/g, "-")        
-                  .replace(/^-|-$/g, "");
+                  .replace(/^-|-$/g, "")
+                  .toLowerCase();
 
 
                 return (
@@ -624,7 +625,7 @@ export default function CatalogPage() {
                           height: "160px",
                         }}
                       >
-                        {part == "Engine" && (
+                        {part == "Engine" || part == "engine" && (
                           <>
                             <Image
                               src="/catalog/Engine 1.png"
@@ -639,7 +640,7 @@ export default function CatalogPage() {
                             </p>
                           </>
                         )}
-                        {part == "Transmission" && (
+                        {part == "Transmission" || part == "transmission" && (
                           <>
                             <Image
                               src="/catalog/Trasmission_.png"

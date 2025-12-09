@@ -656,7 +656,7 @@ export default function EngineProductClient(
                         *Stock image
                       </span>
                     </>
-                  ) : part === "Engine" ? (
+                  ) : part === "Engine" || part == "engine" ? (
                     <>
                       <Image
                         src="/catalog/Engine 1.png"
@@ -670,7 +670,7 @@ export default function EngineProductClient(
                         *Stock image
                       </span>
                     </>
-                  ) : part === "Transmission" ? (
+                  ) : part === "Transmission" || part == "transmission" ? (
                     <>
                       <Image
                         src="/catalog/Trasmission_.png"

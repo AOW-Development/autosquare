@@ -1,7 +1,6 @@
 "use client";
-
 import AddedCartPopup from "../../../account/modal/AddedCartPopup/AddedCartPopup";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import Link from "next/link";
 import Image from "next/image";
 // IMPORTING useRouter ALONGSIDE useSearchParams
@@ -12,6 +11,8 @@ import { useCartStore } from "@/store/cartStore";
 import { getGroupedProducts } from "@/utils/api";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { VerifyPartPopup } from "@/components/fitment"; // Assuming this path is correct
+import { useSkuStore } from "@/store/skuStore";
+import { PopoverButton } from "@headlessui/react";
 
 interface SubPart {
   id: number;
@@ -84,7 +85,7 @@ export default function CatalogPage() {
   const [inCartIdx, setInCartIdx] = useState<number | null>(null);
   const [showMobileFilter, setShowMobileFilter] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
-
+   const setSku = useSkuStore((state) => state.setSku);
   const searchParams = useSearchParams();
   const make = searchParams.get("make")?.toLowerCase();
   const model = searchParams.get("model")?.toLowerCase();
@@ -275,6 +276,7 @@ export default function CatalogPage() {
       pageNumbers.push(totalPages);
     }
 
+              
     return (
       <nav className="flex justify-center mt-8">
         <ul className="flex items-center space-x-1">
@@ -580,10 +582,12 @@ export default function CatalogPage() {
 
               let regexSpecification = item.subPart?.name;
                 let engineSpecification = regexSpecification
-                  ?.replace(/[ ,()]/g, "-")  
+                  ?.replace(/[ ,()./]/g, "-")  
                   .replace(/-+/g, "-")        
                   .replace(/^-|-$/g, "")
                   .toLowerCase();
+
+               
 
 
                 return (
@@ -604,15 +608,19 @@ export default function CatalogPage() {
                         className="block cursor-pointer"
                         tabIndex={-1}
                       > */}
-                    <a
-                      href={`/product/${year}-${make}-${model}-${part}-${engineSpecification}-${item.miles}`}
-                      className="block cursor-pointer"
+                    <button type="button"
+                      // href={`/product/${year}-${make}-${model}-${part}-${engineSpecification}-${encodeURIComponent(item.miles || "N/A")}`}
+                      className="cursor-pointer"
                       tabIndex={-1}
 
                       onClick={(e) => {
-                        e.preventDefault();
+                       
+                        setSku(item.sku);
+                        // Set cookie with proper attributes for server-side access
+                        document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
+                        console.log("SKU set to:", item.sku);
 
-                        window.location.href = `/product/${year}-${make}-${model}-${part}-${engineSpecification}-${item.miles}`;
+                        window.location.href = `/product/${year}-${make}-${model}-${part}-${engineSpecification}-${encodeURIComponent(item.miles || "N/A")}`;
                       }}
                     >
                       {/* Image container */}
@@ -657,7 +665,7 @@ export default function CatalogPage() {
                         )}
                       </div>
                       <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
-                      <div className="relative z-20 pt-2">
+                    <div className="relative z-20 pt-2 w-full text-left ">
                         <h3 className="text-white text-base mb-1">
                           {year} {make} {model}
                         </h3>
@@ -681,7 +689,7 @@ export default function CatalogPage() {
                         </p>
                       </div>
                       {/* </Link> */}
-                    </a>
+                    </button>
                     <div className="flex justify-between items-center mt-3 relative z-30">
                       {item.inStock ? (
                         <>

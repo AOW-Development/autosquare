@@ -1,6 +1,8 @@
+
 import { Metadata } from "next";
 import { generateDynamicEngineMetadata } from "@/utils/metadata";
 import EngineProductClient from "../engines/EngineProductClient";
+import { cookies } from "next/headers";
 
 // Force dynamic rendering to ensure params and searchParams are available
 export const dynamic = "force-dynamic";
@@ -51,7 +53,9 @@ export async function generateMetadata({
     // We want: year, make, model, part, and then everything after part (joined by dash) as sku
     const segments = item?.split("-") || [];
     const [year, make, model, part, ...skuParts] = segments;
-    const sku = skuParts.length > 0 ? skuParts.join("-") : undefined;
+    const cookieStore = await cookies();
+    const sku = cookieStore.get("sku")?.value;
+    // const sku = skuParts.length > 0 ? skuParts.join("-") : undefined;
     console.log("Year:", year);
     console.log("Make:", make);
     console.log("Model:", model);
@@ -78,6 +82,7 @@ export async function generateMetadata({
 
         if (!selectedVariant) {
           selectedVariant = apiData.groupedVariants?.[0]?.variants?.[0] || null;
+          console.log("Selected variant:", selectedVariant);
         }
 
         if (selectedVariant) {

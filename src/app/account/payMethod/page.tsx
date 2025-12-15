@@ -13,6 +13,7 @@ import { useCartStore } from "@/store/cartStore";
 import type { PaymentInfo } from "@/store/paymentStore";
 // Remove local CartItem interface entirely, use global type
 import { getCardType, isValidCardNumber } from "@/utils/cardUtil";
+
 import { generateOrderNumber } from "@/utils/order";
 // import { State } from "country-state-city"
 import toast from "react-hot-toast";
@@ -2207,9 +2208,16 @@ const verifyOtp = async () => {
         <div className="max-w-xl border bg-[#111827] border-[#1F2937] rounded-lg space-y-6 p-8">
 
           {/* Header */}
-          <h2 className="text-xl font-semibold text-white mb-1 font-exo2">
-            Secure payment
+          <h2 className="text-xl font-semibold text-white mb-1 font-exo2 inline-flex items-center gap-4 md:gap-40">
+            🔒 Secure payment
+
+            <img
+              src="/account/payment.png"
+              alt="payment methods"
+              className="w-40 h-15 object-contain"
+            />
           </h2>
+
           <p className="text-md text-gray-400 mb-6 font-exo2">
             Complete your purchase using a secure payment method.
           </p>

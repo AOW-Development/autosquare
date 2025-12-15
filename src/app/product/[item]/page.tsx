@@ -1,4 +1,3 @@
-
 import { Metadata } from "next";
 import { generateDynamicEngineMetadata } from "@/utils/metadata";
 import EngineProductClient from "../engines/EngineProductClient";
@@ -69,6 +68,11 @@ export async function generateMetadata({
         );
 
         const apiData = await apiResponse.json();
+        console.log("✅ API Response received:", {
+          hasGroupedVariants: !!apiData.groupedVariants,
+          variantCount: apiData.groupedVariants?.length,
+          firstVariantSEO: apiData.groupedVariants?.[0]?.variants?.[0]?.seoTitle
+        });
         let selectedVariant: any | null = null;
         if (sku) {
           for (const group of apiData.groupedVariants ?? []) {
@@ -91,6 +95,9 @@ export async function generateMetadata({
             seoDescription: selectedVariant.seoDescription || "",
             seoCanonical: selectedVariant.seoCanonical || "",
           };
+          console.log("✅ SEO data extracted from API:", apiseo);
+        } else {
+          console.log("⚠️ No variant selected, SEO data will be null");
         }
       } catch (apiError) {
         console.error("Error fetching SEO data from API:", apiError);
@@ -99,23 +106,19 @@ export async function generateMetadata({
 
     const finalMetadata: Metadata = {
       ...baseMetadata,
-      title:
-        queryParams.seoTitle?.trim() ||
-        apiseo?.seoTitle?.trim() ||
-        baseMetadata.title,
-      description:
-        queryParams.seoDescription?.trim() ||
-        apiseo?.seoDescription?.trim() ||
-        baseMetadata.description,
+      title: apiseo?.seoTitle?.trim() || baseMetadata.title,
+      description: apiseo?.seoDescription?.trim() || baseMetadata.description,
       alternates: {
         ...(baseMetadata.alternates ?? {}),
-        canonical:
-          queryParams.seoCanonical?.trim() ||
-          apiseo?.seoCanonical?.trim() ||
-          baseMetadata.alternates?.canonical ||
-          undefined,
+        canonical: apiseo?.seoCanonical?.trim() || baseMetadata.alternates?.canonical || undefined,
       },
     };
+    console.log("🎯 Final metadata generated:", {
+      title: finalMetadata.title,
+      description: finalMetadata.description?.substring(0, 50) + '...',
+      canonical: finalMetadata.alternates?.canonical,
+      usedApiSEO: !!apiseo?.seoTitle
+    });
     return finalMetadata;
   } catch (error) {
     // Fallback to default metadata if there's an error

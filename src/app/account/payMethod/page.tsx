@@ -26,7 +26,7 @@ import {
 import { StripeCheckoutRequest, StripeCheckoutResponse } from "@/types/stripe";
 import StripePaymentForm from "@/components/StripePaymentForm";
 import { Elements } from "@stripe/react-stripe-js";
-import getStripe from "@/lib/stripe-client";
+// import getStripe from "@/lib/stripe-client";
 
 export default function PayMethod() {
   const [paymentMethod, setPaymentMethod] = useState("card");
@@ -52,7 +52,7 @@ export default function PayMethod() {
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
   const [orderNumber] = useState(() => generateOrderNumber());
   
-  const stripePromise = getStripe();
+  // const stripePromise = getStripe();
 
   const INDIAN_TEST_NUMBERS = [
     "+918073450249",
@@ -241,13 +241,13 @@ const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
 
     const data = await response.json();
 
-    if (data.error) {
-      toast.error(data.error);
-      return;
-    }
+    // if (data.error) {
+    //   toast.error("SHIVA",data.error);
+    //   return;
+    // }
 
-    setClientSecret(data.clientSecret);
-    setPaymentIntentId(data.paymentIntentId);
+    // setClientSecret(data.clientSecret);
+    // setPaymentIntentId(data.paymentIntentId);
     toast.success('Ready to accept payment');
      pushBeginPaymentEvent(cartItems, total);
   } catch (error: any) {
@@ -268,8 +268,8 @@ const handlePaymentSuccess = async (paymentIntentId: string) => {
     await updateCheckoutData(
       {
         paymentInfo: {
-          paymentMethod: 'stripe_elements',
-          paymentIntentId: paymentIntentId,
+          paymentMethod: 'card',
+          // paymentIntentId: paymentIntentId,
         } as any,
         orderNumber: orderNumber, // Use the state variable
         paymentStatus: 'succeeded',
@@ -282,7 +282,7 @@ const handlePaymentSuccess = async (paymentIntentId: string) => {
   // Store data for Thank You page
   const orderData = {
     user,
-    payment: { paymentMethod: 'stripe_elements', paymentIntentId, cardData },
+    payment: { paymentMethod: 'card', cardData },
      shipping: buyInOneClick ? shippingFormData : shippingInfo,
     billing: sameAsShipping 
       ? (buyInOneClick ? shippingFormData : shippingInfo)

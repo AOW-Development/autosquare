@@ -249,7 +249,7 @@ const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
 
     // setClientSecret(data.clientSecret);
     // setPaymentIntentId(data.paymentIntentId);
-    toast.success('Ready to accept payment');
+    // toast.success('Ready to accept payment');
      pushBeginPaymentEvent(cartItems, total);
   } catch (error: any) {
     console.error('Failed to initialize payment:', error);
@@ -529,65 +529,65 @@ const handlePaymentError = (error: string) => {
     setCardData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // const isFormValid = () => {
-  //   // if (paymentMethod === "card") {
-  //   //   const cardType = getCardType(cardData.cardNumber);
-  //   //   const validLuhn = isValidCardNumber(cardData.cardNumber);
-
-  //   //   if (!cardType || !validLuhn) return false;
-
-  //   //   const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length;
-  //   //   const cvvLength = cardData.securityCode.length;
-
-  //   //   if (
-  //   //     (cardType === "Visa" ||
-  //   //       cardType === "MasterCard" ||
-  //   //       cardType === "Discover") &&
-  //   //     (cardNumberLength !== 16 || cvvLength !== 3)
-  //   //   )
-  //   //     return false;
-
-  //   //   if (
-  //   //     cardType === "American Express" &&
-  //   //     (cardNumberLength !== 15 || cvvLength !== 4)
-  //   //   )
-  //   //     return false;
-
-  //   //   return (
-  //   //     !!cardData.cardholderName &&
-  //   //     !!cardData.expirationDate &&
-  //   //     (buyInOneClick ? isVerified : true)
-  //   //   );
-  //   // }
-
-  //   // Disable for unimplemented payment methods
-
-  //   if (buyInOneClick) {
-  //   if (!isShippingSaved) return false;
-  //   if (!sameAsShipping && !isBillingSaved) return false;
-  //   if (!isVerified) return false;
-  // }
-  //   return false;
-  // };
-
   const isFormValid = () => {
-  if (buyInOneClick) {
-    // For Buy in One Click
+    if (paymentMethod === "card") {
+      const cardType = getCardType(cardData.cardNumber);
+      const validLuhn = isValidCardNumber(cardData.cardNumber);
+
+      if (!cardType || !validLuhn) return false;
+
+      const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length;
+      const cvvLength = cardData.securityCode.length;
+
+      if (
+        (cardType === "Visa" ||
+          cardType === "MasterCard" ||
+          cardType === "Discover") &&
+        (cardNumberLength !== 16 || cvvLength !== 3)
+      )
+        return false;
+
+      if (
+        cardType === "American Express" &&
+        (cardNumberLength !== 15 || cvvLength !== 4)
+      )
+        return false;
+
+      return (
+        !!cardData.cardholderName &&
+        !!cardData.expirationDate &&
+        (buyInOneClick ? isVerified : true)
+      );
+    }
+
+    // Disable for unimplemented payment methods
+
+    if (buyInOneClick) {
     if (!isShippingSaved) return false;
     if (!sameAsShipping && !isBillingSaved) return false;
     if (!isVerified) return false;
-    return true; // ✅ All checks passed
   }
+    return false;
+  };
 
-// For Regular Checkout (coming from checkout page)
+//   const isFormValid = () => {
+//   if (buyInOneClick) {
+//     // For Buy in One Click
+//     if (!isShippingSaved) return false;
+//     if (!sameAsShipping && !isBillingSaved) return false;
+//     if (!isVerified) return false;
+//     return true; // ✅ All checks passed
+//   }
+
+// // For Regular Checkout (coming from checkout page)
  
   
-  if (!sameAsShipping && (!billingInfo || !billingInfo.address)) {
-    return false;
-  }
+//   if (!sameAsShipping && (!billingInfo || !billingInfo.address)) {
+//     return false;
+//   }
   
-  return true; // ✅ Valid!
-};
+//   return true; // ✅ Valid!
+// };
 
 useEffect(() => {
   if (isFormValid() && !clientSecret && !isLoadingPayment) {

@@ -878,7 +878,7 @@ useEffect(() => {
           console.log(" iOS (guest): Cart backup verified");
         }
       }
-
+       window.location.href = "/account/thankYou";
       if (buyInOneClick && !isVerified) {
         toast.error(
           "Please verify your phone number before confirming the order."
@@ -888,11 +888,11 @@ useEffect(() => {
 
       // Go directly to thank you page without sign-in for all users
       // router.push("/account/thankYou");
-      // window.location.href = "/account/thankYou";
+     
       // NOW REDIRECT TO STRIPE CHECKOUT
-      try {
-        // Start loading toast
-        const loadingToast = toast.loading("Redirecting to secure payment...");
+      // try {
+      //   // Start loading toast
+      //   const loadingToast = toast.loading("Redirecting to secure payment...");
 
 
         // const checkoutRequest: StripeCheckoutRequest = {
@@ -913,76 +913,76 @@ useEffect(() => {
         //   },
         // };
 
-              const checkoutRequest: StripeCheckoutRequest = {
-                cartItems: cartItems.map(item => ({
-                  id: item.id,
-                  title: item.title,
-                  name: item.name,
-                  subtitle: item.subtitle,
-                  image: item.image,
-                  price: item.price,
-                  quantity: item.quantity,
-                })),
-                customerEmail,
-                orderNumber,
-                metadata: {
-                sessionId: sessionId,
-                buyInOneClick: buyInOneClick.toString(),
-                firstName: shippingFormData.firstName,
-                lastName: shippingFormData.lastName,
-                address: shippingFormData.address,
-                apartment: shippingFormData.apartment,
-                city: shippingFormData.city,
-                state: shippingFormData.state,
-                zipCode: shippingFormData.zipCode,
-                country: shippingFormData.country,
-              },
-            };
+            //   const checkoutRequest: StripeCheckoutRequest = {
+            //     cartItems: cartItems.map(item => ({
+            //       id: item.id,
+            //       title: item.title,
+            //       name: item.name,
+            //       subtitle: item.subtitle,
+            //       image: item.image,
+            //       price: item.price,
+            //       quantity: item.quantity,
+            //     })),
+            //     customerEmail,
+            //     orderNumber,
+            //     metadata: {
+            //     sessionId: sessionId,
+            //     buyInOneClick: buyInOneClick.toString(),
+            //     firstName: shippingFormData.firstName,
+            //     lastName: shippingFormData.lastName,
+            //     address: shippingFormData.address,
+            //     apartment: shippingFormData.apartment,
+            //     city: shippingFormData.city,
+            //     state: shippingFormData.state,
+            //     zipCode: shippingFormData.zipCode,
+            //     country: shippingFormData.country,
+            //   },
+            // };
 
 
 
-        const response = await fetch("/api-2/checkout", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(checkoutRequest),
-        });
+        // const response = await fetch("/api-2/checkout", {
+        //   method: "POST",
+        //   headers: { "Content-Type": "application/json" },
+        //   body: JSON.stringify(checkoutRequest),
+        // });
 
-        // Handle non-200 responses
-        if (!response.ok) {
-          toast.dismiss(loadingToast);
-          throw new Error(
-            `Payment request failed (status: ${response.status})`
-          );
-        }
+        // // Handle non-200 responses
+        // if (!response.ok) {
+        //   toast.dismiss(loadingToast);
+        //   throw new Error(
+        //     `Payment request failed (status: ${response.status})`
+        //   );
+        // }
 
-        const data: StripeCheckoutResponse = await response.json();
+        // const data: StripeCheckoutResponse = await response.json();
 
-        // Always dismiss loading toast once response is received
-        toast.dismiss(loadingToast);
+        // // Always dismiss loading toast once response is received
+        // toast.dismiss(loadingToast);
 
-        // Handle Stripe errors
-        if (data.error) {
-          toast.error(data.error);
-          return;
-        }
+        // // Handle Stripe errors
+        // if (data.error) {
+        //   toast.error(data.error);
+        //   return;
+        // }
 
         // Redirect to Stripe Checkout page
-        if (data.url) {
-          toast.success("Redirecting to secure Stripe checkout...");
-          window.location.href = data.url;
-          return;
-        }
+        // if (data.url) {
+        //   toast.success("Redirecting to secure Stripe checkout...");
+        //   window.location.href = data.url;
+        //   return;
+        // }
 
         // Fallback error
-        toast.error("Failed to create checkout session. Please try again.");
-      } catch (error: any) {
-        // Catch network or logic errors
-        console.error("Error processing payment:", error);
-        toast.dismiss(); // Ensure no loading toasts remain
-        toast.error(
-          error?.message || "Something went wrong. Please try again."
-        );
-      }
+      //   toast.error("Failed to create checkout session. Please try again.");
+      // } catch (error: any) {
+      //   // Catch network or logic errors
+      //   console.error("Error processing payment:", error);
+      //   toast.dismiss(); // Ensure no loading toasts remain
+      //   toast.error(
+      //     error?.message || "Something went wrong. Please try again."
+      //   );
+      // }
     }
   };
   const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
@@ -2203,22 +2203,213 @@ const verifyOtp = async () => {
           </div>
 
             {/* Payment Section - Stripe Elements */}
-            {/* Payment Section - Stripe Elements */}
-          <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full">
+        <div className="bg-[#02305A] border border-[#02305A] rounded-xl md:p-8 p-4 w-full">
+        <div className="max-w-xl border bg-[#111827] border-[#1F2937] rounded-lg space-y-6 p-8">
+
+          {/* Header */}
+          <h2 className="text-xl font-semibold text-white mb-1 font-exo2">
+            Secure payment
+          </h2>
+          <p className="text-md text-gray-400 mb-6 font-exo2">
+            Complete your purchase using a secure payment method.
+          </p>
+
+          <div className="space-y-6">
+
+            {/* Credit/Debit Card */}
+            <div className="bg-[#1A263D] text-white rounded-lg p-4 md:p-4 border border-[#1F2937]">
+
+              {/* <label className="flex items-center justify-between cursor-pointer mb-6">
+                {/* <div className="flex items-center space-x-3">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="card"
+                    checked={paymentMethod === "card"}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
+                  /> */}
+                  {/* <span className="font-exo2 text-sm text-blue-600 sm:text-base">
+                    Secure, fast checkout with Link
+                  </span>
+                {/* </div> */}
+              {/* </label>  */}
+
+              {paymentMethod === "card" && (
+                <div className="space-y-4 text-gray-100">
+
+                  {/* Card Number */}
+                  <div className="relative">
+                    <label className="block text-xs md:text-lg  mb-1 text-white font-exo2">
+                      Card number
+                    </label>
+
+                    <input
+                      type="text"
+                      placeholder="1234 1234 1234 1234"
+                      value={cardData.cardNumber}
+                      onChange={(e) =>
+                        handleCardInputChange("cardNumber", e.target.value)
+                      }
+                      className={`w-full bg-white border ${
+                        cardErrors.cardNumber ? "border-red-500" : "border-[#1E293B]"
+                      } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                    />
+
+                    {cardImage && (
+                      <div className="absolute right-3 md:top-14 transform top-12 -translate-y-1/2">
+                        <img
+                          src={`/images/home/${cardImage}`}
+                          alt="cardType"
+                          className="w-10 h-auto"
+                        />
+                      </div>
+                    )}
+
+                    {cardErrors.cardNumber && (
+                      <p className="text-red-500 text-xs mt-1 font-exo2">
+                        {cardErrors.cardNumber}
+                      </p>
+                    )}
+                  </div>
+
+                  {/* Expiry + CVC */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs mb-1 md:text-lg text-white font-exo2">
+                        Expiration date
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="MM / YY"
+                        value={cardData.expirationDate}
+                        onChange={(e) =>
+                          handleCardInputChange("expirationDate", e.target.value)
+                        }
+                        className={`w-full bg-white border ${
+                          cardErrors.expirationDate
+                            ? "border-red-500"
+                            : "border-[#1E293B]"
+                        } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs md:text-lg mb-1 text-white font-exo2">
+                        Security code
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="CVC"
+                        value={cardData.securityCode}
+                        onChange={(e) =>
+                          handleCardInputChange("securityCode", e.target.value)
+                        }
+                        className={`w-full bg-white border ${
+                          cardErrors.securityCode
+                            ? "border-red-500"
+                            : "border-[#1E293B]"
+                        } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Cardholder */}
+                  <div>
+                    <label className="block text-xs md:text-lg mb-1 text-white font-exo2">
+                      Cardholder name
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Full name"
+                      value={cardData.cardholderName}
+                      onChange={(e) =>
+                        handleCardInputChange("cardholderName", e.target.value)
+                      }
+                      className={`w-full bg-white border ${
+                        cardErrors.cardholderName
+                          ? "border-red-500"
+                          : "border-[#1E293B]"
+                      } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                    />
+                  </div>
+
+                  {/* Helper text */}
+                 
+                </div>
+                
+              )}
+              
+            </div>
+             <p className="text-md text-gray-300 mt-2 font-exo2">
+                    Your payment details are encrypted and processed securely.
+                  </p>
+          </div>
+
+          {/* Pay Button */}
+          <form onSubmit={handlePayment} className="mt-8">
+            <button
+              type="submit"
+              disabled={!isFormValid()}
+              className={`w-full py-4 rounded-md font-exo2 text-base md:text-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 ${
+                isFormValid()
+                  ? "bg-[#009AFF] text-white hover:bg-blue-500"
+                  : "bg-gray-700 text-gray-400 cursor-not-allowed"
+              }`}
+            >
+              {/* Pay ${total.toFixed(2)} */}
+              Confirm Order
+            </button>
+          </form>
+                  <div className="text-center text-lg text-gray-300 font-exo2">
+            Need assistance?{' '}
+            <a
+              href="tel:18883382540"
+              className="text-[#009AFF] font-medium underline"
+            >
+              (888) 338-2540 {''}
+            </a>
+          - we’re here to help!  
+          </div>
+
+          {/* POLICY */}
+          <div className="text-center text-sm text-gray-400 font-exo2">
+            Free shipping · Easy returns ·{' '}
+            <a
+              href="/account/warrantyAndReturn"
+              className="text-[#009AFF] underline font-medium"
+            >
+              Warranty & return policy
+            </a>
+          </div>
+
+          {/* Back */}
+          <div className="text-center mt-5">
+            <Link
+              href="/account/checkout"
+              className="text-sm text-gray-400 hover:underline font-exo2"
+            >
+              Back
+            </Link>
+          </div>
+        </div>
+      </div>
+
+          {/* <div className="bg-[#02305A] border border-[#02305A] rounded-lg md:p-8 p-3 w-full">
             <div className="max-w-[600px] ml-0">
               <h2 className="text-2xl font-semibold mb-8 font-exo2">
                 Payment Information
               </h2>
 
               {/* Show loading state while initializing */}
-              {isLoadingPayment && (
+              {/* {isLoadingPayment && (
                 <div className="text-center py-8">
                   <p className="text-white font-exo2">Initializing secure payment...</p>
                 </div>
-              )}
+              )} */}
 
               {/* Show Stripe Elements Form when ready */}
-              {clientSecret && !isLoadingPayment && (
+              {/* {clientSecret && !isLoadingPayment && (
               <Elements
                 stripe={stripePromise}
                 options={{
@@ -2310,17 +2501,17 @@ const verifyOtp = async () => {
                   total={total}
                 />
               </Elements>
-            )}
+            )} */}
 
               {/* Show message if form is not valid yet */}
-              {!isFormValid() && !isLoadingPayment && (
+              {/* {!isFormValid() && !isLoadingPayment && (
                 <div className="bg-yellow-900/20 border border-yellow-600 rounded-md p-4 text-yellow-200 font-exo2">
                   Please complete all required information above before proceeding to payment.
                 </div>
-              )}
+              )} */}
 
               {/* Back Link */}
-              <div className="text-center mt-6">
+              {/* <div className="text-center mt-6">
                 <Link
                   href="/account/checkout"
                   className="text-sm sm:text-base text-gray-400 hover:underline font-exo2 cursor-pointer"
@@ -2329,7 +2520,7 @@ const verifyOtp = async () => {
                 </Link>
               </div>
             </div>
-          </div>
+          </div> */}
           </div>
       </div>
     </div>

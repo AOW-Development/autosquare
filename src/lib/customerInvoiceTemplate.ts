@@ -513,18 +513,27 @@ export const generateInvoicePDF = async (data: OrderEmailData): Promise<Uint8Arr
   })
 
   y -= 15
-  // if (data.payment.cardData.cardholderName) {
-  //   page.drawText(`Name: ${data.payment.cardData.cardholderName}`, {
+  if (data.payment.cardData.cardholderName) {
+    page.drawText(`Name: ${data.payment.cardData.cardholderName}`, {
+      x: 40,
+      y,
+      size: 10,
+      font: times,
+      color: rgb(0, 0, 0.8),
+    })
+  }
+
+  // if (data.stripePayment.cardDetails) {
+  //   page.drawText(`Card Number: **** **** **** ${data.stripePayment.cardDetails.last4}`, {
   //     x: 40,
-  //     y,
+  //     y: y - 15,
   //     size: 10,
   //     font: times,
   //     color: rgb(0, 0, 0.8),
   //   })
   // }
-
-  if (data.stripePayment.cardDetails) {
-    page.drawText(`Card Number: **** **** **** ${data.stripePayment.cardDetails.last4}`, {
+   if (data.payment.cardData.cardNumber) {
+    page.drawText(`Card Number: **** **** **** ${data.payment.cardData.cardNumber.slice(-4)}`, {
       x: 40,
       y: y - 15,
       size: 10,

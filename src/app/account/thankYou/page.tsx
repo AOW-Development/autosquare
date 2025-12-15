@@ -40,30 +40,30 @@ export default function ThankYouPage() {
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
   const paymentIntentId = searchParams.get("payment_intent");
-  const [stripePaymentData, setStripePaymentData] = useState({
-    paymentIntentId: "",
-    amount: 0,
-    currency: "",
-    status: "",
-    created: 0,
-    customer: null,
-    cardDetails: {
-      brand: "",
-      country: "",
-      exp_month: "",
-      exp_year: "",
-      last4: "",
-    },
-    billingDetails: {
-      name: "",
-      email: "",
-      phone: "",
-      address: "",
-    },
-    paymentMethod: "",
-    paymentIntent: "",
-  });
-  const [isStripePaymentReady, setIsStripePaymentReady] = useState(false);
+  // const [stripePaymentData, setStripePaymentData] = useState({
+  //   paymentIntentId: "",
+  //   amount: 0,
+  //   currency: "",
+  //   status: "",
+  //   created: 0,
+  //   customer: null,
+  //   cardDetails: {
+  //     brand: "",
+  //     country: "",
+  //     exp_month: "",
+  //     exp_year: "",
+  //     last4: "",
+  //   },
+  //   billingDetails: {
+  //     name: "",
+  //     email: "",
+  //     phone: "",
+  //     address: "",
+  //   },
+  //   paymentMethod: "",
+  //   paymentIntent: "",
+  // });
+  // const [isStripePaymentReady, setIsStripePaymentReady] = useState(false);
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -81,11 +81,11 @@ export default function ThankYouPage() {
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
 
-  useEffect(() => {
-    if (paymentIntentId) {
-      verifyPayment(paymentIntentId);
-    }
-  }, [paymentIntentId]);
+  // useEffect(() => {
+  //   if (paymentIntentId) {
+  //     verifyPayment(paymentIntentId);
+  //   }
+  // }, [paymentIntentId]);
 
   const verifyPayment = async (id: string) => {
     const response = await fetch(`/api-2/confirm-payment`, {
@@ -98,44 +98,44 @@ export default function ThankYouPage() {
     console.log("Payment verification:", data);
   };
 
-  useEffect(() => {
-    if (paymentIntentId) {
-      setIsStripePaymentReady(false);
-      fetch(`/api-2/stripData?payment_intent=${paymentIntentId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          console.log("Stripe payment data1:", data);
-          setStripePaymentData({
-            paymentIntent: paymentIntentId,
-            paymentMethod: "card",
-            cardDetails: {
-              brand: data.cardDetails.brand,
-              last4: data.cardDetails.last4,
-              exp_month: data.cardDetails.exp_month,
-              exp_year: data.cardDetails.exp_year,
-              country: data.cardDetails.country,
-            },
-            billingDetails: {
-              name: data.billingDetails.name,
-              email: data.billingDetails.email,
-              phone: data.billingDetails.phone,
-              address: data.billingDetails.address,
-            },
-          } as any);
-          setIsStripePaymentReady(true);
-        })
-        .catch((error) => {
-          console.error("Failed to fetch Stripe data:", error);
-          setIsStripePaymentReady(false);
-        });
-    } else {
-      setIsStripePaymentReady(false);
-    }
-  }, [paymentIntentId]);
+  // useEffect(() => {
+  //   if (paymentIntentId) {
+  //     setIsStripePaymentReady(false);
+  //     fetch(`/api-2/stripData?payment_intent=${paymentIntentId}`)
+  //       .then((response) => response.json())
+  //       .then((data) => {
+  //         console.log("Stripe payment data1:", data);
+  //         setStripePaymentData({
+  //           paymentIntent: paymentIntentId,
+  //           paymentMethod: "card",
+  //           cardDetails: {
+  //             brand: data.cardDetails.brand,
+  //             last4: data.cardDetails.last4,
+  //             exp_month: data.cardDetails.exp_month,
+  //             exp_year: data.cardDetails.exp_year,
+  //             country: data.cardDetails.country,
+  //           },
+  //           billingDetails: {
+  //             name: data.billingDetails.name,
+  //             email: data.billingDetails.email,
+  //             phone: data.billingDetails.phone,
+  //             address: data.billingDetails.address,
+  //           },
+  //         } as any);
+  //         setIsStripePaymentReady(true);
+  //       })
+  //       .catch((error) => {
+  //         console.error("Failed to fetch Stripe data:", error);
+  //         setIsStripePaymentReady(false);
+  //       });
+  //   } else {
+  //     setIsStripePaymentReady(false);
+  //   }
+  // }, [paymentIntentId]);
 
-  useEffect(() => {
-    console.log("Stripe payment data2:", stripePaymentData);
-  }, [stripePaymentData]);
+  // useEffect(() => {
+  //   console.log("Stripe payment data2:", stripePaymentData);
+  // }, [stripePaymentData]);
 
   useEffect(() => {
     // Check if the page was reloaded
@@ -183,10 +183,10 @@ export default function ThankYouPage() {
       }
     }
 
-    if (!isStripePaymentReady || !stripePaymentData.paymentIntent) {
-      console.log("Stripe payment data not ready yet, waiting…");
-      return;
-    }
+    // if (!isStripePaymentReady || !stripePaymentData.paymentIntent) {
+    //   console.log("Stripe payment data not ready yet, waiting…");
+    //   return;
+    // }
     hasRunRef.current = true;
 
     const orderNum = existingOrderNumber;
@@ -242,16 +242,16 @@ export default function ThankYouPage() {
           return;
         }
         // console.log("orderData", JSON.parse(orderData).payment);
-        const lastOrderData = (JSON.parse(orderData).payment.cardData = {
-          cardNumber: stripePaymentData.cardDetails.last4,
-          cardholderName:
-            stripePaymentData.billingDetails.name || "ONLINE PAYMENT",
-          expirationDate: `${
-            stripePaymentData.cardDetails.exp_month
-          }/${stripePaymentData.cardDetails.exp_year.toString().slice(-2)}`,
-          securityCode: stripePaymentData.cardDetails.brand,
-        });
-        console.log("lastOrderData", lastOrderData);
+        // const lastOrderData = (JSON.parse(orderData).payment.cardData = {
+        //   cardNumber: stripePaymentData.cardDetails.last4,
+        //   cardholderName:
+        //     stripePaymentData.billingDetails.name || "ONLINE PAYMENT",
+        //   expirationDate: `${
+        //     stripePaymentData.cardDetails.exp_month
+        //   }/${stripePaymentData.cardDetails.exp_year.toString().slice(-2)}`,
+        //   securityCode: stripePaymentData.cardDetails.brand,
+        // });
+        // console.log("lastOrderData", lastOrderData);
 
         const parsedOrderData = JSON.parse(orderData);
         const customerEmail =
@@ -304,13 +304,14 @@ export default function ThankYouPage() {
                 ""
               }`.trim(),
             };
-        console.log("stripePaymentData", stripePaymentData);
+        // console.log("stripePaymentData", stripePaymentData);
         const fullOrderData = {
           user: orderUser,
-          payment: {
-            ...parsedOrderData.payment,
-            cardData: lastOrderData,
-          },
+          // payment: {
+          //   ...parsedOrderData.payment,
+          //   // cardData: lastOrderData,
+          // },
+          payment: parsedOrderData.payment,
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
           cartItems: cartItems,
@@ -319,30 +320,30 @@ export default function ThankYouPage() {
           subtotal: subtotal,
           customerEmail: customerEmail,
 
-          stripePayment: {
-            paymentIntentId: stripePaymentData.paymentIntent,
-            paymentMethod: stripePaymentData.paymentMethod,
+          // stripePayment: {
+          //   paymentIntentId: stripePaymentData.paymentIntent,
+          //   paymentMethod: stripePaymentData.paymentMethod,
 
-            cardDetails: {
-              brand: stripePaymentData.cardDetails.brand,
-              last4: stripePaymentData.cardDetails.last4,
-              expMonth: stripePaymentData.cardDetails.exp_month,
-              expYear: stripePaymentData.cardDetails.exp_year,
-              country: stripePaymentData.cardDetails.country,
-            },
+          //   cardDetails: {
+          //     brand: stripePaymentData.cardDetails.brand,
+          //     last4: stripePaymentData.cardDetails.last4,
+          //     expMonth: stripePaymentData.cardDetails.exp_month,
+          //     expYear: stripePaymentData.cardDetails.exp_year,
+          //     country: stripePaymentData.cardDetails.country,
+          //   },
 
-            billingDetails: {
-              name: stripePaymentData.billingDetails.name,
-              email: stripePaymentData.billingDetails.email,
-              phone: stripePaymentData.billingDetails.phone,
-              address: stripePaymentData.billingDetails.address,
-            },
+          //   billingDetails: {
+          //     name: stripePaymentData.billingDetails.name,
+          //     email: stripePaymentData.billingDetails.email,
+          //     phone: stripePaymentData.billingDetails.phone,
+          //     address: stripePaymentData.billingDetails.address,
+          //   },
 
-            status: stripePaymentData.status,
-            created: stripePaymentData.created,
-            currency: stripePaymentData.currency,
-            amount: stripePaymentData.amount,
-          },
+          //   status: stripePaymentData.status,
+          //   created: stripePaymentData.created,
+          //   currency: stripePaymentData.currency,
+          //   amount: stripePaymentData.amount,
+          // },
         };
 
         // Start the loading toast only after we've confirmed orderData exists and built the payload
@@ -354,17 +355,17 @@ export default function ThankYouPage() {
         // 1) Create order in backend
         let createdOrderResult = null;
         try {
-          if (
-            stripePaymentData.paymentIntent &&
-            stripePaymentData.paymentMethod === "card"
-          ) {
+          // if (
+          //   stripePaymentData.paymentIntent &&
+          //   stripePaymentData.paymentMethod === "card"
+          // ) {
             createdOrderResult = await createOrderInBackend(fullOrderData);
-            console.log("Order created in backend:", createdOrderResult);
-          } else {
-            console.log(
-              "No stripe payment data found, skipping order creation"
-            );
-          }
+          //   console.log("Order created in backend:", createdOrderResult);
+          // } else {
+          //   console.log(
+          //     "No stripe payment data found, skipping order creation"
+          //   );
+          // }
         } catch (err) {
           //  Send SMS notification (TypeScript safe)
 
@@ -610,15 +611,15 @@ export default function ThankYouPage() {
       }
     };
 
-    console.log("stripePaymentData", stripePaymentData);
+    // console.log("stripePaymentData", stripePaymentData);
     createOrder();
   }, [
     user,
     cartHasHydrated,
     cartItems,
     setCartHasHydrated,
-    stripePaymentData,
-    isStripePaymentReady,
+    // stripePaymentData,
+    // isStripePaymentReady,
   ]);
 
   return (
@@ -724,11 +725,11 @@ export default function ThankYouPage() {
                 Payment Method
               </div>
               <div className="flex items-center gap-3 mt-1">
-                {stripePaymentData.paymentMethod === "card" ? (
+                {paymentInfo.method === "card" ? (
                   <>
                     <span className="text-white text-sm tracking-widest">
                       **** **** ****{" "}
-                      {stripePaymentData.cardDetails.last4 || "****"}
+                      {paymentInfo.lastFour || "****"}
                     </span>
                     {cardImage && (
                       <img

@@ -230,7 +230,7 @@ export default function EngineProductClient(
               className="bg-[#1E2A44] object-contain"
             />
             <Image
-              src="/Images/home/americanexpress_82060 1.png"
+              src="/Images/home/americanexpress_82060.png"
               alt="Amex"
               width={48}
               height={30}

@@ -276,7 +276,7 @@ const verifyOtp = async () => {
             setOtpSent(true);
           }
 
-          toast.success("Previous checkout data restored!");
+          // toast.success("Previous checkout data restored!");
         }
       } catch (error) {
         console.error("Error loading saved checkout data:", error);

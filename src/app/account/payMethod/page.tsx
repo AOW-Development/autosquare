@@ -425,36 +425,50 @@ const handlePaymentError = (error: string) => {
 
     if (field === "cardNumber") {
       const cleanValue = value.replace(/\D/g, ""); // Remove non-digits
-      const cardType = getCardType(cleanValue);
-      setCardType(cardType || "unknown"); // <--- ADD THIS LINE
-
-      let formatted = cleanValue;
+      
+      // Determine max length first to properly slice the value
       let maxLength = 16;
+      const preliminaryCardType = getCardType(cleanValue.slice(0, 16));
+      if (preliminaryCardType === "American Express") {
+        maxLength = 15;
+      }
+      
+      // Slice to max length before further processing
+      const slicedValue = cleanValue.slice(0, maxLength);
+      
+      // Get card type from the sliced value
+      const cardType = getCardType(slicedValue);
+      setCardType(cardType || "unknown");
+
+      let formatted = slicedValue;
 
       if (cardType === "American Express") {
-        maxLength = 15;
-        formatted = cleanValue
-          .slice(0, maxLength)
+        formatted = slicedValue
           .replace(/^(\d{0,4})(\d{0,6})(\d{0,5})/, (_m, p1, p2, p3) =>
             [p1, p2, p3].filter(Boolean).join(" ")
           );
       } else {
-        formatted = cleanValue
-          .slice(0, maxLength)
+        formatted = slicedValue
           .replace(/(\d{4})(?=\d)/g, "$1 ")
           .trim();
       }
 
-      const isValid = isValidCardNumber(cleanValue);
+      const isValid = isValidCardNumber(slicedValue);
 
-      if (!cardType && cleanValue.length > 0) {
-        setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
-      } else if (!isValid && cleanValue.length === maxLength) {
-        setCardErrors((prev) => ({
-          ...prev,
-          cardNumber: "Invalid card number",
-        }));
+      // Only show errors after user has entered the complete card number
+      if (slicedValue.length === maxLength) {
+        if (!cardType) {
+          setCardErrors((prev) => ({ ...prev, cardNumber: "Unknown card type" }));
+        } else if (!isValid) {
+          setCardErrors((prev) => ({
+            ...prev,
+            cardNumber: "Invalid card number",
+          }));
+        } else {
+          setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
+        }
       } else {
+        // Clear errors while user is still typing
         setCardErrors((prev) => ({ ...prev, cardNumber: "" }));
       }
 
@@ -2268,7 +2282,7 @@ const verifyOtp = async () => {
                     {cardImage && (
                       <div className="absolute right-3 md:top-14 transform top-12 -translate-y-1/2">
                         <Image
-                          src={`/images/home/${cardImage}`}
+                          src={`/Images/home/${cardImage}`}
                           width={20}
                           height={15}
                           alt="cardType"

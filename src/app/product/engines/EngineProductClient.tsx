@@ -254,95 +254,271 @@ export default function EngineProductClient({
     },
   ];
 
-  useEffect(() => {
-    if (!make || !model || !year || !part) return;
-    setIsLoading(true);
-    fetch(
-      `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        const variants: any[] = [];
-        if (data.groupedVariants) {
-          data.groupedVariants.forEach((group: any) => {
-            group.variants.forEach((variant: any) => {
-              variants.push({
-                ...variant,
-                make: data.make,
-                model: data.model,
-                year: data.year,
-                part: data.part,
-                subPart: group.subPart,
-                product: variant.product || group.product || null,
-                title: variant.title,
-                seoTitle: variant.seoTitle,
-                seoSlug: variant.seoSlug,
-                seoCanonical: variant.seoCanonical,
-                seoDescription: variant.seoDescription,
-                warranty: variant.warranty,
-                media: variant.product?.media || [],
-                description: variant.description,
-              });
+  // useEffect(() => {
+
+  //   if (!make || !model || !year || !part) return;
+  //   setIsLoading(true);
+  //   fetch(
+  //     `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
+  //   )
+  //     .then((res) => res.json())
+  //     .then((data) => {
+  //       const variants: any[] = [];
+  //       if (data.groupedVariants) {
+  //         data.groupedVariants.forEach((group: any) => {
+  //           group.variants.forEach((variant: any) => {
+  //             variants.push({
+  //               ...variant,
+  //               make: data.make,
+  //               model: data.model,
+  //               year: data.year,
+  //               part: data.part,
+  //               subPart: group.subPart,
+  //               product: variant.product || group.product || null,
+  //               title: variant.title,
+  //               seoTitle: variant.seoTitle,
+  //               seoSlug: variant.seoSlug,
+  //               seoCanonical: variant.seoCanonical,
+  //               seoDescription: variant.seoDescription,
+  //               warranty: variant.warranty,
+  //               media: variant.product?.media || [],
+  //               description: variant.description,
+  //             });
              
-            });
-          });
-        }
-        setAllVariants(variants);
-        setGroupedVariants(data.groupedVariants || []);
-        setProductInfo({
-          make: data.make || "",
-          model: data.model || "",
-          year: data.year || "",
-          part: data.part || "",
-        });
+  //           });
+  //         });
+  //       }
+  //       setAllVariants(variants);
+  //       setGroupedVariants(data.groupedVariants || []);
+  //       setProductInfo({
+  //         make: data.make || "",
+  //         model: data.model || "",
+  //         year: data.year || "",
+  //         part: data.part || "",
+  //       });
 
-       // IMPROVED LOGIC: Try to match from URL params first
-        let defaultGroup = null;
-        let defaultVariant = null;
+  //      // IMPROVED LOGIC: Try to match from URL params first
+  //       let defaultGroup = null;
+  //       let defaultVariant = null;
 
-        /***********************
-         * 1. MATCH USING SKU
-         ***********************/
-        if (sku && data.groupedVariants) {
-          for (const group of data.groupedVariants) {
+  //       /***********************
+  //        * 1. MATCH USING SKU
+  //        ***********************/
+  //       if (sku && data.groupedVariants) {
+  //         for (const group of data.groupedVariants) {
 
-            const variant = group.variants.find((v: any) =>{
-              console.log("Trying to match SKU:", sku, "Found variant:",v.sku);
-              return v.sku === sku;
-            } )
-            console.log("Result of SKU match:", variant);
+  //           const variant = group.variants.find((v: any) =>{
+  //             console.log("Trying to match SKU:", sku, "Found variant:",v.sku);
+  //             return v.sku === sku;
+  //           } )
+  //           console.log("Result of SKU match:", variant);
               
             
-            if (variant) {
-              defaultGroup = group;
-              defaultVariant = variant;
-              break;
-            }
+  //           if (variant) {
+  //             defaultGroup = group;
+  //             defaultVariant = variant;
+  //             break;
+  //           }
+  //         }
+  //       }
+
+  //       /****************************************
+  //        * 2. PARSE URL PARAM (item)
+  //        ****************************************/
+  //       let milesValue = "";
+  //       let specFromUrl = "";
+
+  //       if (!defaultVariant && item) {
+  //         const parts = item.split("-");
+
+  //         // last part = miles
+  //         const lastPart = parts[parts.length - 1];
+  //         if (/^\d+$/.test(lastPart)) {
+  //           milesValue = lastPart.replace(/[^\d]/g, "");
+  //         }
+
+  //         // spec between part and miles
+  //         const partIndex = parts.findIndex(
+  //           (p) => p.toLowerCase() === part.toLowerCase()
+  //         );
+  //         if (partIndex !== -1) {
+  //           specFromUrl = parts
+  //             .slice(partIndex + 1, parts.length - 1)
+  //             .join(" ")
+  //             .replace(/-/g, " ")
+  //             .trim()
+  //             .toLowerCase();
+  //         }
+  //       }
+
+  //       /****************************************
+  //        * 3. FIRST TRY MATCH BY MILES
+  //        ****************************************/
+  //       if (!defaultVariant && milesValue) {
+  //         for (const group of data.groupedVariants) {
+  //           const found = group.variants.find((v: any) => {
+  //             const vm = v.miles?.toString().replace(/[^\d]/g, "");
+  //             return vm === milesValue;
+  //           });
+
+  //           if (found) {
+  //             defaultGroup = group;
+  //             defaultVariant = found;
+  //             break;
+  //           }
+  //         }
+  //       }
+
+  //       /****************************************
+  //        * 4. MATCH SPEC ONLY IF MILES FAILED
+  //        ****************************************/
+  //       if (!defaultVariant && specFromUrl) {
+  //         for (const group of data.groupedVariants) {
+  //           const groupSpec = group.subPart.name
+  //             .replace(/[,()]/g, "")
+  //             .replace(/\s+/g, " ")
+  //             .trim()
+  //             .toLowerCase();
+
+  //           if (
+  //             groupSpec.includes(specFromUrl) ||
+  //             specFromUrl.includes(groupSpec)
+  //           ) {
+  //             defaultGroup = group;
+  //             defaultVariant = group.variants[0];
+  //             break;
+  //           }
+  //         }
+  //       }
+
+  //       /****************************************
+  //        * 5. FALLBACK
+  //        ****************************************/
+  //       if (!defaultVariant) {
+  //         defaultGroup = data.groupedVariants[0];
+  //         defaultVariant = defaultGroup.variants[0];
+  //       }
+
+  //       /****************************************
+  //        * 6. SET SELECTED VALUES
+  //        ****************************************/
+  //       setSelectedSubPartId(defaultGroup.subPart.id);
+  //       setSelectedMilesSku(defaultVariant.sku);
+
+  //       setSelectedProduct({
+  //         ...defaultVariant,
+  //         make: data.make,
+  //         model: data.model,
+  //         year: data.year,
+  //         part: data.part,
+  //       });
+
+  //     })
+  //     .finally(() => setIsLoading(false));
+  // }, [make, model, year, part, sku, API_BASE]);
+
+
+  // UPDATED: Lines 394-534 - Replace the entire useEffect that fetches grouped-with-subparts
+
+useEffect(() => {
+  if (!make || !model || !year || !part) return;
+  setIsLoading(true);
+  fetch(
+    `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      const variants: any[] = [];
+      if (data.groupedVariants) {
+        data.groupedVariants.forEach((group: any) => {
+          group.variants.forEach((variant: any) => {
+            variants.push({
+              ...variant,
+              make: data.make,
+              model: data.model,
+              year: data.year,
+              part: data.part,
+              subPart: group.subPart,
+              product: variant.product || group.product || null,
+              title: variant.title,
+              seoTitle: variant.seoTitle,
+              seoSlug: variant.seoSlug,
+              seoCanonical: variant.seoCanonical,
+              seoDescription: variant.seoDescription,
+              warranty: variant.warranty,
+              media: variant.product?.media || [],
+              description: variant.description,
+            });
+          });
+        });
+      }
+      setAllVariants(variants);
+      setGroupedVariants(data.groupedVariants || []);
+      setProductInfo({
+        make: data.make || "",
+        model: data.model || "",
+        year: data.year || "",
+        part: data.part || "",
+      });
+
+      let defaultGroup = null;
+      let defaultVariant = null;
+
+      /***********************
+       * 1. MATCH USING SKU (HIGHEST PRIORITY)
+       ***********************/
+      if (sku && data.groupedVariants) {
+        for (const group of data.groupedVariants) {
+          const variant = group.variants.find((v: any) => {
+            console.log("Trying to match SKU:", sku, "Found variant:", v.sku);
+            return v.sku === sku;
+          });
+          console.log("Result of SKU match:", variant);
+
+          if (variant) {
+            defaultGroup = group;
+            defaultVariant = variant;
+            console.log("✅ Matched by SKU:", sku);
+            break;
           }
         }
+      }
 
-        /****************************************
-         * 2. PARSE URL PARAM (item)
-         ****************************************/
-        let milesValue = "";
-        let specFromUrl = "";
+      /****************************************
+       * 2. PARSE URL PARAM (item) - Extract spec and miles
+       ****************************************/
+      let milesValue = "";
+      let specFromUrl = "";
 
-        if (!defaultVariant && item) {
-          const parts = item.split("-");
+      if (!defaultVariant && item) {
+        const parts = item.split("-");
+        console.log("📋 Parsing URL parts:", parts);
 
-          // last part = miles
+        // Find where the part name is in the URL
+        const partIndex = parts.findIndex(
+          (p) => p.toLowerCase() === part.toLowerCase()
+        );
+        
+        console.log("🔍 Part index in URL:", partIndex);
+
+        if (partIndex !== -1 && parts.length > partIndex + 1) {
+          // Everything between part name and the last segment (miles) is the specification
           const lastPart = parts[parts.length - 1];
+          
+          // Check if last part is miles (numeric)
           if (/^\d+$/.test(lastPart)) {
             milesValue = lastPart.replace(/[^\d]/g, "");
-          }
-
-          // spec between part and miles
-          const partIndex = parts.findIndex(
-            (p) => p.toLowerCase() === part.toLowerCase()
-          );
-          if (partIndex !== -1) {
+            // Specification is everything between part name and miles
             specFromUrl = parts
               .slice(partIndex + 1, parts.length - 1)
+              .join(" ")
+              .replace(/-/g, " ")
+              .trim()
+              .toLowerCase();
+          } else {
+            // No miles at the end, everything after part is specification
+            specFromUrl = parts
+              .slice(partIndex + 1)
               .join(" ")
               .replace(/-/g, " ")
               .trim()
@@ -350,28 +526,47 @@ export default function EngineProductClient({
           }
         }
 
-        /****************************************
-         * 3. FIRST TRY MATCH BY MILES
-         ****************************************/
-        if (!defaultVariant && milesValue) {
-          for (const group of data.groupedVariants) {
-            const found = group.variants.find((v: any) => {
-              const vm = v.miles?.toString().replace(/[^\d]/g, "");
-              return vm === milesValue;
-            });
+        console.log("📝 Extracted from URL - Spec:", specFromUrl, "Miles:", milesValue);
+      }
 
-            if (found) {
-              defaultGroup = group;
-              defaultVariant = found;
-              break;
+      /****************************************
+       * 3. MATCH BY SPECIFICATION (EXACT OR PARTIAL)
+       ****************************************/
+      if (!defaultVariant && specFromUrl) {
+        console.log("🔎 Attempting to match specification:", specFromUrl);
+
+        // Try exact match first
+        for (const group of data.groupedVariants) {
+          const groupSpec = group.subPart.name
+            .replace(/[,()]/g, "")
+            .replace(/\s+/g, " ")
+            .trim()
+            .toLowerCase();
+
+          console.log("Comparing URL spec:", specFromUrl, "with group spec:", groupSpec);
+
+          // Exact match
+          if (groupSpec === specFromUrl) {
+            defaultGroup = group;
+            
+            // If we have miles, find matching variant
+            if (milesValue) {
+              const milesMatch = group.variants.find((v: any) => {
+                const vm = v.miles?.toString().replace(/[^\d]/g, "");
+                return vm === milesValue;
+              });
+              defaultVariant = milesMatch || group.variants[0];
+            } else {
+              defaultVariant = group.variants[0];
             }
+            
+            console.log("✅ Exact spec match found!");
+            break;
           }
         }
 
-        /****************************************
-         * 4. MATCH SPEC ONLY IF MILES FAILED
-         ****************************************/
-        if (!defaultVariant && specFromUrl) {
+        // If no exact match, try partial match
+        if (!defaultVariant) {
           for (const group of data.groupedVariants) {
             const groupSpec = group.subPart.name
               .replace(/[,()]/g, "")
@@ -379,28 +574,67 @@ export default function EngineProductClient({
               .trim()
               .toLowerCase();
 
+            // Partial match (contains)
             if (
               groupSpec.includes(specFromUrl) ||
               specFromUrl.includes(groupSpec)
             ) {
               defaultGroup = group;
-              defaultVariant = group.variants[0];
+              
+              // If we have miles, find matching variant
+              if (milesValue) {
+                const milesMatch = group.variants.find((v: any) => {
+                  const vm = v.miles?.toString().replace(/[^\d]/g, "");
+                  return vm === milesValue;
+                });
+                defaultVariant = milesMatch || group.variants[0];
+              } else {
+                defaultVariant = group.variants[0];
+              }
+              
+              console.log("✅ Partial spec match found!");
               break;
             }
           }
         }
+      }
 
-        /****************************************
-         * 5. FALLBACK
-         ****************************************/
-        if (!defaultVariant) {
-          defaultGroup = data.groupedVariants[0];
-          defaultVariant = defaultGroup.variants[0];
+      /****************************************
+       * 4. MATCH BY MILES ONLY (if spec matching failed)
+       ****************************************/
+      if (!defaultVariant && milesValue) {
+        console.log("🔎 Attempting to match by miles only:", milesValue);
+        
+        for (const group of data.groupedVariants) {
+          const found = group.variants.find((v: any) => {
+            const vm = v.miles?.toString().replace(/[^\d]/g, "");
+            return vm === milesValue;
+          });
+
+          if (found) {
+            defaultGroup = group;
+            defaultVariant = found;
+            console.log("✅ Matched by miles!");
+            break;
+          }
         }
+      }
 
-        /****************************************
-         * 6. SET SELECTED VALUES
-         ****************************************/
+      /****************************************
+       * 5. FALLBACK TO FIRST AVAILABLE
+       ****************************************/
+      if (!defaultVariant && data.groupedVariants.length > 0) {
+        console.log("⚠️ Using fallback - first available option");
+        defaultGroup = data.groupedVariants[0];
+        defaultVariant = defaultGroup.variants[0];
+      }
+
+      /****************************************
+       * 6. SET SELECTED VALUES
+       ****************************************/
+      if (defaultGroup && defaultVariant) {
+        console.log("🎯 Final selection - Group:", defaultGroup.subPart.name, "Variant SKU:", defaultVariant.sku);
+        
         setSelectedSubPartId(defaultGroup.subPart.id);
         setSelectedMilesSku(defaultVariant.sku);
 
@@ -411,10 +645,13 @@ export default function EngineProductClient({
           year: data.year,
           part: data.part,
         });
+      }
+    })
+    .finally(() => setIsLoading(false));
+}, [make, model, year, part, sku, item, API_BASE]);
 
-      })
-      .finally(() => setIsLoading(false));
-  }, [make, model, year, part, sku, API_BASE]);
+
+
 
   useEffect(() => {
     if (!selectedProduct?.media?.length) {

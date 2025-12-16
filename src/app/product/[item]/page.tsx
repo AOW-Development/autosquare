@@ -6,6 +6,8 @@ import { cookies } from "next/headers";
 // Force dynamic rendering to ensure params and searchParams are available
 export const dynamic = "force-dynamic";
 
+let sku: string | undefined = undefined;
+
 type Props = {
   params: Promise<{
     item: string;
@@ -53,7 +55,7 @@ export async function generateMetadata({
     const segments = item?.split("-") || [];
     const [year, make, model, part, ...skuParts] = segments;
     const cookieStore = await cookies();
-    const sku = cookieStore.get("sku")?.value;
+    sku = cookieStore.get("sku")?.value;
     // const sku = skuParts.length > 0 ? skuParts.join("-") : undefined;
     console.log("Year:", year);
     console.log("Make:", make);
@@ -140,5 +142,5 @@ export default async function EngineProductPage({
   console.log("EngineProductPage - item:", routeParams.item);
 
   // Pass the item to the client component if needed
-  return <EngineProductClient initialItem={routeParams.item} />;
+  return <EngineProductClient initialItem={routeParams.item} setSku={sku} />;
 }

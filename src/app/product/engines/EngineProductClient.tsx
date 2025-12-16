@@ -13,6 +13,7 @@ import PartRequestPopup from "@/components/partRequestPopup";
 import { useRouter } from "next/navigation";
 import { VerifyPartPopup } from "@/components/fitment";
 
+
 interface SubPart {
   id: number;
   name: string;
@@ -32,6 +33,7 @@ interface Product {
   inStock?: boolean;
   discountedPrice?: number;
   actualprice?: number;
+
 }
 
 const galleryImages = [
@@ -42,11 +44,13 @@ const galleryImages = [
 
 interface EngineProductClientProps {
   initialItem?: string;
+  setSku?: string;
 }
 
-export default function EngineProductClient(
-  { initialItem }: EngineProductClientProps = {} as EngineProductClientProps
-) {
+export default function EngineProductClient({
+  initialItem,
+  setSku,
+}: EngineProductClientProps) {
   const [productInfo, setProductInfo] = useState({
     make: "",
     model: "",
@@ -102,10 +106,11 @@ export default function EngineProductClient(
       make = parts[1] || undefined;
       model = parts[2] || undefined;
       part = parts[3] || undefined;
+      sku = setSku;
       // SKU might be in later parts
-      if (parts.length > 4) {
-        sku = parts.slice(4).join("-") || undefined;
-      }
+      // if (parts.length > 4) {
+      //   sku = parts.slice(4).join("-") || undefined;
+      // }
     }
     console.log("Parsed from item:", { make, model, year, part, sku });
   }
@@ -278,6 +283,7 @@ export default function EngineProductClient(
                 media: variant.product?.media || [],
                 description: variant.description,
               });
+             
             });
           });
         }
@@ -299,7 +305,13 @@ export default function EngineProductClient(
          ***********************/
         if (sku && data.groupedVariants) {
           for (const group of data.groupedVariants) {
-            const variant = group.variants.find((v: any) => v.sku === sku);
+
+            const variant = group.variants.find((v: any) =>{
+              console.log("Trying to match SKU:", sku, "Found variant:",v.sku);
+              return v.sku === sku;
+            } )
+              
+            
             if (variant) {
               defaultGroup = group;
               defaultVariant = variant;

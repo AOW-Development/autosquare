@@ -4,7 +4,7 @@ import EngineProductClient from "../engines/EngineProductClient";
 import { cookies } from "next/headers";
 
 // Force dynamic rendering to ensure params and searchParams are available
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
 
 let sku: string | undefined = undefined;
 

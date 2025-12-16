@@ -1,12 +1,10 @@
 import { Metadata } from "next";
 import { generateDynamicEngineMetadata } from "@/utils/metadata";
 import EngineProductClient from "../engines/EngineProductClient";
-import { cookies } from "next/headers";
 
-// Force dynamic rendering to ensure params and searchParams are available
-// export const dynamic = "force-dynamic";
-
-let sku: string | undefined = undefined;
+// Force dynamic rendering
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type Props = {
   params: Promise<{
@@ -33,62 +31,81 @@ export async function generateMetadata({
     const routeParams = await params;
     const queryParams = await searchParams;
 
-    // Debug: log the params
     console.log("Page generateMetadata called with params:", routeParams);
     console.log("Page generateMetadata called with searchParams:", queryParams);
 
-    // Merge route params and query params for metadata generation
+    // Parse URL segments
+    const segments = routeParams.item?.split("-") || [];
+    let [year, make, model, part, ...rest] = segments;
+
+    // If not in query params, try to parse from URL
+    if (!queryParams.make && segments.length >= 4) {
+      year = segments[0];
+      make = segments[1];
+      model = segments[2];
+      part = segments[3];
+    }
+
+    console.log("Parsed:", { year, make, model, part });
+
     const allParams = {
       ...queryParams,
       item: routeParams.item,
     };
 
     const baseMetadata = generateDynamicEngineMetadata(allParams);
-    const { item } = routeParams;
-    console.log("Item:", item);
+    
     let apiseo: {
       seoTitle?: string;
       seoDescription?: string;
       seoCanonical?: string;
     } | null = null;
-    // We want: year, make, model, part, and then everything after part (joined by dash) as sku
-    const segments = item?.split("-") || [];
-    const [year, make, model, part, ...skuParts] = segments;
-    const cookieStore = await cookies();
-    sku = cookieStore.get("sku")?.value;
-    // const sku = skuParts.length > 0 ? skuParts.join("-") : undefined;
-    console.log("Year:", year);
-    console.log("Make:", make);
-    console.log("Model:", model);
-    console.log("Part:", part);
-    console.log("Sku:", sku);
 
+    // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
-        );
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+        console.log("🔍 Fetching SEO data from:", apiUrl);
+        
+        const apiResponse = await fetch(apiUrl, {
+          cache: 'no-store',
+          next: { revalidate: 0 },
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        });
+
+        if (!apiResponse.ok) {
+          console.error("❌ API response not OK:", apiResponse.status);
+          throw new Error(`API returned ${apiResponse.status}`);
+        }
 
         const apiData = await apiResponse.json();
         console.log("✅ API Response received:", {
           hasGroupedVariants: !!apiData.groupedVariants,
           variantCount: apiData.groupedVariants?.length,
-          firstVariantSEO: apiData.groupedVariants?.[0]?.variants?.[0]?.seoTitle
         });
+
+        // STRATEGY: Always use the FIRST IN-STOCK variant for SEO
+        // This ensures consistent, cacheable meta tags for search engines
         let selectedVariant: any | null = null;
-        if (sku) {
-          for (const group of apiData.groupedVariants ?? []) {
-            const v = group.variants.find((v: any) => v.sku === sku);
-            if (v) {
-              selectedVariant = v;
+
+        if (apiData.groupedVariants && apiData.groupedVariants.length > 0) {
+          // Priority 1: First in-stock variant
+          for (const group of apiData.groupedVariants) {
+            const inStockVariant = group.variants.find((v: any) => v.inStock);
+            if (inStockVariant) {
+              selectedVariant = inStockVariant;
+              console.log("✅ Using first in-stock variant for SEO");
               break;
             }
           }
-        }
 
-        if (!selectedVariant) {
-          selectedVariant = apiData.groupedVariants?.[0]?.variants?.[0] || null;
-          console.log("Selected variant:", selectedVariant);
+          // Priority 2: First variant overall (if none in stock)
+          if (!selectedVariant) {
+            selectedVariant = apiData.groupedVariants[0].variants[0];
+            console.log("⚠️ Using first variant (none in stock)");
+          }
         }
 
         if (selectedVariant) {
@@ -97,35 +114,60 @@ export async function generateMetadata({
             seoDescription: selectedVariant.seoDescription || "",
             seoCanonical: selectedVariant.seoCanonical || "",
           };
-          console.log("✅ SEO data extracted from API:", apiseo);
-          cookieStore.set("apiseo", JSON.stringify(apiseo), { path: '/' });
+          console.log("✅ SEO data extracted:", {
+            title: apiseo.seoTitle?.substring(0, 60),
+            hasDescription: !!apiseo.seoDescription,
+            hasCanonical: !!apiseo.seoCanonical
+          });
         } else {
-          console.log("⚠️ No variant selected, SEO data will be null");
+          console.log("⚠️ No variant found, using fallback metadata");
         }
       } catch (apiError) {
-        console.error("Error fetching SEO data from API:", apiError);
+        console.error("❌ Error fetching SEO data:", apiError);
       }
+    } else {
+      console.log("⚠️ Missing required params:", { make, model, year, part });
     }
+
+    // Build final metadata with proper type handling
+    const finalTitle = apiseo?.seoTitle?.trim() || baseMetadata.title || undefined;
+    const finalDescription = apiseo?.seoDescription?.trim() || baseMetadata.description || undefined;
+    const finalCanonical = apiseo?.seoCanonical?.trim() || 
+      (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
 
     const finalMetadata: Metadata = {
       ...baseMetadata,
-      title: apiseo?.seoTitle?.trim() || baseMetadata.title,
-      description: apiseo?.seoDescription?.trim() || baseMetadata.description,
+      title: finalTitle,
+      description: finalDescription,
       alternates: {
         ...(baseMetadata.alternates ?? {}),
-        canonical: apiseo?.seoCanonical?.trim() || baseMetadata.alternates?.canonical || undefined,
+        canonical: finalCanonical,
+      },
+      // Add Open Graph tags for social sharing
+      openGraph: {
+        title: finalTitle,
+        description: finalDescription,
+        url: finalCanonical,
+        type: 'website',
+      },
+      // Add Twitter Card tags
+      twitter: {
+        card: 'summary_large_image',
+        title: finalTitle,
+        description: finalDescription,
       },
     };
-    console.log("🎯 Final metadata generated:", {
+    
+    console.log("🎯 Final metadata:", {
       title: finalMetadata.title,
-      description: finalMetadata.description?.substring(0, 50) + '...',
+      hasDescription: !!finalMetadata.description,
       canonical: finalMetadata.alternates?.canonical,
       usedApiSEO: !!apiseo?.seoTitle
     });
+    
     return finalMetadata;
   } catch (error) {
-    // Fallback to default metadata if there's an error
-    console.error("Error generating metadata:", error);
+    console.error("❌ Error generating metadata:", error);
     return generateDynamicEngineMetadata({});
   }
 }
@@ -137,11 +179,12 @@ export default async function EngineProductPage({
   const routeParams = await params;
   const queryParams = await searchParams;
 
-  // Debug logging
   console.log("EngineProductPage - routeParams:", routeParams);
   console.log("EngineProductPage - queryParams:", queryParams);
-  console.log("EngineProductPage - item:", routeParams.item);
 
-  // Pass the item to the client component if needed
-  return <EngineProductClient initialItem={routeParams.item} setSku={sku} />;
+  // Don't pass SKU from server - let client handle it
+  return <EngineProductClient 
+    initialItem={routeParams.item} 
+    setSku={undefined} // Client will determine this
+  />;
 }

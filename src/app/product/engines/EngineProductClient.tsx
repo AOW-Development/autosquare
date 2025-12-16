@@ -568,6 +568,63 @@ export default function EngineProductClient({
   m?.toString().replace(/[^\d]/g, "");
 
 
+
+  // Add this NEW useEffect to EngineProductClient.tsx
+useEffect(() => {
+  if (!selectedProduct) return;
+
+  // Update document title dynamically
+  if (selectedProduct.seoTitle) {
+    document.title = selectedProduct.seoTitle;
+  }
+
+  // Update meta description dynamically
+  if (selectedProduct.seoDescription) {
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute('content', selectedProduct.seoDescription);
+  }
+
+  // Update canonical URL dynamically
+  if (selectedProduct.seoCanonical) {
+    let linkCanonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!linkCanonical) {
+      linkCanonical = document.createElement('link');
+      linkCanonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(linkCanonical);
+    }
+    linkCanonical.href = selectedProduct.seoCanonical;
+  }
+
+  // Update Open Graph tags dynamically
+  const updateOgTag = (property: string, content: string) => {
+    let ogTag = document.querySelector(`meta[property="${property}"]`);
+    if (!ogTag) {
+      ogTag = document.createElement('meta');
+      ogTag.setAttribute('property', property);
+      document.head.appendChild(ogTag);
+    }
+    ogTag.setAttribute('content', content);
+  };
+
+  if (selectedProduct.seoTitle) {
+    updateOgTag('og:title', selectedProduct.seoTitle);
+  }
+  if (selectedProduct.seoDescription) {
+    updateOgTag('og:description', selectedProduct.seoDescription);
+  }
+  if (selectedProduct.seoCanonical) {
+    updateOgTag('og:url', selectedProduct.seoCanonical);
+  }
+
+  console.log("📝 Updated meta tags for variant:", selectedProduct.sku);
+}, [selectedProduct]);
+
+
   return (
     <>
       <style jsx>{`

@@ -98,6 +98,7 @@ export async function generateMetadata({
             seoCanonical: selectedVariant.seoCanonical || "",
           };
           console.log("✅ SEO data extracted from API:", apiseo);
+          cookieStore.set("apiseo", JSON.stringify(apiseo), { path: '/' });
         } else {
           console.log("⚠️ No variant selected, SEO data will be null");
         }

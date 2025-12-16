@@ -310,6 +310,7 @@ export default function EngineProductClient({
               console.log("Trying to match SKU:", sku, "Found variant:",v.sku);
               return v.sku === sku;
             } )
+            console.log("Result of SKU match:", variant);
               
             
             if (variant) {

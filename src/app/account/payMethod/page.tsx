@@ -1138,12 +1138,13 @@ useEffect(() => {
   // }, [shippingFormData.country])
 
   const [cardType, setCardType] = useState("unknown");
-  const cardImageMap: Record<string, string> = {
+    const cardImageMap: Record<string, string> = {
     Visa: "visa-inverted_82058.png",
     MasterCard: "mastercard_82049.png",
-    "American Express": "americanexpress_82060 1.png",
+    "American Express": "americanexpress_82060.png",
     Discover: "discover_82082.png",
   };
+
   const cardImage = cardImageMap[cardType];
 
   const [paymentInfo, setPaymentInfo] = useState<{
@@ -2266,8 +2267,10 @@ const verifyOtp = async () => {
 
                     {cardImage && (
                       <div className="absolute right-3 md:top-14 transform top-12 -translate-y-1/2">
-                        <img
+                        <Image
                           src={`/images/home/${cardImage}`}
+                          width={20}
+                          height={15}
                           alt="cardType"
                           className="w-10 h-auto"
                         />

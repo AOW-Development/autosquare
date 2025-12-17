@@ -117,6 +117,26 @@ export default function EngineProductClient({
       .trim();
   };
 
+  const updateProductUrl = (
+  variant: any,
+  subPartName: string
+) => {
+  if (!variant) return;
+
+  const miles = variant.miles?.toString().replace(/[^\d]/g, "");
+  const spec = subPartName
+    .replace(/[ ,()./]/g, "-")
+    .replace(/-+/g, "-")
+    .toLowerCase();
+
+  const modelSlug = formatModelForUrl(model);
+
+  const newUrl = `/product/${year}-${make}-${modelSlug}-${part}-${spec}${miles ? `-${miles}` : ""}`.toLowerCase();
+
+  router.replace(newUrl, { scroll: false });
+};
+
+
   // If searchParams are not available, try to parse from route parameter
   if (!make && item) {
     const parts = item.split("-");
@@ -457,17 +477,21 @@ useEffect(() => {
     return;
   }
   setIsLoading(true);
-  console.log("kubra:", { make, model, year, part });
   
-  // fetch(
-  //   `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
-  // )
-  fetch(
-      `${API_BASE}/products/v2/grouped-with-subparts?make=${(make)}&model=${(model)}&year=${(year)}&part=${(part)}`
-    )
+  // Build API URL with encoded parameters
+  // NOTE: This encoding ONLY affects the API request, NOT your browser's visible URL
+  // Browser URL stays clean: /product/engines/2000-chevrolet-c-k-1500-engine
+  // API request becomes: ?make=Chevrolet&model=C%2FK%201500&year=2000&part=Engine
+  const apiUrl = `${API_BASE}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+  
+  console.log("🔄 API Request URL:", apiUrl);
+  console.log("📊 Request params:", { make, model, year, part });
+  
+  fetch(apiUrl)
     .then((res) => res.json())
     .then((data) => {
-      console.log("✅ Fetched grouped-with-subparts data:", data);
+      console.log("✅ API Response:", data);
+      console.log("📦 Grouped Variants:", data.groupedVariants);
       const variants: any[] = [];
       if (data.groupedVariants) {
         data.groupedVariants.forEach((group: any) => {
@@ -1144,17 +1168,22 @@ useEffect(() => {
                         part: productInfo.part,
                         subPart: group.subPart,
                       });
+                      updateProductUrl(variant, group.subPart.name);
                     }
                   }}
+                  
 
                     className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto"
                   >
+                    
                     <option value="">Select Specification</option>
                     {groupedVariants.map((group: any) => (
                       <option key={group.subPart.id} value={group.subPart.id}>
                         {group.subPart.name}
                       </option>
                     ))}
+                   
+
                   </select>
 
                 <select
@@ -1179,6 +1208,7 @@ useEffect(() => {
                       part: productInfo.part,
                       subPart: group.subPart, // ADD THIS
                     });
+                    updateProductUrl(variant, group.subPart.name);
                   }
                 }
               }

@@ -54,6 +54,7 @@ export async function generateMetadata({
       if (partIndex > 2) {
         // Model is everything between make and part
         model = segments.slice(2, partIndex).join(" ");
+        console.log("Model extracted from URL:", model);
         part = segments[partIndex];
       } else {
         // Fallback: assume model is at index 2

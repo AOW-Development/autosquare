@@ -36,17 +36,41 @@ export async function generateMetadata({
 
     // Parse URL segments
     const segments = routeParams.item?.split("-") || [];
-    let [year, make, model, part, ...rest] = segments;
+    let year = "";
+    let make = "";
+    let model = "";
+    let part = "";
 
     // If not in query params, try to parse from URL
     if (!queryParams.make && segments.length >= 4) {
       year = segments[0];
       make = segments[1];
-      model = segments[2];
-      part = segments[3];
+      
+      // Find the part index (engine or transmission)
+      const partIndex = segments.findIndex(
+        (seg) => seg.toLowerCase() === "engine" || seg.toLowerCase() === "transmission"
+      );
+      
+      if (partIndex > 2) {
+        // Model is everything between make and part
+        model = segments.slice(2, partIndex).join(" ");
+        part = segments[partIndex];
+      } else {
+        // Fallback: assume model is at index 2
+        model = segments[2];
+        part = segments[3];
+      }
+      
+      console.log("Parsed from URL:", { year, make, model, part, partIndex });
+    } else {
+      // Use query params if available
+      year = queryParams.year || "";
+      make = queryParams.make || "";
+      model = queryParams.model || "";
+      part = queryParams.part || "";
     }
 
-    console.log("Parsed:", { year, make, model, part });
+    console.log("Final parsed values:", { year, make, model, part });
 
     const allParams = {
       ...queryParams,
@@ -186,5 +210,6 @@ export default async function EngineProductPage({
   return <EngineProductClient 
     initialItem={routeParams.item} 
     setSku={undefined} // Client will determine this
+    setModal={undefined}
   />;
 }

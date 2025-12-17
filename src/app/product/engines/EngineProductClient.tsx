@@ -45,11 +45,13 @@ const galleryImages = [
 interface EngineProductClientProps {
   initialItem?: string;
   setSku?: string;
+  setModal?: string;
 }
 
 export default function EngineProductClient({
   initialItem,
   setSku,
+  setModal,
 }: EngineProductClientProps) {
   const [productInfo, setProductInfo] = useState({
     make: "",
@@ -96,23 +98,52 @@ export default function EngineProductClient({
   let part = searchParams.get("part") || undefined;
   let sku = searchParams.get("sku") || undefined;
 
+
+  // Helper function to format model for URL
+  const formatModelForUrl = (modelStr: string | undefined) => {
+    if (!modelStr) return "";
+    return modelStr
+      .replace(/[ ,()./]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .toLowerCase();
+  };
+
+  // Helper function to parse model from URL
+  const parseModelFromUrl = (urlModel: string | undefined) => {
+    if (!urlModel) return "";
+    return urlModel
+      .replace(/-/g, " ")
+      .trim();
+  };
+
   // If searchParams are not available, try to parse from route parameter
   if (!make && item) {
     const parts = item.split("-");
-    // Try to extract make, model, year, part from the item string
-    // Format might be: BMW-1M-2025-Engine-...
+    console.log("🔍 Parsing URL item:", item);
+    console.log("🔍 Split parts:", parts);
+    
     if (parts.length >= 4) {
       year = parts[0] || undefined;
       make = parts[1] || undefined;
-      model = parts[2] || undefined;
-      part = parts[3] || undefined;
+      
+      const partIndex = parts.findIndex(p => p.toLowerCase() === "engine" || p.toLowerCase() === "transmission");
+      console.log("🔍 Part index found at:", partIndex);
+      
+      if (partIndex > 2) {
+        // Model is everything between make (index 1) and part (partIndex)
+        const modelParts = parts.slice(2, partIndex);
+        model = modelParts.join(" "); // Join with spaces, not hyphens
+        console.log("🔍 Model parts:", modelParts, "-> Model:", model);
+      } else {
+        // Fallback
+        model = parts[2];
+      }
+      
+      part = parts[partIndex] || undefined;
       sku = setSku;
-      // SKU might be in later parts
-      // if (parts.length > 4) {
-      //   sku = parts.slice(4).join("-") || undefined;
-      // }
     }
-    console.log("Parsed from item:", { make, model, year, part, sku });
+    console.log("✅ Parsed from item:", { make, model, year, part, sku });
   }
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
@@ -421,13 +452,22 @@ export default function EngineProductClient({
   // UPDATED: Lines 394-534 - Replace the entire useEffect that fetches grouped-with-subparts
 
 useEffect(() => {
-  if (!make || !model || !year || !part) return;
+  if (!make || !model || !year || !part) {
+    console.log("❌ Missing required params:", { make, model, year, part });
+    return;
+  }
   setIsLoading(true);
+  console.log("kubra:", { make, model, year, part });
+  
+  // fetch(
+  //   `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
+  // )
   fetch(
-    `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
-  )
+      `${API_BASE}/products/v2/grouped-with-subparts?make=${(make)}&model=${(model)}&year=${(year)}&part=${(part)}`
+    )
     .then((res) => res.json())
     .then((data) => {
+      console.log("✅ Fetched grouped-with-subparts data:", data);
       const variants: any[] = [];
       if (data.groupedVariants) {
         data.groupedVariants.forEach((group: any) => {
@@ -452,7 +492,15 @@ useEffect(() => {
           });
         });
       }
+      console.log("🔄 About to fetch:", { 
+      make, 
+      model, 
+      year, 
+      part,
+      url: `${API_BASE}/products/v2/grouped-with-subparts?make=${(make)}&model=${(model)}&year=${(year)}&part=${(part)}`
+    });
       setAllVariants(variants);
+      console.log("✅ Fetched grouped variants count:", data.groupedVariants);
       setGroupedVariants(data.groupedVariants || []);
       setProductInfo({
         make: data.make || "",
@@ -690,38 +738,79 @@ useEffect(() => {
     return data.url;
   };
 
+  // useEffect(() => {
+
+  //   if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
+  //     return;
+  //   const group = groupedVariants.find(
+  //     (g: any) => g.subPart.id === selectedSubPartId
+  //   );
+  //   if (group) {
+  //     const variant = group.variants.find(
+  //       (v: any) => v.sku === selectedMilesSku
+  //     );
+  //     if (variant) {
+  //       setSelectedProduct({
+  //         ...variant,
+  //         make: productInfo.make || make,
+  //         model: productInfo.model || model,
+  //         year: productInfo.year || year,
+  //         part: productInfo.part || part,
+  //       });
+  //     } else {
+  //       setSelectedProduct(null);
+  //     }
+  //   }
+  // }, [
+  //   selectedSubPartId,
+  //   selectedMilesSku,
+  //   groupedVariants,
+  //   productInfo,
+  //   make,
+  //   model,
+  //   year,
+  //   part,
+  // ]);
+
+
   useEffect(() => {
-    if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
-      return;
-    const group = groupedVariants.find(
-      (g: any) => g.subPart.id === selectedSubPartId
+  if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
+    return;
+  
+  const group = groupedVariants.find(
+    (g: any) => g.subPart.id === selectedSubPartId
+  );
+  
+  if (group) {
+    const variant = group.variants.find(
+      (v: any) => v.sku === selectedMilesSku
     );
-    if (group) {
-      const variant = group.variants.find(
-        (v: any) => v.sku === selectedMilesSku
-      );
-      if (variant) {
-        setSelectedProduct({
-          ...variant,
-          make: productInfo.make || make,
-          model: productInfo.model || model,
-          year: productInfo.year || year,
-          part: productInfo.part || part,
-        });
-      } else {
-        setSelectedProduct(null);
-      }
+    
+    if (variant) {
+      setSelectedProduct({
+        ...variant,
+        make: productInfo.make || make,
+        model: productInfo.model || model,
+        year: productInfo.year || year,
+        part: productInfo.part || part,
+        subPart: group.subPart, // ADD THIS - Important for proper subPart display
+      });
+    } else {
+      setSelectedProduct(null);
     }
-  }, [
-    selectedSubPartId,
-    selectedMilesSku,
-    groupedVariants,
-    productInfo,
-    make,
-    model,
-    year,
-    part,
-  ]);
+  }
+}, [
+  selectedSubPartId,
+  selectedMilesSku,
+  groupedVariants,
+  productInfo,
+  make,
+  model,
+  year,
+  part,
+]);
+
+  
 
   const handleAddToCart = () => {
     if (!selectedProduct) return;
@@ -1035,22 +1124,29 @@ useEffect(() => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   <select
                     value={selectedSubPartId ?? ""}
-                    onChange={(e) => {
-                      const subPartId = Number(e.target.value);
-                      setSelectedSubPartId(subPartId);
-                      const group = groupedVariants.find(
-                        (g: any) => g.subPart.id === subPartId
-                      );
-                      if (group && group.variants.length > 0) {
-                        const inStockVariant = group.variants.find(
-                          (v: any) => v.inStock
-                        );
-                        const fallbackVariant = group.variants[0];
-                        const variant = inStockVariant || fallbackVariant;
-                        setSelectedMilesSku(variant.sku);
-                        setSelectedProduct(variant);
-                      }
-                    }}
+                  onChange={(e) => {
+                    const subPartId = Number(e.target.value);
+                    setSelectedSubPartId(subPartId);
+
+                    const group = groupedVariants.find(
+                      (g: any) => g.subPart.id === subPartId
+                    );
+
+                    if (group && group.variants.length > 0) {
+                      const variant = group.variants.find((v: any) => v.inStock) || group.variants[0];
+
+                      setSelectedMilesSku(variant.sku);
+                      setSelectedProduct({
+                        ...variant,
+                        make: productInfo.make,
+                        model: productInfo.model,
+                        year: productInfo.year,
+                        part: productInfo.part,
+                        subPart: group.subPart,
+                      });
+                    }
+                  }}
+
                     className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto"
                   >
                     <option value="">Select Specification</option>
@@ -1067,21 +1163,26 @@ useEffect(() => {
                 const sku = e.target.value;
                 setSelectedMilesSku(sku);
 
-                const group = groupedVariants.find((g: any) => g.subPart.id === selectedSubPartId);
+                const group = groupedVariants.find(
+                  (g: any) => g.subPart.id === selectedSubPartId
+                );
+                
                 if (group) {
                   const variant = group.variants.find((v: any) => v.sku === sku);
+                  
                   if (variant) {
                     setSelectedProduct({
                       ...variant,
-                      miles: cleanMiles(variant.miles),   // FIXED
                       make: productInfo.make,
                       model: productInfo.model,
                       year: productInfo.year,
                       part: productInfo.part,
+                      subPart: group.subPart, // ADD THIS
                     });
                   }
                 }
-              }}
+              }
+              }
               className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={!selectedSubPartId}
             >

@@ -586,6 +586,14 @@ export default function CatalogPage() {
                   .replace(/-+/g, "-")        
                   .replace(/^-|-$/g, "")
                   .toLowerCase();
+                
+
+                let regexModel = model?.replace(/[ ,()./]/g, "-")
+                  .replace(/-+/g, "-")        
+                  .replace(/^-|-$/g, "")
+                  .toLowerCase();
+
+              
 
                
 
@@ -620,7 +628,7 @@ export default function CatalogPage() {
                         document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
                         console.log("SKU set to:", item.sku);
 
-                        window.location.href = `/product/${year}-${make}-${model}-${part}-${engineSpecification}-${encodeURIComponent(item.miles || "N/A")}`;
+                        window.location.href = `/product/${year}-${make}-${regexModel}-${part}-${engineSpecification}-${encodeURIComponent(item.miles || "N/A")}`;
                       }}
                     >
                       {/* Image container */}

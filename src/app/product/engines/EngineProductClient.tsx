@@ -607,18 +607,27 @@ useEffect(() => {
       if (!defaultVariant && specFromUrl) {
         console.log("🔎 Attempting to match specification:", specFromUrl);
 
+        // Normalize spec from URL by removing all spaces and dots
+        const normalizedUrlSpec = specFromUrl
+          .replace(/\s+/g, "")
+          .replace(/\./g, "")
+          .toLowerCase();
+
+        console.log("📝 Normalized URL spec:", normalizedUrlSpec);
+
         // Try exact match first
         for (const group of data.groupedVariants) {
           const groupSpec = group.subPart.name
             .replace(/[,()]/g, "")
-            .replace(/\s+/g, " ")
+            .replace(/\s+/g, "")
+            .replace(/\./g, "")
             .trim()
             .toLowerCase();
 
-          console.log("Comparing URL spec:", specFromUrl, "with group spec:", groupSpec);
+          console.log("Comparing normalized URL spec:", normalizedUrlSpec, "with normalized group spec:", groupSpec);
 
           // Exact match
-          if (groupSpec === specFromUrl) {
+          if (groupSpec === normalizedUrlSpec) {
             defaultGroup = group;
             
             // If we have miles, find matching variant
@@ -642,14 +651,15 @@ useEffect(() => {
           for (const group of data.groupedVariants) {
             const groupSpec = group.subPart.name
               .replace(/[,()]/g, "")
-              .replace(/\s+/g, " ")
+              .replace(/\s+/g, "")
+              .replace(/\./g, "")
               .trim()
               .toLowerCase();
 
             // Partial match (contains)
             if (
-              groupSpec.includes(specFromUrl) ||
-              specFromUrl.includes(groupSpec)
+              groupSpec.includes(normalizedUrlSpec) ||
+              normalizedUrlSpec.includes(groupSpec)
             ) {
               defaultGroup = group;
               

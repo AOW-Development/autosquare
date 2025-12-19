@@ -618,7 +618,7 @@ useEffect(() => {
         // Try exact match first
         for (const group of data.groupedVariants) {
           const groupSpec = group.subPart.name
-            .replace(/[,()]/g, "")
+            .replace(/[,()-]/g, "")
             .replace(/\s+/g, "")
             .replace(/\./g, "")
             .trim()

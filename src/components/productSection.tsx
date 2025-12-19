@@ -279,6 +279,23 @@ const variants: Variants = {
   }),
 }
 
+const buildProductSlug = (prod: any) => {
+  const clean = (val?: string) =>
+    val
+      ?.replace(/[ ,()./]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "")
+      .toLowerCase()
+
+  const engineSpecification = clean(
+    prod.subPart?.name || prod.specification || ""
+  )
+
+  const cleanedModel = clean(prod.model || model)
+
+  return `/product/${prod.year || year}-${prod.make || make}-${cleanedModel}-${prod.part || part}-${engineSpecification}-${encodeURIComponent(prod.miles || "N/A")}`
+}
+
 
 // Slice products to show only 3 at a time
 const visibleProducts = featuredProducts.slice(currentIndex, currentIndex + productsPerPage)
@@ -367,11 +384,15 @@ const visibleProducts = featuredProducts.slice(currentIndex, currentIndex + prod
                   key={`${prod.sku}-${i}`}
                   className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group mb-10"
                 >
-                  <Link
-                    href={`/product/engines?make=${prod.make || make}&model=${prod.model || model}&year=${prod.year || year}&part=${prod.part || part}&sku=${prod.sku}`}
-                    className="block cursor-pointer"
-                    tabIndex={-1}
-                  >
+                  <button
+                      type="button"
+                      className="block cursor-pointer text-left w-full"
+                      onClick={() => {
+                        document.cookie = `sku=${prod.sku}; path=/; max-age=3600; SameSite=Lax`
+                        window.location.href = buildProductSlug(prod)
+                      }}
+                    >
+
                     <div
                       className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
                       style={{
@@ -404,7 +425,7 @@ const visibleProducts = featuredProducts.slice(currentIndex, currentIndex + prod
                       <p className="text-xs lg:text-sm text-gray-400 mb-1">{prod.miles || "N/A"} miles</p>
                       <p className="text-xs lg:text-sm text-gray-400 mb-2">{prod.warranty || "90 Days Warranty"}</p>
                     </div>
-                  </Link>
+                  </button>
 
                   <div className="flex justify-between items-center mt-3 relative z-30">
                     {prod.inStock ? (

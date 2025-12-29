@@ -12,8 +12,8 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
-        source: '/old-path',
-        destination: '/',
+        source: '/account/warrantyAndPolicy',
+        destination: '/account/warrantyAndReturn',
         permanent: true,
       },
     ];

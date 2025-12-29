@@ -22,3 +22,10 @@ export default function NotFound() {
     </div>
   );
 }
+
+
+// import { redirect } from "next/navigation";
+
+// export default function NotFound() {
+//   redirect("/");
+// }

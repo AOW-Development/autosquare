@@ -44,6 +44,16 @@ const ShopByVehicle: React.FC = () => {
     backgroundSize: "20px 20px",
   };
 
+
+
+  const normalizeValue = (value: string, list: string[]) => {
+  return (
+    list.find(
+      (item) => item.toLowerCase() === value.toLowerCase()
+    ) || ""
+  );
+};
+
   
 
   // Reset or load saved values based on page
@@ -70,6 +80,41 @@ const ShopByVehicle: React.FC = () => {
     }
   }, [path]);
 
+  useEffect(() => {
+  if (!path.startsWith("/catalogue/")) return;
+
+  const params = new URLSearchParams(window.location.search);
+
+  const rawMake = params.get("make");
+  const rawModel = params.get("model");
+  const rawYear = params.get("year");
+  const rawPart = params.get("part");
+
+  if (!rawMake || !rawModel || !rawYear || !rawPart) return;
+
+  // ✅ Normalize make
+  const normalizedMake = normalizeValue(rawMake, MAKES);
+  if (!normalizedMake) return;
+
+  // ✅ Normalize model (depends on make)
+  const normalizedModel = MODELS[normalizedMake]
+    ? normalizeValue(rawModel, MODELS[normalizedMake])
+    : "";
+
+  if (!normalizedModel) return;
+
+  // ✅ Normalize part
+  const normalizedPart = normalizeValue(rawPart, PARTS);
+  if (!normalizedPart) return;
+
+  // ✅ Set state with CORRECT casing
+  setMake(normalizedMake);
+  setModel(normalizedModel);
+  setYear(rawYear);
+  setPart(normalizedPart);
+}, [path]);
+
+
   // Fetch available years when make & model change
   useEffect(() => {
     if (make && model) {
@@ -89,7 +134,9 @@ const ShopByVehicle: React.FC = () => {
 useEffect(() => {
   if (make && model && year && part) {
     const query = new URLSearchParams({ make, model, year, part }).toString();
-    const newUrl = `/catalogue/engine/home?${query}`;
+    const partSlug = part.toLowerCase(); // engine | transmission
+    const newUrl = `/catalogue/${partSlug}/home?${query}`;
+
 
     // Save selection to local storage
     localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));

@@ -1,9 +1,11 @@
 User-agent: *
-Disallow: 
 Disallow: /cgi-bin/
-Sitemap: https://partscentral.us/
-allow: /product/
-User-agent: Googlebot 
+Allow: /product/
+
+Sitemap: https://partscentral.us/sitemap.xml
+
+User-agent: Googlebot
 Disallow:
-User-agent: Googlebot-image
+
+User-agent: Googlebot-Image
 Disallow:

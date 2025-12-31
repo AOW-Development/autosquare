@@ -305,6 +305,28 @@ export default function EngineProductClient({
     },
   ];
 
+
+  useEffect(() => {
+  const currentUrl = window.location.href;
+
+  let linkCanonical = document.querySelector(
+    'link[rel="canonical"]'
+  ) as HTMLLinkElement | null;
+
+  if (!linkCanonical) {
+    linkCanonical = document.createElement('link');
+    linkCanonical.rel = 'canonical';
+    document.head.appendChild(linkCanonical);
+  }
+
+  // Override canonical ONLY if missing or empty
+  if (!linkCanonical.href) {
+    linkCanonical.href = currentUrl;
+  }
+
+  console.log("📌 Client-side canonical ensured:", currentUrl);
+}, []);
+
   // useEffect(() => {
 
   //   if (!make || !model || !year || !part) return;

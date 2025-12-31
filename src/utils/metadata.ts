@@ -252,3 +252,81 @@ export function generateDynamicEngineMetadata(searchParams: {
   // Fallback to default engine metadata
   return metadataMap["/engine"] || defaultMetadata;
 }
+
+// export function generateDynamicCatalogMetadata(searchParams: {
+//   make?: string | null;
+//   model?: string | null;
+//   year?: string | null;
+//   part?: string | null;
+//   subPartFilter?: string | null;
+// }): Metadata {
+//   const { make, model, year, part, subPartFilter } = searchParams;
+
+//   console.log("generateDynamicCatalogMetadata called with:", {
+//     make,
+//     model,
+//     year,
+//     part,
+//     subPartFilter,
+//   });
+
+//   // If we have all the necessary params, generate a dynamic title
+//   if (make && model && year && part) {
+//     const partName = part.charAt(0).toUpperCase() + part.slice(1);
+//     const title = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${partName}s | Parts Central`;
+
+//     // Generate description
+//     const description = `Shop quality ${year} ${make} ${model} used ${part}s in United States. Affordable, tested, and reliable auto parts with warranty. Browse our complete inventory now!`;
+
+//     // Generate keywords
+//     const keywords = `${year} ${make} ${model} ${part}s, used ${part}s ${make} ${model}, ${year} ${make} ${model} replacement ${part}s, buy ${make} ${model} ${part}s USA, Parts Central ${make} ${model} catalog`;
+
+//     // Build canonical URL - use the actual pathname with query params
+//     const canonicalParams = new URLSearchParams();
+//     canonicalParams.set("make", make);
+//     canonicalParams.set("model", model);
+//     canonicalParams.set("year", year);
+//     canonicalParams.set("part", part);
+//     if (subPartFilter) canonicalParams.set("subPartFilter", subPartFilter);
+
+//     const canonical = `https://partscentral.us/catalog?${canonicalParams.toString()}`;
+
+//     console.log("Generated catalog metadata:", { title, description, canonical });
+
+//     return {
+//       title,
+//       description,
+//       keywords,
+//       alternates: {
+//         canonical,
+//       },
+//       openGraph: {
+//         title,
+//         description,
+//         url: canonical,
+//         type: 'website',
+//       },
+//       twitter: {
+//         card: 'summary_large_image',
+//         title,
+//         description,
+//       },
+//     };
+//   }
+
+//   // Fallback to default catalog metadata
+//   console.log("Falling back to default catalog metadata - missing params:", {
+//     make,
+//     model,
+//     year,
+//     part,
+//   });
+
+//   return {
+//     title: "Used Engines & Transmissions Catalog | Parts Central",
+//     description: "Browse our extensive catalog of quality used auto parts. Engines, transmissions, and more with warranty.",
+//     alternates: {
+//       canonical: "https://partscentral.us/catalog",
+//     },
+//   };
+// }

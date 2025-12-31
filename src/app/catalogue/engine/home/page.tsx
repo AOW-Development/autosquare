@@ -14,6 +14,7 @@ import { VerifyPartPopup } from "@/components/fitment"; // Assuming this path is
 import { useSkuStore } from "@/store/skuStore";
 import { PopoverButton } from "@headlessui/react";
 
+
 interface SubPart {
   id: number;
   name: string;
@@ -66,6 +67,8 @@ const accordionData = [
       "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
   },
 ];
+
+
 
 export default function CatalogPage() {
   // --- Initialize Router ---
@@ -122,6 +125,44 @@ export default function CatalogPage() {
   const addItem = useCartStore((s) => s.addItem);
   const updateQuantity = useCartStore((s) => s.updateQuantity);
   const removeItem = useCartStore((s) => s.removeItem);
+
+  // Add this useEffect to dynamically update meta tags
+useEffect(() => {
+  if (make && model && year && part) {
+    // Get the current pathname and search params from the browser
+    const currentPath = window.location.pathname;
+    const currentSearchParams = window.location.search;
+    
+    // Build the canonical URL using the actual current URL
+    const canonical = `https://partscentral.us/${currentPath}${currentSearchParams}`;
+    
+    // Update canonical URL
+    let linkCanonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
+    if (!linkCanonical) {
+      linkCanonical = document.createElement('link');
+      linkCanonical.setAttribute('rel', 'canonical');
+      document.head.appendChild(linkCanonical);
+    }
+    linkCanonical.href = canonical;
+    
+    // Update title (keep your existing title generation)
+    const partName = part.charAt(0).toUpperCase() + part.slice(1);
+    const title = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${partName}s | Parts Central`;
+    document.title = title;
+    
+    // Update meta description
+    const description = `Shop quality ${year} ${make} ${model} used ${part}s in United States. Affordable, tested, and reliable auto parts with warranty.`;
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute('content', description);
+    
+    console.log("📌 Updated catalog canonical to:", canonical);
+  }
+}, [make, model, year, part, subPartFilter]);
 
   useEffect(() => {
     setSubPartFilter(null);

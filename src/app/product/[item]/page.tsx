@@ -23,6 +23,7 @@ type Props = {
   }>;
 };
 
+
 export async function generateMetadata({
   params,
   searchParams,
@@ -200,6 +201,7 @@ export async function generateMetadata({
     return generateDynamicEngineMetadata({});
   }
 }
+
 
 export default async function EngineProductPage({
   params,

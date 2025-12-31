@@ -187,8 +187,9 @@ export function generateDynamicEngineMetadata(searchParams: {
   year?: string | null;
   part?: string | null;
   sku?: string | null;
+  item?: string | null;
 }): Metadata {
-  const { make, model, year, part, sku } = searchParams;
+  const { make, model, year, part, sku, item } = searchParams;
 
   // Debug: log the search params
   console.log("generateDynamicEngineMetadata called with:", {
@@ -197,6 +198,7 @@ export function generateDynamicEngineMetadata(searchParams: {
     year,
     part,
     sku,
+    item,
   });
 
   // If we have all the necessary params, generate a dynamic title
@@ -212,17 +214,22 @@ export function generateDynamicEngineMetadata(searchParams: {
     const keywords = `${year} ${make} ${model} ${partName.toLowerCase()}, ${make} ${model} ${partName.toLowerCase()} for sale, used ${partName.toLowerCase()} ${make} ${model}, ${year} ${make} ${model} replacement ${partName.toLowerCase()}, buy ${make} ${model} ${partName.toLowerCase()} USA, Parts Central ${make} ${model}`;
 
     // Build canonical URL with search params
-    const canonicalParams = new URLSearchParams();
-    if (make) canonicalParams.set("make", make);
-    if (model) canonicalParams.set("model", model);
-    if (year) canonicalParams.set("year", year);
-    if (part) canonicalParams.set("part", part);
-    if (sku) canonicalParams.set("sku", sku);
+    // const canonicalParams = new URLSearchParams();
+    // if (make) canonicalParams.set("make", make);
+    // if (model) canonicalParams.set("model", model);
+    // if (year) canonicalParams.set("year", year);
+    // if (part) canonicalParams.set("part", part);
+    // if (sku) canonicalParams.set("sku", sku);
 
-    const canonical = `https://partscentral.us/product/engines?${canonicalParams.toString()}`;
+    // const canonical = `https://partscentral.us/product/engines?${canonicalParams.toString()}`;
+
+     const canonical = item 
+      ? `https://partscentral.us/product/${item}`
+      : `https://partscentral.us/product`;
+
 
     // Debug: log the generated metadata
-    console.log("Generated dynamic metadata:", { title, description });
+    console.log("Generated dynamic metadata:", { title, description,canonical, keywords });
 
     return {
       title,

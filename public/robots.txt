@@ -3,3 +3,7 @@ Disallow:
 Disallow: /cgi-bin/
 Sitemap: https://partscentral.us/
 allow: /product/
+User-agent: Googlebot 
+Disallow:
+User-agent: Googlebot-image
+Disallow:

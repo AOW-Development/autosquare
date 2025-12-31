@@ -157,8 +157,12 @@ export async function generateMetadata({
     // Build final metadata with proper type handling
     const finalTitle = apiseo?.seoTitle?.trim() || baseMetadata.title || undefined;
     const finalDescription = apiseo?.seoDescription?.trim() || baseMetadata.description || undefined;
-    const finalCanonical = apiseo?.seoCanonical?.trim() || 
-      (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
+    // const finalCanonical = apiseo?.seoCanonical?.trim() || 
+      // (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
+
+      const finalCanonical = apiseo?.seoCanonical?.trim() || 
+    `https://partscentral.us/product/${routeParams.item}` || // Use the actual pathname
+    (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
 
     const finalMetadata: Metadata = {
       ...baseMetadata,

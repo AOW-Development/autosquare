@@ -979,6 +979,7 @@ useEffect(() => {
   }
   if (selectedProduct.seoCanonical) {
     updateOgTag('og:url', selectedProduct.seoCanonical);
+    console.log("🔗 Updated og:url to:", selectedProduct.seoCanonical);
   }
 
   console.log("📝 Updated meta tags for variant:", selectedProduct.sku);

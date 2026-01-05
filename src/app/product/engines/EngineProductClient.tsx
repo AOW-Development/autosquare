@@ -1050,7 +1050,7 @@ useEffect(() => {
       `}</style>
       
       {/* Server-rendered product details for Google Merchant Center */}
-      {/* {selectedProduct && ( */}
+      {selectedProduct && (
         <div style={{ display: 'none' }} itemScope itemType="https://schema.org/Product">
           <h1 itemProp="name">
             {selectedProduct.title || 
@@ -1069,7 +1069,7 @@ useEffect(() => {
           <meta itemProp="sku" content={selectedProduct.sku} />
           <meta itemProp="availability" content={selectedProduct.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
         </div>
-      {/* )} */}
+      )}
 
       {showCartPopup && selectedProduct && (
         <AddedCartPopup

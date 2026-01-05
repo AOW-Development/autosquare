@@ -133,7 +133,7 @@ export async function generateMetadata({
           // Priority 2: First variant overall (if none in stock)
           if (!selectedVariant) {
             selectedVariant = apiData.groupedVariants[0].variants[0];
-            console.log(⚠️ Using first variant (none in stock)");
+            console.log("⚠️ Using first variant (none in stock)");
           }
         }
 

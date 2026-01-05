@@ -90,7 +90,7 @@ export async function generateMetadata({
     // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiBaseUrl=process.env.NEXT_PUBLIC_API_URL|| "/api";
+        const apiBaseUrl="https://partscentral.us/api";
         const apiUrl = `${apiBaseUrl}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         

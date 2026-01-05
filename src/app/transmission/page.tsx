@@ -226,11 +226,11 @@ export default function TransmissionPage() {
                       {item.desc}
                     </p>
                   </div>
-                  <button className="bg-[#00A3FF] text-white rounded-md w-[140px] h-[34px] sm:w-[160px] sm:h-[36px] mb-2 md:mb-5 text-sm hover:bg-[#0086cc] transition">
+                  {/* <button className="bg-[#00A3FF] text-white rounded-md w-[140px] h-[34px] sm:w-[160px] sm:h-[36px] mb-2 md:mb-5 text-sm hover:bg-[#0086cc] transition">
                     {" "}
-                    {/* Adjusted button size */}
+                    
                     View
-                  </button>
+                  </button> */}
                 </div>
               </div>
             ))}

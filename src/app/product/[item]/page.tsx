@@ -90,7 +90,8 @@ export async function generateMetadata({
     // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+        const apiBaseUrl=process.env.NEXT_PUBLIC_API_URL|| "/api";
+        const apiUrl = `${apiBaseUrl}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         
         const apiResponse = await fetch(apiUrl, {

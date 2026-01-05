@@ -1325,7 +1325,11 @@ useEffect(() => {
                       Part Request
                     </button>
                     {showPopup && (
-                      <PartRequestPopup setClosePopup={setShowPopup} />
+                      <PartRequestPopup setClosePopup={setShowPopup} 
+                      defaultMake={selectedProduct?.make || ""}
+                      defaultModel={selectedProduct?.model || ""}
+                      defaultYear={selectedProduct?.year || ""}
+                      />
                     )}
                   </>
                 )}

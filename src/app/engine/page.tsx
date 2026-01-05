@@ -94,11 +94,11 @@ export default function EnginePage() {
                 </p>
               </div>
 
-              <div className="w-full flex justify-left">
+              {/* <div className="w-full flex justify-left">
                 <button className="w-34 h-8 md:h-8 lg:h-10 sm:w-40 mb-4  bg-[#00A3FF] text-white text-xs sm:text-sm font-semibold rounded-md py-1.5 hover:bg-[#0086cc] transition duration-200">
                   View
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
         ))}

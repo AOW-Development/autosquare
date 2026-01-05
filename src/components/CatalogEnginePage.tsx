@@ -70,7 +70,7 @@ const accordionData = [
 
 
 
-export default function CatalogPage() {
+export default function CatalogEnginePage() {
   // --- Initialize Router ---
   const router = useRouter();
 
@@ -840,7 +840,12 @@ export default function CatalogPage() {
             {totalPages > 1 && renderPaginationButtons()}
 
             {/* Part Request Popup */}
-            {showPopup && <PartRequestPopup setClosePopup={setShowPopup} />}
+            {showPopup && <PartRequestPopup setClosePopup={setShowPopup}
+            defaultMake={make || ""}
+            defaultModel={model || ""}
+            defaultYear={year || ""}
+            />
+            }
 
             {/* Verify Part Popup (Updated with state management) */}
             <VerifyPartPopup

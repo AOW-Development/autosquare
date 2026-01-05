@@ -5,14 +5,22 @@ import ThankYouPopupPartRequestform from '../components/ThankYouPopupPartRequest
 
 interface PartRequestPopupProps {
   setClosePopup: (value: boolean) => void;
+  defaultMake?: string;
+  defaultModel?: string;
+  defaultYear?: string;
 }
 
-export default function PartRequestPopup({ setClosePopup }: PartRequestPopupProps) {
+export default function PartRequestPopup({ 
+  setClosePopup,
+  defaultMake = '',
+  defaultModel = '',
+  defaultYear = ''
+}: PartRequestPopupProps) {
   const [showThankYou, setShowThankYou] = useState(false);
 
-  const [make, setMake] = useState('');
-  const [model, setModel] = useState('');
-  const [year, setYear] = useState('');
+  const [make, setMake] = useState(defaultMake);
+  const [model, setModel] = useState(defaultModel);
+  const [year, setYear] = useState(defaultYear);
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');

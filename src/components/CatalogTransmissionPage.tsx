@@ -837,7 +837,8 @@ export default function CatalogTransmissionPage() {
             {totalPages > 1 && renderPaginationButtons()}
 
             {/* Part Request Popup */}
-            {showPopup && <PartRequestPopup setClosePopup={setShowPopup} />}
+            {showPopup && <PartRequestPopup setClosePopup={setShowPopup}
+            defaultMake={make || ""} defaultModel={model || ""} defaultYear={year || ""} />}
 
             {/* Verify Part Popup (Updated with state management) */}
             <VerifyPartPopup

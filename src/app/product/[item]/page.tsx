@@ -93,7 +93,7 @@ export async function generateMetadata({
     // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiUrl = `${API_BASE_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         
         const apiResponse = await fetch(apiUrl, {
@@ -115,25 +115,162 @@ export async function generateMetadata({
           variantCount: apiData.groupedVariants?.length,
         });
 
-        // STRATEGY: Always use the FIRST IN-STOCK variant for SEO
-        // This ensures consistent, cacheable meta tags for search engines
+        // 🔥 UPDATED: Use the SAME variant selection logic as the server component
         let selectedVariant: any | null = null;
+        let selectedGroup: any | null = null;
 
         if (apiData.groupedVariants && apiData.groupedVariants.length > 0) {
-          // Priority 1: First in-stock variant
-          for (const group of apiData.groupedVariants) {
-            const inStockVariant = group.variants.find((v: any) => v.inStock);
-            if (inStockVariant) {
-              selectedVariant = inStockVariant;
-              console.log("✅ Using first in-stock variant for SEO");
-              break;
+          // Priority 1: Match by SKU if provided
+          if (queryParams.sku) {
+            for (const group of apiData.groupedVariants) {
+              const variant = group.variants.find((v: any) => v.sku === queryParams.sku);
+              if (variant) {
+                selectedGroup = group;
+                selectedVariant = variant;
+                console.log("✅ Matched by SKU for metadata:", queryParams.sku);
+                break;
+              }
             }
           }
 
-          // Priority 2: First variant overall (if none in stock)
+          // Priority 2: Parse spec and miles from URL
+          if (!selectedVariant && routeParams.item) {
+            const parts = routeParams.item.split("-");
+            const partIndex = parts.findIndex(
+              (p) => p.toLowerCase() === part.toLowerCase()
+            );
+
+            let milesValue = "";
+            let specFromUrl = "";
+
+            if (partIndex !== -1 && parts.length > partIndex + 1) {
+              const lastPart = parts[parts.length - 1];
+              
+              if (/^\d+$/.test(lastPart)) {
+                milesValue = lastPart.replace(/[^\d]/g, "");
+                specFromUrl = parts
+                  .slice(partIndex + 1, parts.length - 1)
+                  .join(" ")
+                  .replace(/-/g, " ")
+                  .trim()
+                  .toLowerCase();
+              } else {
+                specFromUrl = parts
+                  .slice(partIndex + 1)
+                  .join(" ")
+                  .replace(/-/g, " ")
+                  .trim()
+                  .toLowerCase();
+              }
+            }
+
+            console.log("🔍 Extracted from URL for metadata - Spec:", specFromUrl, "Miles:", milesValue);
+
+            // Try to match by specification
+            if (specFromUrl) {
+              const normalizedUrlSpec = specFromUrl
+                .replace(/\s+/g, "")
+                .replace(/\./g, "")
+                .toLowerCase();
+
+              // Try exact match first
+              for (const group of apiData.groupedVariants) {
+                const groupSpec = group.subPart.name
+                  .replace(/[,()-]/g, "")
+                  .replace(/\s+/g, "")
+                  .replace(/\./g, "")
+                  .trim()
+                  .toLowerCase();
+
+                if (groupSpec === normalizedUrlSpec) {
+                  selectedGroup = group;
+                  
+                  if (milesValue) {
+                    const milesMatch = group.variants.find((v: any) => {
+                      const vm = v.miles?.toString().replace(/[^\d]/g, "");
+                      return vm === milesValue;
+                    });
+                    selectedVariant = milesMatch || group.variants[0];
+                  } else {
+                    selectedVariant = group.variants[0];
+                  }
+                  
+                  console.log("✅ Exact spec match found for metadata!");
+                  break;
+                }
+              }
+
+              // If no exact match, try partial match
+              if (!selectedVariant) {
+                for (const group of apiData.groupedVariants) {
+                  const groupSpec = group.subPart.name
+                    .replace(/[,()]/g, "")
+                    .replace(/\s+/g, "")
+                    .replace(/\./g, "")
+                    .trim()
+                    .toLowerCase();
+
+                  if (
+                    groupSpec.includes(normalizedUrlSpec) ||
+                    normalizedUrlSpec.includes(groupSpec)
+                  ) {
+                    selectedGroup = group;
+                    
+                    if (milesValue) {
+                      const milesMatch = group.variants.find((v: any) => {
+                        const vm = v.miles?.toString().replace(/[^\d]/g, "");
+                        return vm === milesValue;
+                      });
+                      selectedVariant = milesMatch || group.variants[0];
+                    } else {
+                      selectedVariant = group.variants[0];
+                    }
+                    
+                    console.log("✅ Partial spec match found for metadata!");
+                    break;
+                  }
+                }
+              }
+            }
+
+            // Match by miles only if spec matching failed
+            if (!selectedVariant && milesValue) {
+              console.log("🔍 Attempting to match by miles only for metadata:", milesValue);
+              
+              for (const group of apiData.groupedVariants) {
+                const found = group.variants.find((v: any) => {
+                  const vm = v.miles?.toString().replace(/[^\d]/g, "");
+                  return vm === milesValue;
+                });
+
+                if (found) {
+                  selectedGroup = group;
+                  selectedVariant = found;
+                  console.log("✅ Matched by miles for metadata!");
+                  break;
+                }
+              }
+            }
+          }
+
+          // Priority 3: First in-stock variant
           if (!selectedVariant) {
-            selectedVariant = apiData.groupedVariants[0].variants[0];
-            console.log("⚠️ Using first variant (none in stock)");
+            for (const group of apiData.groupedVariants) {
+              const inStockVariant = group.variants.find((v: any) => v.inStock);
+              if (inStockVariant) {
+                selectedGroup = group;
+                selectedVariant = inStockVariant;
+                console.log("✅ Using first in-stock variant for metadata");
+                break;
+              }
+            }
+          }
+
+          // Priority 4: First variant overall (if none in stock)
+          if (!selectedVariant) {
+            selectedGroup = apiData.groupedVariants[0];
+            selectedVariant = selectedGroup.variants[0];
+            console.log("⚠️ Using first variant for metadata (none in stock)");
           }
         }
 
@@ -143,7 +280,8 @@ export async function generateMetadata({
             seoDescription: selectedVariant.seoDescription || "",
             seoCanonical: selectedVariant.seoCanonical || "",
           };
-          console.log("✅ SEO data extracted:", {
+          console.log("✅ SEO data extracted for metadata:", {
+            sku: selectedVariant.sku,
             title: apiseo.seoTitle?.substring(0, 60),
             hasDescription: !!apiseo.seoDescription,
             hasCanonical: !!apiseo.seoCanonical
@@ -161,12 +299,9 @@ export async function generateMetadata({
     // Build final metadata with proper type handling
     const finalTitle = apiseo?.seoTitle?.trim() || baseMetadata.title || undefined;
     const finalDescription = apiseo?.seoDescription?.trim() || baseMetadata.description || undefined;
-    // const finalCanonical = apiseo?.seoCanonical?.trim() || 
-      // (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
-
-      const finalCanonical = apiseo?.seoCanonical?.trim() || 
-    `https://partscentral.us/product/${routeParams.item}` || // Use the actual pathname
-    (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
+    const finalCanonical = apiseo?.seoCanonical?.trim() || 
+      `https://partscentral.us/product/${routeParams.item}` || 
+      (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
 
     const finalMetadata: Metadata = {
       ...baseMetadata,

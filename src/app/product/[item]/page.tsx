@@ -213,10 +213,188 @@ export default async function EngineProductPage({
   console.log("EngineProductPage - routeParams:", routeParams);
   console.log("EngineProductPage - queryParams:", queryParams);
 
-  // Don't pass SKU from server - let client handle it
+  // Parse URL to extract product parameters
+  const segments = routeParams.item?.split("-") || [];
+  let year = queryParams.year || "";
+  let make = queryParams.make || "";
+  let model = queryParams.model || "";
+  let part = queryParams.part || "";
+  let sku = queryParams.sku || "";
+
+  // If not in query params, parse from URL
+  if (!make && segments.length >= 4) {
+    year = segments[0];
+    make = segments[1];
+    
+    const partIndex = segments.findIndex(
+      (seg) => seg.toLowerCase() === "engine" || seg.toLowerCase() === "transmission"
+    );
+    
+    if (partIndex > 2) {
+      model = segments.slice(2, partIndex).join(" ");
+      part = segments[partIndex];
+    } else {
+      model = segments[2];
+      part = segments[3];
+    }
+  }
+
+  console.log("Server parsed values:", { year, make, model, part, sku });
+
+  // Fetch product data on the server
+  let initialProductData = null;
+  
+  if (make && model && year && part) {
+    try {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      
+      console.log("🔄 Server fetching from:", apiUrl);
+      
+      const apiResponse = await fetch(apiUrl, {
+        cache: 'no-store',
+        next: { revalidate: 0 },
+      });
+
+      if (apiResponse.ok) {
+        const data = await apiResponse.json();
+        console.log("✅ Server fetched data:", {
+          hasGroupedVariants: !!data.groupedVariants,
+          variantCount: data.groupedVariants?.length,
+        });
+
+        // Select the appropriate variant using the same logic as client
+        let selectedGroup = null;
+        let selectedVariant = null;
+
+        if (data.groupedVariants && data.groupedVariants.length > 0) {
+          // Priority 1: Match by SKU if provided
+          if (sku) {
+            for (const group of data.groupedVariants) {
+              const variant = group.variants.find((v: any) => v.sku === sku);
+              if (variant) {
+                selectedGroup = group;
+                selectedVariant = variant;
+                break;
+              }
+            }
+          }
+
+          // Priority 2: Parse spec and miles from URL
+          if (!selectedVariant && routeParams.item) {
+            const parts = routeParams.item.split("-");
+            const partIndex = parts.findIndex(
+              (p) => p.toLowerCase() === part.toLowerCase()
+            );
+
+            let milesValue = "";
+            let specFromUrl = "";
+
+            if (partIndex !== -1 && parts.length > partIndex + 1) {
+              const lastPart = parts[parts.length - 1];
+              
+              if (/^\d+$/.test(lastPart)) {
+                milesValue = lastPart.replace(/[^\d]/g, "");
+                specFromUrl = parts
+                  .slice(partIndex + 1, parts.length - 1)
+                  .join(" ")
+                  .replace(/-/g, " ")
+                  .trim()
+                  .toLowerCase();
+              } else {
+                specFromUrl = parts
+                  .slice(partIndex + 1)
+                  .join(" ")
+                  .replace(/-/g, " ")
+                  .trim()
+                  .toLowerCase();
+              }
+            }
+
+            // Try to match by specification
+            if (specFromUrl) {
+              const normalizedUrlSpec = specFromUrl
+                .replace(/\s+/g, "")
+                .replace(/\./g, "")
+                .toLowerCase();
+
+              for (const group of data.groupedVariants) {
+                const groupSpec = group.subPart.name
+                  .replace(/[,()-]/g, "")
+                  .replace(/\s+/g, "")
+                  .replace(/\./g, "")
+                  .trim()
+                  .toLowerCase();
+
+                if (groupSpec === normalizedUrlSpec) {
+                  selectedGroup = group;
+                  
+                  if (milesValue) {
+                    const milesMatch = group.variants.find((v: any) => {
+                      const vm = v.miles?.toString().replace(/[^\d]/g, "");
+                      return vm === milesValue;
+                    });
+                    selectedVariant = milesMatch || group.variants[0];
+                  } else {
+                    selectedVariant = group.variants[0];
+                  }
+                  break;
+                }
+              }
+            }
+          }
+
+          // Priority 3: First in-stock variant
+          if (!selectedVariant) {
+            for (const group of data.groupedVariants) {
+              const inStockVariant = group.variants.find((v: any) => v.inStock);
+              if (inStockVariant) {
+                selectedGroup = group;
+                selectedVariant = inStockVariant;
+                break;
+              }
+            }
+          }
+
+          // Priority 4: First variant overall
+          if (!selectedVariant) {
+            selectedGroup = data.groupedVariants[0];
+            selectedVariant = selectedGroup.variants[0];
+          }
+        }
+
+        if (selectedVariant && selectedGroup) {
+          initialProductData = {
+            groupedVariants: data.groupedVariants,
+            selectedProduct: {
+              ...selectedVariant,
+              make: data.make,
+              model: data.model,
+              year: data.year,
+              part: data.part,
+              subPart: selectedGroup.subPart,
+            },
+            productInfo: {
+              make: data.make || "",
+              model: data.model || "",
+              year: data.year || "",
+              part: data.part || "",
+            },
+            selectedSubPartId: selectedGroup.subPart.id,
+            selectedMilesSku: selectedVariant.sku,
+          };
+
+          console.log("✅ Server selected variant:", selectedVariant.sku);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Server fetch error:", error);
+    }
+  }
+
   return <EngineProductClient 
     initialItem={routeParams.item} 
-    setSku={undefined} // Client will determine this
+    setSku={sku || undefined}
     setModal={undefined}
+    initialProductData={initialProductData}
   />;
 }

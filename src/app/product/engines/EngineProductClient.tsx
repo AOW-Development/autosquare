@@ -46,14 +46,27 @@ interface EngineProductClientProps {
   initialItem?: string;
   setSku?: string;
   setModal?: string;
+  initialProductData?: {
+    groupedVariants: any[];
+    selectedProduct: any;
+    productInfo: {
+      make: string;
+      model: string;
+      year: string;
+      part: string;
+    };
+    selectedSubPartId: number;
+    selectedMilesSku: string;
+  } | null;
 }
 
 export default function EngineProductClient({
   initialItem,
   setSku,
   setModal,
+  initialProductData,
 }: EngineProductClientProps) {
-  const [productInfo, setProductInfo] = useState({
+  const [productInfo, setProductInfo] = useState(initialProductData?.productInfo || {
     make: "",
     model: "",
     year: "",
@@ -64,12 +77,12 @@ export default function EngineProductClient({
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
   const [allVariants, setAllVariants] = useState<any[]>([]);
-  const [groupedVariants, setGroupedVariants] = useState<any[]>([]);
+  const [groupedVariants, setGroupedVariants] = useState<any[]>(initialProductData?.groupedVariants || []);
   const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(
-    null
+    initialProductData?.selectedSubPartId || null
   );
-  const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  const [selectedMilesSku, setSelectedMilesSku] = useState<string>(initialProductData?.selectedMilesSku || "");
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(initialProductData?.selectedProduct || null);
   const [activeTab, setActiveTab] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
@@ -494,6 +507,12 @@ export default function EngineProductClient({
   // UPDATED: Lines 394-534 - Replace the entire useEffect that fetches grouped-with-subparts
 
 useEffect(() => {
+  // Skip fetching if we already have server-provided data
+  if (initialProductData) {
+    console.log("✅ Using server-provided data, skipping client fetch");
+    return;
+  }
+
   if (!make || !model || !year || !part) {
     console.log("❌ Missing required params:", { make, model, year, part });
     return;
@@ -1029,6 +1048,29 @@ useEffect(() => {
           }
         }
       `}</style>
+      
+      {/* Server-rendered product details for Google Merchant Center */}
+      {selectedProduct && (
+        <div style={{ display: 'none' }} itemScope itemType="https://schema.org/Product">
+          <h1 itemProp="name">
+            {selectedProduct.title || 
+             `${productInfo.year} ${productInfo.make} ${productInfo.model} ${productInfo.part} ${selectedProduct.specification || ''}`.trim()}
+          </h1>
+          <p itemProp="offers" itemScope itemType="https://schema.org/Offer">
+            <span itemProp="price">${selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}</span>
+            <meta itemProp="priceCurrency" content="USD" />
+          </p>
+          <p itemProp="condition" content="https://schema.org/UsedCondition">
+            Condition: Used
+          </p>
+          <p>
+            Warranty: {selectedProduct.warranty || '90 days'}
+          </p>
+          <meta itemProp="sku" content={selectedProduct.sku} />
+          <meta itemProp="availability" content={selectedProduct.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
+        </div>
+      )}
+
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}

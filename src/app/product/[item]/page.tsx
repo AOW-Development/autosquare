@@ -32,6 +32,9 @@ export async function generateMetadata({
     const routeParams = await params;
     const queryParams = await searchParams;
 
+    // Use consistent API URL
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://partscentral.us/api";
+
     console.log("Page generateMetadata called with params:", routeParams);
     console.log("Page generateMetadata called with searchParams:", queryParams);
 
@@ -90,8 +93,7 @@ export async function generateMetadata({
     // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiBaseUrl="https://partscentral.us/api";
-        const apiUrl = `${apiBaseUrl}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+        const apiUrl = `${API_BASE_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         
         const apiResponse = await fetch(apiUrl, {
@@ -131,7 +133,7 @@ export async function generateMetadata({
           // Priority 2: First variant overall (if none in stock)
           if (!selectedVariant) {
             selectedVariant = apiData.groupedVariants[0].variants[0];
-            console.log("⚠️ Using first variant (none in stock)");
+            console.log(⚠️ Using first variant (none in stock)");
           }
         }
 
@@ -211,8 +213,12 @@ export default async function EngineProductPage({
   const routeParams = await params;
   const queryParams = await searchParams;
 
+  // Use consistent API URL
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://partscentral.us/api";
+
   console.log("EngineProductPage - routeParams:", routeParams);
   console.log("EngineProductPage - queryParams:", queryParams);
+  console.log("EngineProductPage - API_BASE_URL:", API_BASE_URL);
 
   // Parse URL to extract product parameters
   const segments = routeParams.item?.split("-") || [];
@@ -247,7 +253,7 @@ export default async function EngineProductPage({
   
   if (make && model && year && part) {
     try {
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      const apiUrl = `${API_BASE_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
       
       console.log("🔄 Server fetching from:", apiUrl);
       

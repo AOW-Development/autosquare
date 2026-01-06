@@ -1,7 +1,4 @@
 "use client";
-// import Banner from "@/components/Banner";
-// import Sidebar from "@/components/Sidebar";
-// import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
 import EmailSubmittedModal from "@/components/EmailSubmittedModal";
@@ -14,15 +11,41 @@ export default function ContactUsPage() {
     message: "",
   });
   const [modalOpen, setModalOpen] = useState(false);
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setModalOpen(true);
-    setFormData({
-      name: "",
-      email: "",
-      message: "",
-    });
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const res = await fetch("/api-2/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      });
+
+      const responseData = await res.json();
+
+      if (res.ok) {
+        setModalOpen(true);
+        setFormData({
+          name: "",
+          email: "",
+          message: "",
+        });
+      } else {
+        setError(responseData.message || "Failed to send email. Please try again.");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setError("An error occurred. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
+
   return (
     <div className="bg-[#091b33] min-h-screen">
       <div className="w-full h-[160px] sm:h-[240px] md:h-[320px] relative">
@@ -34,10 +57,6 @@ export default function ContactUsPage() {
         />
       </div>
       <div className="bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-4 py-6 p-4">
-
-        {/* <div className="md:w-1/4">
-        <Sidebar activeKey="" />
-      </div> */}
         <div className="flex-1 flex-col gap-6">
           <div className="max-w-6xl mx-auto w-full">
             {/* Breadcrumb */}
@@ -152,7 +171,7 @@ export default function ContactUsPage() {
 
               {/* Right Column - Form */}
               <div className="bg-[#091627] rounded-md shadow-sm p-6 mt-6 md:mt-2">
-                <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                   <div>
                     <label className="block font-semibold mb-2">Name*</label>
                     <input
@@ -186,7 +205,7 @@ export default function ContactUsPage() {
                     />
                   </div>
                   <div>
-                    <label className="block font-semibold mb-2">Text*</label>
+                    <label className="block font-semibold mb-2">Message*</label>
                     <textarea
                       placeholder="Write your message"
                       value={formData.message}
@@ -201,11 +220,19 @@ export default function ContactUsPage() {
                       required
                     />
                   </div>
+
+                  {error && (
+                    <div className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-2 rounded-lg text-sm">
+                      {error}
+                    </div>
+                  )}
+
                   <button
                     type="submit"
-                    className="w-full cursor-pointer bg-[#00a3ff] hover:bg-blue-600 text-white rounded-lg py-2 mt-4 font-semibold transition-colors"
+                    disabled={isLoading}
+                    className="w-full cursor-pointer bg-[#00a3ff] hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white rounded-lg py-2 mt-4 font-semibold transition-colors"
                   >
-                    Submit Now
+                    {isLoading ? "Sending..." : "Submit Now"}
                   </button>
                 </form>
                 {modalOpen && (

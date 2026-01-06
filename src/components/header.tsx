@@ -21,24 +21,286 @@ const categories = [
       "Throttle Body",
     ],
   },
-  { name: "Axle" },
-  { name: "Brakes" },
-  { name: "Center Body" },
-  { name: "Cooling and Heating" },
-  { name: "Doors" },
-  { name: "Electrical" },
+  {
+    name: "Axle", sub: [
+      "Axel Housing",
+      "Axel Shaft",
+      "Carrier",
+      "Differential",
+      "Front Axel",
+      "Front Drive Shaft",
+      "Rear Axel",
+      "Rear Drive Shaft",
+      "Ring Gear/Pinion"
+    ],
+  },
+  {
+    name: "Brakes", sub: [
+      "Anti-Lock Brake Part",
+      "Brake Master Cylinder",
+      "Hub",
+      "Locking Hubs",
+      "Power Brake Booster",
+      "Rear Brakes",
+    ],
+  },
+  {
+    name: "Center Body", sub: [
+      "Convertible Top Motor",
+      "Convertible Top Lift",
+      "Roof",
+      "Roof Motor",
+      "Running Board",
+      "Seat Belt Rear",
+      "Sunroof Panel Assembly"
+    ],
+  },
+  {
+    name: "Cooling and Heating", sub: [
+      "AC Compressor Clutch",
+      "AC Compressor",
+      "AC Condenser",
+      "AC Evaporator",
+      "AC Evaporator Housing",
+      "Blower Motor",
+      "Heater",
+      "Heater Core",
+      "Heater Housing",
+      "Radiator",
+      "Radiator Fan Motor",
+      "Radiator Shroud",
+      "Temperature Control"
+    ],
+  },
+  {
+    name: "Doors", sub: [
+      "Door Handle Exterior",
+      "Door Handle Interior",
+      "Door Trim Panel",
+      "Door Vent Window Regulator Front",
+      "Electric Door Motor",
+      "Front Door",
+      "Front Door Switch",
+      "Front Door Trim Panel",
+      "Front Window Regulator",
+      "Power Window Motor",
+      "Rear Back Door",
+      "Rear Side Door",
+      "Rear Window Regulator",
+      "Side View Mirror"
+    ],
+  },
+  {
+    name: "Electrical", sub: [
+      "Alternator",
+      "Antenna",
+      "Audio Euipment Radio",
+      "Automatic Headlamp Dimmer",
+      "Backup Light",
+      "Blower Motor",
+      "Camera/Projector",
+      "Chassis ECM",
+      "Column Switch",
+      "Conv/Invert/Charger",
+      "Corner/Park Light",
+      "Cruise Speed Regulator",
+      "Dash/Interior/Seat Switch",
+      "Electric Door Motor",
+      "Engine ECM",
+      "Engine Wire Harness",
+      "Fog Lamp Rear",
+      "Front Door Switch",
+      "Fuse Box Cabin",
+      "Fuse Box Engine",
+      "Headlight",
+      "Headlight Motor",
+      "High Mounted Stop Light",
+      "Ignitons Switch",
+      "Info-GPS-TV Screen",
+      "Instrument Cluster",
+      "Lid Motor Pull Down",
+      "Power Window Motor",
+      "Radiator Fan Motor",
+      "Rear Door Switch",
+      "Rear Side Marker",
+      "Rear Wiper Motor",
+      "Speedometer Cluster",
+      "Tail Light",
+      "Temperature Control",
+      "Vacuum Pump",
+      "Windshield Wiper"
+    ],
+  },
   { name: "Engine", href: "/catalogue/engine/home" },
-  { name: "Engine Accessories" },
-  { name: "Entertainment" },
-  { name: "Front Body" },
-  { name: "Glass and Mirrors" },
-  { name: "Interior" },
-  { name: "Lights" },
-  { name: "Rear Body" },
-  { name: "Safety" },
-  { name: "Suspension/Steering" },
-  { name: "Transmission" },
-  { name: "Wheels" },
+  {
+    name: "Engine Accessories", sub: [
+      "AC Compressor",
+      "Air Flow Meter",
+      "Air Injection Pump",
+      "Alternator",
+      "Carburetor",
+      "Catalytic Converter",
+      "Coil/Ignitor",
+      "Distributor",
+      "Engine Oil Cooler",
+      "Exhaust Manifold",
+      "Fan Blade",
+      "Fan Clutch",
+      "Fuel Injection Parts",
+      "Fuel Pump",
+      "Intercooler",
+      "Power Steering Pump",
+      "Starter Motor",
+      "Throttle Body",
+      "Turbo/Supercharger",
+      "Vacuum Pump"
+    ],
+  },
+  {
+    name: "Entertainment", sub: [
+      "Antenna",
+      "Audio Equipment Radio",
+      "Camera/Projector",
+      "Info-GPS-TV Screen",
+    ],
+  },
+  {
+    name: "Front Body", sub: [
+      "Corner/Park Light",
+      "Fender",
+      "Front Bumper",
+      "Front Spoiler",
+      "Grille",
+      "Header Panel",
+      "Headlamp Washer Motor",
+      "Headlamp Wiper Motor",
+      "Headlight",
+      "Headlight Door/Cover",
+      "Hood",
+      "Radiator Core Support",
+      "Windshield Washer Motor",
+      "Windshield Wiper Motor",
+      "Wiper Arm",
+      "Wiper Transmission"
+    ],
+  },
+  { name: "Glass and Mirrors",sub:[
+    "Back Glass",
+    "Front Door Glass",
+    "Front Door Vent Glass",
+    "Quarter Glass",
+    "Rear Door Glass",
+    "Rear Door Vent Glass",
+    "Rear View Mirror",
+    "Roof Glass",
+    "Side View Mirror",
+    "Special Glass",
+    "Windshield Glass"
+  ], },
+  { name: "Interior",sub:[
+    "Armrest",
+    "Console Front",
+    "Console Rear",
+    "Dash Panel",
+    "Front Door Trim Panel",
+    "Front Seat",
+    "Front Seat Track",
+    "Glove Box",
+    "Rear View Mirror",
+    "Roll Bar",
+    "Seat Belt Front",
+    "Seat Belt Rear",
+    "Seat Motor",
+    "Seat Rear",
+    "Speedometer Cluster",
+    "Sun Visor",
+    "Tachometer",
+    "Third Seat Station WagonVan"
+  ], },
+  { name: "Lights",sub:[
+    "Backup Light",
+    "Corner/Park Light",
+    "Fog Lamp Rear",
+    "Headlight",
+    "Headlight Motor",
+    "High Mounted Stop light",
+    "Rear Side Marker",
+    "Tail Light"
+  ], },
+  { name: "Rear Body",sub:[
+    "Back Glass Regulator",
+    "Backup Light",
+    "Fog Lamp Rear",
+    "High Mounted Stop Light",
+    "Pickup Box",
+    "Quarter Panel",
+    "Quarter Repair Panel",
+    "Quarter Window Regulator",
+    "Rear Bumper",
+    "Rear Clip",
+    "Rear Side Marker",
+    "Sunroof Panel Assm",
+    "Tail Finish Panel",
+    "Tail Light",
+    "Tail Panel",
+    "Trunk/Hatch/Tailgate",
+    "Valance Rear"
+  ], },
+  { name: "Safety",sub:[
+    "Air Bag",
+    "Seat Belt Front",
+    "Seat Belt Motor",
+    "Seat Belt Rear",
+    "Seat Belt Track Electric"
+  ], },
+  { name: "Suspension/Steering",sub:[
+    "Air/Coil Spring",
+    "Crossmember/K-Frame",
+    "Front Axle Beam 2WD",
+    "Front Knee",
+    "Front Leaf Spring",
+    "Front Spindle/Knuckle",
+    "Hub",
+    "Loaded Beam Axle",
+    "Lower Control Front",
+    "Lower Control Rear",
+    "Power Steering",
+    "Power Steering Pump",
+    "Rear Knuckle/Stub",
+    "Rear Leaf Spring",
+    "Rear Suspension",
+    "Shock Absorber",
+    "Stabilizer Bar",
+    "Steering Column",
+    "Steering Gear/Rack",
+    "Strut",
+    "Suspension Pump",
+    "Torsion Bar",
+    "Upper Control Arm Front",
+    "Upper Control Arm Rear",
+  ], },
+  { name: "Transmission",sub:[
+    "Bell Housing",
+    "Clutch Master Cylinder",
+    "Clutch Slave Cylinder",
+    "Crossmember Transmission",
+    "Differential",
+    "FlyvWheel/Flex Plate",
+    "Front Drive Shaft",
+    "Rear Drive Shaft",
+    "Torque Converter",
+    "Transfer Case",
+    "Transfer Case Motor",
+    "Transmission Assembly",
+  ], },
+  { name: "Wheels",sub:[
+    "Jack",
+    "Spare Wheel Carrier",
+    "Spare Wheel",
+    "Tires",
+    "Wheel",
+    "Wheel Cover Hub Cap"
+  ], },
   {
     name: "Our services",
     sub: [
@@ -132,7 +394,7 @@ const navLinks = [
       { label: "Terms & Conditions", href: "/account/t&c" },
       { label: "Blogs", href: "/Blog/blogListing" },
       { label: "Testimonials", href: "/Testimonials" },
-      { label: "FAQ", href: "/account/faq"},
+      { label: "FAQ", href: "/account/faq" },
       { label: "Track my order", href: "/account/trackOrder" },
       { label: "Submit a ticket", href: "/account/submitTicket" },
       { label: "Make a Payment", href: "/account/paymentDetails" },
@@ -219,17 +481,17 @@ export default function Header() {
           </Link>
           <div className="flex flex-col items-end text-xs ">
             <div className="flex flex-col items-end text-xs">
-                 <a
-                    href="tel:8883382540"
-                    onClick={() => {
-                      if (typeof window !== "undefined" && typeof window.gtag === "function") {
-                        window.gtag('event', 'conversion', { send_to: 'AW-17273467579/H6LQCJmP36kbELvl0KxA' });
-                      }
-                    }}
-                  >
-                    (888) 338-2540
-                  </a>
-                </div>
+              <a
+                href="tel:8883382540"
+                onClick={() => {
+                  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+                    window.gtag('event', 'conversion', { send_to: 'AW-17273467579/H6LQCJmP36kbELvl0KxA' });
+                  }
+                }}
+              >
+                (888) 338-2540
+              </a>
+            </div>
 
             <span>Mon-Fri: 8AM - 7PM EST</span>
           </div>
@@ -493,9 +755,8 @@ export default function Header() {
                 </button>
               )} */}
               <div
-                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 font-exo-2 transition-all ${
-                  link.label === "Shop by Categories" ? "flex-[2]" : "flex-1"
-                }`}
+                className={`relative group flex items-center justify-center h-full border-l border-r border-gray-700 font-exo-2 transition-all ${link.label === "Shop by Categories" ? "flex-[2]" : "flex-1"
+                  }`}
                 onMouseEnter={() => {
                   if (link.type === "categories") {
                     categoriesHover.current = true;
@@ -639,28 +900,27 @@ export default function Header() {
                     {link.label}
                     {(link.type === "categories" ||
                       link.type === "submenu") && (
-                      <svg
-                        className={`w-5 h-5 ml-1 transition-transform duration-200 ${
-                          (link.type === "categories" && categoriesOpen) ||
-                          (link.type === "submenu" && submenuOpen)
+                        <svg
+                          className={`w-5 h-5 ml-1 transition-transform duration-200 ${(link.type === "categories" && categoriesOpen) ||
+                            (link.type === "submenu" && submenuOpen)
                             ? "rotate-180"
                             : ""
-                        }`}
-                        width={12}
-                        height={12}
-                        viewBox="0 0 20 20"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path
-                          d="M6 8l4 4 4-4"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                        />
-                      </svg>
-                    )}
+                            }`}
+                          width={12}
+                          height={12}
+                          viewBox="0 0 20 20"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M6 8l4 4 4-4"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </svg>
+                      )}
                   </button>
                 )}
                 {/* Categories Flyout */}
@@ -687,11 +947,10 @@ export default function Header() {
                       {categories.map((cat) => (
                         <div
                           key={cat.name}
-                          className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${
-                            activeCategory === cat.name
-                              ? "bg-gray-800 text-blue-400"
-                              : ""
-                          }`}
+                          className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${activeCategory === cat.name
+                            ? "bg-gray-800 text-blue-400"
+                            : ""
+                            }`}
                           onMouseEnter={() => setActiveCategory(cat.name)}
                           tabIndex={0}
                           role="menuitem"
@@ -866,9 +1125,8 @@ export default function Header() {
                             alt="arrow"
                             width={14}
                             height={14}
-                            className={`transition-transform ${
-                              mobileCategoriesOpen ? "rotate-180" : ""
-                            }`}
+                            className={`transition-transform ${mobileCategoriesOpen ? "rotate-180" : ""
+                              }`}
                           />
                         </button>
                         {/* Categories Panel */}
@@ -894,11 +1152,10 @@ export default function Header() {
                                     <span>{cat.name}</span>
                                     {cat.sub && cat.sub.length > 0 && (
                                       <span
-                                        className={`transition-transform ${
-                                          mobileSelectedCategory === cat.name
-                                            ? "rotate-90"
-                                            : ""
-                                        }`}
+                                        className={`transition-transform ${mobileSelectedCategory === cat.name
+                                          ? "rotate-90"
+                                          : ""
+                                          }`}
                                       >
                                         &gt;
                                       </span>

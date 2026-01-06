@@ -64,6 +64,34 @@ export default function RootLayout({
           content="cbWtFgAaDKGwqHjipxrO9D_8KrKucA6ZTzSbB4QMbJE"
         />
 
+      <Script
+        id="organization-jsonld"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "Parts Central LLC",
+            url: "https://partscentral.us",
+            logo: "https://partscentral.us/logos/pc2.png",
+            contactPoint: {
+              "@type": "ContactPoint",
+              telephone: "+1-888-338-2540",
+              contactType: "customer service",
+            },
+            address: {
+              "@type": "PostalAddress",
+              streetAddress: "76 Imperial Dr Suite E",
+              addressLocality: "Evanston",
+              addressRegion: "WY",
+              postalCode: "82930",
+              addressCountry: "US",
+            },
+          }),
+        }}
+      />
+
         {/* Google Tag Manager */}
         <Script id="google-tag-manager" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':

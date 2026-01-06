@@ -1434,9 +1434,9 @@ useEffect(() => {
                 </a>
               </div>
 
-              <div className="flex flex-col gap-3 text-white">
+              {/* <div className="flex flex-col gap-3 text-white">
                 {/* Google Rating */}
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
+                {/* <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
                   <span>
                     Rated <span className="font-semibold">4.6</span> out of 5
                     based on
@@ -1448,10 +1448,10 @@ useEffect(() => {
                     height={36} // natural height
                     className="h-6 sm:h-6 md:h-12 lg:h-8 w-auto" // responsive larger heights
                   />
-                </div>
+                </div> */}
 
                 {/* Trustpilot Rating */}
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
+                {/* <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
                   <span>
                     Rated <span className="font-semibold">4.1</span> out of 5
                     based on
@@ -1465,8 +1465,8 @@ useEffect(() => {
                       className="h-20 sm:h-18 md:h-20 lg:h-29 w-auto lg:w-[150px]" // responsive larger heights
                     />
                   </div>
-                </div>
-              </div>
+                </div> */}
+              {/* </div>  */}
             </div>
           </div>
         </div>

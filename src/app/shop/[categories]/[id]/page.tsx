@@ -77,10 +77,14 @@ const ContentSection = ({
 export default function PartDetailPage() {
   const params = useParams();
 
+  const normalizedCategory = normalize(params?.categories);
   const normalizedPartName = normalize(params?.id);
 
+
   const part = PARTS.find(
-    (p) => p.name.toLowerCase() === normalizedPartName
+    (p) =>
+      p.name.toLowerCase() === normalizedPartName &&
+      p.category?.toLowerCase() === normalizedCategory
   );
 
   if (!part) {

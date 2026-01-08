@@ -95,6 +95,7 @@ export default function PartDetailPage() {
     <div className="bg-[#091b33] min-h-screen">
       {/* Banner */}
       <div className="w-full h-[160px] sm:h-[240px] md:h-[280px] lg:h-[320px] relative">
+        {/* Background Image */}
         <Image
           src="/engine/only_engine.png"
           alt={`${part.name} Banner`}
@@ -102,7 +103,19 @@ export default function PartDetailPage() {
           className="object-cover"
           priority
         />
+
+
+        {/* Centered Title */}
+        <div className="absolute inset-0 flex items-center justify-center">
+          <h1 className="text-white text-xl sm:text-3xl md:text-4xl lg:text-6xl font-semibold text-center px-4" style={{
+        fontFamily: "Audiowide, sans-serif",
+        letterSpacing: "0.1em",
+      }}>
+            {part.name}
+          </h1>
+        </div>
       </div>
+
 
       <ShopByVehicle />
 

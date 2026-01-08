@@ -40,6 +40,165 @@ export const metadataMap: Record<string, Metadata> = {
       "Find premium Transmission by Car Parts for your vehicle. Durable, affordable, and reliable solutions to keep your car running smoothly. Shop now!",
     keywords:
       "transmission by car parts, car transmission parts, auto transmission online, buy transmission parts, replacement transmission",
+  }, "/account/cookie-policy": {
+    title: "Cookie Policy | Parts Central",
+    alternates: {
+      canonical: "https://partscentral.us/account/cookie-policy",
+    },
+    description:
+      "Learn how Parts Central uses cookies and similar technologies to enhance your browsing experience, analyze site traffic, and personalize content on our website.",
+    keywords:
+      "cookie policy, parts central cookies, website cookies policy, tracking cookies, browser cookies, auto parts website cookies",
+  },
+  "/account/privacy-policy": {
+    title: "Privacy Policy | Parts Central",
+    alternates: {
+      canonical: "https://partscentral.us/account/privacy-policy",
+    },
+    description:
+      "Read Parts Central’s Privacy Policy to understand how we collect, use, protect, and manage your personal information when you use our website and services.",
+    keywords:
+      "privacy policy, parts central privacy, auto parts privacy policy, personal data protection, customer data security, website privacy policy",
+  },
+  "/contact-us": {
+    title: "Contact Us | Parts Central – Auto Parts Support & Assistance",
+    alternates: {
+      canonical: "https://partscentral.us/contact-us",
+    },
+    description:
+      "Get in touch with Parts Central for questions about auto parts, orders, shipping, warranties, or support. Our team is here to help you find the right car parts quickly and reliably.",
+    keywords:
+      "contact parts central, auto parts support, car parts customer service, contact auto parts supplier, vehicle parts help, auto parts assistance",
+  },
+  "/catalogue/engine/selectedSpecification": {
+    title: "Select Engine Specifications | Parts Central",
+    alternates: {
+      canonical: "https://partscentral.us/catalogue/engine/selectedSpecification",
+    },
+    description:
+      "Choose the correct engine specifications at Parts Central to find compatible engines and components for your vehicle. Filter by engine details to ensure the perfect fit and performance.",
+    keywords:
+      "engine specifications, select engine specs, engine compatibility, car engine details, auto engine selection, parts central engine catalogue",
+  },
+  "/account/payment-info": {
+    title: "Payment Information | Parts Central – Secure Payments",
+    alternates: {
+      canonical: "https://partscentral.us/account/payment-info",
+    },
+    description:
+      "Review Parts Central’s payment information to understand accepted payment methods, secure transaction processing, billing details, and safe checkout practices.",
+    keywords:
+      "payment information, parts central payments, secure payment methods, auto parts payment options, billing information, safe online payments",
+  },
+  "/catalogue/engine/home": {
+    title: "Engine Parts Catalogue | Parts Central – Find the Right Engine",
+    alternates: {
+      canonical: "https://partscentral.us/catalogue/engine/home",
+    },
+    description:
+      "Browse the Parts Central engine catalogue to find quality engines and engine components for your vehicle. Select by make, model, and specifications to ensure the perfect fit and reliable performance.",
+    keywords:
+      "engine catalogue, engine parts, car engines for sale, auto engine parts, vehicle engine components, parts central engine catalogue",
+  },
+  "/account/track-order": {
+    title: "Track Your Order | Parts Central – Order Status & Delivery",
+    alternates: {
+      canonical: "https://partscentral.us/account/track-order",
+    },
+    description:
+      "Track your Parts Central order in real time. Check order status, shipping updates, and delivery information quickly and securely using your order details.",
+    keywords:
+      "track order, parts central order tracking, auto parts order status, track car parts delivery, shipping status, order lookup",
+  },
+  "/account/garage": {
+    title: "My Garage | Parts Central – Manage Your Vehicles",
+    alternates: {
+      canonical: "https://partscentral.us/account/garage",
+    },
+    description:
+      "Manage your saved vehicles in the Parts Central Garage. Add, edit, or remove vehicles to quickly find compatible auto parts tailored to your car or truck.",
+    keywords:
+      "my garage, parts central garage, saved vehicles, manage vehicles, auto parts by vehicle, car garage account",
+  },
+  "/account/shipping-payment-policy": {
+    title: "Shipping & Payment Policy | Parts Central",
+    alternates: {
+      canonical: "https://partscentral.us/account/shipping-payment-policy",
+    },
+    description:
+      "Review Parts Central’s Shipping & Payment Policy to understand delivery timelines, shipping methods, payment options, billing terms, and order processing details.",
+    keywords:
+      "shipping policy, payment policy, parts central shipping, auto parts shipping information, payment methods, order processing, shipping and payment terms",
+  },
+  "/account/sign-in": {
+    title: "Sign In | Parts Central – Access Your Account",
+    alternates: {
+      canonical: "https://partscentral.us/account/sign-in",
+    },
+    description:
+      "Sign in to your Parts Central account to manage orders, track shipments, save vehicles in your garage, and access personalized auto parts recommendations.",
+    keywords:
+      "sign in parts central, account login, auto parts account login, customer login, parts central sign in, vehicle parts account",
+  },
+  "/account/sign-up": {
+    title: "Sign Up | Parts Central – Create Your Account",
+    alternates: {
+      canonical: "https://partscentral.us/account/sign-up",
+    },
+    description:
+      "Create a Parts Central account to manage orders, track shipments, save vehicles in your garage, and get personalized recommendations for auto parts.",
+    keywords:
+      "sign up parts central, create account, auto parts registration, customer account signup, parts central sign up, vehicle parts account",
+  },
+  "/blog/blog-listing": {
+    title: "Auto Parts Blog | Parts Central – Tips, Guides & Updates",
+    alternates: {
+      canonical: "https://partscentral.us/blog/blog-listing",
+    },
+    description:
+      "Explore the Parts Central blog for expert tips, buying guides, maintenance advice, and the latest updates on auto parts, engines, and vehicle care.",
+    keywords:
+      "auto parts blog, car parts blog, vehicle maintenance tips, auto repair guides, parts central blog, automotive news and updates",
+  },
+  "/testimonials": {
+    title: "Customer Testimonials | Parts Central – Trusted Auto Parts Reviews",
+    alternates: {
+      canonical: "https://partscentral.us/testimonials",
+    },
+    description:
+      "Read real customer testimonials and reviews about Parts Central. See why customers trust us for quality auto parts, reliable service, and fast delivery.",
+    keywords:
+      "parts central testimonials, customer reviews, auto parts reviews, car parts customer feedback, trusted auto parts supplier, parts central reviews",
+  },
+  "/account/cart": {
+    title: "Shopping Cart | Parts Central – Review Your Auto Parts",
+    alternates: {
+      canonical: "https://partscentral.us/account/cart",
+    },
+    description:
+      "Review the auto parts in your Parts Central shopping cart. Update quantities, check pricing, and proceed securely to checkout to complete your order.",
+    keywords:
+      "shopping cart, parts central cart, auto parts cart, review auto parts order, car parts checkout, parts central shopping cart",
+  },
+  "/account/profile": {
+    title: "My Profile | Parts Central – Manage Your Account",
+    alternates: {
+      canonical: "https://partscentral.us/account/profile",
+    },
+    description:
+      "Manage your Parts Central profile information, update personal details, change passwords, and keep your account information accurate and secure.",
+    keywords:
+      "my profile, account profile, parts central account settings, manage account, update profile information, customer account details",
+  },
+  "/account/forgot-password": {
+    title: "Forgot Password | Parts Central – Reset Your Account Access",
+    alternates: {
+      canonical: "https://partscentral.us/account/forgot-password",
+    },
+    description:
+      "Reset your Parts Central account password securely. Follow the steps to regain access to your account and continue managing orders, vehicles, and auto parts.",
+    keywords:
+      "forgot password, reset password, parts central password reset, account recovery, auto parts account help, regain account access",
   },
   "/used-engines-and-transmissions-for-sale-near-me-in-united-states": {
     title: "Used Engines and Transmissions for Sale Near Me in US",
@@ -223,13 +382,13 @@ export function generateDynamicEngineMetadata(searchParams: {
 
     // const canonical = `https://partscentral.us/product/engines?${canonicalParams.toString()}`;
 
-     const canonical = item 
+    const canonical = item
       ? `https://partscentral.us/product/${item}`
       : `https://partscentral.us/product`;
 
 
     // Debug: log the generated metadata
-    console.log("Generated dynamic metadata:", { title, description,canonical, keywords });
+    console.log("Generated dynamic metadata:", { title, description, canonical, keywords });
 
     return {
       title,

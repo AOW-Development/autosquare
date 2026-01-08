@@ -1050,26 +1050,7 @@ useEffect(() => {
       `}</style>
       
       {/* Server-rendered product details for Google Merchant Center */}
-      {selectedProduct && (
-        <div style={{ display: 'none' }} itemScope itemType="https://schema.org/Product">
-          <h1 itemProp="name">
-            {selectedProduct.title || 
-             `${productInfo.year} ${productInfo.make} ${productInfo.model} ${productInfo.part} ${selectedProduct.specification || ''}`.trim()}
-          </h1>
-          <p itemProp="offers" itemScope itemType="https://schema.org/Offer">
-            <span itemProp="price">${selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}</span>
-            <meta itemProp="priceCurrency" content="USD" />
-          </p>
-          <p itemProp="condition" content="https://schema.org/UsedCondition">
-            Condition: Used
-          </p>
-          <p>
-            Warranty: {selectedProduct.warranty || '90 days'}
-          </p>
-          <meta itemProp="sku" content={selectedProduct.sku} />
-          <meta itemProp="availability" content={selectedProduct.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
-        </div>
-      )}
+     
 
       {showCartPopup && selectedProduct && (
         <AddedCartPopup

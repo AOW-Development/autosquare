@@ -96,7 +96,7 @@ export default function PartDetailPage() {
       {/* Banner */}
       <div className="w-full h-[160px] sm:h-[240px] md:h-[280px] lg:h-[320px] relative">
         <Image
-          src={part.image || "/parts/placeholder-banner.png"}
+          src="/engine/only_engine.png"
           alt={`${part.name} Banner`}
           fill
           className="object-cover"
@@ -107,7 +107,7 @@ export default function PartDetailPage() {
       <ShopByVehicle />
 
       {/* Main Section */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 pt-8">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 lg:pt-20 pt-16">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
           <a href="/">

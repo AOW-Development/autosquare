@@ -184,123 +184,139 @@ const categories = [
       "Wiper Transmission"
     ],
   },
-  { name: "Glass and Mirrors",sub:[
-    "Back Glass",
-    "Front Door Glass",
-    "Front Door Vent Glass",
-    "Quarter Glass",
-    "Rear Door Glass",
-    "Rear Door Vent Glass",
-    "Rear View Mirror",
-    "Roof Glass",
-    "Side View Mirror",
-    "Special Glass",
-    "Windshield Glass"
-  ], },
-  { name: "Interior",sub:[
-    "Armrest",
-    "Console Front",
-    "Console Rear",
-    "Dash Panel",
-    "Front Door Trim Panel",
-    "Front Seat",
-    "Front Seat Track",
-    "Glove Box",
-    "Rear View Mirror",
-    "Roll Bar",
-    "Seat Belt Front",
-    "Seat Belt Rear",
-    "Seat Motor",
-    "Seat Rear",
-    "Speedometer Cluster",
-    "Sun Visor",
-    "Tachometer",
-    "Third Seat Station WagonVan"
-  ], },
-  { name: "Lights",sub:[
-    "Backup Light",
-    "Corner/Park Light",
-    "Fog Lamp Rear",
-    "Headlight",
-    "Headlight Motor",
-    "High Mounted Stop light",
-    "Rear Side Marker",
-    "Tail Light"
-  ], },
-  { name: "Rear Body",sub:[
-    "Back Glass Regulator",
-    "Backup Light",
-    "Fog Lamp Rear",
-    "High Mounted Stop Light",
-    "Pickup Box",
-    "Quarter Panel",
-    "Quarter Repair Panel",
-    "Quarter Window Regulator",
-    "Rear Bumper",
-    "Rear Clip",
-    "Rear Side Marker",
-    "Sunroof Panel Assm",
-    "Tail Finish Panel",
-    "Tail Light",
-    "Tail Panel",
-    "Trunk/Hatch/Tailgate",
-    "Valance Rear"
-  ], },
-  { name: "Safety",sub:[
-    "Air Bag",
-    "Seat Belt Front",
-    "Seat Belt Motor",
-    "Seat Belt Rear",
-    "Seat Belt Track Electric"
-  ], },
-  { name: "Suspension/Steering",sub:[
-    "Air/Coil Spring",
-    "Crossmember/K-Frame",
-    "Front Axle Beam 2WD",
-    "Front Knee",
-    "Front Leaf Spring",
-    "Front Spindle/Knuckle",
-    "Hub",
-    "Loaded Beam Axle",
-    "Lower Control Front",
-    "Lower Control Rear",
-    "Power Steering",
-    "Power Steering Pump",
-    "Rear Knuckle/Stub",
-    "Rear Leaf Spring",
-    "Rear Suspension",
-    "Shock Absorber",
-    "Stabilizer Bar",
-    "Steering Column",
-    "Steering Gear/Rack",
-    "Strut",
-    "Suspension Pump",
-    "Torsion Bar",
-    "Upper Control Arm Front",
-    "Upper Control Arm Rear",
-  ], },
-  { name: "Transmission",sub:[
-    "Bell Housing",
-    "Clutch Master Cylinder",
-    "Clutch Slave Cylinder",
-    "Crossmember Transmission",
-    "Differential",
-    "FlyvWheel/Flex Plate",
-    "Front Drive Shaft",
-    "Rear Drive Shaft",
-    "Torque Converter",
-    "Transfer Case",
-    "Transfer Case Motor",
-    "Transmission Assembly",
-  ], },
-  { name: "Wheels",sub:[
-    "Jack",
-    "Spare Wheel Carrier",
-    "Spare Wheel",
-    "Tires",
-    "Wheel",
-    "Wheel Cover Hub Cap"
-  ], },
+  {
+    name: "Glass and Mirrors", sub: [
+      "Back Glass",
+      "Front Door Glass",
+      "Front Door Vent Glass",
+      "Quarter Glass",
+      "Rear Door Glass",
+      "Rear Door Vent Glass",
+      "Rear View Mirror",
+      "Roof Glass",
+      "Side View Mirror",
+      "Special Glass",
+      "Windshield Glass"
+    ],
+  },
+  {
+    name: "Interior", sub: [
+      "Armrest",
+      "Console Front",
+      "Console Rear",
+      "Dash Panel",
+      "Front Door Trim Panel",
+      "Front Seat",
+      "Front Seat Track",
+      "Glove Box",
+      "Rear View Mirror",
+      "Roll Bar",
+      "Seat Belt Front",
+      "Seat Belt Rear",
+      "Seat Motor",
+      "Seat Rear",
+      "Speedometer Cluster",
+      "Sun Visor",
+      "Tachometer",
+      "Third Seat Station WagonVan"
+    ],
+  },
+  {
+    name: "Lights", sub: [
+      "Backup Light",
+      "Corner/Park Light",
+      "Fog Lamp Rear",
+      "Headlight",
+      "Headlight Motor",
+      "High Mounted Stop light",
+      "Rear Side Marker",
+      "Tail Light"
+    ],
+  },
+  {
+    name: "Rear Body", sub: [
+      "Back Glass Regulator",
+      "Backup Light",
+      "Fog Lamp Rear",
+      "High Mounted Stop Light",
+      "Pickup Box",
+      "Quarter Panel",
+      "Quarter Repair Panel",
+      "Quarter Window Regulator",
+      "Rear Bumper",
+      "Rear Clip",
+      "Rear Side Marker",
+      "Sunroof Panel Assm",
+      "Tail Finish Panel",
+      "Tail Light",
+      "Tail Panel",
+      "Trunk/Hatch/Tailgate",
+      "Valance Rear"
+    ],
+  },
+  {
+    name: "Safety", sub: [
+      "Air Bag",
+      "Seat Belt Front",
+      "Seat Belt Motor",
+      "Seat Belt Rear",
+      "Seat Belt Track Electric"
+    ],
+  },
+  {
+    name: "Suspension/Steering", sub: [
+      "Air/Coil Spring",
+      "Crossmember/K-Frame",
+      "Front Axle Beam 2WD",
+      "Front Knee",
+      "Front Leaf Spring",
+      "Front Spindle/Knuckle",
+      "Hub",
+      "Loaded Beam Axle",
+      "Lower Control Front",
+      "Lower Control Rear",
+      "Power Steering",
+      "Power Steering Pump",
+      "Rear Knuckle/Stub",
+      "Rear Leaf Spring",
+      "Rear Suspension",
+      "Shock Absorber",
+      "Stabilizer Bar",
+      "Steering Column",
+      "Steering Gear/Rack",
+      "Strut",
+      "Suspension Pump",
+      "Torsion Bar",
+      "Upper Control Arm Front",
+      "Upper Control Arm Rear",
+    ],
+  },
+  {
+    name: "Transmission", sub: [
+      "Bell Housing",
+      "Clutch Master Cylinder",
+      "Clutch Slave Cylinder",
+      "Crossmember Transmission",
+      "Differential",
+      "FlyvWheel/Flex Plate",
+      "Front Drive Shaft",
+      "Rear Drive Shaft",
+      "Torque Converter",
+      "Transfer Case",
+      "Transfer Case Motor",
+      "Transmission Assembly",
+    ],
+  },
+  {
+    name: "Wheels", sub: [
+      "Jack",
+      "Spare Wheel Carrier",
+      "Spare Wheel",
+      "Tires",
+      "Wheel",
+      "Wheel Cover Hub Cap"
+    ],
+  },
   {
     name: "Our services",
     sub: [
@@ -463,6 +479,14 @@ export default function Header() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
 
+  const denormalize = (value?: string) => {
+    if (!value) return "";
+
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, "-"); // spaces → hyphens
+  };
   // --- Top Bar ---
   return (
     <header className="w-full bg-[#091B33] text-white ">
@@ -980,16 +1004,17 @@ export default function Header() {
                                 key={index}
                                 className="py-1 hover:text-blue-400 cursor-pointer"
                               >
-                                {typeof sub === "string" ? (
+                                {/* {typeof sub === "string" ? (
                                   <span>{sub}</span>
-                                ) : (
-                                  <Link
-                                    href={sub.href || "#"}
-                                    onClick={closeAll}
-                                  >
-                                    {sub.label}
-                                  </Link>
-                                )}
+                                ) : ( */}
+                                <Link
+                                  // href="https://www.google.com/"
+                                  href={`/shop/${denormalize(cat.name)}/${denormalize(sub.toString())}`}
+                                  onClick={closeAll}
+                                >
+                                  {sub.toString()}
+                                </Link>
+                                {/* )} */}
                               </li>
                             ))}
                           </ul>

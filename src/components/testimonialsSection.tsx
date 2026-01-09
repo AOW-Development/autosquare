@@ -87,13 +87,13 @@ function TestimonialCard({
             ))}
           </div>
         </div>
-        <Image
+        {/* <Image
           src="/account/google.png"
           alt="Google"
           width={34}
           height={34}
           className="ml-2 mb-4"
-        />
+        /> */}
       </div>
       <div className="relative z-10 px-6 pb-6 pt-4">
         <p className="text-white/80 text-base leading-relaxed">{text}</p>

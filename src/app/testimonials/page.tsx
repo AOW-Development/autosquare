@@ -5,47 +5,51 @@ import React from "react";
 
 const testimonials = [
   {
-    name: "Brad Jenkins III",
-    text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    name: "Amma Bloomberg",
+    text: "Extremely pleased with my experience at this online auto parts store.  I highly recommend this store to all car enthusiasts!",
+    avatar: "/Images/Gender.png",
   },
   {
-    name: "Dr. Jim Parker",
-    text: "Extremely pleased with my experience at this online auto parts store.",
+    name: "Stuart Borer",
+    text: "This auto parts store is absolutely fantastic! A wide range of products, a user-friendly website, quick order processing, and on-time delivery. The quality of the parts is outstanding.",
+    avatar: "/Images/Gender (1).png",
   },
   {
-    name: "Raymond Rippin DVM",
+    name: "Philip Christiansen",
+    text: "Fantastic auto parts shop! Quick service, quality parts, and a user-friendly website. Highly recommended!",
+    avatar: "/Images/Gender (1).png",
+  },
+  {
+    name: "Raymond Rippin",
     text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface.",
+    avatar: "/Images/Gender (1).png",
   },
   {
     name: "Isabel D amore",
     text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface.",
+    avatar: "/Images/Gender (1).png",
   },
   {
     name: "Virgil Shields",
-    text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    text: "Extremely pleased with my experience at this online auto parts store. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    avatar: "/Images/Gender (1).png",
   },
   {
     name: "Santiago Beer",
-    text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    text: "Extremely pleased with my experience at this online auto parts store.  The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    avatar: "/Images/Gender (1).png",
   },
   {
     name: "Nettie Oberbrunner",
-    text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch.",
+    text: "Extremely pleased with my experience at this online auto parts store. The quality of the parts is top-notch.",
+    avatar: "/Images/Gender (1).png",
   },
   {
-    name: "Sandra Wehner",
-    text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    name: "Sandro Wehner",
+    text: "Extremely pleased with my experience at this online auto parts store.  The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
+    avatar: "/Images/Gender (1).png",
   },
-  {
-    name: "Sandra Wehner",
-    text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
-  },
-  // {
-  //   name: "Sandra Wehner",
-  //   text: "Extremely pleased with my experience at this online auto parts store. Excellent product selection and a user-friendly website interface. The order processing was quick, and the delivery was right on time. The quality of the parts is top-notch. The staff is professional and responsive. I highly recommend this store to all car enthusiasts!",
-  // },
 ];
-
 const categories = ["This month", "Last month", "This year", "Last year"];
 
 export default function TestimonialsPage() {
@@ -112,10 +116,7 @@ export default function TestimonialsPage() {
                 key={t.name + i}
                 className={`p-[2px] rounded-xl bg-gradient-to-br from-blue-400 via-blue-600 to-blue-900 shadow-[0_0_24px_4px_rgba(59,130,246,0.4)] w-full max-w-[370px] mx-auto mb-0`}
               >
-                <div
-                  className={`rounded-lg bg-[#12263A] flex flex-col shadow-lg w-full h-full p-2 ${isLastRow ? "opacity-70" : ""
-                    }`}
-                >
+                
                   {/* <Image
                     src={`/Testimonials/title${i === 0 ? "-3" : "-" + i}.png`}
                     alt={t.name}
@@ -124,17 +125,9 @@ export default function TestimonialsPage() {
                     className="mb-2 mt-4 pl-6 rounded-t-xl"
                     priority={i < 3}
                   /> */}
-                  <ReviewCard
-                    name="Armin Bloomberge"
-                    avatarUrl="/profile-us.jpg"
-                  />
+                  <TestimonialCard {...t} />
 
-                  <div className="px-6 pb-6 pt-0">
-                    <p className="text-white/80 text-base leading-relaxed">
-                      {t.text}
-                    </p>
-                  </div>
-                </div>
+                  
               </div>
             );
           })}
@@ -169,44 +162,54 @@ export default function TestimonialsPage() {
 }
 
 
-type ReviewCardProps = {
-  name: string;
-  rating?: number; // default 5
-  avatarUrl: string;
-};
-
-function ReviewCard({
+function TestimonialCard({
   name,
-  rating = 5,
-  avatarUrl,
-}: ReviewCardProps) {
+  text,
+  avatar,
+}: {
+  name: string;
+  text: string;
+  avatar: string;
+}) {
   return (
-    <div className="flex items-center justify-between rounded-2xl  px-5 py-4 text-white w-full max-w-sm">
-      {/* LEFT */}
-      <div className="flex items-center gap-3">
-        {/* Avatar */}
-        <div className="relative h-12 w-12 overflow-hidden rounded-full">
-          <Image
-            src={avatarUrl}
-            alt={name}
-            fill
-            className="object-cover"
-          />
-        </div>
-
-        {/* Name + Stars */}
-        <div className="flex flex-col gap-1">
-          <p className="text-base font-medium leading-none">
-            {name}
-          </p>
-          <div className="flex gap-0.5 text-yellow-400 text-sm">
-            {Array.from({ length: rating }).map((_, i) => (
-              <span key={i}>★</span>
+    <div className="relative rounded-md border border-blue-400 bg-[#12263A] p-0 flex flex-col shadow-lg w-full max-w-[370px] min-h-[320px] overflow-hidden">
+      <Image
+        src="/Images/cards-bg.png"
+        alt=""
+        fill
+        className="object-cover z-0 pointer-events-none"
+        priority={false}
+        quality={70}
+      />
+      <div className="relative z-10 flex items-center gap-3 px-6 pt-6">
+        <Image
+          src={avatar}
+          alt={name}
+          width={48}
+          height={48}
+          className="rounded-full"
+        />
+        <div className="flex-1">
+          <div className="font-bold text-white text-xl mt-2">{name}</div>
+          <div className="flex items-center gap-1 mt-0">
+            {[...Array(5)].map((_, i) => (
+              <span key={i} className="text-yellow-400 text-2xl">
+                ★
+              </span>
             ))}
           </div>
         </div>
+        {/* <Image
+          src="/account/google.png"
+          alt="Google"
+          width={34}
+          height={34}
+          className="ml-2 mb-4"
+        /> */}
       </div>
-
+      <div className="relative z-10 px-6 pb-6 pt-4">
+        <p className="text-white/80 text-base leading-relaxed">{text}</p>
+      </div>
     </div>
   );
 }

@@ -54,7 +54,6 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
     const ACRONYMS = new Set([
       "bmw",
       "gmc",
-      "audi",
       "ram",
       "vw",
       "usa",

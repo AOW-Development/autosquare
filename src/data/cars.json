@@ -1,10 +1,10 @@
 [
   {
     "id": "acura",
-    "title": "Discover the Smartest Way to Choose Used Acura Auto Parts",
+    "title": "Used Acura Auto Parts for Sale",
     "heroSection": {
-      "headline": "Discover the Smartest Way to Choose USED ACURA AUTO PARTS",
-      "description": "At PARTSCENTRAL, we are zealous about providing Used Acura Auto Parts across the United States, defining the best quality with rigorous in-house inspections to run your vehicle smoothly on the streets.",
+      "headline": "Used Acura Auto Parts for Sale",
+      "description": "Smart. Affordable. Reliable. That’s PartsCentral. At Parts Central, we believe maintaining your Acura shouldn’t break the bank. That’s why we offer quality-tested used Acura auto parts shipped nationwide, inspected thoroughly, and priced for savings.",
       "image": {
         "src": "/car-images/acura-hero.jpg",
         "alt": "Used Acura auto parts hero image",
@@ -13,73 +13,86 @@
     },
     "sections": {
       "intro": {
-        "headline": "Why Choose Used Acura Auto Parts?",
+        "headline": "Smart. Affordable. Reliable. That’s PartsCentral.",
         "list": [
-          "Why pay more if you can own OEM-grade Acura parts at a reasonable price?",
-          "Our extensive inventory covers all Acura models with nationwide shipping.",
-          "Friendly customer support available 24/7 to assist any requirement.",
-          "PARTSCENTRAL is the wisest source for choosing used Acura parts online."
+          "Quality-tested used Acura auto parts shipped nationwide",
+          "Thoroughly inspected parts priced for savings",
+          "OEM-fit parts handpicked for performance",
+          "Built to keep your Acura smooth, safe, and road-ready"
         ]
       },
       "inventoryHighlight": {
-        "headline": "Stock Indulging a Wide Range of Inventory for Any Requirement",
-        "description": "PARTSCENTRAL thrives for the betterment of your Acura operating at paramount performance. We offer an extensive inventory of quality Used Acura Engines and Transmissions for sale to help you find precise parts."
+        "headline": "Bringing Your Acura Back to Life",
+        "description": "Whether you’re a DIY enthusiast, professional mechanic, or just want your ride running like new, Parts Central is your go-to source for OEM Acura parts that fit right and work hard. From daily drivers to weekend cruisers, we help you find the exact components your Acura needs. No hassle. No guesswork."
       },
       "categories": {
-        "headline": "Acura Auto Parts Categories",
+        "headline": "Popular Acura Parts We Carry",
         "list": [
-          "Body Parts — bumpers, doors, hoods, mirrors",
-          "Lighting — headlights & taillights for safety and visibility",
-          "Electrical — alternators, starters, and wiring components",
-          "Engines — high-performing used Acura engines",
-          "Transmissions — durable and smooth-shifting transmissions"
+          "Engines and Transmissions",
+          "AC Compressors and Condensers",
+          "ABS Modules",
+          "Bumpers, Doors, Mirrors",
+          "Starters, Alternators, Wiring",
+          "Radiators, Fans, Hoses",
+          "Window Regulators and Motors",
+          "Suspension and Steering Components",
+          "Headlights, Taillights, Switches",
+          "Control Arms, Knuckles, Axles"
         ]
       },
       "qualityAssurance": {
-        "headline": "Superior Quality Assured",
-        "description": "The Quality Assurance Program examines each component to maintain high standards. PARTSCENTRAL is transparent and takes pride in offering the best used Acura parts with reliability and long-term performance."
+        "headline": "Trusted Quality. Proven Performance.",
+        "description": "Each part goes through multi-point quality checks by our expert team. We don’t list it unless it meets our standards for function, safety, and durability. This is more than salvaged metal. These are certified used Acura parts carefully sourced, tested, and ready to install."
       },
       "pricing": {
-        "headline": "Get Estimated Competitive Prices",
-        "description": "We respect the value of every dollar earned and offer low-cost used Acura car parts without compromising quality. Getting a quote is simple — fill out the form on our website and our team will provide competitive pricing within minutes."
+        "headline": "Get the Best Price on Acura Auto Parts",
+        "description": "Why overpay for new when used OEM fits like a glove and lasts just as long? Get a free, instant quote for any Acura auto part you need — no logins, no calls, just a quick form. We’ll respond within minutes. You’ll love the price. And the part."
       },
       "modelsCovered": {
-        "headline": "Acura Models Covered — From CL to ZDX",
-        "description": "We offer outstanding quality components for various Acura models, ensuring peak performance with our Used Acura OEM parts.",
+        "headline": "Acura Models We Cover",
+        "description": "We serve parts for every Acura model. Have a rare or older Acura? No problem. Our network helps us track down hard-to-find parts others can’t.",
         "models": [
           "Acura CL",
-          "Acura RLX",
-          "Acura TLX",
-          "Acura MDX",
-          "Acura ZDX",
+          "Acura ILX",
           "Acura Integra",
+          "Acura Legend",
+          "Acura MDX",
+          "Acura NSX",
+          "Acura RDX",
+          "Acura RL",
+          "Acura RLX",
+          "Acura RSX",
+          "Acura SLX",
           "Acura TL",
-          "Acura RSX"
+          "Acura TLX",
+          "Acura TSX",
+          "Acura Vigor",
+          "Acura ZDX"
         ]
       },
       "whyChoose": {
-        "headline": "Why Choose PARTSCENTRAL?",
+        "headline": "Why Choose PartsCentral for Acura Auto Parts?",
         "points": [
-          "Superior-quality used OEM Acura parts",
-          "24/7 nationwide shipping",
-          "Round-the-clock customer advisors",
-          "Affordable and competitive pricing",
-          "Rigorous quality inspections"
+          "Rigorous quality inspections",
+          "Nationwide shipping",
+          "Competitive pricing",
+          "Secure checkout and easy returns",
+          "Prompt customer support available 7 days a week"
         ]
       },
       "shopNow": {
-        "headline": "Get Used Auto Parts Today in Just a Few Clicks",
-        "description": "Browse the PARTSCENTRAL catalogue for used Acura parts for sale, including rare Acura Integra components and more. From high-performance engines and transmissions to interior and exterior parts, we make purchasing effortless and eco-friendly.",
-        "cta": "Start your journey in refining your Acura today — request a quote and experience joyful shopping!"
+        "headline": "Order Acura Auto Parts Online in Just a Few Clicks",
+        "description": "Ready to bring your Acura back to its best? Search by model, request a quote, and place your order all online. Join thousands of satisfied Acura owners who trust Parts Central for reliable, affordable used Acura auto parts.",
+        "cta": "Request a quote and get started today."
       }
     }
   },
   {
     "id": "audi",
-    "title": "Find Advanced Used Audi Car Parts at PARTSCENTRAL",
+    "title": "Used Audi Parts for Sale",
     "heroSection": {
-      "headline": "FIND ADVANCED USED AUDI CAR PARTS AT PARTSCENTRAL",
-      "description": "Rejuvenate your Audi with us! At PARTSCENTRAL, we are committed to delivering transparency and authenticated component offerings. Find a wide range of Genuine Used Audi Parts and accessories of superior quality to enrich your vehicle's performance. Every used component purchased from us is ensured to be long-lasting and worth your investment.",
+      "headline": "Used Audi Parts for Sale",
+      "description": "Smart. Affordable. Reliable. That’s PartsCentral. At PartsCentral, we believe keeping your Audi performing at its best shouldn’t cost a fortune. That’s why we offer professionally inspected used Audi parts, priced for value and shipped across the U.S.",
       "image": {
         "src": "/car-images/audi-hero.jpg",
         "alt": "Used Audi auto parts hero image",
@@ -87,99 +100,175 @@
       }
     },
     "sections": {
-      "inspiringDesigns": {
-        "headline": "Inspiring Designs",
-        "description": "Audi vehicles are known for their LED lighting, sleek designs, and spectacular performance. Their remarkable blend of beauty and engineering excellence makes every Audi a proud possession for its owner."
+      "intro": {
+        "headline": "Smart. Affordable. Reliable. That’s PartsCentral.",
+        "list": [
+          "Professionally inspected used Audi parts",
+          "Priced for value and shipped across the U.S.",
+          "Each part handpicked for smooth and safe performance",
+          "OEM-grade quality without new-part costs"
+        ]
       },
-      "innovativeTechnology": {
-        "headline": "Innovative Technology",
-        "description": "Audi sets a benchmark in the automotive industry with advanced features such as the virtual cockpit, driver-assistance systems, and MMI touch response. These innovations make Audi a dominant name in the modern automotive market."
+      "inventoryHighlight": {
+        "headline": "Breathe New Life Into Your Audi",
+        "description": "Whether you’re a gearhead, shop owner, or just trying to get your Audi back on the road, PartsCentral is your trusted source for OEM-grade used parts that install right and run strong. No matter your Audi model or project size, we make finding the right part fast, easy, and reliable. If you’ve been searching for used Audi parts near me, then our nationwide shipping makes it feel like we’re right around the corner."
       },
-      "unrivaledOptions": {
-        "headline": "Unrivaled Options to Choose Used Audi Car Parts",
-        "description": "PARTSCENTRAL offers a wide range of Used Audi Car Parts—whether replacing components, upgrading your vehicle, or searching for accessories. From bumpers, doors, hoods, headlights, taillights, mirrors, wheels, engines, alternators, starters, and transmissions, we provide everything you need."
+      "categories": {
+        "headline": "Popular Audi Parts We Carry",
+        "list": [
+          "Engine assemblies and transmissions",
+          "AC compressors and cooling fans",
+          "ABS modules and control units",
+          "Doors, bumpers, mirrors, fenders",
+          "Alternators, starters and wiring",
+          "Radiators, condensers and hoses",
+          "Window regulators and lift motors",
+          "Suspension arms, knuckles and axles",
+          "Headlights, taillights, sensors and switches"
+        ]
+      },
+      "qualityAssurance": {
+        "headline": "OEM Quality Without the Guesswork",
+        "description": "We don’t sell junkyard leftovers. Every Audi part in our warehouse undergoes rigorous quality checks by experienced auto technicians. If it doesn’t meet our standards, it doesn’t ship. From used Audi engines for sale to body components and electricals, every item is tested, sourced, and backed for performance so you can install with confidence."
+      },
+      "pricing": {
+        "headline": "Audi-Level Performance. Used-Parts Pricing.",
+        "description": "Why pay new-car prices when OEM used parts perform just as well? Get a fast, free quote — no logins, no calls required. Just fill out a quick form, and we’ll respond within minutes. Top-tier parts. Transparent pricing. No hassle."
       },
       "modelsCovered": {
-        "headline": "Comprehensive Audi Car Parts — From A3 to Q8",
-        "description": "From compact sedans to luxury SUVs, we provide used parts for every Audi model including A3, A4, A6, Q5, Q8, and more. All components undergo strict inspections ensuring readiness and compatibility.",
-        "extra": "Nationwide shipping, cost-effective pricing, 24/7 customer support, financing options, and an extensive inventory make your purchase simpler and more comfortable."
+        "headline": "Audi Models Covered",
+        "description": "We support nearly every Audi on the road today. Need parts for an older or rare trim? Our national sourcing network helps track down hard-to-find used Audi parts online that other sellers can’t provide.",
+        "models": [
+          "Audi A3",
+          "Audi A4",
+          "Audi A5",
+          "Audi A6",
+          "Audi A7",
+          "Audi A8",
+          "Audi Q3",
+          "Audi Q5",
+          "Audi Q7",
+          "Audi Q8",
+          "Audi TT",
+          "Audi RS Series"
+        ]
       },
-      "significance": {
-        "headline": "Significance in Choosing Us",
-        "description": "We understand the importance of quality and reliability in Used Genuine Audi parts. Our inspection team rigorously ensures that every component meets industry standards. PARTSCENTRAL offers only high-quality Used Audi OEM Parts to deliver outstanding performance."
+      "whyChoose": {
+        "headline": "Why Choose PartsCentral?",
+        "points": [
+          "Rigorous quality inspections",
+          "Nationwide shipping",
+          "Competitive pricing",
+          "Secure checkout and easy returns",
+          "Prompt customer support available 7 days a week"
+        ]
       },
-      "costEffectiveness": {
-        "headline": "Cost-Effectiveness",
-        "description": "At PARTSCENTRAL, you can purchase Used Audi Car Parts at affordable prices. Our pricing structure ensures great value for your money. Whether you need Audi TT, A3, A4, A5, A7, A8, Q3, Q5, or Q7 components—we offer top-quality parts at low costs."
-      },
-      "quotations": {
-        "headline": "Easy to Receive Quotations",
-        "description": "Requesting a quotation for your Used Audi Auto Parts is quick and hassle-free. Simply fill out the form on our website and our representatives will contact you with accurate pricing within minutes.",
-        "cta": "Customers may also reach us by calling 877-982-7774 or visiting our official PARTSCENTRAL website."
+      "shopNow": {
+        "headline": "Order Used Audi Parts Online Today",
+        "description": "Bringing your Audi back to peak condition is just a few clicks away. Search by model, request a quote, and place your order online — it’s that simple. Join thousands of Audi owners who trust PartsCentral for reliable, affordable used Audi parts that deliver performance and peace of mind.",
+        "cta": "Request a quote and order today."
       }
     }
   },
   {
     "id": "bmw",
-    "title": "Buy Used BMW Auto Parts at PARTSCENTRAL",
+    "title": "BMW Used Spares for Sale",
     "heroSection": {
-      "headline": "BUY USED BMW AUTO PARTS AT PARTSCENTRAL!",
-      "description": "Revive your BMW with PARTSCENTRAL in just a few clicks. BMW (Baye Rische Motoren Werke AG) is a globally renowned brand representing luxury, innovation, creativity, and performance. Their dynamic engineering and trailblazing designs make BMW vehicles stand out across the automotive world. Unlock the full potential of your BMW ownership experience with PARTSCENTRAL. Explore our variety of top-tier Used BMW Auto Parts to maintain driving perfection. Choose a trusted platform like ours for convenience, unmatched value, and quality.",
+      "headline": "BMW Used Spares for Sale",
+      "description": "Smart. Affordable. Reliable. That’s PartsCentral. At PartsCentral, we believe keeping your BMW running like new shouldn’t cost a fortune. That’s why we provide carefully inspected, performance-tested BMW used spares, shipped nationwide and priced to save you money.",
       "image": {
         "src": "/car-images/bmw-hero.jpg",
-        "alt": "Used BMW auto parts hero image",
+        "alt": "BMW used spares hero image",
         "position": "right"
       }
     },
     "sections": {
-      "heritageOfSupremacy": {
-        "headline": "The Heritage of Supremacy",
-        "description": "With over a century of history, BMW has risen from manufacturing aircraft engines to producing some of the world’s most legendary cars and motorcycles. Rooted in German precision and innovation, BMW symbolizes excellence in driving performance and engineering."
+      "intro": {
+        "headline": "Smart. Affordable. Reliable. That’s PartsCentral.",
+        "list": [
+          "Carefully inspected and performance-tested BMW used spares",
+          "Nationwide shipping with cost-saving pricing",
+          "OEM BMW used auto parts that preserve driving dynamics",
+          "Built to maintain German engineering and performance"
+        ]
       },
-      "cuttingEdgeTechnology": {
-        "headline": "Cutting-Edge Technology",
-        "description": "BMW stands at the forefront of automotive innovation. Features like the BMW iDrive infotainment system, advanced driver-assistance tools, and seamless connectivity ensure convenience, safety, and memorable driving experiences. BMW consistently prioritizes advanced driving technologies and user safety."
+      "inventoryHighlight": {
+        "headline": "Bringing Your BMW Back to Life",
+        "description": "Whether you're a DIYer, auto tech, or BMW fanatic, PartsCentral is your one-stop destination for used BMW car parts that fit right, function flawlessly, and arrive fast. From vintage classics to cutting-edge models, we help you track down the exact part your BMW needs. No stress. No second-guessing."
       },
-      "eclecticOptions": {
-        "headline": "Eclectic Options to Choose",
-        "description": "PARTSCENTRAL’s extensive inventory of used BMW parts suits all models. Whether you're seeking customization, replacements, upgrades, or accessories, our listings are designed to meet every requirement."
+      "categories": {
+        "headline": "Popular BMW Spares We Carry",
+        "list": [
+          "Engines and transmissions",
+          "Turbochargers and superchargers",
+          "ABS systems and brake boosters",
+          "AC compressors and condensers",
+          "Control arms, knuckles, axles",
+          "Doors, mirrors, bumpers",
+          "Alternators, starters, sensors",
+          "ECUs, modules, electricals",
+          "Headlights, taillights, switches",
+          "Window motors and regulators"
+        ]
       },
-      "qualityOrientedComponents": {
-        "headline": "Quality-Oriented Components",
-        "description": "We understand the importance of high-quality Used BMW Parts Online. That’s why we thoroughly inspect every part in our inventory to ensure it meets industry standards. At PARTSCENTRAL, our goal is to offer components that exceed expectations and guarantee satisfaction."
+      "qualityAssurance": {
+        "headline": "Trusted Quality. Proven Performance.",
+        "description": "Every part we sell is hand-selected and quality-checked by experienced auto professionals. If it doesn’t pass our inspection, it doesn’t make the shelf. From used BMW engines to electricals, suspension, and body components, our inventory isn’t just recycled parts — these are certified used BMW motors for sale and components you can rely on."
+      },
+      "pricing": {
+        "headline": "Get the Best Price on BMW Used Auto Parts",
+        "description": "Why pay full price when quality-tested OEM BMW used auto parts get the job done at a fraction of the cost? Fill out our quick quote form — no sign-up, no calls — and get a custom price within minutes. You’ll love the savings. You’ll trust the part."
       },
       "modelsCovered": {
-        "headline": "Auto Parts Available for All BMW Models",
-        "description": "Keep your BMW running like new with our Used BMW Parts for Sale at PARTSCENTRAL. From the iconic 3 Series to the powerful X7 Series, we provide only inspected, high-quality, affordable auto parts shipped nationwide."
+        "headline": "BMW Models Covered",
+        "description": "Looking for a rare or older BMW part? Our nationwide sourcing network helps us track down hard-to-find BMW used spares others can’t.",
+        "models": [
+          "BMW 1 Series",
+          "BMW 2 Series",
+          "BMW 3 Series",
+          "BMW 4 Series",
+          "BMW 5 Series",
+          "BMW 6 Series",
+          "BMW 7 Series",
+          "BMW 8 Series",
+          "BMW X1",
+          "BMW X2",
+          "BMW X3",
+          "BMW X4",
+          "BMW X5",
+          "BMW X6",
+          "BMW X7",
+          "BMW M Series",
+          "BMW Z3",
+          "BMW Z4",
+          "BMW Z8",
+          "BMW i3",
+          "BMW i8"
+        ]
       },
-      "affordablePricing": {
-        "headline": "Affordable Pricing",
-        "description": "At PARTSCENTRAL, we believe in offering cost-effective, high-quality BMW auto parts. Our competitive pricing ensures every dollar you spend delivers exceptional value. Browse our catalog to find the exact parts you need."
+      "whyChoose": {
+        "headline": "Why Choose PartsCentral?",
+        "points": [
+          "Rigorous quality inspections",
+          "Nationwide shipping",
+          "Competitive pricing",
+          "Secure checkout and easy returns",
+          "Prompt customer support available 7 days a week"
+        ]
       },
-      "financing": {
-        "headline": "Financing Options",
-        "description": "We value every customer’s financial comfort. That's why we offer easy buy-now-pay-later options to make your BMW part purchases smoother and more affordable."
-      },
-      "warranty": {
-        "headline": "Warranty",
-        "description": "Every buyer wants assurance. At PARTSCENTRAL, many BMW junkyard parts come with warranties — 30 days on small parts and 90 days on major components such as used BMW engines and transmissions — ensuring authenticity and peace of mind."
-      },
-      "assistance": {
-        "headline": "Assistance",
-        "description": "Our customer support team is available round-the-clock to help with queries, purchases, and concerns. Our advisors are always happy to assist with your BMW part needs."
-      },
-      "quotations": {
-        "headline": "Get the Quotations at Ease",
-        "description": "PARTSCENTRAL provides on-demand used BMW components for the BMW 525i and BMW X Series, including X1, X2, X3, X5, and X6. The quotation process is simple — fill out the form with your required part and model on our official website, and our team will contact you promptly. You may also reach us at 877-982-7774 for further assistance."
+      "shopNow": {
+        "headline": "Order BMW Used Spares in Just a Few Clicks",
+        "description": "Ready to restore your BMW to peak performance? Search by model, request a quote, and place your order online in minutes. Join thousands of BMW owners who trust PartsCentral for reliable, affordable BMW used spares with premium results.",
+        "cta": "Request a quote and order today."
       }
     }
   },
   {
     "id": "buick",
-    "title": "Elevate Used Buick Auto Parts at PARTSCENTRAL",
+    "title": "Used Buick Parts for Sale",
     "heroSection": {
-      "headline": "ELEVATE USED BUICK AUTO PARTS AT PARTSCENTRAL!",
-      "description": "Buick’s legacy of prestige, comfort, outstanding performance, and refined design makes it a standout brand across generations. From compact SUVs to spacious crossovers, Buick delivers a joyful and luxurious driving experience. At PARTSCENTRAL, we go above and beyond to offer top-quality Used Buick Car Parts that suit customer needs—along with our affordable pricing programs.",
+      "headline": "Used Buick Parts for Sale",
+      "description": "Smart. Affordable. Reliable. That’s PartsCentral. Driving a Buick says something subtle but strong. You appreciate comfort that lasts, elegance without excess, and smooth performance that doesn’t need noise to be noticed. That’s why we provide used Buick parts that let you keep your car running like it was built to. Every part is OEM, tested, and shipped nationwide at prices you can trust.",
       "image": {
         "src": "/car-images/buick-hero.jpg",
         "alt": "Used Buick auto parts hero image",
@@ -187,146 +276,167 @@
       }
     },
     "sections": {
-      "magnificenceForEveryExpedition": {
-        "headline": "Magnificence for Every Expedition",
-        "description": "Buick is renowned for sophisticated designs and cutting-edge technology that attract drivers everywhere. With versatile models suitable for every season and lifestyle, Buick ensures memorable journeys for all users. While finding Used Buick Parts may seem difficult, PARTSCENTRAL makes the process incredibly simple and reliable."
-      },
-      "history": {
-        "headline": "The Old Days of Buick",
-        "timeline": [
-          "1903: Buick was established.",
-          "1908: Became the largest-selling vehicle brand in the US.",
-          "1936: Introduced Buick Special, offering luxury at affordable pricing.",
-          "1959: Launched Buick Electra, an iconic model loved by enthusiasts.",
-          "2000s: Expanded crossover SUVs like Buick Enclave and Encore.",
-          "2020s: Transitioned toward advanced hybrid vehicle technology."
-        ]
-      },
-      "features": {
-        "headline": "Buick Features",
+      "intro": {
+        "headline": "Smart. Affordable. Reliable. That’s PartsCentral.",
         "list": [
-          "Luxury: Superior-quality interiors and exceptional comfort.",
-          "Reliable: Engineered with strong and durable components.",
-          "Fuel-efficient: Designed for better mileage and long-term savings.",
-          "Safety: Equipped with advanced safety and driver-assistance tech."
+          "OEM used Buick parts tested for performance and reliability",
+          "Nationwide shipping at prices you can trust",
+          "Designed to preserve comfort, elegance, and smooth performance",
+          "Built to keep your Buick running the way it was meant to"
         ]
       },
-      "engines": {
-        "headline": "Engines",
+      "inventoryHighlight": {
+        "headline": "Buick Isn’t Just a Car. It’s a Mindset",
+        "description": "A Buick is for those who don’t chase trends. It’s for people who believe in quiet confidence, timeless comfort, and the kind of ride that makes every trip feel deliberate. You don’t just drive a Buick. You drive with purpose. And with our Buick auto parts, you can preserve that unique driving experience — part by part."
+      },
+      "categories": {
+        "headline": "Popular Buick Auto Parts We Carry",
         "list": [
-          "2.0L Turbocharged I4 (Regal, Envision): Balanced power and efficiency.",
-          "2.4L Ecotec I4 (Verano, LaCrosse, Enclave): Known for reliability and efficiency.",
-          "3.6L V6 (Enclave, LaCrosse, Encore GX): Smooth and powerful performance.",
-          "5.3L V8 (Older Buick SUVs & Classics): Long-lasting and performance-driven.",
-          "Hybrid Engines (Upcoming Models): Advanced technology in progress."
+          "Engines and transmissions",
+          "Window regulators and motors",
+          "Starters, alternators, wiring",
+          "AC compressors and condensers",
+          "Doors, bumpers, mirrors",
+          "Radiators, fans, hoses",
+          "Suspension and steering components",
+          "Control arms, knuckles, axles",
+          "Headlights, taillights, switches"
         ]
       },
-      "interiors": {
-        "headline": "Interiors",
-        "list": [
-          "Ergonomic Seats: Enhanced comfort for long journeys.",
-          "Spacious Cabins: Family-friendly space for road trips.",
-          "Infotainment: Apple CarPlay, Android Auto, Buick IntelliLink.",
-          "Premium Audio: Features Bose and Harman Kardon sound systems.",
-          "Dual-Zone Climate Control: Personalized comfort in all weather conditions."
-        ]
+      "qualityAssurance": {
+        "headline": "Built to Last. Backed by Us",
+        "description": "Every part we sell is thoroughly inspected for performance, safety, and fitment. If we wouldn’t put it in our own Buick, we won’t list it. Because when you value the drive, you value what goes into it."
       },
-      "faq": {
-        "warranty": {
-          "question": "Are warranty options available at PARTSCENTRAL?",
-          "answer": "Yes. Most Buick Junkyard Parts come with warranties — 30 days on smaller parts and 90 days on major components like Used Buick Engines and Transmissions. We ensure customers receive high-quality, worry-free parts."
-        },
-        "shipping": {
-          "question": "Is shipping to business addresses available?",
-          "answer": "Absolutely. We offer free shipping to all business addresses, and our delivery services cover the entire United States."
-        },
-        "availability": {
-          "question": "Are Used Buick Auto Parts for all models available?",
-          "answer": "Yes. PARTSCENTRAL carries a vast collection of Used Buick Car Parts for every model. All components are thoroughly inspected to meet industry standards for safety and performance."
-        }
-      },
-      "testimonials": {
-        "headline": "Customer Testimonials",
-        "list": [
-          "“Received a transmission for my Buick Enclave from PARTSCENTRAL.” – John, Texas",
-          "“Ordered a set of leather seats and was very pleased with the shipping services.” – David, Illinois"
-        ]
+      "pricing": {
+        "headline": "Skip the Guesswork. Keep the Quality",
+        "description": "Brand-new parts are costly and often unnecessary. Our OEM parts provide factory fitment, long-lasting reliability, and serious savings. Request a quote in seconds — no login, no calls, just answers. You’ll love the price. And trust the part."
       },
       "modelsCovered": {
-        "headline": "Connect Us for All Your Buick Needs!",
-        "description": "PARTSCENTRAL specializes in offering the best-selling used auto parts for Buick models including Regal, Century, Riviera, Lucerne, Enclave, Encore, Encore GX, Envision, Skylark, LaCrosse, Park Avenue, and Lesabre — all at budget-friendly costs.",
-        "cta": "Visit our official website and submit your model, year, and VIN to get a quick response. You may also call us at 877-982-7774 — available 365 days a year."
-      }
-    }
-  },
-  {
-    "id": "cadillac",
-    "title": "Buy Used Cadillac Auto Parts",
-    "heroSection": {
-      "headline": "BUY USED CADILLAC AUTO PARTS",
-      "description": "Cadillac is best known for its luxury, elegant designs, and precision engineering. The mind-blowing structure and engineering excellence of Cadillac models make them highly desirable. At PARTSCENTRAL, we help you give life back to your Cadillac with our top-quality Used Cadillac Auto Parts that enhance your vehicle's performance and longevity.",
-      "image": {
-        "src": "/car-images/cadillac-hero.jpg",
-        "alt": "Used Cadillac auto parts hero image",
-        "position": "right"
-      }
-    },
-    "sections": {
-      "heritage": {
-        "headline": "Heritage of Cadillac Vehicles Over a Century",
-        "description": "Since its inception in 1902, Cadillac has maintained an iconic reputation in automotive engineering with cutting-edge technology and long-lasting performance.",
-        "details": [
-          "Cadillac demonstrated unmatched engineering by successfully disassembling, interchanging, and reassembling components from three different cars — earning the prestigious Dewar Trophy.",
-          "The iconic V8 engine and advanced safety systems set Cadillac apart from other American luxury and performance brands."
+        "headline": "Buick Models We Support",
+        "description": "From legacy sedans to new-gen SUVs, we stock parts for a wide range of Buick models. Need rare or older parts? Our salvage network helps track down even the most elusive used Buick parts online.",
+        "models": [
+          "Buick Enclave",
+          "Buick Encore",
+          "Buick Encore GX",
+          "Buick Regal",
+          "Buick LaCrosse",
+          "Buick Lucerne",
+          "Buick LeSabre",
+          "Buick Century",
+          "Buick Park Avenue",
+          "Buick Verano",
+          "Buick Roadmaster",
+          "Buick Riviera",
+          "Buick Skylark",
+          "Buick Wildcat"
         ]
       },
-      "safetyAndDriveAssistance": {
-        "headline": "Safety and Drive Assistance",
-        "description": "Cadillac pioneered automotive crash tests to enhance vehicle safety and occupant protection. Night Vision Technology was also first introduced by Cadillac, elevating driving comfort and safety during night-time journeys."
-      },
-      "whyChooseAutoSquare": {
-        "headline": "Why Choose PARTSCENTRAL for Used Cadillac Auto Parts?",
-        "description": "PARTSCENTRAL is your trusted partner for finding Used Cadillac Car Parts in the United States with ease and convenience. We simplify the process of purchasing high-quality OEM Cadillac parts online.",
+      "whyChoose": {
+        "headline": "Why Buick Owners Choose PartsCentral",
         "points": [
-          "Seamless and user-friendly platform experience",
-          "Reliable source of OEM-quality used auto parts",
-          "Trusted by thousands across the United States"
+          "Rigorous quality inspections",
+          "Nationwide shipping",
+          "Competitive pricing",
+          "Secure checkout and easy returns",
+          "Customer support available 7 days a week"
         ]
       },
-      "collectibles": {
-        "headline": "A Galore of Collectibles",
-        "description": "PARTSCENTRAL ensures smooth and safe journeys by offering superior-quality Used Cadillac Auto Parts tailored to your needs. Every part is thoroughly inspected to meet stringent industry standards for safety and performance.",
-        "extra": "Whether you're searching for OEM-certified parts or components for maintenance, upgrades, or replacements — we have you covered."
-      },
-      "budgetFriendly": {
-        "headline": "Budget-Friendly Concerns",
-        "description": "New auto parts can be expensive — but PARTSCENTRAL offers high-quality Used Cadillac Parts at a fraction of the cost, ensuring reliability without sacrificing affordability."
-      },
-      "financing": {
-        "headline": "Financing Choices",
-        "description": "To enhance customer convenience, PARTSCENTRAL offers buy-now-pay-later options, allowing you to secure the parts you need without financial strain."
-      },
-      "shipping": {
-        "headline": "Shipping Services Across the United States",
-        "description": "We offer free nationwide shipping to all business addresses, ensuring quick and convenient deliveries to all 50 states."
-      },
-      "assurance": {
-        "headline": "Assurance",
-        "details": [
-          "RETURN & EXCHANGE: If you're not satisfied, you may return components within the eligible return period.",
-          "WARRANTY: 30-day warranty on smaller parts and 90 days for engines and transmissions.",
-          "ECO-FRIENDLY SOLUTIONS: Choosing Used Cadillac Parts helps reduce automotive waste and contributes positively to the environment."
-        ]
-      },
-      "contact": {
-        "headline": "Get Connected to Us",
-        "description": "PARTSCENTRAL offers all the best-selling parts for Cadillac vehicles, including Escalade, CTS, Deville, Eldorado, and more. We meet all your Cadillac part requirements with ease and quality assurance.",
-        "cta": "Call us at 877-982-7774 or fill out the required details on our official PARTSCENTRAL website. Our team will reach out to you promptly with support and quotations."
+      "shopNow": {
+        "headline": "Bring Your Buick Back in Just a Few Clicks",
+        "description": "Your Buick was built to last. We’re here to make sure it does. Search by model or VIN, get your quote, and order your used Buick parts with confidence. Thousands of Buick owners trust PartsCentral — join them today and keep driving on your terms.",
+        "cta": "Request a quote and order today."
       }
     }
   },
   {
-    "id": "chevrolet",
+  "id": "cadillac",
+  "title": "Used Cadillac Auto Parts for Sale",
+  "heroSection": {
+    "headline": "Used Cadillac Auto Parts for Sale",
+    "description": "Smart. Affordable. Reliable. That’s PartsCentral. Cadillac isn’t just a car. It’s a statement. Driven by those who lead, inspire, and set the tone. At PartsCentral, we make sure your Cadillac stays as refined and commanding as the day you got behind the wheel. We specialize in high-quality Cadillac auto parts across the U.S., inspected for performance and priced for smart buyers who expect excellence without compromise.",
+    "image": {
+      "src": "/car-images/cadillac-hero.jpg",
+      "alt": "Used Cadillac auto parts hero image",
+      "position": "right"
+    }
+  },
+  "sections": {
+    "intro": {
+      "headline": "Smart. Affordable. Reliable. That’s PartsCentral.",
+      "list": [
+        "High-quality used Cadillac auto parts inspected for performance",
+        "Nationwide shipping across the United States",
+        "OEM replacements priced for smart luxury buyers",
+        "Designed to preserve Cadillac refinement and command"
+      ]
+    },
+    "inventoryHighlight": {
+      "headline": "For the Drivers Who Expect More",
+      "description": "You drive a Cadillac because you know what it means to arrive. You don’t just get from point A to point B. You glide, you command attention, you enjoy the road in comfort and confidence. Whether you’re a city professional, an executive, or someone who appreciates American luxury done right, PartsCentral helps you keep your Cadillac running with the precision and prestige it was built for."
+    },
+    "categories": {
+      "headline": "Popular Cadillac Parts We Offer",
+      "list": [
+        "Engine and transmission assemblies",
+        "AC compressors, condensers, and climate control modules",
+        "ABS modules, brake boosters, master cylinders",
+        "Fenders, bumpers, grilles, mirrors",
+        "Radiators, fans, pumps, and sensors",
+        "Window regulators, door motors, switches",
+        "Suspension, steering, control arms",
+        "Headlights, taillights, computers, and more"
+      ]
+    },
+    "qualityAssurance": {
+      "headline": "Luxury Performance at a Smarter Price",
+      "description": "Driving a Cadillac means driving something better. But that doesn’t mean paying dealership premiums for every replacement part. Our used Cadillac auto parts are tested, quality-assured, and designed to match factory specs so you get the performance you expect without the markup. At PartsCentral, you keep Cadillac quality, and we help cut the cost."
+    },
+    "pricing": {
+      "headline": "Get a Quote, Not a Hassle",
+      "description": "You don’t wait around when something needs fixing. That’s why we made it easy. Just fill out a simple form and get a quote fast. No signups, no stress. Just the part you need, at the price you want. Looking for Cadillac parts near me? With nationwide shipping, we’re as close as your doorstep."
+    },
+    "modelsCovered": {
+      "headline": "Cadillac Models We Support",
+      "description": "From full-size luxury SUVs to performance sedans, we carry Cadillac auto parts for a wide range of models. Need a hard-to-find part for a rare model? Our extended network can help you track it down.",
+      "models": [
+        "Cadillac Escalade",
+        "Cadillac CTS",
+        "Cadillac DeVille",
+        "Cadillac Eldorado",
+        "Cadillac SRX",
+        "Cadillac ATS",
+        "Cadillac STS",
+        "Cadillac XT4",
+        "Cadillac XT5",
+        "Cadillac XT6",
+        "Cadillac XTS",
+        "Cadillac Seville",
+        "Cadillac Fleetwood",
+        "Cadillac Catera",
+        "Cadillac Brougham",
+        "Cadillac Allante"
+      ]
+    },
+    "whyChoose": {
+      "headline": "Why Cadillac Owners Choose PartsCentral",
+      "points": [
+        "Rigorous quality inspections",
+        "Nationwide shipping",
+        "Competitive pricing",
+        "Secure checkout and easy returns",
+        "Prompt customer support available 7 days a week"
+      ]
+    },
+    "shopNow": {
+      "headline": "Keep Your Cadillac Commanding the Road",
+      "description": "Owning a Cadillac is about presence. It’s about driving something that reflects your standards. When it needs a part, trust a source that understands the Cadillac experience. Search, quote, and order today. Keep your Cadillac as powerful, poised, and unforgettable as the people who drive it.",
+      "cta": "Search, quote, and order today."
+    }
+  }
+}
+,
+  {
+    "id": "chevy",
     "title": "Get Used Chevrolet Auto Parts at Ease",
     "heroSection": {
       "headline": "RESTRUCTURE YOUR CHEVROLET WITH PARTSCENTRAL",
@@ -1877,7 +1987,7 @@
     }
   },
   {
-    "id": "mercedes-benz",
+    "id": "mercedes",
     "title": "Fetch Used Mercedes Car Parts at PARTSCENTRAL",
     "heroSection": {
       "headline": "FETCH USED MERCEDES CAR PARTS AT PARTSCENTRAL",

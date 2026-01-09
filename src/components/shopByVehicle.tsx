@@ -1,7 +1,7 @@
 import React, { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Listbox } from '@headlessui/react' 
+import { Listbox } from '@headlessui/react'
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { MAKES, MODELS, YEARS } from './vehicleData';
 import { useEffect } from "react";
@@ -10,14 +10,19 @@ import { usePathname } from "next/navigation";
 import { Yaldevi } from "next/font/google";
 import SearchableDropdown from "./Searchable";
 
+interface ShopByVehicleProps {
+  initialMake?: string;
+}
 
 const PARTS = ["Engine", "Transmission"];
 
-const ShopByVehicle: React.FC = () => {
+const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
+  initialMake = "",
+}) => {
   const router = useRouter();
   const path = usePathname();
 
-  const [make, setMake] = useState("");
+  const [make, setMake] = useState(denormalizeSlug(initialMake));
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [part, setPart] = useState("");
@@ -45,16 +50,60 @@ const ShopByVehicle: React.FC = () => {
   };
 
 
+  function denormalizeSlug(value: string): string {
+    const ACRONYMS = new Set([
+      "bmw",
+      "gmc",
+      "audi",
+      "ram",
+      "vw",
+      "usa",
+    ]);
+
+    const COMPOUND_BRANDS = new Set([
+      "land-rover",
+    ]);
+    if (!value) return "";
+
+    const lower = value.toLowerCase();
+
+    // Handle compound brands like "land-rover" → "LandRover"
+    if (COMPOUND_BRANDS.has(lower)) {
+      return lower
+        .split("-")
+        .map(
+          part => part.charAt(0).toUpperCase() + part.slice(1)
+        )
+        .join("");
+    }
+
+    return lower
+      .split("-")
+      .map(word => {
+        if (ACRONYMS.has(word)) {
+          return word.toUpperCase();
+        }
+        return word.charAt(0).toUpperCase() + word.slice(1);
+      })
+      .join(" ");
+  }
+
+
+
+  useEffect(() => {
+    setMake(denormalizeSlug(initialMake));
+  }, [initialMake]);
+
 
   const normalizeValue = (value: string, list: string[]) => {
-  return (
-    list.find(
-      (item) => item.toLowerCase() === value.toLowerCase()
-    ) || ""
-  );
-};
+    return (
+      list.find(
+        (item) => item.toLowerCase() === value.toLowerCase()
+      ) || ""
+    );
+  };
 
-  
+
 
   // Reset or load saved values based on page
   useEffect(() => {
@@ -81,38 +130,38 @@ const ShopByVehicle: React.FC = () => {
   }, [path]);
 
   useEffect(() => {
-  if (!path.startsWith("/catalogue/")) return;
+    if (!path.startsWith("/catalogue/")) return;
 
-  const params = new URLSearchParams(window.location.search);
+    const params = new URLSearchParams(window.location.search);
 
-  const rawMake = params.get("make");
-  const rawModel = params.get("model");
-  const rawYear = params.get("year");
-  const rawPart = params.get("part");
+    const rawMake = params.get("make");
+    const rawModel = params.get("model");
+    const rawYear = params.get("year");
+    const rawPart = params.get("part");
 
-  if (!rawMake || !rawModel || !rawYear || !rawPart) return;
+    if (!rawMake || !rawModel || !rawYear || !rawPart) return;
 
-  // ✅ Normalize make
-  const normalizedMake = normalizeValue(rawMake, MAKES);
-  if (!normalizedMake) return;
+    // ✅ Normalize make
+    const normalizedMake = normalizeValue(rawMake, MAKES);
+    if (!normalizedMake) return;
 
-  // ✅ Normalize model (depends on make)
-  const normalizedModel = MODELS[normalizedMake]
-    ? normalizeValue(rawModel, MODELS[normalizedMake])
-    : "";
+    // ✅ Normalize model (depends on make)
+    const normalizedModel = MODELS[normalizedMake]
+      ? normalizeValue(rawModel, MODELS[normalizedMake])
+      : "";
 
-  if (!normalizedModel) return;
+    if (!normalizedModel) return;
 
-  // ✅ Normalize part
-  const normalizedPart = normalizeValue(rawPart, PARTS);
-  if (!normalizedPart) return;
+    // ✅ Normalize part
+    const normalizedPart = normalizeValue(rawPart, PARTS);
+    if (!normalizedPart) return;
 
-  // ✅ Set state with CORRECT casing
-  setMake(normalizedMake);
-  setModel(normalizedModel);
-  setYear(rawYear);
-  setPart(normalizedPart);
-}, [path]);
+    // ✅ Set state with CORRECT casing
+    setMake(normalizedMake);
+    setModel(normalizedModel);
+    setYear(rawYear);
+    setPart(normalizedPart);
+  }, [path]);
 
 
   // Fetch available years when make & model change
@@ -131,55 +180,55 @@ const ShopByVehicle: React.FC = () => {
 
   // Redirect when all selections are made
   // Corrected useEffect hook in your ShopByVehicle.tsx file
-useEffect(() => {
-  if (make && model && year && part) {
-    const query = new URLSearchParams({ make, model, year, part }).toString();
-    const partSlug = part.toLowerCase(); // engine | transmission
-    const newUrl = `/catalogue/${partSlug}/home?${query}`;
+  useEffect(() => {
+    if (make && model && year && part) {
+      const query = new URLSearchParams({ make, model, year, part }).toString();
+      const partSlug = part.toLowerCase(); // engine | transmission
+      const newUrl = `/catalogue/${partSlug}/home?${query}`;
 
 
-    // Save selection to local storage
-    localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
+      // Save selection to local storage
+      localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
 
-    // If user is on product page, always do a full redirect
-    if (path.startsWith("/product/") && userChanged) {
-      window.location.assign(newUrl); // full redirect
-      return; // exit so no history push happens
+      // If user is on product page, always do a full redirect
+      if (path.startsWith("/product/") && userChanged) {
+        window.location.assign(newUrl); // full redirect
+        return; // exit so no history push happens
+      }
+
+      // Otherwise, normal flow
+      const isInitialSearchPage =
+        path === "/" ||
+        path === "/engine" ||
+        path === "/transmission" ||
+        path === "/autoParts";
+
+      if (isInitialSearchPage) {
+        // router.push(newUrl);
+        window.location.href = newUrl;
+      } else if (path.startsWith("/catalogue/")) {
+        window.history.pushState(null, '', newUrl);
+      }
     }
-
-    // Otherwise, normal flow
-    const isInitialSearchPage =
-      path === "/" ||
-      path === "/engine" ||
-      path === "/transmission" ||
-      path === "/autoParts";
-
-    if (isInitialSearchPage) {
-      // router.push(newUrl);
-      window.location.href = newUrl;
-    } else if (path.startsWith("/catalogue/")) {
-      window.history.pushState(null, '', newUrl);
-    }
-  }
-}, [make, model, year, part, path, router, userChanged]);
+  }, [make, model, year, part, path, router, userChanged]);
 
 
-    const [isOpen, setIsOpen] = useState(false);
-// useEffect(() => {
-//   const spacer = document.getElementById("shop-spacer");
-//   if (spacer && boxRef.current) {
-//     spacer.style.height = `${boxRef.current.offsetHeight}px`;
-//   }
-// }, [
-//   make || "",
-//   model || "",
-//   year || "",
-//   part || "",
-//   !!makeActive,
-//   !!modelActive,
-//   !!yearActive,
-//   !!partActive
-// ]);
+  const [isOpen, setIsOpen] = useState(false);
+  // useEffect(() => {
+  //   const spacer = document.getElementById("shop-spacer");
+  //   if (spacer && boxRef.current) {
+  //     spacer.style.height = `${boxRef.current.offsetHeight}px`;
+  //   }
+  // }, [
+  //   make || "",
+  //   model || "",
+  //   year || "",
+  //   part || "",
+  //   !!makeActive,
+  //   !!modelActive,
+  //   !!yearActive,
+  //   !!partActive
+  // ]);
 
   return (
     <div className="relative z-20">
@@ -191,64 +240,64 @@ useEffect(() => {
         <div
           className="text-left text-[16px] tracking-wider mb-2 uppercase text-white"
           id="shop-by-vehicle-title"
-          // style={{
-          //   fontFamily: "var(--font-exo-2), sans-serif",
-          // }}
+        // style={{
+        //   fontFamily: "var(--font-exo-2), sans-serif",
+        // }}
         >
           SHOP BY VEHICLE
         </div>
 
         <div className="flex flex-row gap-4 justify-center items-center">
-        
-            <SearchableDropdown
-              options={MAKES}
-              value={make}
-              onChange={(selectedMake) => {
-                setMake(selectedMake);
-                setModel("");
-                setYear("");
-                setPart("");
-                setUserChanged(true);
-              }}
-              placeholder="Select make..."
-              disabled={!makeActive}
-            />
 
-            <SearchableDropdown
-              options={make ? MODELS[make] || [] : []}
-              value={model}
-              onChange={(selectedModel) => {
-                setModel(selectedModel);
-                setYear("");
-                setPart("");
-                setUserChanged(true);
-              }}
-              placeholder="Select model..."
-              disabled={!modelActive}
-            />
+          <SearchableDropdown
+            options={MAKES}
+            value={make}
+            onChange={(selectedMake) => {
+              setMake(selectedMake);
+              setModel("");
+              setYear("");
+              setPart("");
+              setUserChanged(true);
+            }}
+            placeholder="Select make..."
+            disabled={!makeActive}
+          />
 
-            <SearchableDropdown
-              options={availableYears.map(String)}
-              value={year}
-              onChange={(selectedYear) => {
-                setYear(selectedYear);
-                setPart("");
-                setUserChanged(true);
-              }}
-              placeholder="Select year..."
-              disabled={!yearActive}
-            />
+          <SearchableDropdown
+            options={make ? MODELS[make] || [] : []}
+            value={model}
+            onChange={(selectedModel) => {
+              setModel(selectedModel);
+              setYear("");
+              setPart("");
+              setUserChanged(true);
+            }}
+            placeholder="Select model..."
+            disabled={!modelActive}
+          />
 
-            <SearchableDropdown
-              options={PARTS}
-              value={part}
-              onChange={(selectedPart) => {
-                setPart(selectedPart);
-                setUserChanged(true);
-              }}
-              placeholder="Select part..."
-              disabled={!partActive}
-            />
+          <SearchableDropdown
+            options={availableYears.map(String)}
+            value={year}
+            onChange={(selectedYear) => {
+              setYear(selectedYear);
+              setPart("");
+              setUserChanged(true);
+            }}
+            placeholder="Select year..."
+            disabled={!yearActive}
+          />
+
+          <SearchableDropdown
+            options={PARTS}
+            value={part}
+            onChange={(selectedPart) => {
+              setPart(selectedPart);
+              setUserChanged(true);
+            }}
+            placeholder="Select part..."
+            disabled={!partActive}
+          />
           {/* sub-category Dropdown */}
           {/* <select
             id="subcat-select"
@@ -307,101 +356,101 @@ useEffect(() => {
       </div>
 
       {/* Mobile Layout */}
-  
-<div className="bg-[#091B33] w-full lg:hidden relative">
-  <div
-    ref={boxRef}
-    className="absolute left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[93%]  
+
+      <div className="bg-[#091B33] w-full lg:hidden relative">
+        <div
+          ref={boxRef}
+          className="absolute left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[93%]  
                -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
                rounded-md shadow-lg px-3 py-4 sm:px-4 sm:py-4 
                flex flex-col gap-2 sm:gap-3 justify-center"
-    style={{ background: "#00A3FF80" }}
-  >
-    <div
-      className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] md:text-[20px] 
+          style={{ background: "#00A3FF80" }}
+        >
+          <div
+            className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] md:text-[20px] 
                  tracking-wider mb-3 sm:mb-4 uppercase text-white"
-      id="shop-by-vehicle-title-mobile"
-    >
-      SHOP BY VEHICLE
-    </div>
+            id="shop-by-vehicle-title-mobile"
+          >
+            SHOP BY VEHICLE
+          </div>
 
-    <div className="flex flex-col gap-2 sm:gap-3">
-      {/* ✅ Make Dropdown always visible */}
-      <SearchableDropdown
-        options={MAKES}
-        value={make}
-        onChange={(selectedMake) => {
-          setMake(selectedMake);
-          setModel("");
-          setYear("");
-          setPart("");
-          setUserChanged(true);
-        }}
-        placeholder="Select make..."
-        disabled={!makeActive}
-      />
+          <div className="flex flex-col gap-2 sm:gap-3">
+            {/* ✅ Make Dropdown always visible */}
+            <SearchableDropdown
+              options={MAKES}
+              value={make}
+              onChange={(selectedMake) => {
+                setMake(selectedMake);
+                setModel("");
+                setYear("");
+                setPart("");
+                setUserChanged(true);
+              }}
+              placeholder="Select make..."
+              disabled={!makeActive}
+            />
 
-      {/* ✅ Model shows only if make selected */}
-      {modelActive && (
-        <SearchableDropdown
-          options={make ? MODELS[make] || [] : []}
-          value={model}
-          onChange={(selectedModel) => {
-            setModel(selectedModel);
-            setYear("");
-            setPart("");
-            setUserChanged(true);
+            {/* ✅ Model shows only if make selected */}
+            {modelActive && (
+              <SearchableDropdown
+                options={make ? MODELS[make] || [] : []}
+                value={model}
+                onChange={(selectedModel) => {
+                  setModel(selectedModel);
+                  setYear("");
+                  setPart("");
+                  setUserChanged(true);
+                }}
+                placeholder="Select model..."
+                disabled={!modelActive}
+              />
+            )}
+
+            {/* ✅ Year shows only if make + model selected */}
+            {yearActive && (
+              <SearchableDropdown
+                options={availableYears.map(String)}
+                value={year}
+                onChange={(selectedYear) => {
+                  setYear(selectedYear);
+                  setPart("");
+                  setUserChanged(true);
+                }}
+                placeholder="Select year..."
+                disabled={!yearActive}
+              />
+            )}
+
+            {/* ✅ Part shows only if make + model + year selected */}
+            {partActive && (
+              <SearchableDropdown
+                options={PARTS}
+                value={part}
+                onChange={(selectedPart) => {
+                  setPart(selectedPart);
+                  setUserChanged(true);
+                }}
+                placeholder="Select part..."
+                disabled={!partActive}
+              />
+            )}
+          </div>
+        </div>
+
+        {/* ✅ Spacer adjusts based on how many dropdowns are visible */}
+        <div
+          id="shop-spacer"
+          className="transition-all duration-300"
+          style={{
+            height:
+              partActive ? 220 : // all 4 visible
+                yearActive ? 180 : // 3 visible
+                  modelActive ? 160 : // 2 visible
+                    80            // only make visible
           }}
-          placeholder="Select model..."
-          disabled={!modelActive}
         />
-      )}
+      </div>
 
-      {/* ✅ Year shows only if make + model selected */}
-      {yearActive && (
-        <SearchableDropdown
-          options={availableYears.map(String)}
-          value={year}
-          onChange={(selectedYear) => {
-            setYear(selectedYear);
-            setPart("");
-            setUserChanged(true);
-          }}
-          placeholder="Select year..."
-          disabled={!yearActive}
-        />
-      )}
-
-      {/* ✅ Part shows only if make + model + year selected */}
-      {partActive && (
-        <SearchableDropdown
-          options={PARTS}
-          value={part}
-          onChange={(selectedPart) => {
-            setPart(selectedPart);
-            setUserChanged(true);
-          }}
-          placeholder="Select part..."
-          disabled={!partActive}
-        />
-      )}
-    </div>
-  </div>
-
-  {/* ✅ Spacer adjusts based on how many dropdowns are visible */}
-    <div
-      id="shop-spacer"
-      className="transition-all duration-300"
-      style={{
-        height:
-          partActive ? 220 : // all 4 visible
-          yearActive ? 180 : // 3 visible
-          modelActive ? 160 : // 2 visible
-          80            // only make visible
-      }}
-    />
-  </div>
-        
 
       {/* Screen reader only styling */}
       <style>{`

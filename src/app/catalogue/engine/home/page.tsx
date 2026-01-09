@@ -23,14 +23,26 @@ export async function generateMetadata({
       ? params.subPartFilter
       : null;
 
-  return generateDynamicCatalogMetadata({
+  const dynamicMetadata = generateDynamicCatalogMetadata({
     make,
     model,
     year,
     part,
     subPartFilter,
   });
+
+  return {
+    ...dynamicMetadata,
+
+    // SEO BLOCK
+    robots: {
+      index: false,
+      follow: false,
+    },
+  };
 }
+  
+
 
 export default function CatalogueEnginePage() {
   return <CatalogEnginePage />;

@@ -16,13 +16,8 @@ type Props = {
     year?: string;
     part?: string;
     sku?: string;
-    seoTitle?: string;
-    seoSlug?: string;
-    seoCanonical?: string;
-    seoDescription?: string;
   }>;
 };
-
 
 export async function generateMetadata({
   params,
@@ -93,8 +88,8 @@ export async function generateMetadata({
     // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
-        console.log("🔍 Fetching SEO data from:", apiUrl);
+        const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+        console.log(" Fetching SEO data from:", apiUrl);
         
         const apiResponse = await fetch(apiUrl, {
           cache: 'no-store',
@@ -105,17 +100,17 @@ export async function generateMetadata({
         });
 
         if (!apiResponse.ok) {
-          console.error("❌ API response not OK:", apiResponse.status);
+          console.error("API response not OK:", apiResponse.status);
           throw new Error(`API returned ${apiResponse.status}`);
         }
 
         const apiData = await apiResponse.json();
-        console.log("✅ API Response received:", {
+        console.log("API Response received:", {
           hasGroupedVariants: !!apiData.groupedVariants,
           variantCount: apiData.groupedVariants?.length,
         });
 
-        // 🔥 UPDATED: Use the SAME variant selection logic as the server component
+        //  UPDATED: Use the SAME variant selection logic as the server component
         let selectedVariant: any | null = null;
         let selectedGroup: any | null = null;
 
@@ -127,7 +122,7 @@ export async function generateMetadata({
               if (variant) {
                 selectedGroup = group;
                 selectedVariant = variant;
-                console.log("✅ Matched by SKU for metadata:", queryParams.sku);
+                console.log(" Matched by SKU for metadata:", queryParams.sku);
                 break;
               }
             }
@@ -164,7 +159,7 @@ export async function generateMetadata({
               }
             }
 
-            console.log("🔍 Extracted from URL for metadata - Spec:", specFromUrl, "Miles:", milesValue);
+            console.log(" Extracted from URL for metadata - Spec:", specFromUrl, "Miles:", milesValue);
 
             // Try to match by specification
             if (specFromUrl) {
@@ -195,7 +190,7 @@ export async function generateMetadata({
                     selectedVariant = group.variants[0];
                   }
                   
-                  console.log("✅ Exact spec match found for metadata!");
+                  console.log(" Exact spec match found for metadata!");
                   break;
                 }
               }
@@ -226,7 +221,7 @@ export async function generateMetadata({
                       selectedVariant = group.variants[0];
                     }
                     
-                    console.log("✅ Partial spec match found for metadata!");
+                    console.log(" Partial spec match found for metadata!");
                     break;
                   }
                 }
@@ -235,7 +230,7 @@ export async function generateMetadata({
 
             // Match by miles only if spec matching failed
             if (!selectedVariant && milesValue) {
-              console.log("🔍 Attempting to match by miles only for metadata:", milesValue);
+              console.log(" Attempting to match by miles only for metadata:", milesValue);
               
               for (const group of apiData.groupedVariants) {
                 const found = group.variants.find((v: any) => {
@@ -246,7 +241,7 @@ export async function generateMetadata({
                 if (found) {
                   selectedGroup = group;
                   selectedVariant = found;
-                  console.log("✅ Matched by miles for metadata!");
+                  console.log("Matched by miles for metadata!");
                   break;
                 }
               }
@@ -260,7 +255,7 @@ export async function generateMetadata({
               if (inStockVariant) {
                 selectedGroup = group;
                 selectedVariant = inStockVariant;
-                console.log("✅ Using first in-stock variant for metadata");
+                console.log(" Using first in-stock variant for metadata");
                 break;
               }
             }
@@ -270,7 +265,7 @@ export async function generateMetadata({
           if (!selectedVariant) {
             selectedGroup = apiData.groupedVariants[0];
             selectedVariant = selectedGroup.variants[0];
-            console.log("⚠️ Using first variant for metadata (none in stock)");
+            console.log(" Using first variant for metadata (none in stock)");
           }
         }
 
@@ -280,20 +275,20 @@ export async function generateMetadata({
             seoDescription: selectedVariant.seoDescription || "",
             seoCanonical: selectedVariant.seoCanonical || "",
           };
-          console.log("✅ SEO data extracted for metadata:", {
+          console.log("SEO data extracted for metadata:", {
             sku: selectedVariant.sku,
             title: apiseo.seoTitle?.substring(0, 60),
             hasDescription: !!apiseo.seoDescription,
             hasCanonical: !!apiseo.seoCanonical
           });
         } else {
-          console.log("⚠️ No variant found, using fallback metadata");
+          console.log(" No variant found, using fallback metadata");
         }
       } catch (apiError) {
-        console.error("❌ Error fetching SEO data:", apiError);
+        console.error(" Error fetching SEO data:", apiError);
       }
     } else {
-      console.log("⚠️ Missing required params:", { make, model, year, part });
+      console.log(" Missing required params:", { make, model, year, part });
     }
 
     // Build final metadata with proper type handling
@@ -326,7 +321,7 @@ export async function generateMetadata({
       },
     };
     
-    console.log("🎯 Final metadata:", {
+    console.log("Final metadata:", {
       title: finalMetadata.title,
       hasDescription: !!finalMetadata.description,
       canonical: finalMetadata.alternates?.canonical,
@@ -335,10 +330,11 @@ export async function generateMetadata({
     
     return finalMetadata;
   } catch (error) {
-    console.error("❌ Error generating metadata:", error);
+    console.error(" Error generating metadata:", error);
     return generateDynamicEngineMetadata({});
   }
 }
+
 
 
 export default async function EngineProductPage({
@@ -348,12 +344,7 @@ export default async function EngineProductPage({
   const routeParams = await params;
   const queryParams = await searchParams;
 
-  // Use consistent API URL
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://partscentral.us/api";
-
-  console.log("EngineProductPage - routeParams:", routeParams);
-  console.log("EngineProductPage - queryParams:", queryParams);
-  console.log("EngineProductPage - API_BASE_URL:", API_BASE_URL);
 
   // Parse URL to extract product parameters
   const segments = routeParams.item?.split("-") || [];
@@ -363,7 +354,6 @@ export default async function EngineProductPage({
   let part = queryParams.part || "";
   let sku = queryParams.sku || "";
 
-  // If not in query params, parse from URL
   if (!make && segments.length >= 4) {
     year = segments[0];
     make = segments[1];
@@ -381,16 +371,12 @@ export default async function EngineProductPage({
     }
   }
 
-  console.log("Server parsed values:", { year, make, model, part, sku });
-
   // Fetch product data on the server
   let initialProductData = null;
   
   if (make && model && year && part) {
     try {
-      const apiUrl = `${API_BASE_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
-      
-      console.log("🔄 Server fetching from:", apiUrl);
+      const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
       
       const apiResponse = await fetch(apiUrl, {
         cache: 'no-store',
@@ -399,17 +385,12 @@ export default async function EngineProductPage({
 
       if (apiResponse.ok) {
         const data = await apiResponse.json();
-        console.log("✅ Server fetched data:", {
-          hasGroupedVariants: !!data.groupedVariants,
-          variantCount: data.groupedVariants?.length,
-        });
 
-        // Select the appropriate variant using the same logic as client
         let selectedGroup = null;
         let selectedVariant = null;
 
         if (data.groupedVariants && data.groupedVariants.length > 0) {
-          // Priority 1: Match by SKU if provided
+          // Priority 1: Match by SKU
           if (sku) {
             for (const group of data.groupedVariants) {
               const variant = group.variants.find((v: any) => v.sku === sku);
@@ -452,7 +433,7 @@ export default async function EngineProductPage({
               }
             }
 
-            // Try to match by specification
+            // Match by specification
             if (specFromUrl) {
               const normalizedUrlSpec = specFromUrl
                 .replace(/\s+/g, "")
@@ -524,19 +505,107 @@ export default async function EngineProductPage({
             selectedSubPartId: selectedGroup.subPart.id,
             selectedMilesSku: selectedVariant.sku,
           };
-
-          console.log("✅ Server selected variant:", selectedVariant.sku);
         }
       }
     } catch (error) {
-      console.error("❌ Server fetch error:", error);
+      console.error("Server fetch error:", error);
     }
   }
 
-  return <EngineProductClient 
-    initialItem={routeParams.item} 
-    setSku={sku || undefined}
-    setModal={undefined}
-    initialProductData={initialProductData}
-  />;
+  const product = initialProductData?.selectedProduct;
+  const info = initialProductData?.productInfo;
+
+  if (!product || !info) {
+    return <div>Product not found</div>;
+  }
+
+  // ✅ CRITICAL FIX: Create structured, visible product data for bots
+  return (
+    <>
+      {/* ✅ SERVER-RENDERED STRUCTURED PRODUCT DATA - VISIBLE TO BOTS */}
+      <div 
+        itemScope 
+        itemType="https://schema.org/Product"
+        style={{
+          position: 'absolute',
+          left: '-9999px',
+          width: '1px',
+          height: '1px',
+          overflow: 'hidden'
+        }}
+        aria-hidden="false"
+      >
+        <h1 itemProp="name">
+          {product.title ?? `${info.year} ${info.make} ${info.model} Used ${info.part}`}
+        </h1>
+
+        <div itemProp="offers" itemScope itemType="https://schema.org/Offer">
+          <meta itemProp="price" content={(product.discountedPrice ?? product.actualprice).toString()} />
+          <meta itemProp="priceCurrency" content="USD" />
+          <link itemProp="availability" href={product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
+          <p>
+            Price: $<span itemProp="price">{product.discountedPrice ?? product.actualprice}</span>
+          </p>
+        </div>
+
+        <p>
+          Availability: <span itemProp="availability">{product.inStock ? "In stock" : "Out of stock"}</span>
+        </p>
+
+        <p itemProp="itemCondition" content="https://schema.org/UsedCondition">
+          Condition: Used
+        </p>
+
+        <p>
+          SKU: <span itemProp="sku">{product.sku}</span>
+        </p>
+
+        {product.description && (
+          <div itemProp="description">
+            {product.description}
+          </div>
+        )}
+
+        <meta itemProp="brand" content={info.make} />
+        <meta itemProp="model" content={info.model} />
+      </div>
+
+      {/* ✅ JSON-LD STRUCTURED DATA */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Product",
+            "name": product.title ?? `${info.year} ${info.make} ${info.model} Used ${info.part}`,
+            "description": product.description || `${info.year} ${info.make} ${info.model} ${info.part}`,
+            "sku": product.sku,
+            "brand": {
+              "@type": "Brand",
+              "name": info.make
+            },
+            "offers": {
+              "@type": "Offer",
+              "url": `https://partscentral.us/product/${routeParams.item}`,
+              "priceCurrency": "USD",
+              "price": product.discountedPrice ?? product.actualprice,
+              "itemCondition": "https://schema.org/UsedCondition",
+              "availability": product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+              "seller": {
+                "@type": "Organization",
+                "name": "Parts Central LLC"
+              }
+            }
+          })
+        }}
+      />
+
+      {/* ✅ VISIBLE CONTENT FOR USERS */}
+      <EngineProductClient
+        initialItem={routeParams.item}
+        setSku={sku || undefined}
+        initialProductData={initialProductData}
+      />
+    </>
+  );
 }

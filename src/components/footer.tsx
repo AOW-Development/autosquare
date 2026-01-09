@@ -22,6 +22,9 @@ export default function Footer() {
               />
               <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-white leading-[1.5]">
                 <li>Parts Central LLC</li>
+                <li>
+                  Address: 76 Imperial Dr Suite E Evanston, WY 82930, USA
+                </li>
                 {/* <li>Toll Free: (888) 748–0882</li> */}
                 <li>
                       Toll Free:&nbsp;
@@ -56,9 +59,7 @@ export default function Footer() {
                     www.partscentral.us
                   </a>
                 </li>
-                <li>
-                  Location: 76 Imperial Dr Suite E Evanston, WY 82930, USA
-                </li>
+                
               </ul>
               <div className="flex gap-4 mt-4 md:gap-10 ">
                 <a

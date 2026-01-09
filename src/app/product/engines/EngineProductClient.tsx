@@ -153,21 +153,21 @@ export default function EngineProductClient({
   // If searchParams are not available, try to parse from route parameter
   if (!make && item) {
     const parts = item.split("-");
-    console.log("🔍 Parsing URL item:", item);
-    console.log("🔍 Split parts:", parts);
+    console.log(" Parsing URL item:", item);
+    console.log(" Split parts:", parts);
     
     if (parts.length >= 4) {
       year = parts[0] || undefined;
       make = parts[1] || undefined;
       
       const partIndex = parts.findIndex(p => p.toLowerCase() === "engine" || p.toLowerCase() === "transmission");
-      console.log("🔍 Part index found at:", partIndex);
+      console.log(" Part index found at:", partIndex);
       
       if (partIndex > 2) {
         // Model is everything between make (index 1) and part (partIndex)
         const modelParts = parts.slice(2, partIndex);
         model = modelParts.join(" "); // Join with spaces, not hyphens
-        console.log("🔍 Model parts:", modelParts, "-> Model:", model);
+        console.log(" Model parts:", modelParts, "-> Model:", model);
       } else {
         // Fallback
         model = parts[2];
@@ -176,7 +176,7 @@ export default function EngineProductClient({
       part = parts[partIndex] || undefined;
       sku = setSku;
     }
-    console.log("✅ Parsed from item:", { make, model, year, part, sku });
+    console.log(" Parsed from item:", { make, model, year, part, sku });
   }
 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
@@ -337,7 +337,7 @@ export default function EngineProductClient({
     linkCanonical.href = currentUrl;
   }
 
-  console.log("📌 Client-side canonical ensured:", currentUrl);
+  console.log(" Client-side canonical ensured:", currentUrl);
 }, []);
 
   // useEffect(() => {
@@ -509,12 +509,12 @@ export default function EngineProductClient({
 useEffect(() => {
   // Skip fetching if we already have server-provided data
   if (initialProductData) {
-    console.log("✅ Using server-provided data, skipping client fetch");
+    console.log("Using server-provided data, skipping client fetch");
     return;
   }
 
   if (!make || !model || !year || !part) {
-    console.log("❌ Missing required params:", { make, model, year, part });
+    console.log(" Missing required params:", { make, model, year, part });
     return;
   }
   setIsLoading(true);
@@ -523,16 +523,16 @@ useEffect(() => {
   // NOTE: This encoding ONLY affects the API request, NOT your browser's visible URL
   // Browser URL stays clean: /product/engines/2000-chevrolet-c-k-1500-engine
   // API request becomes: ?make=Chevrolet&model=C%2FK%201500&year=2000&part=Engine
-  const apiUrl = `${API_BASE}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+  const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
   
-  console.log("🔄 API Request URL:", apiUrl);
-  console.log("📊 Request params:", { make, model, year, part });
+  console.log(" API Request URL:", apiUrl);
+  console.log(" Request params:", { make, model, year, part });
   
   fetch(apiUrl)
     .then((res) => res.json())
     .then((data) => {
-      console.log("✅ API Response:", data);
-      console.log("📦 Grouped Variants:", data.groupedVariants);
+      console.log("API Response:", data);
+      console.log(" Grouped Variants:", data.groupedVariants);
       const variants: any[] = [];
       if (data.groupedVariants) {
         data.groupedVariants.forEach((group: any) => {
@@ -557,15 +557,15 @@ useEffect(() => {
           });
         });
       }
-      console.log("🔄 About to fetch:", { 
+      console.log(" About to fetch:", { 
       make, 
       model, 
       year, 
       part,
-      url: `${API_BASE}/products/v2/grouped-with-subparts?make=${(make)}&model=${(model)}&year=${(year)}&part=${(part)}`
+      url: `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${(make)}&model=${(model)}&year=${(year)}&part=${(part)}`
     });
       setAllVariants(variants);
-      console.log("✅ Fetched grouped variants count:", data.groupedVariants);
+      console.log("Fetched grouped variants count:", data.groupedVariants);
       setGroupedVariants(data.groupedVariants || []);
       setProductInfo({
         make: data.make || "",
@@ -591,7 +591,7 @@ useEffect(() => {
           if (variant) {
             defaultGroup = group;
             defaultVariant = variant;
-            console.log("✅ Matched by SKU:", sku);
+            console.log(" Matched by SKU:", sku);
             break;
           }
         }
@@ -605,14 +605,14 @@ useEffect(() => {
 
       if (!defaultVariant && item) {
         const parts = item.split("-");
-        console.log("📋 Parsing URL parts:", parts);
+        console.log("Parsing URL parts:", parts);
 
         // Find where the part name is in the URL
         const partIndex = parts.findIndex(
           (p) => p.toLowerCase() === part.toLowerCase()
         );
         
-        console.log("🔍 Part index in URL:", partIndex);
+        console.log(" Part index in URL:", partIndex);
 
         if (partIndex !== -1 && parts.length > partIndex + 1) {
           // Everything between part name and the last segment (miles) is the specification
@@ -639,14 +639,14 @@ useEffect(() => {
           }
         }
 
-        console.log("📝 Extracted from URL - Spec:", specFromUrl, "Miles:", milesValue);
+        console.log(" Extracted from URL - Spec:", specFromUrl, "Miles:", milesValue);
       }
 
       /****************************************
        * 3. MATCH BY SPECIFICATION (EXACT OR PARTIAL)
        ****************************************/
       if (!defaultVariant && specFromUrl) {
-        console.log("🔎 Attempting to match specification:", specFromUrl);
+        console.log(" Attempting to match specification:", specFromUrl);
 
         // Normalize spec from URL by removing all spaces and dots
         const normalizedUrlSpec = specFromUrl
@@ -654,7 +654,7 @@ useEffect(() => {
           .replace(/\./g, "")
           .toLowerCase();
 
-        console.log("📝 Normalized URL spec:", normalizedUrlSpec);
+        console.log("Normalized URL spec:", normalizedUrlSpec);
 
         // Try exact match first
         for (const group of data.groupedVariants) {
@@ -682,7 +682,7 @@ useEffect(() => {
               defaultVariant = group.variants[0];
             }
             
-            console.log("✅ Exact spec match found!");
+            console.log(" Exact spec match found!");
             break;
           }
         }
@@ -715,7 +715,7 @@ useEffect(() => {
                 defaultVariant = group.variants[0];
               }
               
-              console.log("✅ Partial spec match found!");
+              console.log(" Partial spec match found!");
               break;
             }
           }
@@ -726,7 +726,7 @@ useEffect(() => {
        * 4. MATCH BY MILES ONLY (if spec matching failed)
        ****************************************/
       if (!defaultVariant && milesValue) {
-        console.log("🔎 Attempting to match by miles only:", milesValue);
+        console.log(" Attempting to match by miles only:", milesValue);
         
         for (const group of data.groupedVariants) {
           const found = group.variants.find((v: any) => {
@@ -737,7 +737,7 @@ useEffect(() => {
           if (found) {
             defaultGroup = group;
             defaultVariant = found;
-            console.log("✅ Matched by miles!");
+            console.log(" Matched by miles!");
             break;
           }
         }
@@ -747,7 +747,7 @@ useEffect(() => {
        * 5. FALLBACK TO FIRST AVAILABLE
        ****************************************/
       if (!defaultVariant && data.groupedVariants.length > 0) {
-        console.log("⚠️ Using fallback - first available option");
+        console.log(" Using fallback - first available option");
         defaultGroup = data.groupedVariants[0];
         defaultVariant = defaultGroup.variants[0];
       }
@@ -756,7 +756,7 @@ useEffect(() => {
        * 6. SET SELECTED VALUES
        ****************************************/
       if (defaultGroup && defaultVariant) {
-        console.log("🎯 Final selection - Group:", defaultGroup.subPart.name, "Variant SKU:", defaultVariant.sku);
+        console.log(" Final selection - Group:", defaultGroup.subPart.name, "Variant SKU:", defaultVariant.sku);
         
         setSelectedSubPartId(defaultGroup.subPart.id);
         setSelectedMilesSku(defaultVariant.sku);
@@ -1050,26 +1050,7 @@ useEffect(() => {
       `}</style>
       
       {/* Server-rendered product details for Google Merchant Center */}
-      {selectedProduct && (
-        <div style={{ display: 'none' }} itemScope itemType="https://schema.org/Product">
-          <h1 itemProp="name">
-            {selectedProduct.title || 
-             `${productInfo.year} ${productInfo.make} ${productInfo.model} ${productInfo.part} ${selectedProduct.specification || ''}`.trim()}
-          </h1>
-          <p itemProp="offers" itemScope itemType="https://schema.org/Offer">
-            <span itemProp="price">${selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0}</span>
-            <meta itemProp="priceCurrency" content="USD" />
-          </p>
-          <p itemProp="condition" content="https://schema.org/UsedCondition">
-            Condition: Used
-          </p>
-          <p>
-            Warranty: {selectedProduct.warranty || '90 days'}
-          </p>
-          <meta itemProp="sku" content={selectedProduct.sku} />
-          <meta itemProp="availability" content={selectedProduct.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock"} />
-        </div>
-      )}
+     
 
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
@@ -1434,9 +1415,9 @@ useEffect(() => {
                 </a>
               </div>
 
-              <div className="flex flex-col gap-3 text-white">
+              {/* <div className="flex flex-col gap-3 text-white">
                 {/* Google Rating */}
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
+                {/* <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
                   <span>
                     Rated <span className="font-semibold">4.6</span> out of 5
                     based on
@@ -1448,10 +1429,10 @@ useEffect(() => {
                     height={36} // natural height
                     className="h-6 sm:h-6 md:h-12 lg:h-8 w-auto" // responsive larger heights
                   />
-                </div>
+                </div> */}
 
                 {/* Trustpilot Rating */}
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
+                {/* <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
                   <span>
                     Rated <span className="font-semibold">4.1</span> out of 5
                     based on
@@ -1465,8 +1446,8 @@ useEffect(() => {
                       className="h-20 sm:h-18 md:h-20 lg:h-29 w-auto lg:w-[150px]" // responsive larger heights
                     />
                   </div>
-                </div>
-              </div>
+                </div> */}
+              {/* </div>  */}
             </div>
           </div>
         </div>

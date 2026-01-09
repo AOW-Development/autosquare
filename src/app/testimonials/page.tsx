@@ -98,7 +98,7 @@ export default function TestimonialsPage() {
 
       {/* Testimonials Grid */}
       <div className="relative z-10 px-6 md:px-10 lg:px-40">
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0 md:gap-x-4  gap-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-0 md:gap-x-4  gap-y-4">
 
           {testimonials.map((t, i) => {
             // Calculate if this is in the last row
@@ -113,18 +113,22 @@ export default function TestimonialsPage() {
                 className={`p-[2px] rounded-xl bg-gradient-to-br from-blue-400 via-blue-600 to-blue-900 shadow-[0_0_24px_4px_rgba(59,130,246,0.4)] w-full max-w-[370px] mx-auto mb-0`}
               >
                 <div
-                  className={`rounded-lg bg-[#12263A] flex flex-col shadow-lg w-full h-full p-2 ${
-                    isLastRow ? "opacity-70" : ""
-                  }`}
+                  className={`rounded-lg bg-[#12263A] flex flex-col shadow-lg w-full h-full p-2 ${isLastRow ? "opacity-70" : ""
+                    }`}
                 >
-                  <Image
+                  {/* <Image
                     src={`/Testimonials/title${i === 0 ? "-3" : "-" + i}.png`}
                     alt={t.name}
                     width={320}
                     height={80}
                     className="mb-2 mt-4 pl-6 rounded-t-xl"
                     priority={i < 3}
+                  /> */}
+                  <ReviewCard
+                    name="Armin Bloomberge"
+                    avatarUrl="/profile-us.jpg"
                   />
+
                   <div className="px-6 pb-6 pt-0">
                     <p className="text-white/80 text-base leading-relaxed">
                       {t.text}
@@ -160,6 +164,49 @@ export default function TestimonialsPage() {
             "linear-gradient(0deg, #0A1621 0%, rgba(10,22,33,0.0) 100%)",
         }}
       />
+    </div>
+  );
+}
+
+
+type ReviewCardProps = {
+  name: string;
+  rating?: number; // default 5
+  avatarUrl: string;
+};
+
+function ReviewCard({
+  name,
+  rating = 5,
+  avatarUrl,
+}: ReviewCardProps) {
+  return (
+    <div className="flex items-center justify-between rounded-2xl  px-5 py-4 text-white w-full max-w-sm">
+      {/* LEFT */}
+      <div className="flex items-center gap-3">
+        {/* Avatar */}
+        <div className="relative h-12 w-12 overflow-hidden rounded-full">
+          <Image
+            src={avatarUrl}
+            alt={name}
+            fill
+            className="object-cover"
+          />
+        </div>
+
+        {/* Name + Stars */}
+        <div className="flex flex-col gap-1">
+          <p className="text-base font-medium leading-none">
+            {name}
+          </p>
+          <div className="flex gap-0.5 text-yellow-400 text-sm">
+            {Array.from({ length: rating }).map((_, i) => (
+              <span key={i}>★</span>
+            ))}
+          </div>
+        </div>
+      </div>
+
     </div>
   );
 }

@@ -997,31 +997,45 @@ export default function Header() {
                         const cat =
                           categories.find((c) => c.name === activeCategory) ||
                           categories[0];
+
                         return cat.sub ? (
                           <ul>
-                            {cat.sub.map((sub, index) => (
-                              <li
-                                key={index}
-                                className="py-1 hover:text-blue-400 cursor-pointer"
-                              >
-                                {/* {typeof sub === "string" ? (
-                                  <span>{sub}</span>
-                                ) : ( */}
-                                <Link
-                                  // href="https://www.google.com/"
-                                  href={`/shop/${denormalize(cat.name)}/${denormalize(sub.toString())}`}
-                                  onClick={closeAll}
+                            {cat.sub.map((sub, index) => {
+                              const isServiceObject =
+                                typeof sub === "object" &&
+                                sub !== null &&
+                                "href" in sub;
+
+                              return (
+                                <li
+                                  key={index}
+                                  className="py-1 hover:text-blue-400 cursor-pointer"
                                 >
-                                  {sub.toString()}
-                                </Link>
-                                {/* )} */}
-                              </li>
-                            ))}
+                                  {isServiceObject ? (
+                                    // 🔹 OUR SERVICES (use direct href)
+                                    <Link href={sub.href} onClick={closeAll}>
+                                      {sub.label}
+                                    </Link>
+                                  ) : (
+                                    // 🔹 NORMAL CATEGORIES (build dynamic URL)
+                                    <Link
+                                      href={`/shop/${denormalize(cat.name)}/${denormalize(
+                                        sub as string
+                                      )}`}
+                                      onClick={closeAll}
+                                    >
+                                      {sub as string}
+                                    </Link>
+                                  )}
+                                </li>
+                              );
+                            })}
                           </ul>
                         ) : (
                           <div className="text-gray-400">No subcategories</div>
                         );
                       })()}
+
                     </div>
                   </div>
                 )}

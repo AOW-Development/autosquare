@@ -2,7 +2,7 @@
 import Image from "next/image";
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import useBillingStore from "@/store/billingStore";
 import { useCartStore } from "@/store/cartStore";
 import { generateOrderNumber } from "@/utils/order";
@@ -16,7 +16,7 @@ import Script from "next/script";
 import { useSearchParams } from "next/navigation";
 import { clearSessionId, updateCheckoutData } from "@/utils/redisCheckout";
 
-export default function ThankYouPage() {
+function ThankYouPageContent() {
   const searchParams = useSearchParams();
   const { billingInfo } = useBillingStore();
   const cartItems = useCartStore((s) => s.items);
@@ -863,5 +863,17 @@ export default function ThankYouPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen w-full bg-[#0B1422] flex items-center justify-center">
+        <div className="text-white text-xl">Loading...</div>
+      </div>
+    }>
+      <ThankYouPageContent />
+    </Suspense>
   );
 }

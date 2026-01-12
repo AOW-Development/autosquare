@@ -2,7 +2,7 @@
 
 import type React from "react";
 
-import { useState, useEffect } from "react";
+import { Suspense, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect, useRouter, useSearchParams } from "next/navigation";
@@ -29,7 +29,7 @@ import StripePaymentForm from "@/components/StripePaymentForm";
 import { Elements } from "@stripe/react-stripe-js";
 // import getStripe from "@/lib/stripe-client";
 
-export default function PayMethod() {
+function PayMethodContent() {
   const [paymentMethod, setPaymentMethod] = useState("card");
   const [billingAddressExpanded, setBillingAddressExpanded] = useState(true);
   const { billingInfo, setBillingInfo } = useBillingStore();
@@ -2549,5 +2549,17 @@ const verifyOtp = async () => {
           </div>
       </div>
     </div>
+  );
+}
+
+export default function PayMethod() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#091B33] flex items-center justify-center">
+        <div className="text-white text-xl">Loading payment page...</div>
+      </div>
+    }>
+      <PayMethodContent />
+    </Suspense>
   );
 }

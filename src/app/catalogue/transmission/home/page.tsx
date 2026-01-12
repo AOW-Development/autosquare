@@ -1,5 +1,6 @@
 // app/catalogue/engine/home/page.tsx
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import CatalogTransmissionPage from "@/components/CatalogTransmissionPage";
 import { generateDynamicCatalogMetadata } from "@/utils/metadata";
 
@@ -42,5 +43,13 @@ export async function generateMetadata({
 }
 
 export default function CatalogueTransmissionPage() {
-  return <CatalogTransmissionPage />;
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#061C37] flex items-center justify-center">
+        <div className="text-white text-xl">Loading catalog...</div>
+      </div>
+    }>
+      <CatalogTransmissionPage />
+    </Suspense>
+  );
 }

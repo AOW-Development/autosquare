@@ -106,7 +106,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
 
   // Reset or load saved values based on page
   useEffect(() => {
-    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/autoParts"|| path.startsWith('/shop') ) {
+    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/autoParts" ) {
       setMake("");
       setModel("");
       setYear("");

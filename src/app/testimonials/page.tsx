@@ -191,13 +191,13 @@ function TestimonialCard({
         />
         <div className="flex-1">
           <div className="font-bold text-white text-xl mt-2">{name}</div>
-          <div className="flex items-center gap-1 mt-0">
+          {/* <div className="flex items-center gap-1 mt-0">
             {[...Array(5)].map((_, i) => (
               <span key={i} className="text-yellow-400 text-2xl">
                 ★
               </span>
             ))}
-          </div>
+          </div> */}
         </div>
         {/* <Image
           src="/account/google.png"

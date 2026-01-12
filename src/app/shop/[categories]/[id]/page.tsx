@@ -108,9 +108,9 @@ export default function PartDetailPage() {
         {/* Centered Title */}
         <div className="absolute inset-0 flex items-center justify-center">
           <h1 className="text-white text-xl sm:text-3xl md:text-4xl lg:text-6xl font-semibold text-center px-4" style={{
-        fontFamily: "Audiowide, sans-serif",
-        letterSpacing: "0.1em",
-      }}>
+            fontFamily: "Audiowide, sans-serif",
+            letterSpacing: "0.1em",
+          }}>
             {part.name}
           </h1>
         </div>
@@ -120,7 +120,7 @@ export default function PartDetailPage() {
       <ShopByVehicle />
 
       {/* Main Section */}
-      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 lg:pt-20 pt-16">
+      <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 lg:pt-24 pt-16">
         {/* Breadcrumb */}
         <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
           <a href="/">

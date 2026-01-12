@@ -1,10 +1,43 @@
 import { Metadata } from "next";
 import { generateDynamicEngineMetadata } from "@/utils/metadata";
 import EngineProductClient from "../engines/EngineProductClient";
+import { MODELS } from "@/components/vehicleData";
 
 // Force dynamic rendering
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
+
+// Helper function to convert URL-friendly model to database model
+function convertUrlModelToDbModel(urlModel: string, make: string): string {
+  if (!urlModel || !make) return urlModel;
+  
+  // Get the make's models from MODELS - use uppercase for key lookup
+  const makeKey = make.toUpperCase();
+  const modelsForMake = MODELS[makeKey as keyof typeof MODELS];
+  
+  if (!modelsForMake || !Array.isArray(modelsForMake)) {
+    console.log(`⚠️ No models found for make: ${makeKey}`);
+    return urlModel;
+  }
+  
+  // Normalize the URL model for comparison (remove all special chars)
+  const normalizedUrlModel = urlModel.toLowerCase().replace(/[^a-z0-9]/g, "");
+  
+  // Find matching model in MODELS
+  const matchingModel = modelsForMake.find((dbModel: string) => {
+    const normalizedDbModel = dbModel.toLowerCase().replace(/[^a-z0-9]/g, "");
+    return normalizedDbModel === normalizedUrlModel;
+  });
+  
+  if (matchingModel) {
+    console.log(`✅ Converted URL model "${urlModel}" to DB model "${matchingModel}"`);
+  } else {
+    console.log(`⚠️ No match found for URL model "${urlModel}", using as-is`);
+  }
+  
+  // Return the original database model if found, otherwise return URL model
+  return matchingModel || urlModel;
+}
 
 type Props = {
   params: Promise<{
@@ -55,8 +88,8 @@ export async function generateMetadata({
       );
       
       if (partIndex > 2) {
-        // Model is everything between make and part
-        model = segments.slice(2, partIndex).join(" ");
+        // Model is everything between make and part (keep hyphens to match URL format)
+        model = segments.slice(2, partIndex).join("-");
         part = segments[partIndex];
         
         // Parse specification and miles after part
@@ -129,8 +162,11 @@ export async function generateMetadata({
     // Fetch SEO data if we have the required params
     if (make && model && year && part) {
       try {
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+        // Convert URL model to database model format
+        const dbModel = convertUrlModelToDbModel(model, make);
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
+        console.log("🔄 Model conversion: URL=", model, "→ DB=", dbModel);
         
         const apiResponse = await fetch(apiUrl, {
           cache: 'no-store',
@@ -323,8 +359,8 @@ export default async function EngineProductPage({
     );
     
     if (partIndex > 2) {
-      // Model is everything between make and part
-      model = segments.slice(2, partIndex).join(" ");
+      // Model is everything between make and part (keep hyphens to match URL format)
+      model = segments.slice(2, partIndex).join("-");
       part = segments[partIndex];
       
       // Parse specification and miles after part
@@ -389,9 +425,12 @@ export default async function EngineProductPage({
   
   if (make && model && year && part) {
     try {
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      // Convert URL model to database model format
+      const dbModel = convertUrlModelToDbModel(model, make);
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
       
       console.log("🔄 Server fetching from:", apiUrl);
+      console.log("📋 Parsed params:", { make, model: model, dbModel, year, part });
       
       const res = await fetch(apiUrl, { 
         cache: "no-store",
@@ -401,8 +440,23 @@ export default async function EngineProductPage({
       if (res.ok) {
         initialData = await res.json();
         console.log("✅ Server-side data fetched successfully");
+        console.log("📊 API Response:", {
+          hasGroupedVariants: !!initialData?.groupedVariants,
+          variantCount: initialData?.groupedVariants?.length,
+          make: initialData?.make,
+          model: initialData?.model,
+          year: initialData?.year,
+          part: initialData?.part
+        });
+        
+        if (!initialData?.groupedVariants || initialData.groupedVariants.length === 0) {
+          console.error("⚠️ API returned empty groupedVariants - model mismatch likely");
+          console.error("⚠️ URL model:", model, "| API model:", initialData?.model);
+        }
       } else {
         console.error("❌ Server fetch failed:", res.status);
+        const errorText = await res.text();
+        console.error("❌ Error response:", errorText);
       }
     } catch (error) {
       console.error("❌ Server fetch error:", error);

@@ -6,7 +6,7 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup";
-import { useSearchParams, useParams } from "next/navigation";
+// import { useSearchParams, useParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { useRouter } from "next/navigation";

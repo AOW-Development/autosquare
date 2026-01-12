@@ -24,7 +24,7 @@ export default async function EnginesRedirectPage({ searchParams }: any) {
   const miles = sku.split("-").at(-1)?.replace(/[^\d]/g, "");
 
   // ✅ fetch same data used by product page
-  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+  const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
 
   const res = await fetch(apiUrl, { cache: "no-store" });
   if (!res.ok) return null;

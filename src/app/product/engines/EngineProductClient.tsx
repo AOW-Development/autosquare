@@ -1070,7 +1070,7 @@ export default function EngineProductClient({
                   ) : part === "Engine" || part == "engine" ? (
                     <>
                       <Image
-                        src="/catalog/Engine 1.png"
+                        src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
                         alt="Engine"
                         width={250}
                         height={160}
@@ -1084,7 +1084,7 @@ export default function EngineProductClient({
                   ) : part === "Transmission" || part == "transmission" ? (
                     <>
                       <Image
-                        src="/catalog/Trasmission_.png"
+                        src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
                         alt="Engine"
                         width={250}
                         height={160}
@@ -1419,4 +1419,7 @@ export default function EngineProductClient({
     </>
   );
 }
+
+
+
 

@@ -41,6 +41,8 @@ export async function generateMetadata({
     let make = "";
     let model = "";
     let part = "";
+    let specification = "";
+    let miles = "";
 
     // If not in query params, try to parse from URL
     if (!queryParams.make && segments.length >= 4) {
@@ -55,15 +57,52 @@ export async function generateMetadata({
       if (partIndex > 2) {
         // Model is everything between make and part
         model = segments.slice(2, partIndex).join(" ");
-        console.log("Model extracted from URL:", model);
         part = segments[partIndex];
+        
+        // Parse specification and miles after part
+        const remainingSegments = segments.slice(partIndex + 1);
+        
+        if (remainingSegments.length > 0) {
+          // Check if last segment looks like miles (ends with 'k' or is a number)
+          const lastSegment = remainingSegments[remainingSegments.length - 1];
+          const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
+          
+          if (looksLikeMiles && remainingSegments.length > 1) {
+            miles = lastSegment;
+            specification = remainingSegments.slice(0, -1).join("-");
+          } else if (looksLikeMiles && remainingSegments.length === 1) {
+            miles = lastSegment;
+            specification = "";
+          } else {
+            specification = remainingSegments.join("-");
+            miles = "";
+          }
+        }
       } else {
         // Fallback: assume model is at index 2
         model = segments[2];
         part = segments[3];
+        
+        const remainingSegments = segments.slice(4);
+        
+        if (remainingSegments.length > 0) {
+          const lastSegment = remainingSegments[remainingSegments.length - 1];
+          const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
+          
+          if (looksLikeMiles && remainingSegments.length > 1) {
+            miles = lastSegment;
+            specification = remainingSegments.slice(0, -1).join("-");
+          } else if (looksLikeMiles && remainingSegments.length === 1) {
+            miles = lastSegment;
+            specification = "";
+          } else {
+            specification = remainingSegments.join("-");
+            miles = "";
+          }
+        }
       }
       
-      console.log("Parsed from URL:", { year, make, model, part, partIndex });
+      console.log("Parsed from URL:", { year, make, model, part, specification, miles });
     } else {
       // Use query params if available
       year = queryParams.year || "";
@@ -72,7 +111,7 @@ export async function generateMetadata({
       part = queryParams.part || "";
     }
 
-    console.log("Final parsed values:", { year, make, model, part });
+    console.log("Final parsed values:", { year, make, model, part, specification, miles });
 
     const allParams = {
       ...queryParams,
@@ -112,25 +151,72 @@ export async function generateMetadata({
           variantCount: apiData.groupedVariants?.length,
         });
 
-        // STRATEGY: Always use the FIRST IN-STOCK variant for SEO
-        // This ensures consistent, cacheable meta tags for search engines
+        // UPDATED STRATEGY: Match the URL specification and miles to select the correct variant
         let selectedVariant: any | null = null;
 
         if (apiData.groupedVariants && apiData.groupedVariants.length > 0) {
-          // Priority 1: First in-stock variant
-          for (const group of apiData.groupedVariants) {
-            const inStockVariant = group.variants.find((v: any) => v.inStock);
-            if (inStockVariant) {
-              selectedVariant = inStockVariant;
-              console.log("✅ Using first in-stock variant for SEO");
-              break;
+          // Helper function to normalize specification strings
+          const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+          
+          // Try to match by specification first
+          let targetGroup = null;
+          
+          if (specification) {
+            const specNormalized = normalizeSpec(specification);
+            console.log("🔎 Looking for specification:", specification, "normalized:", specNormalized);
+            
+            targetGroup = apiData.groupedVariants.find((group: any) => {
+              const groupName = group.subPart?.name || "";
+              const groupNormalized = normalizeSpec(groupName);
+              
+              return groupNormalized === specNormalized || 
+                     groupNormalized.includes(specNormalized) ||
+                     specNormalized.includes(groupNormalized);
+            });
+            
+            if (targetGroup) {
+              console.log("✅ Found matching specification group:", targetGroup.subPart.name);
+              
+              // If miles is also specified, try to find matching variant
+              if (miles) {
+                const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
+                console.log("🔎 Looking for miles:", miles, "normalized:", milesNormalized);
+                
+                selectedVariant = targetGroup.variants.find((v: any) => {
+                  const variantMiles = v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "";
+                  return variantMiles === milesNormalized || variantMiles.includes(milesNormalized);
+                });
+                
+                if (selectedVariant) {
+                  console.log("✅ Found matching miles variant:", selectedVariant.miles);
+                }
+              }
+              
+              // If no miles match or miles not specified, use first in-stock variant from this spec group
+              if (!selectedVariant) {
+                selectedVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+                console.log("✅ Using first available variant from matched spec group");
+              }
             }
           }
-
-          // Priority 2: First variant overall (if none in stock)
+          
+          // Fallback: Use first in-stock variant overall
           if (!selectedVariant) {
-            selectedVariant = apiData.groupedVariants[0].variants[0];
-            console.log("⚠️ Using first variant (none in stock)");
+            console.log("⚠️ No specification/miles match, using first in-stock variant");
+            for (const group of apiData.groupedVariants) {
+              const inStockVariant = group.variants.find((v: any) => v.inStock);
+              if (inStockVariant) {
+                selectedVariant = inStockVariant;
+                console.log("✅ Using first in-stock variant for SEO");
+                break;
+              }
+            }
+            
+            // Last resort: first variant overall
+            if (!selectedVariant) {
+              selectedVariant = apiData.groupedVariants[0].variants[0];
+              console.log("⚠️ Using first variant (none in stock)");
+            }
           }
         }
 
@@ -143,7 +229,7 @@ export async function generateMetadata({
           console.log("✅ SEO data extracted:", {
             title: apiseo.seoTitle?.substring(0, 60),
             hasDescription: !!apiseo.seoDescription,
-            hasCanonical: !!apiseo.seoCanonical
+            canonical: apiseo.seoCanonical
           });
         } else {
           console.log("⚠️ No variant found, using fallback metadata");
@@ -158,12 +244,10 @@ export async function generateMetadata({
     // Build final metadata with proper type handling
     const finalTitle = apiseo?.seoTitle?.trim() || baseMetadata.title || undefined;
     const finalDescription = apiseo?.seoDescription?.trim() || baseMetadata.description || undefined;
-    // const finalCanonical = apiseo?.seoCanonical?.trim() || 
-      // (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
-
-      const finalCanonical = apiseo?.seoCanonical?.trim() || 
-    `https://partscentral.us/product/${routeParams.item}` || // Use the actual pathname
-    (typeof baseMetadata.alternates?.canonical === 'string' ? baseMetadata.alternates.canonical : undefined);
+    
+    // FIXED: Canonical should always match the current URL
+    const currentUrl = `https://partscentral.us/product/${routeParams.item}`;
+    const finalCanonical = apiseo?.seoCanonical?.trim() || currentUrl;
 
     const finalMetadata: Metadata = {
       ...baseMetadata,

@@ -353,6 +353,8 @@ export default function EngineProductClient({
     },
   ];
 
+  
+
   // Removed client-side canonical manipulation - handled by server generateMetadata
 
   // useEffect(() => {

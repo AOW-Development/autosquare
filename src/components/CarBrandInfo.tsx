@@ -171,7 +171,7 @@ const CarBrandInfo: React.FC<CarBrandInfoProps> = ({ car }) => {
         </p>
 
         <a
-          href="/#lead-form"
+          href="/"
           className="inline-block 
        bg-[#00A3FF] 
       text-white px-7 sm:px-9 py-3 rounded-lg font-semibold

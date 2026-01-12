@@ -213,11 +213,134 @@ export default async function EngineProductPage({
   console.log("EngineProductPage - routeParams:", routeParams);
   console.log("EngineProductPage - queryParams:", queryParams);
 
-  // Don't pass SKU from server - let client handle it
+  // Parse URL parameters on server
+  const segments = routeParams.item?.split("-") || [];
+  let year = "";
+  let make = "";
+  let model = "";
+  let part = "";
+  let specification = "";
+  let miles = "";
+
+  // Try to get from query params first
+  if (queryParams.make) {
+    year = queryParams.year || "";
+    make = queryParams.make || "";
+    model = queryParams.model || "";
+    part = queryParams.part || "";
+  } else if (segments.length >= 4) {
+    // Parse from URL segments
+    year = segments[0];
+    make = segments[1];
+    
+    // Find the part index (engine or transmission)
+    const partIndex = segments.findIndex(
+      (seg) => seg.toLowerCase() === "engine" || seg.toLowerCase() === "transmission"
+    );
+    
+    if (partIndex > 2) {
+      // Model is everything between make and part
+      model = segments.slice(2, partIndex).join(" ");
+      part = segments[partIndex];
+      
+      // Parse specification and miles after part
+      // Miles is typically the LAST segment and ends with 'k' or is a pure number
+      // Specification is everything between part and miles
+      // Example: 2016-audi-a8-engine-4-0l-vin-3-5th-digit-turbo-gasoline-engine-id-ctgf-10k
+      //          specification = "4-0l-vin-3-5th-digit-turbo-gasoline-engine-id-ctgf"
+      //          miles = "10k"
+      
+      const remainingSegments = segments.slice(partIndex + 1);
+      
+      if (remainingSegments.length > 0) {
+        // Check if last segment looks like miles (ends with 'k' or is a number)
+        const lastSegment = remainingSegments[remainingSegments.length - 1];
+        const looksLikeMiles = /^\d+k?$/i.test(lastSegment); // Matches: 10k, 90000, 30K, etc.
+        
+        if (looksLikeMiles && remainingSegments.length > 1) {
+          // Last segment is miles, everything else is specification
+          miles = lastSegment;
+          specification = remainingSegments.slice(0, -1).join("-");
+        } else if (looksLikeMiles && remainingSegments.length === 1) {
+          // Only one segment and it's miles
+          miles = lastSegment;
+          specification = "";
+        } else {
+          // No miles found, everything is specification
+          specification = remainingSegments.join("-");
+          miles = "";
+        }
+      }
+    } else {
+      // Fallback: assume model is at index 2
+      model = segments[2];
+      part = segments[3];
+      
+      // Apply same logic for spec and miles
+      const remainingSegments = segments.slice(4);
+      
+      if (remainingSegments.length > 0) {
+        const lastSegment = remainingSegments[remainingSegments.length - 1];
+        const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
+        
+        if (looksLikeMiles && remainingSegments.length > 1) {
+          miles = lastSegment;
+          specification = remainingSegments.slice(0, -1).join("-");
+        } else if (looksLikeMiles && remainingSegments.length === 1) {
+          miles = lastSegment;
+          specification = "";
+        } else {
+          specification = remainingSegments.join("-");
+          miles = "";
+        }
+      }
+    }
+  }
+
+  console.log("🔄 Server-side parsed params:", { year, make, model, part, specification, miles });
+
+
+  // Fetch product data on server
+  let initialData = null;
+  
+  if (make && model && year && part) {
+    try {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      
+      console.log("🔄 Server fetching from:", apiUrl);
+      
+      const res = await fetch(apiUrl, { 
+        cache: "no-store",
+        next: { revalidate: 0 }
+      });
+      
+      if (res.ok) {
+        initialData = await res.json();
+        console.log("✅ Server-side data fetched successfully");
+      } else {
+        console.error("❌ Server fetch failed:", res.status);
+      }
+    } catch (error) {
+      console.error("❌ Server fetch error:", error);
+    }
+  }
+
+  console.log("📦 Passing initialData to client:", {
+    hasData: !!initialData,
+    hasGroupedVariants: !!initialData?.groupedVariants,
+    variantCount: initialData?.groupedVariants?.length,
+    specification,
+    miles
+  });
+
+  // Pass server-fetched data to client component
   return <EngineProductClient 
     initialItem={routeParams.item} 
-    setSku={undefined} // Client will determine this
+    initialData={initialData}
+    setSku={queryParams.sku}
     setModal={undefined}
+    specification={specification}
+    miles={miles}
   />;
 }
 

@@ -43,60 +43,160 @@ const galleryImages = [
 
 interface EngineProductClientProps {
   initialItem?: string;
+  initialData?: any; // Server-provided product data
   setSku?: string;
   setModal?: string;
+  specification?: string; // Parsed from URL (e.g., "3l")
+  miles?: string; // Parsed from URL (e.g., "90000")
 }
 
 export default function EngineProductClient({
   initialItem,
+  initialData,
   setSku,
   setModal,
+  specification,
+  miles,
 }: EngineProductClientProps) {
+  // Immediate log to verify data is received
+  console.log("🚀 EngineProductClient mounted with initialData:", {
+    hasInitialData: !!initialData,
+    hasGroupedVariants: !!initialData?.groupedVariants,
+    variantCount: initialData?.groupedVariants?.length
+  });
+
+  // Helper function to get initial product from initialData
+  const getInitialProduct = () => {
+    console.log("🔧 getInitialProduct called");
+    console.log("🔧 URL params - specification:", specification, "miles:", miles);
+    console.log("🔧 initialData:", initialData);
+    console.log("🔧 initialData?.groupedVariants?.length:", initialData?.groupedVariants?.length);
+    
+    if (!initialData?.groupedVariants?.length) {
+      console.log("⚠️ No initialData available for initial product");
+      return null;
+    }
+
+    console.log("✅ Computing initial product from server data");
+    
+    // Try to find matching group by specification
+    let targetGroup = null;
+    let targetVariant = null;
+    
+    if (specification) {
+      // Match specification (case-insensitive, normalize by removing special chars)
+      // URL spec: "4-0l-vin-3-5th-digit-turbo-gasoline-engine-id-ctgf"
+      // DB spec:  "(4.0L), VIN 3 (5th digit), turbo, gasoline, (engine ID CTGF)"
+      const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const specNormalized = normalizeSpec(specification);
+      
+      targetGroup = initialData.groupedVariants.find((group: any) => {
+        const groupName = group.subPart?.name || "";
+        const groupNormalized = normalizeSpec(groupName);
+        
+        // Try exact match first, then partial match
+        return groupNormalized === specNormalized || 
+               groupNormalized.includes(specNormalized) ||
+               specNormalized.includes(groupNormalized);
+      });
+      
+      if (targetGroup) {
+        console.log("✅ Found matching specification group:", targetGroup.subPart.name);
+        
+        // If miles is also specified, try to find matching variant
+        if (miles) {
+          const milesLower = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
+          targetVariant = targetGroup.variants.find((v: any) => {
+            const variantMiles = v.miles?.toLowerCase().replace(/[^a-z0-9]/g, "") || "";
+            return variantMiles === milesLower || variantMiles.includes(milesLower);
+          });
+          
+          if (targetVariant) {
+            console.log("✅ Found matching miles variant:", targetVariant.miles);
+          }
+        }
+        
+        // If no miles match or miles not specified, use first in-stock variant
+        if (!targetVariant) {
+          targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+          console.log("✅ Using first available variant from matched spec group");
+        }
+      }
+    }
+    
+    // Fallback to first available if no match
+    if (!targetGroup || !targetVariant) {
+      console.log("⚠️ No match found, using first available");
+      targetGroup = initialData.groupedVariants[0];
+      targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+    }
+    
+    console.log("🔧 Selected group:", targetGroup.subPart.name);
+    console.log("🔧 Selected variant:", targetVariant);
+    
+    const product = {
+      ...targetVariant,
+      make: initialData.make,
+      model: initialData.model,
+      year: initialData.year,
+      part: initialData.part,
+      subPart: targetGroup.subPart,
+    };
+    
+    console.log("🔧 Returning product:", product);
+    return product;
+  };
+
   const [productInfo, setProductInfo] = useState({
-    make: "",
-    model: "",
-    year: "",
-    part: "",
+    make: initialData?.make || "",
+    model: initialData?.model || "",
+    year: initialData?.year || "",
+    part: initialData?.part || "",
   });
   const [selectedImg, setSelectedImg] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
   const [allVariants, setAllVariants] = useState<any[]>([]);
-  const [groupedVariants, setGroupedVariants] = useState<any[]>([]);
-  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(
-    null
+  const [groupedVariants, setGroupedVariants] = useState<any[]>(
+    initialData?.groupedVariants || []
   );
-  const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+  
+  // Initialize selectedProduct first (using URL-matched product)
+  const [selectedProduct, setSelectedProduct] = useState<any | null>(getInitialProduct());
+  
+  // Then initialize selectedSubPartId and selectedMilesSku from the matched product
+  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(() => {
+    const product = getInitialProduct();
+    return product?.subPart?.id || initialData?.groupedVariants?.[0]?.subPart?.id || null;
+  });
+  const [selectedMilesSku, setSelectedMilesSku] = useState<string>(() => {
+    const product = getInitialProduct();
+    return product?.sku || initialData?.groupedVariants?.[0]?.variants?.[0]?.sku || "";
+  });
   const [activeTab, setActiveTab] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const searchParams = useSearchParams();
-  const params = useParams();
-  const item = initialItem || (params?.item as string | undefined);
+  const router = useRouter();
+  const item = initialItem;
 
-  // Debug logging
-  useEffect(() => {
-    console.log("EngineProductClient - item:", item);
-    console.log("EngineProductClient - params:", params);
-    console.log("EngineProductClient - searchParams:", {
-      make: searchParams.get("make"),
-      model: searchParams.get("model"),
-      year: searchParams.get("year"),
-      part: searchParams.get("part"),
-      sku: searchParams.get("sku"),
-    });
-  }, [item, params, searchParams]);
+  // Get product info from initialData (already available from server)
+  const make = initialData?.make;
+  const model = initialData?.model;
+  const year = initialData?.year;
+  const part = initialData?.part;
+  const sku = setSku; // Use the SKU passed from server
 
-  // Try to get from searchParams first, then parse from route param if needed
-  let make = searchParams.get("make") || undefined;
-  let model = searchParams.get("model") || undefined;
-  let year = searchParams.get("year") || undefined;
-  let part = searchParams.get("part") || undefined;
-  let sku = searchParams.get("sku") || undefined;
-
+  const addItem = useCartStore((s) => s.addItem);
+  const [showPopup, setShowPopup] = useState(false);
+  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
+  const [selectedProductForVerify, setSelectedProductForVerify] = useState<
+    any | null
+  >(null);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [mediaLoading, setMediaLoading] = useState<boolean>(false);
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
 
   // Helper function to format model for URL
   const formatModelForUrl = (modelStr: string | undefined) => {
@@ -108,75 +208,24 @@ export default function EngineProductClient({
       .toLowerCase();
   };
 
-  // Helper function to parse model from URL
-  const parseModelFromUrl = (urlModel: string | undefined) => {
-    if (!urlModel) return "";
-    return urlModel
-      .replace(/-/g, " ")
-      .trim();
+  const updateProductUrl = (variant: any, subPartName: string) => {
+    if (!variant) return;
+
+    const miles = variant.miles?.toString().replace(/[^\d]/g, "");
+    const spec = subPartName
+      .replace(/[ ,()./]/g, "-")
+      .replace(/-+/g, "-")
+      .toLowerCase();
+
+    const modelSlug = formatModelForUrl(model);
+
+    const newUrl = `/product/${year}-${make}-${modelSlug}-${part}-${spec}${miles ? `-${miles}` : ""}`.toLowerCase();
+
+    router.replace(newUrl, { scroll: false });
   };
 
-  const updateProductUrl = (
-  variant: any,
-  subPartName: string
-) => {
-  if (!variant) return;
-
-  const miles = variant.miles?.toString().replace(/[^\d]/g, "");
-  const spec = subPartName
-    .replace(/[ ,()./]/g, "-")
-    .replace(/-+/g, "-")
-    .toLowerCase();
-
-  const modelSlug = formatModelForUrl(model);
-
-  const newUrl = `/product/${year}-${make}-${modelSlug}-${part}-${spec}${miles ? `-${miles}` : ""}`.toLowerCase();
-
-  router.replace(newUrl, { scroll: false });
-};
-
-
-  // If searchParams are not available, try to parse from route parameter
-  if (!make && item) {
-    const parts = item.split("-");
-    console.log("🔍 Parsing URL item:", item);
-    console.log("🔍 Split parts:", parts);
-    
-    if (parts.length >= 4) {
-      year = parts[0] || undefined;
-      make = parts[1] || undefined;
-      
-      const partIndex = parts.findIndex(p => p.toLowerCase() === "engine" || p.toLowerCase() === "transmission");
-      console.log("🔍 Part index found at:", partIndex);
-      
-      if (partIndex > 2) {
-        // Model is everything between make (index 1) and part (partIndex)
-        const modelParts = parts.slice(2, partIndex);
-        model = modelParts.join(" "); // Join with spaces, not hyphens
-        console.log("🔍 Model parts:", modelParts, "-> Model:", model);
-      } else {
-        // Fallback
-        model = parts[2];
-      }
-      
-      part = parts[partIndex] || undefined;
-      sku = setSku;
-    }
-    console.log("✅ Parsed from item:", { make, model, year, part, sku });
-  }
-
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-  const addItem = useCartStore((s) => s.addItem);
-  const [showPopup, setShowPopup] = useState(false);
-  const router = useRouter();
-  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
-  const [selectedProductForVerify, setSelectedProductForVerify] = useState<
-    any | null
-  >(null);
-  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
-  const [mediaLoading, setMediaLoading] = useState<boolean>(false);
 
-  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
   useEffect(() => {
     if (showPopup) {
       const scrollY = window.scrollY;
@@ -304,27 +353,7 @@ export default function EngineProductClient({
     },
   ];
 
-
-  useEffect(() => {
-  const currentUrl = window.location.href;
-
-  let linkCanonical = document.querySelector(
-    'link[rel="canonical"]'
-  ) as HTMLLinkElement | null;
-
-  if (!linkCanonical) {
-    linkCanonical = document.createElement('link');
-    linkCanonical.rel = 'canonical';
-    document.head.appendChild(linkCanonical);
-  }
-
-  // Override canonical ONLY if missing or empty
-  if (!linkCanonical.href) {
-    linkCanonical.href = currentUrl;
-  }
-
-  console.log("📌 Client-side canonical ensured:", currentUrl);
-}, []);
+  // Removed client-side canonical manipulation - handled by server generateMetadata
 
   // useEffect(() => {
 
@@ -487,168 +516,173 @@ export default function EngineProductClient({
 
   //     })
   //     .finally(() => setIsLoading(false));
-  // }, [make, model, year, part, sku, API_BASE]);
 
+  // Initialize from server-provided data
+  useEffect(() => {
+    console.log("🔄 Initialization useEffect triggered");
+    console.log("📊 initialData:", initialData);
+    console.log("📊 initialData?.groupedVariants?.length:", initialData?.groupedVariants?.length);
+    
+    if (!initialData?.groupedVariants?.length) {
+      console.log("⚠️ No initial data available");
+      return;
+    }
 
-  // UPDATED: Lines 394-534 - Replace the entire useEffect that fetches grouped-with-subparts
+    console.log("✅ Initializing from server data");
 
-useEffect(() => {
-  if (!make || !model || !year || !part) {
-    console.log("❌ Missing required params:", { make, model, year, part });
-    return;
-  }
-  setIsLoading(true);
-  
-  // Build API URL with encoded parameters
-  // NOTE: This encoding ONLY affects the API request, NOT your browser's visible URL
-  // Browser URL stays clean: /product/engines/2000-chevrolet-c-k-1500-engine
-  // API request becomes: ?make=Chevrolet&model=C%2FK%201500&year=2000&part=Engine
-  const apiUrl = `${API_BASE}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
-  
-  console.log("🔄 API Request URL:", apiUrl);
-  console.log("📊 Request params:", { make, model, year, part });
-  
-  fetch(apiUrl)
-    .then((res) => res.json())
-    .then((data) => {
-      console.log("✅ API Response:", data);
-      console.log("📦 Grouped Variants:", data.groupedVariants);
-      const variants: any[] = [];
-      if (data.groupedVariants) {
-        data.groupedVariants.forEach((group: any) => {
-          group.variants.forEach((variant: any) => {
-            variants.push({
-              ...variant,
-              make: data.make,
-              model: data.model,
-              year: data.year,
-              part: data.part,
-              subPart: group.subPart,
-              product: variant.product || group.product || null,
-              title: variant.title,
-              seoTitle: variant.seoTitle,
-              seoSlug: variant.seoSlug,
-              seoCanonical: variant.seoCanonical,
-              seoDescription: variant.seoDescription,
-              warranty: variant.warranty,
-              media: variant.product?.media || [],
-              description: variant.description,
-            });
-          });
+    // Build variants array from server data
+    const variants: any[] = [];
+    initialData.groupedVariants.forEach((group: any) => {
+      group.variants.forEach((variant: any) => {
+        variants.push({
+          ...variant,
+          make: initialData.make,
+          model: initialData.model,
+          year: initialData.year,
+          part: initialData.part,
+          subPart: group.subPart,
+          product: variant.product || group.product || null,
+          title: variant.title,
+          seoTitle: variant.seoTitle,
+          seoSlug: variant.seoSlug,
+          seoCanonical: variant.seoCanonical,
+          seoDescription: variant.seoDescription,
+          warranty: variant.warranty,
+          media: variant.product?.media || [],
+          description: variant.description,
         });
-      }
-      console.log("🔄 About to fetch:", { 
-      make, 
-      model, 
-      year, 
-      part,
-      url: `${API_BASE}/products/v2/grouped-with-subparts?make=${(make)}&model=${(model)}&year=${(year)}&part=${(part)}`
-    });
-      setAllVariants(variants);
-      console.log("✅ Fetched grouped variants count:", data.groupedVariants);
-      setGroupedVariants(data.groupedVariants || []);
-      setProductInfo({
-        make: data.make || "",
-        model: data.model || "",
-        year: data.year || "",
-        part: data.part || "",
       });
+    });
+    setAllVariants(variants);
 
-      let defaultGroup = null;
-      let defaultVariant = null;
+    let defaultGroup = null;
+    let defaultVariant = null;
 
-      /***********************
-       * 1. MATCH USING SKU (HIGHEST PRIORITY)
-       ***********************/
-      if (sku && data.groupedVariants) {
-        for (const group of data.groupedVariants) {
-          const variant = group.variants.find((v: any) => {
-            console.log("Trying to match SKU:", sku, "Found variant:", v.sku);
-            return v.sku === sku;
-          });
-          console.log("Result of SKU match:", variant);
+    /***********************
+     * 1. MATCH USING SKU (HIGHEST PRIORITY)
+     ***********************/
+    if (setSku && initialData.groupedVariants) {
+      for (const group of initialData.groupedVariants) {
+        const variant = group.variants.find((v: any) => {
+          console.log("Trying to match SKU:", setSku, "Found variant:", v.sku);
+          return v.sku === setSku;
+        });
+        console.log("Result of SKU match:", variant);
 
-          if (variant) {
-            defaultGroup = group;
-            defaultVariant = variant;
-            console.log("✅ Matched by SKU:", sku);
-            break;
-          }
+        if (variant) {
+          defaultGroup = group;
+          defaultVariant = variant;
+          console.log("✅ Matched by SKU:", setSku);
+          break;
         }
       }
+    }
 
-      /****************************************
-       * 2. PARSE URL PARAM (item) - Extract spec and miles
-       ****************************************/
-      let milesValue = "";
-      let specFromUrl = "";
+    /****************************************
+     * 2. PARSE URL PARAM (item) - Extract spec and miles
+     ****************************************/
+    let milesValue = "";
+    let specFromUrl = "";
 
-      if (!defaultVariant && item) {
-        const parts = item.split("-");
-        console.log("📋 Parsing URL parts:", parts);
+    if (!defaultVariant && item) {
+      const parts = item.split("-");
+      console.log("📋 Parsing URL parts:", parts);
 
-        // Find where the part name is in the URL
-        const partIndex = parts.findIndex(
-          (p) => p.toLowerCase() === part.toLowerCase()
-        );
+      // Find where the part name is in the URL
+      const partIndex = parts.findIndex(
+        (p) => p.toLowerCase() === initialData.part?.toLowerCase()
+      );
+      
+      console.log("🔍 Part index in URL:", partIndex);
+
+      if (partIndex !== -1 && parts.length > partIndex + 1) {
+        // Everything between part name and the last segment (miles) is the specification
+        const lastPart = parts[parts.length - 1];
         
-        console.log("🔍 Part index in URL:", partIndex);
-
-        if (partIndex !== -1 && parts.length > partIndex + 1) {
-          // Everything between part name and the last segment (miles) is the specification
-          const lastPart = parts[parts.length - 1];
-          
-          // Check if last part is miles (numeric)
-          if (/^\d+$/.test(lastPart)) {
-            milesValue = lastPart.replace(/[^\d]/g, "");
-            // Specification is everything between part name and miles
-            specFromUrl = parts
-              .slice(partIndex + 1, parts.length - 1)
-              .join(" ")
-              .replace(/-/g, " ")
-              .trim()
-              .toLowerCase();
-          } else {
-            // No miles at the end, everything after part is specification
-            specFromUrl = parts
-              .slice(partIndex + 1)
-              .join(" ")
-              .replace(/-/g, " ")
-              .trim()
-              .toLowerCase();
-          }
+        // Check if last part is miles (numeric)
+        if (/^\d+$/.test(lastPart)) {
+          milesValue = lastPart.replace(/[^\d]/g, "");
+          // Specification is everything between part name and miles
+          specFromUrl = parts
+            .slice(partIndex + 1, parts.length - 1)
+            .join(" ")
+            .replace(/-/g, " ")
+            .trim()
+            .toLowerCase();
+        } else {
+          // No miles at the end, everything after part is specification
+          specFromUrl = parts
+            .slice(partIndex + 1)
+            .join(" ")
+            .replace(/-/g, " ")
+            .trim()
+            .toLowerCase();
         }
-
-        console.log("📝 Extracted from URL - Spec:", specFromUrl, "Miles:", milesValue);
       }
 
-      /****************************************
-       * 3. MATCH BY SPECIFICATION (EXACT OR PARTIAL)
-       ****************************************/
-      if (!defaultVariant && specFromUrl) {
-        console.log("🔎 Attempting to match specification:", specFromUrl);
+      console.log("📝 Extracted from URL - Spec:", specFromUrl, "Miles:", milesValue);
+    }
 
-        // Normalize spec from URL by removing all spaces and dots
-        const normalizedUrlSpec = specFromUrl
+    /****************************************
+     * 3. MATCH BY SPECIFICATION (EXACT OR PARTIAL)
+     ****************************************/
+    if (!defaultVariant && specFromUrl) {
+      console.log("🔎 Attempting to match specification:", specFromUrl);
+
+      // Normalize spec from URL by removing all spaces and dots
+      const normalizedUrlSpec = specFromUrl
+        .replace(/\s+/g, "")
+        .replace(/\./g, "")
+        .toLowerCase();
+
+      console.log("📝 Normalized URL spec:", normalizedUrlSpec);
+
+      // Try exact match first
+      for (const group of initialData.groupedVariants) {
+        const groupSpec = group.subPart.name
+          .replace(/[,()-]/g, "")
           .replace(/\s+/g, "")
           .replace(/\./g, "")
+          .trim()
           .toLowerCase();
 
-        console.log("📝 Normalized URL spec:", normalizedUrlSpec);
+        console.log("Comparing normalized URL spec:", normalizedUrlSpec, "with normalized group spec:", groupSpec);
 
-        // Try exact match first
-        for (const group of data.groupedVariants) {
+        // Exact match
+        if (groupSpec === normalizedUrlSpec) {
+          defaultGroup = group;
+          
+          // If we have miles, find matching variant
+          if (milesValue) {
+            const milesMatch = group.variants.find((v: any) => {
+              const vm = v.miles?.toString().replace(/[^\d]/g, "");
+              return vm === milesValue;
+            });
+            defaultVariant = milesMatch || group.variants[0];
+          } else {
+            defaultVariant = group.variants[0];
+          }
+          
+          console.log("✅ Exact spec match found!");
+          break;
+        }
+      }
+
+      // If no exact match, try partial match
+      if (!defaultVariant) {
+        for (const group of initialData.groupedVariants) {
           const groupSpec = group.subPart.name
-            .replace(/[,()-]/g, "")
+            .replace(/[,()]/g, "")
             .replace(/\s+/g, "")
             .replace(/\./g, "")
             .trim()
             .toLowerCase();
 
-          console.log("Comparing normalized URL spec:", normalizedUrlSpec, "with normalized group spec:", groupSpec);
-
-          // Exact match
-          if (groupSpec === normalizedUrlSpec) {
+          // Partial match (contains)
+          if (
+            groupSpec.includes(normalizedUrlSpec) ||
+            normalizedUrlSpec.includes(groupSpec)
+          ) {
             defaultGroup = group;
             
             // If we have miles, find matching variant
@@ -662,96 +696,64 @@ useEffect(() => {
               defaultVariant = group.variants[0];
             }
             
-            console.log("✅ Exact spec match found!");
-            break;
-          }
-        }
-
-        // If no exact match, try partial match
-        if (!defaultVariant) {
-          for (const group of data.groupedVariants) {
-            const groupSpec = group.subPart.name
-              .replace(/[,()]/g, "")
-              .replace(/\s+/g, "")
-              .replace(/\./g, "")
-              .trim()
-              .toLowerCase();
-
-            // Partial match (contains)
-            if (
-              groupSpec.includes(normalizedUrlSpec) ||
-              normalizedUrlSpec.includes(groupSpec)
-            ) {
-              defaultGroup = group;
-              
-              // If we have miles, find matching variant
-              if (milesValue) {
-                const milesMatch = group.variants.find((v: any) => {
-                  const vm = v.miles?.toString().replace(/[^\d]/g, "");
-                  return vm === milesValue;
-                });
-                defaultVariant = milesMatch || group.variants[0];
-              } else {
-                defaultVariant = group.variants[0];
-              }
-              
-              console.log("✅ Partial spec match found!");
-              break;
-            }
-          }
-        }
-      }
-
-      /****************************************
-       * 4. MATCH BY MILES ONLY (if spec matching failed)
-       ****************************************/
-      if (!defaultVariant && milesValue) {
-        console.log("🔎 Attempting to match by miles only:", milesValue);
-        
-        for (const group of data.groupedVariants) {
-          const found = group.variants.find((v: any) => {
-            const vm = v.miles?.toString().replace(/[^\d]/g, "");
-            return vm === milesValue;
-          });
-
-          if (found) {
-            defaultGroup = group;
-            defaultVariant = found;
-            console.log("✅ Matched by miles!");
+            console.log("✅ Partial spec match found!");
             break;
           }
         }
       }
+    }
 
-      /****************************************
-       * 5. FALLBACK TO FIRST AVAILABLE
-       ****************************************/
-      if (!defaultVariant && data.groupedVariants.length > 0) {
-        console.log("⚠️ Using fallback - first available option");
-        defaultGroup = data.groupedVariants[0];
-        defaultVariant = defaultGroup.variants[0];
-      }
-
-      /****************************************
-       * 6. SET SELECTED VALUES
-       ****************************************/
-      if (defaultGroup && defaultVariant) {
-        console.log("🎯 Final selection - Group:", defaultGroup.subPart.name, "Variant SKU:", defaultVariant.sku);
-        
-        setSelectedSubPartId(defaultGroup.subPart.id);
-        setSelectedMilesSku(defaultVariant.sku);
-
-        setSelectedProduct({
-          ...defaultVariant,
-          make: data.make,
-          model: data.model,
-          year: data.year,
-          part: data.part,
+    /****************************************
+     * 4. MATCH BY MILES ONLY (if spec matching failed)
+     ****************************************/
+    if (!defaultVariant && milesValue) {
+      console.log("🔎 Attempting to match by miles only:", milesValue);
+      
+      for (const group of initialData.groupedVariants) {
+        const found = group.variants.find((v: any) => {
+          const vm = v.miles?.toString().replace(/[^\d]/g, "");
+          return vm === milesValue;
         });
+
+        if (found) {
+          defaultGroup = group;
+          defaultVariant = found;
+          console.log("✅ Matched by miles!");
+          break;
+        }
       }
-    })
-    .finally(() => setIsLoading(false));
-}, [make, model, year, part, sku, item, API_BASE]);
+    }
+
+    /****************************************
+     * 5. FALLBACK TO FIRST AVAILABLE
+     ****************************************/
+    if (!defaultVariant && initialData.groupedVariants.length > 0) {
+      console.log("⚠️ Using fallback - first available option");
+      defaultGroup = initialData.groupedVariants[0];
+      defaultVariant = defaultGroup.variants[0];
+    }
+
+    /****************************************
+     * 6. SET SELECTED VALUES
+     ****************************************/
+    if (defaultGroup && defaultVariant) {
+      console.log("🎯 Final selection - Group:", defaultGroup.subPart.name, "Variant SKU:", defaultVariant.sku);
+      
+      setSelectedSubPartId(defaultGroup.subPart.id);
+      setSelectedMilesSku(defaultVariant.sku);
+
+      setSelectedProduct({
+        ...defaultVariant,
+        make: initialData.make,
+        model: initialData.model,
+        year: initialData.year,
+        part: initialData.part,
+        subPart: defaultGroup.subPart,
+      });
+    }
+  }, [initialData, setSku, item]);
+
+
 
 
 
@@ -950,62 +952,15 @@ useEffect(() => {
 
 
 
-  // Add this NEW useEffect to EngineProductClient.tsx
-useEffect(() => {
-  if (!selectedProduct) return;
 
-  // Update document title dynamically
-  if (selectedProduct.seoTitle) {
-    document.title = selectedProduct.seoTitle;
-  }
+  // Removed client-side SEO manipulation - all SEO handled by server generateMetadata
 
-  // Update meta description dynamically
-  if (selectedProduct.seoDescription) {
-    let metaDescription = document.querySelector('meta[name="description"]');
-    if (!metaDescription) {
-      metaDescription = document.createElement('meta');
-      metaDescription.setAttribute('name', 'description');
-      document.head.appendChild(metaDescription);
-    }
-    metaDescription.setAttribute('content', selectedProduct.seoDescription);
-  }
+  // Debug: Log render state
+  console.log("🎨 About to render - isLoading:", isLoading, "hasSelectedProduct:", !!selectedProduct);
 
-  // Update canonical URL dynamically
-  if (selectedProduct.seoCanonical) {
-    let linkCanonical = document.querySelector('link[rel="canonical"]') as HTMLLinkElement;
-    if (!linkCanonical) {
-      linkCanonical = document.createElement('link');
-      linkCanonical.setAttribute('rel', 'canonical');
-      document.head.appendChild(linkCanonical);
-    }
-    linkCanonical.href = selectedProduct.seoCanonical;
-  }
-
-  // Update Open Graph tags dynamically
-  const updateOgTag = (property: string, content: string) => {
-    let ogTag = document.querySelector(`meta[property="${property}"]`);
-    if (!ogTag) {
-      ogTag = document.createElement('meta');
-      ogTag.setAttribute('property', property);
-      document.head.appendChild(ogTag);
-    }
-    ogTag.setAttribute('content', content);
-  };
-
-  if (selectedProduct.seoTitle) {
-    updateOgTag('og:title', selectedProduct.seoTitle);
-  }
-  if (selectedProduct.seoDescription) {
-    updateOgTag('og:description', selectedProduct.seoDescription);
-  }
-  if (selectedProduct.seoCanonical) {
-    updateOgTag('og:url', selectedProduct.seoCanonical);
-    console.log("🔗 Updated og:url to:", selectedProduct.seoCanonical);
-  }
-
-  console.log("📝 Updated meta tags for variant:", selectedProduct.sku);
-}, [selectedProduct]);
-
+  // Show loading only if we don't have a selected product AND we're loading
+  const shouldShowLoading = !selectedProduct && isLoading;
+  console.log("🎨 shouldShowLoading:", shouldShowLoading);
 
   return (
     <>
@@ -1076,7 +1031,7 @@ useEffect(() => {
         </div>
       </div>
 
-      {isLoading ? (
+      {shouldShowLoading ? (
         <div className="w-full bg-[#091b33] text-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
             <div className="flex h-screen flex-col justify-center items-center md:flex-row gap-1 md:gap-8 pt-0 md lg:pt-10">

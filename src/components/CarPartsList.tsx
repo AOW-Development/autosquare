@@ -89,7 +89,7 @@ const CarPartsList: React.FC<CarPartsListProps> = ({ brand }) => {
 
   return (
     <section className="w-full flex flex-col items-center px-6 py-16 bg-[#07142B] text-[#E8F3FF]">
-      <h2 className="text-3xl md:text-4xl font-bold text-[#049FFF] font-orbitron mb-10 text-center">
+      <h2 className="text-3xl md:text-4xl font-bold font-orbitron mb-10 text-center">
         USED {brand.toUpperCase()} AUTO PARTS
       </h2>
 

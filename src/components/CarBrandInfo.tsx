@@ -157,7 +157,10 @@ const CarBrandInfo: React.FC<CarBrandInfoProps> = ({ car }) => {
       </div>
 
       {/* FINAL CTA */}
-      <div className="w-full mt-20 py-16 sm:py-20 px-4 sm:px-8 bg-gradient-to-br from-[#0E3A75] to-[#0A1F3D] text-center rounded-2xl">
+      <div className="w-full mt-20 py-16 sm:py-20 px-4 sm:px-8 
+  bg-white/10 backdrop-blur-md border border-white/20
+  text-center rounded-2xl"
+      >
         <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-white">
           Find Quality {title} Parts Today?
         </h2>
@@ -169,11 +172,17 @@ const CarBrandInfo: React.FC<CarBrandInfoProps> = ({ car }) => {
 
         <a
           href="/#lead-form"
-          className="inline-block bg-gradient-to-r from-[#00A3FF] to-[#003D80] text-white px-7 sm:px-9 py-3 rounded-lg font-semibold shadow-[0_0_20px_rgba(0,163,255,0.4)] hover:shadow-[0_0_30px_rgba(0,163,255,0.6)] transition-all duration-300 hover:opacity-90"
+          className="inline-block 
+       bg-[#00A3FF] 
+      text-white px-7 sm:px-9 py-3 rounded-lg font-semibold
+      shadow-[0_0_20px_rgba(0,163,255,0.45)]
+      hover:shadow-[0_0_30px_rgba(0,163,255,0.7)]
+      transition-all duration-300 hover:opacity-95"
         >
           Find My Parts
         </a>
       </div>
+
     </section>
   );
 };

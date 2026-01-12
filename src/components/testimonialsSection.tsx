@@ -79,13 +79,13 @@ function TestimonialCard({
         />
         <div className="flex-1">
           <div className="font-bold text-white text-xl mt-2">{name}</div>
-          <div className="flex items-center gap-1 mt-0">
+          {/* <div className="flex items-center gap-1 mt-0">
             {[...Array(5)].map((_, i) => (
               <span key={i} className="text-yellow-400 text-2xl">
                 ★
               </span>
             ))}
-          </div>
+          </div> */}
         </div>
         {/* <Image
           src="/account/google.png"
@@ -222,7 +222,7 @@ export default function TestimonialsSection() {
           <div className="flex justify-center mt-8">
             <Link
               className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg  shadow-lg hover:bg-[#1558b0] transition"
-              href="/Testimonials"
+              href="/testimonials"
               passHref
             >
               {/* <a className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition"> */}

@@ -1019,7 +1019,7 @@ export default function Header() {
                                   ) : (
                                     // 🔹 NORMAL CATEGORIES (build dynamic URL)
                                     <Link
-                                      href={`/shop/${denormalize(cat.name)}/${denormalize(
+                                      href={`/parts/${denormalize(cat.name)}/${denormalize(
                                         sub as string
                                       )}`}
                                       onClick={closeAll}

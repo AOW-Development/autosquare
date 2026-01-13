@@ -109,7 +109,7 @@ const PARTS = [
   },
   {
     name: "electrical",
-    slug:"electrical",
+    slug:"electricals",
     images: [
       "cards.png",
       "cards-1.png",
@@ -154,7 +154,7 @@ const PARTS = [
   },
   {
     name: "engine",
-    slug:"engine",
+    slug:"engines",
     images: [
       "cards.png",
       "cards-1.png",
@@ -201,7 +201,7 @@ const PARTS = [
   },
   {
     name: "entertainment",
-    slug:"entertainment",
+    slug:"entertainments",
     images: ["cards.png","cards-1.png", "cards-2.png", "cards-3.png"],
   },
   {
@@ -472,7 +472,7 @@ export default function AutoPartsPage() {
                 height={20}
               />
             </a>
-            <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
+            <Image src="/autoparts/arrows (2).png" alt=">" width={16} height={16} />
             <span className="text-white">AutoParts</span>
           </div>
         </div>

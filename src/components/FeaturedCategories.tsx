@@ -109,7 +109,7 @@ export default function FeaturedCategories() {
             const id = slugify(maker.name);
 
             return (
-              <Link key={maker.name} href={`/car-brand/${id}`}>
+              <Link key={maker.name} href={`/used-auto-parts/${id}`}>
                 <div
                   className="flex items-center p-4 cursor-pointer justify-between text-white border-[#00A3FF] border-b hover:bg-[rgba(59,131,246,0.32)] hover:border-0 hover:rounded-md hover:shadow-[0_0_24px_4px_rgba(59,130,246,0.4)]  hover:outline-2 hover:outline-blue-500  hover:text-blue-400 transition-all"
                   style={{ paddingBottom: 8, marginBottom: 8 }}

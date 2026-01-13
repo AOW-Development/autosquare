@@ -17,22 +17,22 @@ const categories = [
   {
     src: "/categories_section/axel.png",
     alt: "Axle Assembly",
-    link: "/shop/axle/axel-shaft",
+    link: "/parts/axle/axel-shaft",
   },
   {
     src: "/categories_section/transfer-case.png",
     alt: "Transfer Case",
-    link: "/shop/transmission/transfer-case",
+    link: "/parts/transmission/transfer-case",
   },
   {
     src: "/categories_section/head-light.png",
     alt: "Headlight",
-    link: "/shop/lights/headlight",
+    link: "/parts/lights/headlight",
   },
   {
     src: "/categories_section/tail-light.png",
     alt: "Tail Light",
-    link: "/shop/lights/tail-light",
+    link: "/parts/lights/tail-light",
   },
 ];
 

@@ -7,11 +7,12 @@ import { useState } from "react";
 const PARTS = [
   {
     name: "air and fuel",
+    slug:"air-and-fuel",
     images: [
       "cards.png",
       "cards-1.png",
       "cards-2.png",
-      "carddfds (1).png",
+      "carddfds-1.png",
       "cards-3.png",
       "carddfs.png",
       "cards-4.png",
@@ -21,6 +22,7 @@ const PARTS = [
   },
   {
     name: "axel",
+    slug:"axel",
     images: [
       "cards.png",
       "cards-1.png",
@@ -29,7 +31,7 @@ const PARTS = [
       "cards-frontaxl.png",
       "front-drive.png",
        "cards-123.png",
-      "cards (1).png",
+      "cards-5.png",
       "cards32.png",
      
       
@@ -37,6 +39,7 @@ const PARTS = [
   },
   {
     name: "brakes",
+    slug:"brakes",
     images: [
        "cards.png",
       "cards-1.png",
@@ -49,6 +52,7 @@ const PARTS = [
   },
   {
     name: "center body",
+    slug:"center-body",
     images: [
       "cards-1.png",
       "cards.png",
@@ -62,6 +66,7 @@ const PARTS = [
   },
   {
     name: "cooling and heating",
+    slug:"cooling-and-heating",
     images: [
       "cards-1.png",
       "cards.png",
@@ -82,6 +87,7 @@ const PARTS = [
   },
   {
     name: "doors",
+    slug:"doors",
     images: [
       "cards.png",
       "cards-1.png",
@@ -103,6 +109,7 @@ const PARTS = [
   },
   {
     name: "electrical",
+    slug:"electricals",
     images: [
       "cards.png",
       "cards-1.png",
@@ -147,6 +154,7 @@ const PARTS = [
   },
   {
     name: "engine",
+    slug:"engines",
     images: [
       "cards.png",
       "cards-1.png",
@@ -165,6 +173,7 @@ const PARTS = [
   },
   {
     name: "Engine_Accessories",
+    slug:"engine-accessories",
     images: [
       "cards.png",
       "cards-1.png",
@@ -192,10 +201,12 @@ const PARTS = [
   },
   {
     name: "entertainment",
+    slug:"entertainments",
     images: ["cards.png","cards-1.png", "cards-2.png", "cards-3.png"],
   },
   {
     name: "front body",
+    slug:"front-body",
     images: [
       "cards.png",
       "cards-1.png",
@@ -219,6 +230,7 @@ const PARTS = [
   },
   {
     name: "glass and mirrors",
+    slug:"glass-and-mirrors",
     images: [
       "cards.png",
       "cards-1.png",
@@ -236,6 +248,7 @@ const PARTS = [
   },
   {
     name: "interior",
+    slug:"interior",
     images: [
       "cards.png",
       "cards-1.png",
@@ -259,6 +272,7 @@ const PARTS = [
   },
   {
     name: "lights",
+    slug:"lights",
     images: [
       "cards.png",
       "cards-1.png",
@@ -273,6 +287,7 @@ const PARTS = [
   },
   {
     name: "rear body",
+    slug:"rear-body",
     images: [
       "cards.png",
       "cards-1.png",
@@ -300,6 +315,7 @@ const PARTS = [
   },
   {
     name: "safety",
+    slug:"safety",
     images: [
       "cards.png",
       "cards-1.png",
@@ -311,6 +327,7 @@ const PARTS = [
   },
   {
     name: "suspension or steering",
+    slug:"suspension-or-steering",
     images: [
       "cards.png",
       "cards-1.png",
@@ -341,6 +358,7 @@ const PARTS = [
   },
   {
     name: "transmission",
+    slug:"transmission",
     images: [
       "cards.png",
       "cards-1.png",
@@ -359,6 +377,7 @@ const PARTS = [
   },
   {
     name: "wheels",
+    slug:"wheels",
     images: [
       "cards.png",
       "cards-1.png",
@@ -383,11 +402,11 @@ const getCardImages = (folder: string): string[] => {
     "center body": 7,
     "cooling and heating": 12,
     doors: 13,
-    electrical: 36,
-    engine: 10,
-    Engine_Accessories: 19,
-    entertainment: 3,
-    "front body": 15,
+    electrical: 37,
+    engine: 11,
+    Engine_Accessories: 20,
+    entertainment: 4,
+    "front body": 16,
     "glass and mirrors": 10,
     interior: 17,
     lights: 7,
@@ -453,7 +472,7 @@ export default function AutoPartsPage() {
                 height={20}
               />
             </a>
-            <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
+            <Image src="/autoparts/arrows (2).png" alt=">" width={16} height={16} />
             <span className="text-white">AutoParts</span>
           </div>
         </div>
@@ -520,7 +539,7 @@ export default function AutoPartsPage() {
                     className="w-full h-[48px] sm:h-[72px] md:h-[112px] rounded flex items-center justify-center"
                   >
                     <Image
-                      src={`/autoparts/${part.name}/${img}`}
+                      src={`/autoparts/${part.slug}/${img}`}
                       alt={part.name + " card"}
                       width={282}
                       height={112}
@@ -529,6 +548,7 @@ export default function AutoPartsPage() {
                         e.currentTarget.style.display = "none";
                       }}
                     />
+                  
                   </div>
                 ))}
               </div>

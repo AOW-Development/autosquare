@@ -74,7 +74,7 @@ function TransmissionFeaturedCategories() {
           return (
             <Link
               key={maker.name}
-              href={`/car-brand/${slug}`}
+              href={`/used-auto-parts/${slug}`}
               className="contents" // keeps underline + spacing EXACTLY same
             >
               <div

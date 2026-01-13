@@ -551,3 +551,31 @@ export function generateDynamicCatalogTransmissionMetadata(searchParams: {
 }
 
 
+export function generateDynamicCategoryMetadata(
+  category: string,
+  partName: string
+): Metadata {
+  // Format the category and part name for the URL (replace spaces with hyphens)
+  const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
+  const partSlug = partName.toLowerCase().replace(/\s+/g, '-');
+  
+  // Generate the canonical URL
+  const canonical = `https://partscentral.us/autoParts/${categorySlug}/${partSlug}`;
+  
+  // Generate title
+  const title = `${partName} | ${category} | Parts Central`;
+  
+  // Generate description
+  const description = `Buy quality ${partName} in the ${category} category at Parts Central. Affordable, reliable auto parts with warranty and fast shipping across the United States.`;
+  
+  // Generate keywords
+  const keywords = `${partName}, ${category}, auto parts, car parts, buy ${partName} USA, ${partName} for sale, Parts Central`;
+  
+  return {
+    title,
+    description,
+    keywords,
+    alternates: {
+      canonical,
+    },
+  };}

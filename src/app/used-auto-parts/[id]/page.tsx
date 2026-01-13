@@ -1,13 +1,47 @@
-"use client";
-
-import { useParams } from "next/navigation";
+import { Metadata } from "next";
 import { getCar } from "@/data/cars";
 import CarBrandInfo from "@/components/CarBrandInfo";
 import CarPartsList from "@/components/CarPartsList";
 
-export default function CarPage() {
-  const params = useParams();
-  const id = params?.id as string;
+// --------------------
+// Metadata
+// --------------------
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params; // ✅ await params
+
+  const car = getCar(id);
+
+  if (!car) {
+    return {
+      title: "Brand Not Found | Parts Central",
+      description: "The requested car brand could not be found.",
+    };
+  }
+
+  const brandName = id.charAt(0).toUpperCase() + id.slice(1);
+
+  return {
+    title: `${brandName} Auto Parts | Quality Car Parts for ${brandName} | Parts Central`,
+    description: `Shop quality auto parts for ${brandName} vehicles. Find engines, transmissions, and more.`,
+    alternates: {
+      canonical: `https://partscentral.us/used-auto-parts/${id}`,
+    },
+  };
+}
+
+// --------------------
+// Page Component
+// --------------------
+export default async function CarPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params; // ✅ await params
 
   console.log("PARAM ID →", id);
 
@@ -21,13 +55,10 @@ export default function CarPage() {
     );
   }
 
-  const capitalize = (str: string) =>
-    str ? str[0].toUpperCase() + str.slice(1) : "";
-
   return (
     <>
       <CarBrandInfo car={car} />
-      <CarPartsList brand={capitalize(id)} />
+      <CarPartsList brand={id.charAt(0).toUpperCase() + id.slice(1)} />
     </>
   );
 }

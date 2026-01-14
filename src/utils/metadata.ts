@@ -211,7 +211,7 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "forgot password, reset password, parts central password reset, account recovery, auto parts account help, regain account access",
   },
-   "/account/t&c": {
+  "/account/t&c": {
     title: "Terms & Conditions | Parts Central – User Agreement",
     alternates: {
       canonical: "https://partscentral.us/account/t&c",
@@ -221,39 +221,114 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "terms and conditions, parts central terms, user agreement, website terms, auto parts policies, account terms and conditions",
   },
-"/blog/blog-details": {
-  title: "Auto Parts Blog | Parts Central – Expert Tips & Industry Insights",
-  alternates: {
-    canonical: "https://partscentral.us/blog/blog-details",
+  "/account/billing": {
+    title: "Billing Information | Parts Central – Payments & Invoices",
+    alternates: {
+      canonical: "https://partscentral.us/account/billing",
+    },
+    description:
+      "Manage your billing information at Parts Central, including payment methods, invoices, and transaction history for your auto parts purchases.",
+    keywords:
+      "billing information, parts central billing, payment methods, invoices, transaction history, auto parts payments",
   },
-  description:
-    "Read detailed auto parts blogs covering vehicle maintenance, repair tips, and industry insights from Parts Central to help you maintain and upgrade your vehicle with confidence.",
-  keywords:
-    "auto parts blog, car repair tips, vehicle maintenance guide, parts central blog, automotive insights, auto parts articles",
-},
-"/account/faq": {
-  title: "FAQs | Parts Central – Account, Orders & Auto Parts Help",
-  alternates: {
-    canonical: "https://partscentral.us/account/faq",
+  "/account/order-history": {
+    title: "Order History | Parts Central – Track Your Purchases",
+    alternates: {
+      canonical: "https://partscentral.us/account/order-history",
+    },
+    description:
+      "View your order history at Parts Central. Track past purchases, order statuses, and details for all your auto parts orders in one place.",
+    keywords:
+      "order history, parts central orders, track purchases, auto parts order history, past orders, order details",
   },
-  description:
-    "Find answers to frequently asked questions about Parts Central accounts, orders, shipping, returns, and auto parts. Get quick help and support in one place.",
-  keywords:
-    "parts central faq, auto parts faq, account help, order questions, shipping and returns, auto parts support",
-},
-"/account/submit-ticket": {
-  title: "Submit a Support Ticket | Parts Central – Customer Assistance",
-  alternates: {
-    canonical: "https://partscentral.us/account/submit-ticket",
+  "/account/warranty-policy": {
+    title: "Warranty Policy | Parts Central – Coverage & Claims Information",
+    alternates: {
+      canonical: "https://partscentral.us/account/warranty-policy",
+    },
+    description:
+      "Review the Parts Central warranty policy to understand coverage, claim procedures, and terms for auto parts purchases. Learn how to file warranty claims with ease.",
+    keywords:
+      "warranty policy, parts central warranty, auto parts warranty, warranty coverage, warranty claims, parts warranty terms",
   },
-  description:
-    "Submit a support ticket at Parts Central to get help with your account, orders, shipping, returns, or auto parts inquiries. Our support team is here to assist you.",
-  keywords:
-    "submit support ticket, parts central support, customer assistance, auto parts help, account support, contact support",
-},
+
+  "/account/checkout": {
+    title: "Secure Checkout | Parts Central – Complete Your Auto Parts Order",
+    alternates: {
+      canonical: "https://partscentral.us/account/checkout",
+    },
+    description:
+      "Complete your purchase securely at Parts Central. Review your order, enter billing and shipping details, and place your auto parts order with confidence.",
+    keywords:
+      "secure checkout, parts central checkout, auto parts order, billing and shipping, place order, buy auto parts online",
+  },
+
+  "/blog/blog-details": {
+    title: "Auto Parts Blog | Parts Central – Expert Tips & Industry Insights",
+    alternates: {
+      canonical: "https://partscentral.us/blog/blog-details",
+    },
+    description:
+      "Read detailed auto parts blogs covering vehicle maintenance, repair tips, and industry insights from Parts Central to help you maintain and upgrade your vehicle with confidence.",
+    keywords:
+      "auto parts blog, car repair tips, vehicle maintenance guide, parts central blog, automotive insights, auto parts articles",
+  },
+  "/account/faq": {
+    title: "FAQs | Parts Central – Account, Orders & Auto Parts Help",
+    alternates: {
+      canonical: "https://partscentral.us/account/faq",
+    },
+    description:
+      "Find answers to frequently asked questions about Parts Central accounts, orders, shipping, returns, and auto parts. Get quick help and support in one place.",
+    keywords:
+      "parts central faq, auto parts faq, account help, order questions, shipping and returns, auto parts support",
+  },
+  "/account/submit-ticket": {
+    title: "Submit a Support Ticket | Parts Central – Customer Assistance",
+    alternates: {
+      canonical: "https://partscentral.us/account/submit-ticket",
+    },
+    description:
+      "Submit a support ticket at Parts Central to get help with your account, orders, shipping, returns, or auto parts inquiries. Our support team is here to assist you.",
+    keywords:
+      "submit support ticket, parts central support, customer assistance, auto parts help, account support, contact support",
+  },
+  "/account/order-details": {
+    title: "Order Details | Parts Central – View Order Information",
+    alternates: {
+      canonical: "https://partscentral.us/account/order-details",
+    },
+    description:
+      "View detailed information about your Parts Central order, including items purchased, order status, shipping details, and billing summary.",
+    keywords:
+      "order details, parts central order details, order information, auto parts order summary, track order details, purchase details",
+  },
+  "/account/payment-details": {
+    title: "Payment Details | Parts Central – Manage Your Payments",
+    alternates: {
+      canonical: "https://partscentral.us/account/payment-details",
+    },
+    description:
+      "View and manage your payment details at Parts Central, including saved payment methods, transaction records, and secure payment information for auto parts orders.",
+    keywords:
+      "payment details, parts central payments, manage payment methods, transaction records, auto parts payments, secure payments",
+  },
+  "/account/pay-method": {
+    title: "Payment Methods | Parts Central – Manage Saved Payments",
+    alternates: {
+      canonical: "https://partscentral.us/account/pay-method",
+    },
+    description:
+      "Manage your saved payment methods at Parts Central. Add, update, or remove cards securely to ensure smooth and fast auto parts checkout.",
+    keywords:
+      "payment methods, saved payments, parts central payment options, manage cards, auto parts payments, secure payment methods",
+  },
 
   "/used-engines-and-transmissions-for-sale-near-me-in-united-states": {
     title: "Used Engines and Transmissions for Sale Near Me in US",
+    alternates: {
+      canonical: "https://partscentral.us/used-engines-and-transmissions-for-sale-near-me-in-united-states",
+    },
     description:
       "Find reliable used engines and transmissions for sale near me in US. Affordable, high-quality auto parts with warranty for all vehicle makes and models.",
     keywords:
@@ -261,6 +336,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/car-engines-for-sale-near-me-in-united-states": {
     title: "Car Engines for Sale Near Me in United States | Buy Online",
+    alternates: {
+      canonical: "https://partscentral.us/car-engines-for-sale-near-me-in-united-states",
+    },
     description:
       "Get a Quality Used Car Engines for Sale Near Me in United States at an Affordable Price! Parts Central offers a wide variety of used car engines for sales.",
     keywords:
@@ -268,6 +346,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/cheap-engines-for-sale-in-united-states": {
     title: "Cheap Engines for Sale in United States – Budget Friendly Price",
+    alternates: {
+      canonical: "https://partscentral.us/cheap-engines-for-sale-in-united-states",
+    },
     description:
       "Explore reliable and cheap engines for sale in United States by Parts Central. Get quality, affordable replacement engines with trusted performance and quick delivery.",
     keywords:
@@ -275,6 +356,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/cheap-transmissions-in-united-states": {
     title: "Cheap Transmissions in United States | Buy Used Transmissions",
+    alternates: {
+      canonical: "https://partscentral.us/cheap-transmissions-in-united-states",
+    },
     description:
       "Get Cheap Transmissions in United States, Find our best fitting automatic transmissions for your vehicle and enjoy free next day delivery.",
     keywords:
@@ -282,6 +366,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/rebuilt-transmissions-for-sale-in-united-states": {
     title: "Rebuilt Transmissions for Sale in US | Assured Warranty",
+    alternates: {
+      canonical: "https://partscentral.us/rebuilt-transmissions-for-sale-in-united-states",
+    },
     description:
       "Shop rebuilt transmissions for sale in United States at Parts Central. Affordable, reliable, and certified quality auto parts to keep your vehicle running strong.",
     keywords:
@@ -289,6 +376,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/quality-used-transmissions-in-united-states": {
     title: "Quality Used Transmissions in US | Affordable Prices and Tested",
+    alternates: {
+      canonical: "https://partscentral.us/quality-used-transmissions-in-united-states",
+    },
     description:
       "We offer high-quality used Quality Used Transmissions in United States that are both affordable and reliable. Our team carefully inspects each transmission.",
     keywords:
@@ -296,6 +386,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/used-car-engines-for-sale-in-united-states": {
     title: "Used Car Engines for Sale in US | Quality Tested with Warranty",
+    alternates: {
+      canonical: "https://partscentral.us/used-car-engines-for-sale-in-united-states",
+    },
     description:
       "Get reliable quality used transmissions in United States from Parts Central. Affordable, durable, and trusted options to keep your vehicle running smoothly.",
     keywords:
@@ -303,6 +396,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/used-motors-for-sale-near-me-in-united-states": {
     title: "Find Affordable Used Motors for Sale Near Me in United States",
+    alternates: {
+      canonical: "https://partscentral.us/used-motors-for-sale-near-me-in-united-states",
+    },
     description:
       "Shop our Used Motors for Sale Near Me in United States. We have a variety of car engines for Fords, GMC, Cadillac, Hyundai, GMC, Audi, and more.",
     keywords:
@@ -310,6 +406,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/used-350-chevy-engine-for-sale-in-united-states": {
     title: "Used 350 Chevy Engine and Motor for Sale in US | Car Parts",
+    alternates: {
+      canonical: "https://partscentral.us/used-350-chevy-engine-for-sale-in-united-states",
+    },
     description:
       "Find reliable Used 350 Chevy Engine for Sale in United States at Car Parts. Quality tested, affordable engines with nationwide shipping available.",
     keywords:
@@ -317,6 +416,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/700-r4-transmission-for-sale-in-united-states": {
     title: "700 R4 Transmission for Sale in USA | Buy Now",
+    alternates: {
+      canonical: "https://partscentral.us/700-r4-transmission-for-sale-in-united-states",
+    },
     description:
       "Shop 700 R4 Transmission for Sale in United States at Car Parts. Get high-quality, durable, and affordable transmissions with reliable nationwide shipping.",
     keywords:
@@ -324,6 +426,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/4l60e-transmission-4x4-in-united-states": {
     title: "4L60E Transmission 4x4 in United States | New, Used & Rebuilt",
+    alternates: {
+      canonical: "https://partscentral.us/4l60e-transmission-4x4-in-united-states",
+    },
     description:
       "4L60E transmission problems? We have replacement new, used, & rebuilt transmissions for sale with fast shipping and assured warranty.",
     keywords:
@@ -331,6 +436,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/jeep-wrangler-automatic-transmission-for-sale-in-united-states": {
     title: "Jeep Wrangler Automatic Transmission for Sale in United States",
+    alternates: {
+      canonical: "https://partscentral.us/jeep-wrangler-automatic-transmission-for-sale-in-united-states",
+    },
     description:
       "Browse the best deals on Jeep Wrangler Automatic Transmission for Sale in United States Great deals. Massive selection from top brands on Partscentral",
     keywords:
@@ -338,6 +446,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/honda-civic-engine-for-sale-in-united-states": {
     title: "Honda Civic Engine for Sale in United States | Prices & Model",
+    alternates: {
+      canonical: "https://partscentral.us/honda-civic-engine-for-sale-in-united-states",
+    },
     description:
       "Honda Civic Engine for Sale in United States, Explore our collection of top-notch engines. Shop now and find the perfect engine for your vehicle",
     keywords:
@@ -345,6 +456,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/toyota-transmission-in-united-states": {
     title: "Toyota Transmission in United States | Car Parts Price | Buy Now",
+    alternates: {
+      canonical: "https://partscentral.us/toyota-transmission-in-united-states",
+    },
     description:
       "Find high-quality Toyota Transmission in United States at Car Parts. Reliable, durable, and affordable auto solutions with nationwide delivery.",
     keywords:
@@ -352,6 +466,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/best-place-to-buy-used-car-engines-in-united-states": {
     title: "Best Place to Buy Used Car Engines in US | Assured Low Prices",
+    alternates: {
+      canonical: "https://partscentral.us/best-place-to-buy-used-car-engines-in-united-states",
+    },
     description:
       "Car Parts offers the best place to buy used car engines in United States with quality, affordable prices, and reliable nationwide delivery.",
     keywords:
@@ -359,6 +476,9 @@ export const metadataMap: Record<string, Metadata> = {
   },
   "/dodge-ram-2500-cummins-turbo-diesel-for-sale-in-united-states": {
     title: "Dodge Ram 2500 Cummins Turbo Diesel for Sale | USA",
+    alternates: {
+      canonical: "https://partscentral.us/dodge-ram-2500-cummins-turbo-diesel-for-sale-in-united-states",
+    },
     description:
       "Find the best deals on Dodge Ram 2500 Cummins Turbo Diesel for Sale in the United States at Car Parts. Reliable engines, powerful performance, affordable price.",
     keywords:

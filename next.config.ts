@@ -3,7 +3,7 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
-       remotePatterns: [
+    remotePatterns: [
       {
         protocol: "https",
         hostname: "s3.us-east-1.amazonaws.com",
@@ -107,6 +107,31 @@ const nextConfig: NextConfig = {
       {
         source: '/account/forgotPassword',
         destination: '/account/forgot-password',
+        permanent: true,
+      },
+      {
+        source: '/account/payMethod',
+        destination: '/account/pay-method',
+        permanent: true,
+      },
+      {
+        source: '/account/orderHistory',
+        destination: '/account/order-history',
+        permanent: true,
+      },
+      {
+        source: '/account/paymentDetails',
+        destination: '/account/payment-details',
+        permanent: true,
+      },
+      {
+        source: '/account/orderDetails',
+        destination: '/account/order-details',
+        permanent: true,
+      },
+      {
+        source: '/cookie-policy',
+        destination: '/account/cookie-policy',
         permanent: true,
       },
       {

@@ -3,7 +3,18 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
-    domains: ['partscentral-uploads.s3.us-west-2.amazonaws.com'],
+       remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "s3.us-east-1.amazonaws.com",
+        pathname: "/partscentral.us/**",
+      },
+      {
+        protocol: "https",
+        hostname: "partscentral-uploads.s3.us-west-2.amazonaws.com",
+        pathname: "/**",
+      },
+    ],
 
   },
   eslint: {

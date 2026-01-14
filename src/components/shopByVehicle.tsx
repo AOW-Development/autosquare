@@ -106,15 +106,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
 
   // Reset or load saved values based on page
   useEffect(() => {
-    // If make is coming from props, DO NOT reset
-    if (initialMake) return;
-
-    if (
-      path === "/" ||
-      path === "/engine" ||
-      path === "/transmission" ||
-      path === "/autoParts" || path
-    ) {
+    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/auto-Parts" || path.startsWith("/parts") || path.startsWith("/used-auto-parts")) {
       setMake("");
       setModel("");
       setYear("");
@@ -123,16 +115,18 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       const stored = localStorage.getItem("shopByVehicle");
       if (stored) {
         try {
-          const { make, model, year, part } = JSON.parse(stored);
-          if (make) setMake(make);
-          if (model) setModel(model);
-          if (year) setYear(year);
-          if (part) setPart(part);
-        } catch { }
+          const { make: storedMake, model: storedModel, year: storedYear, part: storedPart } =
+            JSON.parse(stored);
+          if (storedMake) setMake(storedMake);
+          if (storedModel) setModel(storedModel);
+          if (storedYear) setYear(storedYear);
+          if (storedPart) setPart(storedPart);
+        } catch {
+          // Ignore parse errors
+        }
       }
     }
-  }, [path, initialMake]);
-
+  }, [path]);
 
   useEffect(() => {
     if (!path.startsWith("/catalogue/")) return;

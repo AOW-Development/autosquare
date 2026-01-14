@@ -1,20 +1,20 @@
 import { Metadata } from "next";
 
 export const metadataMap: Record<string, Metadata> = {
-  "/aboutUs": {
+  "/about-us": {
     title: "About Us | Car Parts - Trusted Auto Parts Supplier",
     alternates: {
-      canonical: "https://partscentral.us/aboutUs",
+      canonical: "https://partscentral.us/about-us",
     },
     description:
       "Discover Car Parts’ journey, mission, and values. Learn how Car Parts delivers quality auto parts with reliability and trust to customers nationwide.",
     keywords:
       "Car Parts About Us, auto parts supplier, car spare parts online, trusted car parts store, automotive components, buy car parts online, vehicle parts supplier",
   },
-  "/autoParts": {
+  "/auto-parts": {
     title: " Trusted Auto Spare Parts Shop & Supplier in US | Buy Now",
     alternates: {
-      canonical: "https://partscentral.us/autoParts",
+      canonical: "https://partscentral.us/auto-parts",
     },
     description:
       "Parts Central Your Trusted Source for Automotive parts and accessories. Genuine Car Spare Parts Distributer.",
@@ -50,6 +50,17 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "cookie policy, parts central cookies, website cookies policy, tracking cookies, browser cookies, auto parts website cookies",
   },
+  "/account/warranty-and-return": {
+    title: "Warranty And Return | Parts Central",
+    alternates: {
+      canonical: "https://partscentral.us/account/warranty-and-return",
+    },
+    description:
+      "Read Parts Central’s Warranty and Return to understand how we collect, use, protect, and manage your personal information when you use our website and services.",
+    keywords:
+      "Warranty and Return, parts central privacy, auto parts privacy policy, personal data protection, customer data security, website privacy policy",
+  },
+      
   "/account/privacy-policy": {
     title: "Privacy Policy | Parts Central",
     alternates: {
@@ -551,3 +562,31 @@ export function generateDynamicCatalogTransmissionMetadata(searchParams: {
 }
 
 
+export function generateDynamicCategoryMetadata(
+  category: string,
+  partName: string
+): Metadata {
+  // Format the category and part name for the URL (replace spaces with hyphens)
+  const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
+  const partSlug = partName.toLowerCase().replace(/\s+/g, '-');
+  
+  // Generate the canonical URL
+  const canonical = `https://partscentral.us/autoParts/${categorySlug}/${partSlug}`;
+  
+  // Generate title
+  const title = `${partName} | ${category} | Parts Central`;
+  
+  // Generate description
+  const description = `Buy quality ${partName} in the ${category} category at Parts Central. Affordable, reliable auto parts with warranty and fast shipping across the United States.`;
+  
+  // Generate keywords
+  const keywords = `${partName}, ${category}, auto parts, car parts, buy ${partName} USA, ${partName} for sale, Parts Central`;
+  
+  return {
+    title,
+    description,
+    keywords,
+    alternates: {
+      canonical,
+    },
+  };}

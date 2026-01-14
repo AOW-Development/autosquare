@@ -1070,7 +1070,7 @@ export default function EngineProductClient({
                   ) : part === "Engine" || part == "engine" ? (
                     <>
                       <Image
-                        src="/catalog/Engine 1.png"
+                        src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
                         alt="Engine"
                         width={250}
                         height={160}
@@ -1084,7 +1084,7 @@ export default function EngineProductClient({
                   ) : part === "Transmission" || part == "transmission" ? (
                     <>
                       <Image
-                        src="/catalog/Trasmission_.png"
+                        src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
                         alt="Engine"
                         width={250}
                         height={160}
@@ -1220,16 +1220,21 @@ export default function EngineProductClient({
             </select>
                             </div>
 
-                <div className="text-sm text-white mb-2">
-                  Availability:{" "}
-                  <span className="text-gray-400">
-                    {selectedProduct?.inStock === undefined
-                      ? ""
-                      : selectedProduct.inStock
-                      ? "In stock"
-                      : "Out of stock"}
-                  </span>
-                </div>
+                            <div className="flex flex-row gap-2 mt-4 mb-6">
+              <div className="text-sm sm:text-base text-white">
+                Availability:{" "}
+                <span className="text-gray-400">
+                  {selectedProduct?.inStock === undefined
+                    ? "Select options"
+                    : selectedProduct.inStock
+                    ? "In stock"
+                    : "Out of stock"}
+                </span>
+              </div>
+              <div className="text-sm sm:text-base text-white">
+                Condition: <span className="text-gray-400">Used</span>
+              </div>
+            </div>
 
                 {selectedProduct?.inStock ? (
                   <>
@@ -1347,40 +1352,6 @@ export default function EngineProductClient({
                   CALL NOW
                 </a>
               </div>
-
-              <div className="flex flex-col gap-3 text-white">
-                {/* Google Rating */}
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
-                  <span>
-                    Rated <span className="font-semibold">4.6</span> out of 5
-                    based on
-                  </span>
-                  <Image
-                    src="/google.jpg"
-                    alt="Google"
-                    width={120} // natural width
-                    height={36} // natural height
-                    className="h-6 sm:h-6 md:h-12 lg:h-8 w-auto" // responsive larger heights
-                  />
-                </div>
-
-                {/* Trustpilot Rating */}
-                <div className="flex flex-wrap items-center gap-2 text-xs sm:text-sm md:text-lg">
-                  <span>
-                    Rated <span className="font-semibold">4.1</span> out of 5
-                    based on
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <Image
-                      src="/ts.webp"
-                      alt="Trustpilot"
-                      width={300} // natural width
-                      height={100} // natural height
-                      className="h-20 sm:h-18 md:h-20 lg:h-29 w-auto lg:w-[150px]" // responsive larger heights
-                    />
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -1419,4 +1390,7 @@ export default function EngineProductClient({
     </>
   );
 }
+
+
+
 

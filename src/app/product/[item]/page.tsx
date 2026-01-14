@@ -164,7 +164,8 @@ export async function generateMetadata({
       try {
         // Convert URL model to database model format
         const dbModel = convertUrlModelToDbModel(model, make);
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
+        const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
+        // const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         console.log("🔄 Model conversion: URL=", model, "→ DB=", dbModel);
         
@@ -427,7 +428,8 @@ export default async function EngineProductPage({
     try {
       // Convert URL model to database model format
       const dbModel = convertUrlModelToDbModel(model, make);
-      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      // const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
       
       console.log("🔄 Server fetching from:", apiUrl);
       console.log("📋 Parsed params:", { make, model: model, dbModel, year, part });
@@ -471,14 +473,126 @@ export default async function EngineProductPage({
     miles
   });
 
+  // Generate JSON-LD Product Schema
+  let jsonLdSchema = null;
+  
+  if (initialData?.groupedVariants?.length > 0 && make && model && year && part) {
+    // Find the matching variant based on specification and miles
+    let selectedVariant = null;
+    let selectedSubPart = null;
+    
+    const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+    
+    // Try to match specification
+    if (specification) {
+      const specNormalized = normalizeSpec(specification);
+      const targetGroup = initialData.groupedVariants.find((group: any) => {
+        const groupName = group.subPart?.name || "";
+        const groupNormalized = normalizeSpec(groupName);
+        return groupNormalized === specNormalized || 
+               groupNormalized.includes(specNormalized) ||
+               specNormalized.includes(groupNormalized);
+      });
+      
+      if (targetGroup) {
+        selectedSubPart = targetGroup.subPart;
+        
+        // Try to match miles within this group
+        if (miles) {
+          const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
+          selectedVariant = targetGroup.variants.find((v: any) => {
+            const variantMiles = v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "";
+            return variantMiles === milesNormalized || variantMiles.includes(milesNormalized);
+          });
+        }
+        
+        // Fallback to first in-stock variant in this group
+        if (!selectedVariant) {
+          selectedVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+        }
+      }
+    }
+    
+    // Fallback to first available variant overall
+    if (!selectedVariant) {
+      for (const group of initialData.groupedVariants) {
+        const inStockVariant = group.variants.find((v: any) => v.inStock);
+        if (inStockVariant) {
+          selectedVariant = inStockVariant;
+          selectedSubPart = group.subPart;
+          break;
+        }
+      }
+      
+      if (!selectedVariant && initialData.groupedVariants[0]) {
+        selectedVariant = initialData.groupedVariants[0].variants[0];
+        selectedSubPart = initialData.groupedVariants[0].subPart;
+      }
+    }
+    
+    if (selectedVariant) {
+      const productName = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
+      const productUrl = `https://partscentral.us/product/${routeParams.item}`;
+      const imageUrl = selectedVariant.product?.images?.[0] 
+        ? `https://partscentral.us${selectedVariant.product.images[0]}`
+        : part.toLowerCase() === "engine" 
+          ? "https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
+          : "https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png";
+      
+      const price = selectedVariant.discountedPrice || selectedVariant.actualprice || 0;
+      const availability = selectedVariant.inStock 
+        ? "https://schema.org/InStock" 
+        : "https://schema.org/OutOfStock";
+      
+      // Clean SKU for schema
+      const cleanSku = selectedVariant.sku?.replace(/[\/\s]/g, "-") || 
+        `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || ""}`.replace(/[\/\s,()]/g, "-");
+      
+      const description = `This ${make.charAt(0).toUpperCase() + make.slice(1)} ${model} ${part.charAt(0).toUpperCase() + part.slice(1)} is from ${year} models. Each ${part.charAt(0).toUpperCase() + part.slice(1)} is tested and ready to install and offers improved performance. This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
+      
+      jsonLdSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": productName,
+        "image": imageUrl,
+        // "description": description,
+        // "sku": cleanSku,
+        "brand": {
+          "@type": "Brand",
+          "name": make.charAt(0).toUpperCase() + make.slice(1)
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": productUrl,
+          "priceCurrency": "USD",
+          "price": price.toFixed(2),
+          "itemCondition": "https://schema.org/UsedCondition",
+          "availability": availability
+        }
+      };
+      
+      console.log("✅ Generated JSON-LD schema for:", productName);
+    }
+  }
+
   // Pass server-fetched data to client component
-  return <EngineProductClient 
-    initialItem={routeParams.item} 
-    initialData={initialData}
-    setSku={queryParams.sku}
-    setModal={undefined}
-    specification={specification}
-    miles={miles}
-  />;
+  return (
+    <>
+      {jsonLdSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
+        />
+      )}
+      <EngineProductClient 
+        initialItem={routeParams.item} 
+        initialData={initialData}
+        setSku={queryParams.sku}
+        setModal={undefined}
+        specification={specification}
+        miles={miles}
+      />
+    </>
+  );
 }
 

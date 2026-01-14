@@ -11,17 +11,49 @@ export const revalidate = 0;
 function convertUrlModelToDbModel(urlModel: string, make: string): string {
   if (!urlModel || !make) return urlModel;
   
-  // Get the make's models from MODELS - use uppercase for key lookup
-  const makeKey = make.toUpperCase();
-  const modelsForMake = MODELS[makeKey as keyof typeof MODELS];
+  // Decode URL-encoded characters (e.g., %26 → &)
+  const decodedUrlModel = decodeURIComponent(urlModel);
   
-  if (!modelsForMake || !Array.isArray(modelsForMake)) {
-    console.log(`⚠️ No models found for make: ${makeKey}`);
-    return urlModel;
+  // Try different capitalization strategies to find the make in MODELS
+  // vehicleData.ts has: Ford, GMC, BMW, Cadillac, etc.
+  const makeVariations = [
+    make.toUpperCase(), // BMW, GMC
+    make.charAt(0).toUpperCase() + make.slice(1).toLowerCase(), // Ford, Cadillac
+    make.charAt(0).toUpperCase() + make.slice(1), // Keep original case after first char
+  ];
+  
+  let makeKey: string | null = null;
+  let modelsForMake: string[] | null = null;
+  
+  // Try each variation
+  for (const variation of makeVariations) {
+    if (MODELS[variation as keyof typeof MODELS]) {
+      makeKey = variation;
+      modelsForMake = MODELS[variation as keyof typeof MODELS];
+      break;
+    }
   }
   
+  // If still not found, try case-insensitive search
+  if (!modelsForMake) {
+    const availableMakes = Object.keys(MODELS);
+    const foundMake = availableMakes.find(m => m.toLowerCase() === make.toLowerCase());
+    if (foundMake) {
+      makeKey = foundMake;
+      modelsForMake = MODELS[foundMake as keyof typeof MODELS];
+    }
+  }
+  
+  if (!modelsForMake || !Array.isArray(modelsForMake)) {
+    console.log(`⚠️ No models found for make: ${make}`);
+    console.log(`⚠️ Available makes in MODELS:`, Object.keys(MODELS));
+    return decodedUrlModel;
+  }
+  
+  console.log(`🔍 Looking for URL model "${decodedUrlModel}" in ${makeKey} models`);
+  
   // Normalize the URL model for comparison (remove all special chars)
-  const normalizedUrlModel = urlModel.toLowerCase().replace(/[^a-z0-9]/g, "");
+  const normalizedUrlModel = decodedUrlModel.toLowerCase().replace(/[^a-z0-9]/g, "");
   
   // Find matching model in MODELS
   const matchingModel = modelsForMake.find((dbModel: string) => {
@@ -30,13 +62,13 @@ function convertUrlModelToDbModel(urlModel: string, make: string): string {
   });
   
   if (matchingModel) {
-    console.log(`✅ Converted URL model "${urlModel}" to DB model "${matchingModel}"`);
+    console.log(`✅ Converted URL model "${decodedUrlModel}" to DB model "${matchingModel}"`);
   } else {
-    console.log(`⚠️ No match found for URL model "${urlModel}", using as-is`);
+    console.log(`⚠️ No match found for URL model "${decodedUrlModel}" in ${modelsForMake.length} ${makeKey} models`);
   }
   
-  // Return the original database model if found, otherwise return URL model
-  return matchingModel || urlModel;
+  // Return the original database model if found, otherwise return decoded URL model
+  return matchingModel || decodedUrlModel;
 }
 
 type Props = {
@@ -282,8 +314,9 @@ export async function generateMetadata({
     const finalTitle = apiseo?.seoTitle?.trim() || baseMetadata.title || undefined;
     const finalDescription = apiseo?.seoDescription?.trim() || baseMetadata.description || undefined;
     
-    // FIXED: Canonical should always match the current URL
-    const currentUrl = `https://partscentral.us/product/${routeParams.item}`;
+    // FIXED: Canonical should always match the current URL (decode URL-encoded characters)
+    const decodedItem = decodeURIComponent(routeParams.item);
+    const currentUrl = `https://partscentral.us/product/${decodedItem}`;
     const finalCanonical = apiseo?.seoCanonical?.trim() || currentUrl;
 
     const finalMetadata: Metadata = {
@@ -531,8 +564,11 @@ export default async function EngineProductPage({
     }
     
     if (selectedVariant) {
-      const productName = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
-      const productUrl = `https://partscentral.us/product/${routeParams.item}`;
+      const decodedModel = decodeURIComponent(model);
+      const productName = `${year} ${make.toUpperCase()} ${decodedModel.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
+      // Decode URL-encoded characters in the item parameter for clean URLs
+      const decodedItem = decodeURIComponent(routeParams.item);
+      const productUrl = `https://partscentral.us/product/${decodedItem}`;
       const imageUrl = selectedVariant.product?.images?.[0] 
         ? `https://partscentral.us${selectedVariant.product.images[0]}`
         : part.toLowerCase() === "engine" 

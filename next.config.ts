@@ -109,6 +109,16 @@ const nextConfig: NextConfig = {
         destination: '/account/forgot-password',
         permanent: true,
       },
+      {
+        source: '/2008-suzuki-xl7-transmission-mt-grand-2-7l-145000',
+        destination: '/product/2008-suzuki-xl7-transmission-mt-grand-2-7l-145000',
+        permanent: true,
+      },
+      {
+        source: '/account/warrantyAndPolicy',
+        destination: '/account/warranty-policy',
+        permanent: true,
+      },
     ];
   },
 };

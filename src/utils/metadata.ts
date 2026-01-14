@@ -60,7 +60,7 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "Warranty and Return, parts central privacy, auto parts privacy policy, personal data protection, customer data security, website privacy policy",
   },
-      
+
   "/account/privacy-policy": {
     title: "Privacy Policy | Parts Central",
     alternates: {
@@ -211,6 +211,47 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "forgot password, reset password, parts central password reset, account recovery, auto parts account help, regain account access",
   },
+   "/account/t&c": {
+    title: "Terms & Conditions | Parts Central – User Agreement",
+    alternates: {
+      canonical: "https://partscentral.us/account/t&c",
+    },
+    description:
+      "Read the Terms and Conditions of Parts Central to understand your rights, responsibilities, and policies when using our platform to buy auto parts and manage your account.",
+    keywords:
+      "terms and conditions, parts central terms, user agreement, website terms, auto parts policies, account terms and conditions",
+  },
+"/blog/blog-details": {
+  title: "Auto Parts Blog | Parts Central – Expert Tips & Industry Insights",
+  alternates: {
+    canonical: "https://partscentral.us/blog/blog-details",
+  },
+  description:
+    "Read detailed auto parts blogs covering vehicle maintenance, repair tips, and industry insights from Parts Central to help you maintain and upgrade your vehicle with confidence.",
+  keywords:
+    "auto parts blog, car repair tips, vehicle maintenance guide, parts central blog, automotive insights, auto parts articles",
+},
+"/account/faq": {
+  title: "FAQs | Parts Central – Account, Orders & Auto Parts Help",
+  alternates: {
+    canonical: "https://partscentral.us/account/faq",
+  },
+  description:
+    "Find answers to frequently asked questions about Parts Central accounts, orders, shipping, returns, and auto parts. Get quick help and support in one place.",
+  keywords:
+    "parts central faq, auto parts faq, account help, order questions, shipping and returns, auto parts support",
+},
+"/account/submit-ticket": {
+  title: "Submit a Support Ticket | Parts Central – Customer Assistance",
+  alternates: {
+    canonical: "https://partscentral.us/account/submit-ticket",
+  },
+  description:
+    "Submit a support ticket at Parts Central to get help with your account, orders, shipping, returns, or auto parts inquiries. Our support team is here to assist you.",
+  keywords:
+    "submit support ticket, parts central support, customer assistance, auto parts help, account support, contact support",
+},
+
   "/used-engines-and-transmissions-for-sale-near-me-in-united-states": {
     title: "Used Engines and Transmissions for Sale Near Me in US",
     description:
@@ -569,19 +610,19 @@ export function generateDynamicCategoryMetadata(
   // Format the category and part name for the URL (replace spaces with hyphens)
   const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
   const partSlug = partName.toLowerCase().replace(/\s+/g, '-');
-  
+
   // Generate the canonical URL
   const canonical = `https://partscentral.us/autoParts/${categorySlug}/${partSlug}`;
-  
+
   // Generate title
   const title = `${partName} | ${category} | Parts Central`;
-  
+
   // Generate description
   const description = `Buy quality ${partName} in the ${category} category at Parts Central. Affordable, reliable auto parts with warranty and fast shipping across the United States.`;
-  
+
   // Generate keywords
   const keywords = `${partName}, ${category}, auto parts, car parts, buy ${partName} USA, ${partName} for sale, Parts Central`;
-  
+
   return {
     title,
     description,
@@ -589,4 +630,5 @@ export function generateDynamicCategoryMetadata(
     alternates: {
       canonical,
     },
-  };}
+  };
+}

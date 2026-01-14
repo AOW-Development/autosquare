@@ -21,11 +21,9 @@ const CarBrandInfo: React.FC<CarBrandInfoProps> = ({ car }) => {
   const sectionArray = Object.values(sections);
 
   return (
-    <section className="w-full px-6 py-5 bg-[#07142B]">
+    <section className="w-full pt-24 px-6 py-5 bg-[#07142B]">
       {/* SHOP BY VEHICLE — CENTERED */}
-      <div className="max-w-6xl mx-auto flex justify-center mt-28 mb-10">
         <ShopByVehicle initialMake={car.id} />
-      </div>
 
       {/* HERO SECTION */}
       <div className="max-w-6xl mx-auto mt-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center lg:mt-28 mb-12">

@@ -1069,28 +1069,42 @@ export default function EngineProductClient({
                     </>
                   ) : part === "Engine" || part == "engine" ? (
                     <>
-                      <Image
-                        src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
-                        alt="Engine"
-                        width={250}
-                        height={160}
-                        className="object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350"
-                        priority
-                      />
+                      <a 
+                        href="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="cursor-pointer"
+                      >
+                        <Image
+                          src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
+                          alt="Engine"
+                          width={250}
+                          height={160}
+                          className="object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350"
+                          priority
+                        />
+                      </a>
                       <span className="absolute bottom-2 right-2 text-xs text-gray-300">
                         *Stock image
                       </span>
                     </>
                   ) : part === "Transmission" || part == "transmission" ? (
                     <>
-                      <Image
-                        src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
-                        alt="Engine"
-                        width={250}
-                        height={160}
-                        className="object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350"
-                        priority
-                      />
+                      <a 
+                        href="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png" 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="cursor-pointer"
+                      >
+                        <Image
+                          src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
+                          alt="Transmission"
+                          width={250}
+                          height={160}
+                          className="object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350"
+                          priority
+                        />
+                      </a>
                       <span className="absolute bottom-2 right-2 text-xs text-gray-300">
                         *Stock image
                       </span>

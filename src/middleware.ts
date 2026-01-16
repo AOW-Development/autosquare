@@ -28,7 +28,7 @@ export async function middleware(request: NextRequest) {
         const miles = sku.split("-").at(-1)?.replace(/[^\d]/g, "");
  
         // Fetch product data to get specification
-        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+        const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
        
         const res = await fetch(apiUrl, {
           cache: "no-store",

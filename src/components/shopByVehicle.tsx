@@ -211,6 +211,29 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
     }
   }, [make, model, year, part, path, router, userChanged]);
 
+  // useEffect(() => {
+  //   if (!make || !model || !year || !part) return;
+
+  //   const query = new URLSearchParams({ make, model, year, part }).toString();
+  //   const partSlug = part.toLowerCase();
+  //   const newUrl = `/catalogue/${partSlug}/home?${query}`;
+
+  //   // save selection
+  //   localStorage.setItem(
+  //     "shopByVehicle",
+  //     JSON.stringify({ make, model, year, part })
+  //   );
+
+  //   // product pages → full reload
+  //   if (path.startsWith("/product/")) {
+  //     window.location.assign(newUrl);
+  //     return;
+  //   }
+
+  //   // ALL other pages → client navigation
+  //   router.push(newUrl);
+  // }, [make, model, year, part, path, router]);
+
 
   const [isOpen, setIsOpen] = useState(false);
   // useEffect(() => {

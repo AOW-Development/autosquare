@@ -11,27 +11,23 @@ const normalize = (value?: string | string[]) => {
   if (!value) return [];
 
   const val = Array.isArray(value) ? value[0] : value;
-  const lower = val.toLowerCase().trim();
-
-  const parts = lower.split("-");
+  const parts = val.toLowerCase().trim().split("-");
 
   const results = new Set<string>();
+  const gaps = parts.length - 1; // number of hyphens
 
-  // base: all spaces
-  results.add(parts.join(" "));
+  // each gap can be " " or "/"
+  const totalCombinations = 1 << gaps;
 
-  // generate slash variants
-  for (let i = 0; i < parts.length - 1; i++) {
-    const withSlash = parts
-      .map((part, idx) => {
-        if (idx === i) return part + "/" + parts[idx + 1];
-        if (idx === i + 1) return null;
-        return part;
-      })
-      .filter(Boolean)
-      .join(" ");
+  for (let mask = 0; mask < totalCombinations; mask++) {
+    let result = parts[0];
 
-    results.add(withSlash);
+    for (let i = 0; i < gaps; i++) {
+      const useSlash = (mask & (1 << i)) !== 0;
+      result += (useSlash ? "/" : " ") + parts[i + 1];
+    }
+
+    results.add(result);
   }
 
   return Array.from(results);
@@ -97,14 +93,13 @@ export default function PartDetailPage() {
 
   const possibleNames = normalize(params?.id);
   const possibleCategories = normalize(params?.categories);
-  console.log(possibleNames);
 
   const part = PARTS.find(
     (p) =>
       possibleNames.includes(p.name.toLowerCase()) &&
       possibleCategories.includes(p.category?.toLowerCase() ?? "")
   );
-
+  console.log(possibleNames);
 
   if (!part) {
     notFound();

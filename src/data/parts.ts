@@ -12230,7 +12230,7 @@ export const PARTS = [
         },
     },
     {
-        category: "Suspension/Steering", name: "Crossmember/K-Frame", image: "/parts/Crossmember/K-Frame.png", desc: {
+        category: "Suspension/Steering", name: "Crossmember/K Frame", image: "/parts/Crossmember/K-Frame.png", desc: {
             intro: {
                 title: "What is an Airflow Meter and Why It's Important for Your Vehicle",
                 text: [

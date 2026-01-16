@@ -266,7 +266,7 @@ const categories = [
   {
     name: "Suspension/Steering", sub: [
       "Air/Coil Spring",
-      "Crossmember/K-Frame",
+      "Crossmember/K Frame",
       "Front Axle Beam 2WD",
       "Front Knee",
       "Front Leaf Spring",

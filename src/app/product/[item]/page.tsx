@@ -197,7 +197,7 @@ export async function generateMetadata({
         // Convert URL model to database model format
         const dbModel = convertUrlModelToDbModel(model, make);
         const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
-        // const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
+        //  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         console.log("🔄 Model conversion: URL=", model, "→ DB=", dbModel);
         
@@ -461,7 +461,7 @@ export default async function EngineProductPage({
     try {
       // Convert URL model to database model format
       const dbModel = convertUrlModelToDbModel(model, make);
-      const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+       const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
       // const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
       
       console.log("🔄 Server fetching from:", apiUrl);

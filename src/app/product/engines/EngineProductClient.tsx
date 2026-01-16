@@ -1047,23 +1047,32 @@ export default function EngineProductClient({
         <div className="w-full bg-[#091b33] text-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
             <div className="flex flex-col md:flex-row gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
-              <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
+           <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
                 <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
                   {mediaUrls.length > 0 ? (
                     <>
-                      <Image
-                        src={mediaUrls[0]}
-                        alt={`${selectedProduct?.title || part} image`}
-                        width={250}
-                        height={160}
-                        className={`object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350 
-                          ${
-                            imageLoaded ? "opacity-100" : "opacity-0"
-                          } transition-opacity duration-200`}
-                        priority
-                        onLoadingComplete={() => setImageLoaded(true)}
-                      />
-                      <span className="absolute bottom-2 right-2 text-xs text-gray-300">
+                      <a 
+                        href={mediaUrls[0]} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="cursor-pointer"
+                        style={{ display: 'contents' }}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Image
+                          src={mediaUrls[0]}
+                          alt={`${selectedProduct?.title || part} image`}
+                          width={250}
+                          height={160}
+                          className={`object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350 
+                            ${
+                              imageLoaded ? "opacity-100" : "opacity-0"
+                            } transition-opacity duration-200`}
+                          priority
+                          onLoadingComplete={() => setImageLoaded(true)}
+                        />
+                      </a>
+                      <span className="absolute bottom-2 right-2 text-xs text-gray-300 pointer-events-none z-10">
                         *Stock image
                       </span>
                     </>
@@ -1074,6 +1083,8 @@ export default function EngineProductClient({
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="cursor-pointer"
+                        style={{ display: 'contents' }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <Image
                           src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
@@ -1084,7 +1095,7 @@ export default function EngineProductClient({
                           priority
                         />
                       </a>
-                      <span className="absolute bottom-2 right-2 text-xs text-gray-300">
+                      <span className="absolute bottom-2 right-2 text-xs text-gray-300 pointer-events-none z-10">
                         *Stock image
                       </span>
                     </>
@@ -1095,6 +1106,8 @@ export default function EngineProductClient({
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="cursor-pointer"
+                        style={{ display: 'contents' }}
+                        onClick={(e) => e.stopPropagation()}
                       >
                         <Image
                           src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
@@ -1105,7 +1118,7 @@ export default function EngineProductClient({
                           priority
                         />
                       </a>
-                      <span className="absolute bottom-2 right-2 text-xs text-gray-300">
+                      <span className="absolute bottom-2 right-2 text-xs text-gray-300 pointer-events-none z-10">
                         *Stock image
                       </span>
                     </>

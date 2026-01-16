@@ -623,7 +623,7 @@ export default function CatalogEnginePage() {
 
               let regexSpecification = item.subPart?.name;
                 let engineSpecification = regexSpecification
-                  ?.replace(/[ ,()./]/g, "-")  
+                  ?.replace(/[ ,()./;]/g, "-")  
                   .replace(/-+/g, "-")        
                   .replace(/^-|-$/g, "")
                   .toLowerCase();

@@ -7,13 +7,18 @@ import FeaturedCategories from "@/components/FeaturedCategories";
 import { PARTS } from "@/data/parts";
 
 /* ---------------- helpers ---------------- */
-
 const normalize = (value?: string | string[]) => {
-  if (!value) return "";
-  if (Array.isArray(value)) {
-    return value[0].toLowerCase().replace(/-/g, " ");
-  }
-  return value.toLowerCase().replace(/-/g, " ");
+   if (!value) return "";
+
+  const val = Array.isArray(value) ? value[0] : value;
+
+  return val
+    .toLowerCase()
+    // IMPORTANT: longest first
+    .replace(/--/g, "/")  // slash
+    .replace(/-/g, " ")   // space
+    .replace(/\s+/g, " ")
+    .trim();
 };
 
 const renderBoldText = (text: string) => {

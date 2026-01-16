@@ -36,7 +36,7 @@ const categories = [
   },
   {
     name: "Brakes", sub: [
-      "Anti-Lock Brake Part",
+      "Anti Lock Brake Part",
       "Brake Master Cylinder",
       "Hub",
       "Locking Hubs",
@@ -116,7 +116,7 @@ const categories = [
       "Headlight Motor",
       "High Mounted Stop Light",
       "Ignitons Switch",
-      "Info-GPS-TV Screen",
+      "Info GPS TV Screen",
       "Instrument Cluster",
       "Lid Motor Pull Down",
       "Power Window Motor",
@@ -161,7 +161,7 @@ const categories = [
       "Antenna",
       "Audio Equipment Radio",
       "Camera/Projector",
-      "Info-GPS-TV Screen",
+      "Info GPS TV Screen",
     ],
   },
   {
@@ -485,8 +485,10 @@ export default function Header() {
     return value
       .toLowerCase()
       .trim()
-      .replace(/\s+/g, "-"); // spaces → hyphens
+      .replace(/\//g, "--")   // slash → double hyphen
+      .replace(/\s+/g, "-"); // space → single hyphen
   };
+
   // --- Top Bar ---
   return (
     <header className="w-full bg-[#091B33] text-white ">

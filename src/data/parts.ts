@@ -1079,7 +1079,7 @@ export const PARTS = [
     },
 
     {
-        category: "Brakes", name: "Anti-Lock Brake Part", image: "/parts/Anti-Lock Brake Part.png", desc: {
+        category: "Brakes", name: "Anti Lock Brake Part", image: "/parts/Anti-Lock Brake Part.png", desc: {
             intro: {
                 title: "What is an Airflow Meter and Why It's Important for Your Vehicle",
                 text: [
@@ -5114,7 +5114,7 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Info-GPS-TV Screen", image: "/parts/Info-GPS-TV Screen.png", desc: {
+        category: "Electrical", name: "Info GPS TV Screen", image: "/parts/Info-GPS-TV Screen.png", desc: {
             intro: {
                 title: "What is an Airflow Meter and Why It's Important for Your Vehicle",
                 text: [
@@ -7382,7 +7382,7 @@ export const PARTS = [
         },
     },
     {
-        category: "Entertainment", name: "Info-GPS-TV Screen", image: "/parts/Info-GPS-TV Screen.png", desc: {
+        category: "Entertainment", name: "Info GPS TV Screen", image: "/parts/Info-GPS-TV Screen.png", desc: {
             intro: {
                 title: "What is an Airflow Meter and Why It's Important for Your Vehicle",
                 text: [

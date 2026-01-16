@@ -485,7 +485,7 @@ export default function Header() {
     return value
       .toLowerCase()
       .trim()
-      .replace(/\//g, "--")   // slash → double hyphen
+      .replace(/\//g, "-")   // slash → double hyphen
       .replace(/\s+/g, "-"); // space → single hyphen
   };
 

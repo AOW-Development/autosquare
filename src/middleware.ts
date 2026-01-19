@@ -12,6 +12,29 @@ const normalizeForUrl = (value: string) =>
  
 export async function middleware(request: NextRequest) {
   const { pathname, searchParams } = request.nextUrl;
+
+if (pathname === '/catalogue/engine/home') {
+    const year = searchParams.get('year');
+    const make = searchParams.get('make')?.toLowerCase();
+    const model = searchParams.get('model')?.toLowerCase();
+    
+    if (year && make && model) {
+      const newUrl = new URL(`/catalogue/engine/${year}/${make}/${model}`, request.url);
+      return NextResponse.redirect(newUrl, 301);
+    }
+  }
+  
+  // OLD → NEW redirect for transmission  
+  if (pathname === '/catalogue/transmission/home') {
+    const year = searchParams.get('year');
+    const make = searchParams.get('make')?.toLowerCase();
+    const model = searchParams.get('model')?.toLowerCase();
+    
+    if (year && make && model) {
+      const newUrl = new URL(`/catalogue/transmission/${year}/${make}/${model}`, request.url);
+      return NextResponse.redirect(newUrl, 301);
+    }
+  }
  
   // ✅ Handle 301 redirect for /product/engines with query params
   if (pathname === "/product/engines") {

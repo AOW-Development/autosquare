@@ -1,55 +1,39 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Listbox } from '@headlessui/react'
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { MAKES, MODELS, YEARS } from './vehicleData';
-import { useEffect } from "react";
 import { usePathname } from "next/navigation";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { Yaldevi } from "next/font/google";
+import { MAKES, MODELS } from './vehicleData';
 import SearchableDropdown from "./Searchable";
-
+ 
 interface ShopByVehicleProps {
   initialMake?: string;
 }
-
+ 
 const PARTS = ["Engine", "Transmission"];
-
+ 
 const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
   initialMake = "",
 }) => {
   const router = useRouter();
   const path = usePathname();
-
+ 
   const [make, setMake] = useState(denormalizeSlug(initialMake));
   const [model, setModel] = useState("");
   const [year, setYear] = useState("");
   const [part, setPart] = useState("");
-  const [focused, setFocused] = useState<string | null>(null);
   const [availableYears, setAvailableYears] = useState<number[]>([]);
-  const [boxHeight, setBoxHeight] = useState(0);
-  // Track if user changed any dropdown
-  const [userChanged, setUserChanged] = useState(false);
-
-
+  const [apiError, setApiError] = useState<string | null>(null);
+  
+  // Use ref instead of state to prevent infinite loops
+  const hasRedirectedRef = useRef(false);
+  const userChangedRef = useRef(false);
+ 
   const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-  const boxRef = useRef<HTMLDivElement>(null);
-
+ 
   const makeActive = true;
   const modelActive = make !== "";
   const yearActive = make !== "" && model !== "";
   const partActive = make !== "" && model !== "" && year !== "";
-
-  const arrowUrl = "/Images/home/arrows.png";
-  const arrowStyle = {
-    backgroundImage: `url('${arrowUrl}')`,
-    backgroundRepeat: "no-repeat",
-    backgroundPosition: "right 1rem center",
-    backgroundSize: "20px 20px",
-  };
-
-
+ 
   function denormalizeSlug(value: string): string {
     const ACRONYMS = new Set([
       "bmw",
@@ -58,14 +42,14 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       "vw",
       "usa",
     ]);
-
+ 
     const COMPOUND_BRANDS = new Set([
       "land-rover",
     ]);
     if (!value) return "";
-
+ 
     const lower = value.toLowerCase();
-
+ 
     // Handle compound brands like "land-rover" → "LandRover"
     if (COMPOUND_BRANDS.has(lower)) {
       return lower
@@ -75,7 +59,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
         )
         .join("");
     }
-
+ 
     return lower
       .split("-")
       .map(word => {
@@ -86,14 +70,11 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       })
       .join(" ");
   }
-
-
-
+ 
   useEffect(() => {
     setMake(denormalizeSlug(initialMake));
   }, [initialMake]);
-
-
+ 
   const normalizeValue = (value: string, list: string[]) => {
     return (
       list.find(
@@ -101,9 +82,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       ) || ""
     );
   };
-
-
-
+ 
   // Reset or load saved values based on page
   useEffect(() => {
     if (path === "/" || path === "/engine" || path === "/transmission" || path === "/auto-Parts" || path.startsWith("/parts") || path.startsWith("/used-auto-parts")) {
@@ -111,7 +90,9 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       setModel("");
       setYear("");
       setPart("");
-    } else {
+      hasRedirectedRef.current = false;
+    } else if (typeof window !== 'undefined') {
+      // SSR safety check
       const stored = localStorage.getItem("shopByVehicle");
       if (stored) {
         try {
@@ -127,108 +108,125 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       }
     }
   }, [path]);
-
+ 
+  // Parse pathname for new URL format: /catalogue/engine/2025/bmw/1m
   useEffect(() => {
     if (!path.startsWith("/catalogue/")) return;
-
-    const params = new URLSearchParams(window.location.search);
-
-    const rawMake = params.get("make");
-    const rawModel = params.get("model");
-    const rawYear = params.get("year");
-    const rawPart = params.get("part");
-
-    if (!rawMake || !rawModel || !rawYear || !rawPart) return;
-
-    // ✅ Normalize make
-    const normalizedMake = normalizeValue(rawMake, MAKES);
-    if (!normalizedMake) return;
-
-    // ✅ Normalize model (depends on make)
-    const normalizedModel = MODELS[normalizedMake]
-      ? normalizeValue(rawModel, MODELS[normalizedMake])
-      : "";
-
-    if (!normalizedModel) return;
-
-    // ✅ Normalize part
-    const normalizedPart = normalizeValue(rawPart, PARTS);
-    if (!normalizedPart) return;
-
-    // ✅ Set state with CORRECT casing
-    setMake(normalizedMake);
-    setModel(normalizedModel);
-    setYear(rawYear);
-    setPart(normalizedPart);
+ 
+    const pathParts = path.split('/').filter(Boolean);
+    // Expected: ['catalogue', 'engine', '2025', 'bmw', '1m']
+    
+    if (pathParts.length >= 5 && pathParts[0] === 'catalogue') {
+      const partFromPath = pathParts[1]; // 'engine' or 'transmission'
+      const yearFromPath = pathParts[2]; // '2025'
+      const makeFromPath = pathParts[3]; // 'bmw'
+      const modelFromPath = pathParts[4]; // '1m' or 'new-yorker'
+      
+      // Denormalize make (bmw → BMW)
+      const normalizedMake = denormalizeSlug(makeFromPath);
+      if (!normalizedMake || !MAKES.includes(normalizedMake)) return;
+      
+      // Find matching model from MODELS using slug
+      const modelsForMake = MODELS[normalizedMake];
+      if (!modelsForMake) return;
+      
+      // Match model slug to actual model name
+      const normalizedModel = modelsForMake.find((dbModel: string) => {
+        const dbModelSlug = createSlug(dbModel);
+        return dbModelSlug === modelFromPath;
+      });
+      
+      if (!normalizedModel) return;
+      
+      // Normalize part (engine → Engine)
+      const normalizedPart = partFromPath.charAt(0).toUpperCase() + partFromPath.slice(1);
+      if (!PARTS.includes(normalizedPart)) return;
+      
+      // Set state with correct casing
+      setMake(normalizedMake);
+      setModel(normalizedModel);
+      setYear(yearFromPath);
+      setPart(normalizedPart);
+    }
   }, [path]);
-
-
+ 
   // Fetch available years when make & model change
   useEffect(() => {
     if (make && model) {
+      setApiError(null);
       fetch(
         `${API_BASE}/products/years?make=${encodeURIComponent(make)}&model=${encodeURIComponent(model)}`
       )
-        .then((res) => res.json())
-        .then((data) => setAvailableYears(data.sort((a: number, b: number) => b - a)))
-        .catch(() => setAvailableYears([]));
+        .then((res) => {
+          if (!res.ok) throw new Error('Failed to fetch years');
+          return res.json();
+        })
+        .then((data) => {
+          setAvailableYears(data.sort((a: number, b: number) => b - a));
+          setApiError(null);
+        })
+        .catch((error) => {
+          console.error('Error fetching years:', error);
+          setApiError('Unable to load years. Please try again.');
+          setAvailableYears([]);
+        });
     } else {
       setAvailableYears([]);
+      setApiError(null);
     }
   }, [make, model, API_BASE]);
-
-  // Redirect when all selections are made
-  // Corrected useEffect hook in your ShopByVehicle.tsx file
+ 
+  // Utility function to create SEO-friendly slugs
+  const createSlug = (text: string): string => {
+    if (!text) return '';
+    
+    return text
+      .toLowerCase()
+      .replace(/,/g, ' ')
+      .replace(/\//g, ' ')
+      .replace(/[()]/g, ' ')
+      .replace(/\s*-\s*/g, '-')
+      .replace(/[^a-z0-9\s-]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/\s/g, '-')
+      .replace(/-+/g, '-');
+  };
+ 
+  // Redirect when all selections are made - FIXED to prevent loops
   useEffect(() => {
-    if (make && model && year && part) {
-      const query = new URLSearchParams({ make, model, year, part }).toString();
-      const partSlug = part.toLowerCase(); // engine | transmission
-      const newUrl = `/catalogue/${partSlug}/home?${query}`;
-
-
-      // Save selection to local storage
+    // Don't redirect if we've already redirected or if selections are incomplete
+    if (hasRedirectedRef.current || !make || !model || !year || !part) return;
+ 
+    // Create URL-friendly slugs
+    const makeSlug = make.toLowerCase();
+    const modelSlug = createSlug(model);
+    const partSlug = part.toLowerCase();
+    
+    // Build the clean URL
+    const cleanUrl = `/catalogue/${partSlug}/${year}/${makeSlug}/${modelSlug}`;
+    
+    // Check if we're already on the target URL
+    if (typeof window !== 'undefined') {
+      const currentPath = window.location.pathname;
+      if (currentPath === cleanUrl) {
+        // Already on correct page, no need to redirect
+        return;
+      }
+      
+      // Save selection to local storage (SSR safe)
       localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
-
-      // If user is on product page, always do a full redirect
-      if (path.startsWith("/product/") && userChanged) {
-        window.location.assign(newUrl); // full redirect
-        return; // exit so no history push happens
-      }
-
-      // Otherwise, normal flow
-      const isInitialSearchPage =
-        path === "/" ||
-        path === "/engine" ||
-        path === "/transmission" ||
-        path === "/autoParts";
-
-      if (isInitialSearchPage) {
-        // router.push(newUrl);
-        window.location.href = newUrl;
-      } else if (path.startsWith("/catalogue/")) {
-        window.history.pushState(null, '', newUrl);
-      }
+      
+      // Set flag to prevent further redirects
+      hasRedirectedRef.current = true;
+      
+      // Redirect immediately (no timeout needed)
+      window.location.href = cleanUrl;
     }
-  }, [make, model, year, part, path, router, userChanged]);
-
-
-  const [isOpen, setIsOpen] = useState(false);
-  // useEffect(() => {
-  //   const spacer = document.getElementById("shop-spacer");
-  //   if (spacer && boxRef.current) {
-  //     spacer.style.height = `${boxRef.current.offsetHeight}px`;
-  //   }
-  // }, [
-  //   make || "",
-  //   model || "",
-  //   year || "",
-  //   part || "",
-  //   !!makeActive,
-  //   !!modelActive,
-  //   !!yearActive,
-  //   !!partActive
-  // ]);
-
+  }, [make, model, year, part]);
+ 
+  const boxRef = useRef<HTMLDivElement>(null);
+ 
   return (
     <div className="relative z-20">
       {/* Desktop Layout */}
@@ -239,15 +237,12 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
         <div
           className="text-left text-[16px] tracking-wider mb-2 uppercase text-white"
           id="shop-by-vehicle-title"
-        // style={{
-        //   fontFamily: "var(--font-exo-2), sans-serif",
-        // }}
         >
           SHOP BY VEHICLE
         </div>
-
+ 
         <div className="flex flex-row gap-4 justify-center items-center">
-
+ 
           <SearchableDropdown
             options={MAKES}
             value={make}
@@ -256,12 +251,13 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
               setModel("");
               setYear("");
               setPart("");
-              setUserChanged(true);
+              userChangedRef.current = true;
+              hasRedirectedRef.current = false;
             }}
             placeholder="Select make..."
             disabled={!makeActive}
           />
-
+ 
           <SearchableDropdown
             options={make ? MODELS[make] || [] : []}
             value={model}
@@ -269,110 +265,59 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
               setModel(selectedModel);
               setYear("");
               setPart("");
-              setUserChanged(true);
+              userChangedRef.current = true;
+              hasRedirectedRef.current = false;
             }}
             placeholder="Select model..."
             disabled={!modelActive}
           />
-
+ 
           <SearchableDropdown
             options={availableYears.map(String)}
             value={year}
             onChange={(selectedYear) => {
               setYear(selectedYear);
               setPart("");
-              setUserChanged(true);
+              userChangedRef.current = true;
+              hasRedirectedRef.current = false;
             }}
             placeholder="Select year..."
             disabled={!yearActive}
           />
-
+ 
           <SearchableDropdown
             options={PARTS}
             value={part}
             onChange={(selectedPart) => {
               setPart(selectedPart);
-              setUserChanged(true);
+              userChangedRef.current = true;
+              hasRedirectedRef.current = false;
             }}
             placeholder="Select part..."
             disabled={!partActive}
           />
-          {/* sub-category Dropdown */}
-          {/* <select
-            id="subcat-select"
-            aria-label="Select sub-category"
-            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              subCategoryActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={subCategory}
-            onChange={(e) => {
-              setSubCategory(e.target.value);
-              setOption("");
-            }}
-            onFocus={() => setFocused("subCategory")}
-            onBlur={() => setFocused(null)}
-            disabled={!subCategoryActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select sub-category...
-            </option>
-            {SUBCAT.map((s) => (
-              <option key={s} value={s}>
-                {s}
-              </option>
-            ))}
-          </select> */}
-
-          {/* options Dropdown */}
-          {/* <select
-            id="option-select"
-            aria-label="Select option"
-            className={`w-[368px] h-[38px] px-4 text-sm rounded-md border-2 appearance-none transition-all duration-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-200 focus:outline-none ${
-              optionActive
-                ? "bg-white border-gray-200 text-gray-900 opacity-100 cursor-pointer"
-                : "bg-gray-200 border-gray-200 text-gray-400 opacity-50 cursor-not-allowed"
-            }`}
-            value={option}
-            onChange={(e) => setOption(e.target.value)}
-            onFocus={() => setFocused("option")}
-            onBlur={() => setFocused(null)}
-            disabled={!optionActive}
-            style={arrowStyle}
-          >
-            <option value="" disabled>
-              Select option...
-            </option>
-            {OPTIONS.map((o) => (
-              <option key={o} value={o}>
-                {o}
-              </option>
-            ))}
-          </select> */}
         </div>
       </div>
-
+ 
       {/* Mobile Layout */}
-
+ 
       <div className="bg-[#091B33] w-full lg:hidden relative">
         <div
           ref={boxRef}
           className="absolute left-1/2 -translate-x-1/2 w-[95%] sm:w-[80%] md:w-[93%]  
                -mt-10 xs:-mt-2 sm:-mt-4 md:-mt-12 xs425:mt-0 xs425:top-0
-               rounded-md shadow-lg px-3 py-4 sm:px-4 sm:py-4 
+               rounded-md shadow-lg px-3 py-4 sm:px-4 sm:py-4
                flex flex-col gap-2 sm:gap-3 justify-center"
           style={{ background: "#00A3FF80" }}
         >
           <div
-            className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] md:text-[20px] 
+            className="text-left font-exo-2 font-bold text-[14px] sm:text-[16px] md:text-[20px]
                  tracking-wider mb-3 sm:mb-4 uppercase text-white"
             id="shop-by-vehicle-title-mobile"
           >
             SHOP BY VEHICLE
           </div>
-
+ 
           <div className="flex flex-col gap-2 sm:gap-3">
             {/* ✅ Make Dropdown always visible */}
             <SearchableDropdown
@@ -383,12 +328,13 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
                 setModel("");
                 setYear("");
                 setPart("");
-                setUserChanged(true);
+                userChangedRef.current = true;
+                hasRedirectedRef.current = false;
               }}
               placeholder="Select make..."
               disabled={!makeActive}
             />
-
+ 
             {/* ✅ Model shows only if make selected */}
             {modelActive && (
               <SearchableDropdown
@@ -398,13 +344,14 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
                   setModel(selectedModel);
                   setYear("");
                   setPart("");
-                  setUserChanged(true);
+                  userChangedRef.current = true;
+                  hasRedirectedRef.current = false;
                 }}
                 placeholder="Select model..."
                 disabled={!modelActive}
               />
             )}
-
+ 
             {/* ✅ Year shows only if make + model selected */}
             {yearActive && (
               <SearchableDropdown
@@ -413,13 +360,14 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
                 onChange={(selectedYear) => {
                   setYear(selectedYear);
                   setPart("");
-                  setUserChanged(true);
+                  userChangedRef.current = true;
+                  hasRedirectedRef.current = false;
                 }}
                 placeholder="Select year..."
                 disabled={!yearActive}
               />
             )}
-
+ 
             {/* ✅ Part shows only if make + model + year selected */}
             {partActive && (
               <SearchableDropdown
@@ -427,7 +375,8 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
                 value={part}
                 onChange={(selectedPart) => {
                   setPart(selectedPart);
-                  setUserChanged(true);
+                  userChangedRef.current = true;
+                  hasRedirectedRef.current = false;
                 }}
                 placeholder="Select part..."
                 disabled={!partActive}
@@ -435,7 +384,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
             )}
           </div>
         </div>
-
+ 
         {/* ✅ Spacer adjusts based on how many dropdowns are visible */}
         <div
           id="shop-spacer"
@@ -449,8 +398,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
           }}
         />
       </div>
-
-
+ 
       {/* Screen reader only styling */}
       <style>{`
         .sr-only {
@@ -463,7 +411,7 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
           clip: rect(0,0,0,0) !important;
           border: 0 !important;
         }
-        
+       
         /* Extra small screen adjustments */
         @media (max-width: 375px) {
           .mobile-shop-container {
@@ -476,5 +424,5 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
     </div>
   );
 };
-
+ 
 export default ShopByVehicle;

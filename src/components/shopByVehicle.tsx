@@ -193,38 +193,32 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
       .replace(/-+/g, '-');
   };
  
-  // Redirect when all selections are made - FIXED to prevent loops
-  useEffect(() => {
-    // Don't redirect if we've already redirected or if selections are incomplete
-    if (hasRedirectedRef.current || !make || !model || !year || !part) return;
- 
-    // Create URL-friendly slugs
-    const makeSlug = make.toLowerCase();
-    const modelSlug = createSlug(model);
-    const partSlug = part.toLowerCase();
-    
-    // Build the clean URL
-    const cleanUrl = `/catalogue/${partSlug}/${year}/${makeSlug}/${modelSlug}`;
-    
-    // Check if we're already on the target URL
-    if (typeof window !== 'undefined') {
-      const currentPath = window.location.pathname;
-      if (currentPath === cleanUrl) {
-        // Already on correct page, no need to redirect
-        return;
-      }
-      
-      // Save selection to local storage (SSR safe)
-      localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
-      
-      // Set flag to prevent further redirects
-      hasRedirectedRef.current = true;
-      
-      // Redirect immediately (no timeout needed)
-      window.location.href = cleanUrl;
-    }
-  }, [make, model, year, part]);
- 
+// Redirect when all selections are made - FIXED for homepage
+useEffect(() => {
+  if (!make || !model || !year || !part) return;
+
+  const makeSlug = make.toLowerCase().replace(/\s+/g, '-').replace(/-/g, '-');
+  const modelSlug = createSlug(model);
+  const partSlug = part.toLowerCase();
+  const cleanUrl = `/catalogue/${partSlug}/${year}/${makeSlug}/${modelSlug}`;
+
+  // Skip if already on correct catalogue page
+  if (path === cleanUrl) return;
+
+  // Skip product pages (protect product navigation)
+  if (path.startsWith("/product/")) return;
+
+  // Redirect from homepage OR wrong catalogue page
+  localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
+  
+  if (path.startsWith("/catalogue/")) {
+    router.replace(cleanUrl);  // Same catalog → replace (no history)
+  } else {
+    router.push(cleanUrl);     // Homepage/other → push (add history)
+  }
+}, [make, model, year, part, path, router]);
+
+
   const boxRef = useRef<HTMLDivElement>(null);
  
   return (

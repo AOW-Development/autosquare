@@ -3,7 +3,7 @@ import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup";
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useRouter,useSearchParams } from "next/navigation";
 import ShopByVehicle from "@/components/shopByVehicle";
 import EngineFilterSidebar from "@/components/EngineFilterSidebar";
 import { useCartStore } from "@/store/cartStore";
@@ -11,9 +11,11 @@ import { getGroupedProducts } from "@/utils/api";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { VerifyPartPopup } from "@/components/fitment";
 import { useSkuStore } from "@/store/skuStore";
+
+
  
 // Import your models data from vehicleData
-import { MODELS, MAKES } from "@/components/vehicleData";
+import { MODELS} from "@/components/vehicleData";
  
 interface SubPart {
   id: number;
@@ -104,6 +106,8 @@ const createSlug = (text: string): string => {
     .replace(/-+/g, '-');
 };
  
+
+
 // Helper function to find matching model from MODELS array
 const findMatchingModel = (make: string, modelSlug: string): string => {
   if (!make || !modelSlug) return modelSlug;
@@ -162,6 +166,7 @@ export default function CatalogEnginePage({
   part: initialPart,
 }: CatalogEnginePageProps) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   
   const rawMake = initialMake || searchParams.get("make") || "";
   const rawModel = initialModel || searchParams.get("model") || "";
@@ -200,6 +205,7 @@ export default function CatalogEnginePage({
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [selectedProductForVerify, setSelectedProductForVerify] = useState<Product | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentSort, setCurrentSort] = useState('recommended');
   
   const setSku = useSkuStore((state) => state.setSku);
   const cartItems = useCartStore((s) => s.items);
@@ -282,13 +288,33 @@ export default function CatalogEnginePage({
     }
   }, [make, model, year, part, initialProducts.length]);
  
-  const filteredProducts =
-    subPartFilter !== null
-      ? products.filter(
-          (p) =>
-            typeof p.subPart?.id === "number" && p.subPart?.id === subPartFilter
-        )
-      : products;
+// FIXED SORTING (no createdAt dependency)
+const filteredProducts = (() => {
+  let result = subPartFilter !== null
+    ? products.filter(
+        (p) => typeof p.subPart?.id === "number" && p.subPart?.id === subPartFilter
+      )
+    : products;
+
+  // Apply sorting
+  switch (currentSort) {
+    case 'price-low-high':
+      return [...result].sort((a, b) => 
+        Number(a.discountedPrice || a.actualprice || 0) - Number(b.discountedPrice || b.actualprice || 0)
+      );
+    case 'price-high-low':
+      return [...result].sort((a, b) => 
+        Number(b.discountedPrice || b.actualprice || 0) - Number(a.discountedPrice || a.actualprice || 0)
+      );
+    case 'newest':
+      // Fallback: sort by SKU (newer SKUs have higher numbers)
+      return [...result].sort((a, b) => b.sku.localeCompare(a.sku));
+    default: // recommended
+      return result;
+  }
+})();
+
+
  
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -431,7 +457,10 @@ export default function CatalogEnginePage({
       setIsPopupOpen(false);
       setSelectedProductForVerify(null);
       setShowCartPopup(false);
-      window.location.href = `/account/cart?make=${make.toLowerCase()}&model=${createSlug(model)}&year=${year}&part=${part.toLowerCase()}`;
+     router.push(
+  `/account/cart?make=${make.toLowerCase()}&model=${createSlug(model)}&year=${year}&part=${part.toLowerCase()}`
+);
+
     }, 100);
   };
  
@@ -556,14 +585,20 @@ export default function CatalogEnginePage({
               </div>
               <div className="relative flex justify-end items-center w-full md:w-auto">
                 <select
-                  id="sort-by"
-                  className="bg-[#091b33] border border-white text-white text-sm rounded-md shadow-xl focus:outline-none px-4 py-[6px] pr-10 appearance-none"
-                >
-                  <option className="text-white">Recommended</option>
-                  <option className="text-white">Price: Low to High</option>
-                  <option className="text-white">Price: High to Low</option>
-                  <option className="text-white">Newest Arrivals</option>
-                </select>
+  id="sort-by"
+  className="bg-[#091b33] border border-white text-white text-sm rounded-md shadow-xl focus:outline-none px-4 py-[6px] pr-10 appearance-none"
+  value={currentSort}
+  onChange={(e) => {
+    setCurrentSort(e.target.value);
+    setCurrentPage(1); // Reset to first page
+  }}
+>
+  <option value="recommended">Recommended</option>
+  <option value="price-low-high">Price: Low to High</option>
+  <option value="price-high-low">Price: High to Low</option>
+  <option value="newest">Newest Arrivals</option>
+</select>
+
  
                 <div className="absolute right-3 pointer-events-none">
                   <svg
@@ -608,164 +643,100 @@ export default function CatalogEnginePage({
             )}
  
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 gap-10">
-              {currentItems.map((item, index) => {
-                const cartItem = cartItems.find(
-                  (i) => i.id === item.sku
-                );
- 
-                let engineSpecification = createSlug(item.subPart?.name || "");
-                let modelSlug = createSlug(model);
- 
-                return (
-                  <div
-                    key={`${item.id}-${item.sku}`}
-                    className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group"
-                  >
-                    <button type="button"
-                      className="cursor-pointer"
-                      tabIndex={-1}
-                      onClick={(e) => {
-                        setSku(item.sku);
-                        document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
-                        window.location.href = `/product/${year}-${make.toLowerCase()}-${modelSlug}-${part.toLowerCase()}-${engineSpecification}-${encodeURIComponent(item.miles || "N-A")}`;
-                      }}
-                    >
-                      <div
-                        className="relative mx-auto mb-3 flex justify-center items-center rounded-md"
-                        style={{
-                          background:
-                            "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
-                          width: "250px",
-                          height: "160px",
-                        }}
-                      >
-                        {(part === "Engine" || part === "engine") && (
-                          <>
-                            <Image
-                              src="/catalog/Engine 1.png"
-                              alt="Engine"
-                              width={250}
-                              height={160}
-                              className="relative z-10 rounded-md object-contain"
-                              priority
-                            />
-                            <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                              Stock image
-                            </p>
-                          </>
-                        )}
-                        {(part === "Transmission" || part === "transmission") && (
-                          <>
-                            <Image
-                              src="/catalog/Trasmission_.png"
-                              alt="Transmission"
-                              width={250}
-                              height={160}
-                              className="relative z-10 rounded-md object-contain"
-                              priority
-                            />
-                            <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">
-                              Stock image
-                            </p>
-                          </>
-                        )}
-                      </div>
-                      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>
-                    <div className="relative z-20 pt-2 w-full text-left ">
-                        <h3 className="text-white text-base mb-1">
-                          {year} {make} {model}
-                        </h3>
-                        <p className="text-sm text-gray-300 mb-1">
-                          {"used"} {part || "Engine/Transmission assembly"}
-                        </p>
-                        <p className="text-xs text-gray-400 mb-1">
-                          {item.subPart?.name || "N/A"}
-                        </p>
-                        <p className="text-xs text-gray-400 mb-1">
-                          Genuine Used Part
-                        </p>
-                        <p className="text-xs text-gray-400 mb-1">
-                          {item.miles} {"miles"}
-                        </p>
-                        <p className="text-xs text-gray-400 mb-2">
-                          {item.warranty || "90 Days Warranty"}
-                        </p>
-                      </div>
-                    </button>
-                    <div className="flex justify-between items-center mt-3 relative z-30">
-                      {item.inStock ? (
-                        <>
-                          <span className="text-2xl font-bold text-white">
-                            ${item.discountedPrice}
-                          </span>
-                          <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">
-                            $ {item.actualprice}
-                          </span>
- 
-                          {cartItem ? (
-                            <button
-                              className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3"
-                              style={{ minWidth: 120 }}
-                              tabIndex={0}
-                              onClick={(e) => e.preventDefault()}
-                            >
-                              <span
-                                className="cursor-pointer select-none text-3xl px-1"
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  if (cartItem.quantity <= 1) {
-                                    removeItem(cartItem.id);
-                                  } else {
-                                    updateQuantity(
-                                      cartItem.id,
-                                      cartItem.quantity - 1
-                                    );
-                                  }
-                                }}
-                              >
-                                -
-                              </span>
-                              <span className="text-white text-[17px] font-exo-2 text-center select-none">
-                                {cartItem.quantity}
-                              </span>
-                              <span
-                                className="cursor-pointer select-none px-1 text-3xl "
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  updateQuantity(
-                                    cartItem.id,
-                                    cartItem.quantity + 1
-                                  );
-                                }}
-                              >
-                                +
-                              </span>
-                            </button>
-                          ) : (
-                            <button
-                              className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedProductForVerify(item);
-                                setIsPopupOpen(true);
-                              }}
-                            >
-                              Add to Cart
-                            </button>
-                          )}
-                        </>
-                      ) : (
-                        <button
-                          onClick={() => setShowPopup(true)}
-                          className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center md:w-full w-full block mb-6"
-                        >
-                          Part Request
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
+            {currentItems.map((item, index) => {
+  const cartItem = cartItems.find((i) => i.id === item.sku);
+  const modelSlug = createSlug(model);
+  
+  // ✅ FIXED: Use ACTUAL SKU for out-of-stock products
+  const engineSpecification = item.inStock 
+    ? createSlug(item.subPart?.name || "") 
+    : item.sku.split('-').slice(-3).join('-'); // Gets "23L-NOSTOCK" from "AUDI-100-1990-ENGINE-23L-NOSTOCK"
+
+  return (
+    <div key={`${item.id}-${item.sku}`} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group">
+      <div className="block cursor-pointer" onClick={() => {
+        setSku(item.sku);
+        document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
+        
+        // ✅ FIXED URL for out-of-stock products
+        router.push(`/product/${year}-${make.toLowerCase()}-${modelSlug}-${part.toLowerCase()}-${engineSpecification}-${encodeURIComponent(item.miles || "N-A")}`);
+      }}>
+        <div className="relative mx-auto mb-3 flex justify-center items-center rounded-md" style={{
+          background: "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
+          width: "250px",
+          height: "160px",
+        }}>
+          {(part === "Engine" || part === "engine") && (
+            <>
+              <Image src="/catalog/Engine 1.png" alt="Engine" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
+              <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+            </>
+          )}
+          {(part === "Transmission" || part === "transmission") && (
+            <>
+              <Image src="/catalog/Trasmission_.png" alt="Transmission" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
+              <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+            </>
+          )}
+        </div>
+
+        <div className="relative z-20 pt-2 w-full text-left">
+          <h3 className="text-white text-base mb-1">{year} {make} {model}</h3>
+          <p className="text-sm text-gray-300 mb-1">used {part}</p>
+          <p className="text-xs text-gray-400 mb-1">{item.subPart?.name || "N/A"}</p>
+          <p className="text-xs text-gray-400 mb-1">{item.miles} miles</p>
+          <p className="text-xs text-gray-400 mb-2">{item.warranty || "90 Days Warranty"}</p>
+        </div>
+      </div>
+
+      <div className="flex justify-between items-center mt-3 relative z-30">
+        {item.inStock ? (
+          <>
+            <span className="text-2xl font-bold text-white">${item.discountedPrice}</span>
+            <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">$ {item.actualprice}</span>
+            {cartItem ? (
+              <button className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3" style={{ minWidth: 120 }} tabIndex={0} onClick={(e) => e.preventDefault()}>
+                <span className="cursor-pointer select-none text-3xl px-1" onClick={(e) => {
+                  e.stopPropagation();
+                  if (cartItem.quantity <= 1) {
+                    removeItem(cartItem.id);
+                  } else {
+                    updateQuantity(cartItem.id, cartItem.quantity - 1);
+                  }
+                }}>-</span>
+                <span className="text-white text-[17px] font-exo-2 text-center select-none">{cartItem.quantity}</span>
+                <span className="cursor-pointer select-none px-1 text-3xl" onClick={(e) => {
+                  e.stopPropagation();
+                  updateQuantity(cartItem.id, cartItem.quantity + 1);
+                }}>+</span>
+              </button>
+            ) : (
+              <button className="bg-sky-600 hover:bg-sky-700 text-white text-sm px-4 py-2 rounded-md transition-colors" onClick={(e) => {
+                e.stopPropagation();
+                const productWithCorrectFitment = {
+                  ...item,
+                  make: make,
+                  model: model,
+                  year: year
+                };
+                setSelectedProductForVerify(productWithCorrectFitment);
+                setSubPartFilter(item.subPart?.id || null);
+                setIsPopupOpen(true);
+              }}>
+                Add to Cart
+              </button>
+            )}
+          </>
+        ) : (
+          <button onClick={() => setShowPopup(true)} className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center md:w-full w-full block mb-6">
+            Part Request
+          </button>
+        )}
+      </div>
+    </div>
+  );
+})}
+
  
               {showCartPopup && selectedProductForVerify && (
                 <AddedCartPopup
@@ -792,25 +763,27 @@ export default function CatalogEnginePage({
             />
             }
  
-            <VerifyPartPopup
-              isOpen={isPopupOpen}
-              onClose={() => {
-                setIsPopupOpen(false);
-                setSelectedProductForVerify(null);
-              }}
-              make={make || ""}
-              model={model || ""}
-              year={year || ""}
-              part={part || ""}
-              subPartsList={subPartsList}
-              selectedProduct={selectedProductForVerify}
-              onConfirm={() => {
-                if (selectedProductForVerify) {
-                  handleAddToCartAndRedirect(selectedProductForVerify);
-                }
-              }}
-              vinNumber=""
-            />
+             <VerifyPartPopup
+  isOpen={isPopupOpen}
+  onClose={() => {
+    setIsPopupOpen(false);
+    setSelectedProductForVerify(null);
+  }}
+  make={make}           // ✅ Uses CATALOG make "Toyota"
+  model={model}         // ✅ Uses CATALOG model "Camry"
+  year={year}           // ✅ Uses CATALOG year "2018" 
+  part={part}           // ✅ Uses CATALOG part "Engine"
+  subPartsList={subPartsList}
+  selectedProduct={selectedProductForVerify}
+  subPartFilter={subPartFilter}  // ✅ NEW: Pass current filter
+  onConfirm={() => {
+    if (selectedProductForVerify) {
+      handleAddToCartAndRedirect(selectedProductForVerify);
+    }
+  }}
+  vinNumber=""
+/>
+
           </main>
         </div>
       </div>

@@ -1,17 +1,14 @@
-
 "use client";
 import ProductSection from "@/components/productSection";
 import ShopByVehicle from "@/components/shopByVehicle";
 import Image from "next/image";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import AddedCartPopup from "@/app/account/modal/AddedCartPopup/AddedCartPopup";
-// import { useSearchParams, useParams } from "next/navigation";
 import { useCartStore } from "@/store/cartStore";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { useRouter } from "next/navigation";
 import { VerifyPartPopup } from "@/components/fitment";
-
 
 interface SubPart {
   id: number;
@@ -32,7 +29,6 @@ interface Product {
   inStock?: boolean;
   discountedPrice?: number;
   actualprice?: number;
-
 }
 
 const galleryImages = [
@@ -43,11 +39,11 @@ const galleryImages = [
 
 interface EngineProductClientProps {
   initialItem?: string;
-  initialData?: any; // Server-provided product data
+  initialData?: any;
   setSku?: string;
   setModal?: string;
-  specification?: string; // Parsed from URL (e.g., "3l")
-  miles?: string; // Parsed from URL (e.g., "90000")
+  specification?: string;
+  miles?: string;
 }
 
 export default function EngineProductClient({
@@ -58,95 +54,12 @@ export default function EngineProductClient({
   specification,
   miles,
 }: EngineProductClientProps) {
-  // Immediate log to verify data is received
-  console.log("🚀 EngineProductClient mounted with initialData:", {
-    hasInitialData: !!initialData,
-    hasGroupedVariants: !!initialData?.groupedVariants,
-    variantCount: initialData?.groupedVariants?.length
-  });
-
-  // Helper function to get initial product from initialData
-  const getInitialProduct = () => {
-    console.log("🔧 getInitialProduct called");
-    console.log("🔧 URL params - specification:", specification, "miles:", miles);
-    console.log("🔧 initialData:", initialData);
-    console.log("🔧 initialData?.groupedVariants?.length:", initialData?.groupedVariants?.length);
-    
-    if (!initialData?.groupedVariants?.length) {
-      console.log("⚠️ No initialData available for initial product");
-      return null;
-    }
-
-    console.log("✅ Computing initial product from server data");
-    
-    // Try to find matching group by specification
-    let targetGroup = null;
-    let targetVariant = null;
-    
-    if (specification) {
-      // Match specification (case-insensitive, normalize by removing special chars)
-      // URL spec: "4-0l-vin-3-5th-digit-turbo-gasoline-engine-id-ctgf"
-      // DB spec:  "(4.0L), VIN 3 (5th digit), turbo, gasoline, (engine ID CTGF)"
-      const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
-      const specNormalized = normalizeSpec(specification);
-      
-      targetGroup = initialData.groupedVariants.find((group: any) => {
-        const groupName = group.subPart?.name || "";
-        const groupNormalized = normalizeSpec(groupName);
-        
-        // Try exact match first, then partial match
-        return groupNormalized === specNormalized || 
-               groupNormalized.includes(specNormalized) ||
-               specNormalized.includes(groupNormalized);
-      });
-      
-      if (targetGroup) {
-        console.log("✅ Found matching specification group:", targetGroup.subPart.name);
-        
-        // If miles is also specified, try to find matching variant
-        if (miles) {
-          const milesLower = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
-          targetVariant = targetGroup.variants.find((v: any) => {
-            const variantMiles = v.miles?.toLowerCase().replace(/[^a-z0-9]/g, "") || "";
-            return variantMiles === milesLower || variantMiles.includes(milesLower);
-          });
-          
-          if (targetVariant) {
-            console.log("✅ Found matching miles variant:", targetVariant.miles);
-          }
-        }
-        
-        // If no miles match or miles not specified, use first in-stock variant
-        if (!targetVariant) {
-          targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
-          console.log("✅ Using first available variant from matched spec group");
-        }
-      }
-    }
-    
-    // Fallback to first available if no match
-    if (!targetGroup || !targetVariant) {
-      console.log("⚠️ No match found, using first available");
-      targetGroup = initialData.groupedVariants[0];
-      targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
-    }
-    
-    console.log("🔧 Selected group:", targetGroup.subPart.name);
-    console.log("🔧 Selected variant:", targetVariant);
-    
-    const product = {
-      ...targetVariant,
-      make: initialData.make,
-      model: initialData.model,
-      year: initialData.year,
-      part: initialData.part,
-      subPart: targetGroup.subPart,
-    };
-    
-    console.log("🔧 Returning product:", product);
-    return product;
-  };
-
+  const router = useRouter();
+  const addItem = useCartStore((s) => s.addItem);
+  const items = useCartStore((s) => s.items);
+  
+  // Initialize state
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productInfo, setProductInfo] = useState({
     make: initialData?.make || "",
     model: initialData?.model || "",
@@ -162,41 +75,32 @@ export default function EngineProductClient({
     initialData?.groupedVariants || []
   );
   
-  // Initialize selectedProduct first (using URL-matched product)
-  const [selectedProduct, setSelectedProduct] = useState<any | null>(getInitialProduct());
+  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(null);
+  const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
   
-  // Then initialize selectedSubPartId and selectedMilesSku from the matched product
-  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(() => {
-    const product = getInitialProduct();
-    return product?.subPart?.id || initialData?.groupedVariants?.[0]?.subPart?.id || null;
-  });
-  const [selectedMilesSku, setSelectedMilesSku] = useState<string>(() => {
-    const product = getInitialProduct();
-    return product?.sku || initialData?.groupedVariants?.[0]?.variants?.[0]?.sku || "";
-  });
   const [activeTab, setActiveTab] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
-  const [inCart, setInCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const router = useRouter();
-  const item = initialItem;
+  const [showPopup, setShowPopup] = useState(false);
+  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
+  const [selectedProductForVerify, setSelectedProductForVerify] = useState<any | null>(null);
+  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
+  const [mediaLoading, setMediaLoading] = useState<boolean>(false);
+  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  
+  const initialLoadRef = useRef(false);
 
-  // Get product info from initialData (already available from server)
+  // Check if product is in cart
+  const inCart = useMemo(() => {
+    return items.some((item) => item.id === selectedProduct?.sku);
+  }, [items, selectedProduct?.sku]);
+
+  // Get product info from initialData
   const make = initialData?.make;
   const model = initialData?.model;
   const year = initialData?.year;
   const part = initialData?.part;
-  const sku = setSku; // Use the SKU passed from server
-
-  const addItem = useCartStore((s) => s.addItem);
-  const [showPopup, setShowPopup] = useState(false);
-  const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
-  const [selectedProductForVerify, setSelectedProductForVerify] = useState<
-    any | null
-  >(null);
-  const [mediaUrls, setMediaUrls] = useState<string[]>([]);
-  const [mediaLoading, setMediaLoading] = useState<boolean>(false);
-  const [imageLoaded, setImageLoaded] = useState<boolean>(false);
+  const sku = setSku;
 
   // Helper function to format model for URL
   const formatModelForUrl = (modelStr: string | undefined) => {
@@ -208,24 +112,148 @@ export default function EngineProductClient({
       .toLowerCase();
   };
 
-  const updateProductUrl = (variant: any, subPartName: string) => {
-    if (!variant) return;
+  // Get initial product from server data
+  const getInitialProduct = () => {
+    if (!initialData?.groupedVariants?.length) {
+      return null;
+    }
 
-    const miles = variant.miles?.toString().replace(/[^\d]/g, "");
+    let targetGroup = null;
+    let targetVariant = null;
+    
+    // Try to match by SKU first
+    if (setSku) {
+      for (const group of initialData.groupedVariants) {
+        const variant = group.variants.find((v: any) => v.sku === setSku);
+        if (variant) {
+          targetGroup = group;
+          targetVariant = variant;
+          break;
+        }
+      }
+    }
+    
+    // If SKU not found, try to match by specification and miles from URL
+    if (!targetVariant && specification) {
+      const normalizeSpec = (spec: string) => 
+        spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const specNormalized = normalizeSpec(specification);
+      
+      for (const group of initialData.groupedVariants) {
+        const groupSpec = group.subPart?.name || "";
+        const groupNormalized = normalizeSpec(groupSpec);
+        
+        if (groupNormalized.includes(specNormalized) || 
+            specNormalized.includes(groupNormalized)) {
+          targetGroup = group;
+          
+          // Try to match miles
+          if (miles) {
+            const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
+            targetVariant = group.variants.find((v: any) => {
+              const variantMiles = v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "";
+              return variantMiles === milesNormalized;
+            });
+          }
+          
+          // If no miles match, use first variant
+          if (!targetVariant) {
+            targetVariant = group.variants.find((v: any) => v.inStock) || group.variants[0];
+          }
+          break;
+        }
+      }
+    }
+    
+    // Fallback to first available
+    if (!targetVariant && initialData.groupedVariants.length > 0) {
+      targetGroup = initialData.groupedVariants[0];
+      targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+    }
+    
+    if (targetVariant && targetGroup) {
+      return {
+        ...targetVariant,
+        make: initialData.make,
+        model: initialData.model,
+        year: initialData.year,
+        part: initialData.part,
+        subPart: targetGroup.subPart,
+      };
+    }
+    
+    return null;
+  };
+
+  // Initialize product from server data
+  useEffect(() => {
+    if (initialLoadRef.current || !initialData?.groupedVariants?.length) return;
+    
+    console.log("Initializing from server data");
+    initialLoadRef.current = true;
+    
+    // Build all variants array
+    const variants: any[] = [];
+    initialData.groupedVariants.forEach((group: any) => {
+      group.variants.forEach((variant: any) => {
+        variants.push({
+          ...variant,
+          make: initialData.make,
+          model: initialData.model,
+          year: initialData.year,
+          part: initialData.part,
+          subPart: group.subPart,
+          product: variant.product || group.product || null,
+          title: variant.title,
+          seoTitle: variant.seoTitle,
+          seoSlug: variant.seoSlug,
+          seoCanonical: variant.seoCanonical,
+          seoDescription: variant.seoDescription,
+          warranty: variant.warranty,
+          media: variant.product?.media || [],
+          description: variant.description,
+        });
+      });
+    });
+    
+    setAllVariants(variants);
+    setGroupedVariants(initialData.groupedVariants || []);
+    setProductInfo({
+      make: initialData.make || "",
+      model: initialData.model || "",
+      year: initialData.year || "",
+      part: initialData.part || "",
+    });
+    
+    // Get initial product
+    const initialProduct = getInitialProduct();
+    if (initialProduct) {
+      setSelectedProduct(initialProduct);
+      setSelectedSubPartId(initialProduct.subPart?.id || initialData.groupedVariants[0]?.subPart?.id || null);
+      setSelectedMilesSku(initialProduct.sku || initialData.groupedVariants[0]?.variants?.[0]?.sku || "");
+    }
+    
+    setIsLoading(false);
+  }, [initialData, setSku, specification, miles]);
+
+  // Update URL when selection changes
+  const updateProductUrl = (variant: any, subPartName: string) => {
+    if (!variant || !subPartName) return;
+    
+    const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "";
     const spec = subPartName
       .replace(/[ ,()./]/g, "-")
       .replace(/-+/g, "-")
       .toLowerCase();
-
+    
     const modelSlug = formatModelForUrl(model);
-
-    const newUrl = `/product/${year}-${make}-${modelSlug}-${part}-${spec}${miles ? `-${miles}` : ""}`.toLowerCase();
-
+    
+    const newUrl = `/product/${year}-${make}-${modelSlug}-${part}-${spec}${milesValue ? `-${milesValue}` : ""}`.toLowerCase();
+    
     router.replace(newUrl, { scroll: false });
   };
 
-  const API_BASE = process.env.NEXT_PUBLIC_API_URL;
-
+  // Handle popup scroll locking
   useEffect(() => {
     if (showPopup) {
       const scrollY = window.scrollY;
@@ -241,10 +269,13 @@ export default function EngineProductClient({
       document.body.style.left = "";
       document.body.style.right = "";
       document.body.style.width = "";
-      window.scrollTo(0, Number.parseInt(scrollY || "0") * -1);
+      if (scrollY) {
+        window.scrollTo(0, parseInt(scrollY || "0") * -1);
+      }
     }
   }, [showPopup]);
 
+  // Handle buy now
   const handleBuyNow = () => {
     if (!selectedProduct) return;
 
@@ -264,7 +295,7 @@ export default function EngineProductClient({
           selectedProduct.year || ""
         } ${selectedProduct.part || ""}`.trim(),
       subtitle:
-        selectedProduct.specification + " " + selectedProduct.miles ||
+        (selectedProduct.specification || "") + " " + (selectedProduct.miles || "") ||
         selectedProduct.sku,
       image:
         selectedProduct.product?.images &&
@@ -278,10 +309,10 @@ export default function EngineProductClient({
       quantity,
     });
 
-    // router.push("/account/payMethod?buyInOneClick=true")
     window.location.href = "/account/payMethod?buyInOneClick=true";
   };
 
+  // Accordion data
   const accordionData = [
     {
       title: "DESCRIPTION",
@@ -353,413 +384,34 @@ export default function EngineProductClient({
     },
   ];
 
-  
-
-  // Removed client-side canonical manipulation - handled by server generateMetadata
-
-  // useEffect(() => {
-
-  //   if (!make || !model || !year || !part) return;
-  //   setIsLoading(true);
-  //   fetch(
-  //     `${API_BASE}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`
-  //   )
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       const variants: any[] = [];
-  //       if (data.groupedVariants) {
-  //         data.groupedVariants.forEach((group: any) => {
-  //           group.variants.forEach((variant: any) => {
-  //             variants.push({
-  //               ...variant,
-  //               make: data.make,
-  //               model: data.model,
-  //               year: data.year,
-  //               part: data.part,
-  //               subPart: group.subPart,
-  //               product: variant.product || group.product || null,
-  //               title: variant.title,
-  //               seoTitle: variant.seoTitle,
-  //               seoSlug: variant.seoSlug,
-  //               seoCanonical: variant.seoCanonical,
-  //               seoDescription: variant.seoDescription,
-  //               warranty: variant.warranty,
-  //               media: variant.product?.media || [],
-  //               description: variant.description,
-  //             });
-             
-  //           });
-  //         });
-  //       }
-  //       setAllVariants(variants);
-  //       setGroupedVariants(data.groupedVariants || []);
-  //       setProductInfo({
-  //         make: data.make || "",
-  //         model: data.model || "",
-  //         year: data.year || "",
-  //         part: data.part || "",
-  //       });
-
-  //      // IMPROVED LOGIC: Try to match from URL params first
-  //       let defaultGroup = null;
-  //       let defaultVariant = null;
-
-  //       /***********************
-  //        * 1. MATCH USING SKU
-  //        ***********************/
-  //       if (sku && data.groupedVariants) {
-  //         for (const group of data.groupedVariants) {
-
-  //           const variant = group.variants.find((v: any) =>{
-  //             console.log("Trying to match SKU:", sku, "Found variant:",v.sku);
-  //             return v.sku === sku;
-  //           } )
-  //           console.log("Result of SKU match:", variant);
-              
-            
-  //           if (variant) {
-  //             defaultGroup = group;
-  //             defaultVariant = variant;
-  //             break;
-  //           }
-  //         }
-  //       }
-
-  //       /****************************************
-  //        * 2. PARSE URL PARAM (item)
-  //        ****************************************/
-  //       let milesValue = "";
-  //       let specFromUrl = "";
-
-  //       if (!defaultVariant && item) {
-  //         const parts = item.split("-");
-
-  //         // last part = miles
-  //         const lastPart = parts[parts.length - 1];
-  //         if (/^\d+$/.test(lastPart)) {
-  //           milesValue = lastPart.replace(/[^\d]/g, "");
-  //         }
-
-  //         // spec between part and miles
-  //         const partIndex = parts.findIndex(
-  //           (p) => p.toLowerCase() === part.toLowerCase()
-  //         );
-  //         if (partIndex !== -1) {
-  //           specFromUrl = parts
-  //             .slice(partIndex + 1, parts.length - 1)
-  //             .join(" ")
-  //             .replace(/-/g, " ")
-  //             .trim()
-  //             .toLowerCase();
-  //         }
-  //       }
-
-  //       /****************************************
-  //        * 3. FIRST TRY MATCH BY MILES
-  //        ****************************************/
-  //       if (!defaultVariant && milesValue) {
-  //         for (const group of data.groupedVariants) {
-  //           const found = group.variants.find((v: any) => {
-  //             const vm = v.miles?.toString().replace(/[^\d]/g, "");
-  //             return vm === milesValue;
-  //           });
-
-  //           if (found) {
-  //             defaultGroup = group;
-  //             defaultVariant = found;
-  //             break;
-  //           }
-  //         }
-  //       }
-
-  //       /****************************************
-  //        * 4. MATCH SPEC ONLY IF MILES FAILED
-  //        ****************************************/
-  //       if (!defaultVariant && specFromUrl) {
-  //         for (const group of data.groupedVariants) {
-  //           const groupSpec = group.subPart.name
-  //             .replace(/[,()]/g, "")
-  //             .replace(/\s+/g, " ")
-  //             .trim()
-  //             .toLowerCase();
-
-  //           if (
-  //             groupSpec.includes(specFromUrl) ||
-  //             specFromUrl.includes(groupSpec)
-  //           ) {
-  //             defaultGroup = group;
-  //             defaultVariant = group.variants[0];
-  //             break;
-  //           }
-  //         }
-  //       }
-
-  //       /****************************************
-  //        * 5. FALLBACK
-  //        ****************************************/
-  //       if (!defaultVariant) {
-  //         defaultGroup = data.groupedVariants[0];
-  //         defaultVariant = defaultGroup.variants[0];
-  //       }
-
-  //       /****************************************
-  //        * 6. SET SELECTED VALUES
-  //        ****************************************/
-  //       setSelectedSubPartId(defaultGroup.subPart.id);
-  //       setSelectedMilesSku(defaultVariant.sku);
-
-  //       setSelectedProduct({
-  //         ...defaultVariant,
-  //         make: data.make,
-  //         model: data.model,
-  //         year: data.year,
-  //         part: data.part,
-  //       });
-
-  //     })
-  //     .finally(() => setIsLoading(false));
-
-  // Initialize from server-provided data
-  useEffect(() => {
-    console.log("🔄 Initialization useEffect triggered");
-    console.log("📊 initialData:", initialData);
-    console.log("📊 initialData?.groupedVariants?.length:", initialData?.groupedVariants?.length);
+  // Check if product is out of stock
+  const isTrulyOutOfStock = useMemo(() => {
+    if (!selectedProduct) return true;
     
-    if (!initialData?.groupedVariants?.length) {
-      console.log("⚠️ No initial data available");
-      return;
-    }
+    return (
+      !selectedProduct.inStock ||
+      (initialItem?.toLowerCase().includes("nostock") ?? false) ||
+      selectedProduct.sku?.toLowerCase().includes("nostock") ||
+      selectedProduct.title?.toLowerCase().includes("out of stock")
+    );
+  }, [selectedProduct, initialItem]);
 
-    console.log("✅ Initializing from server data");
-
-    // Build variants array from server data
-    const variants: any[] = [];
-    initialData.groupedVariants.forEach((group: any) => {
-      group.variants.forEach((variant: any) => {
-        variants.push({
-          ...variant,
-          make: initialData.make,
-          model: initialData.model,
-          year: initialData.year,
-          part: initialData.part,
-          subPart: group.subPart,
-          product: variant.product || group.product || null,
-          title: variant.title,
-          seoTitle: variant.seoTitle,
-          seoSlug: variant.seoSlug,
-          seoCanonical: variant.seoCanonical,
-          seoDescription: variant.seoDescription,
-          warranty: variant.warranty,
-          media: variant.product?.media || [],
-          description: variant.description,
-        });
-      });
-    });
-    setAllVariants(variants);
-
-    let defaultGroup = null;
-    let defaultVariant = null;
-
-    /***********************
-     * 1. MATCH USING SKU (HIGHEST PRIORITY)
-     ***********************/
-    if (setSku && initialData.groupedVariants) {
-      for (const group of initialData.groupedVariants) {
-        const variant = group.variants.find((v: any) => {
-          console.log("Trying to match SKU:", setSku, "Found variant:", v.sku);
-          return v.sku === setSku;
-        });
-        console.log("Result of SKU match:", variant);
-
-        if (variant) {
-          defaultGroup = group;
-          defaultVariant = variant;
-          console.log("✅ Matched by SKU:", setSku);
-          break;
-        }
-      }
-    }
-
-    /****************************************
-     * 2. PARSE URL PARAM (item) - Extract spec and miles
-     ****************************************/
-    let milesValue = "";
-    let specFromUrl = "";
-
-    if (!defaultVariant && item) {
-      const parts = item.split("-");
-      console.log("📋 Parsing URL parts:", parts);
-
-      // Find where the part name is in the URL
-      const partIndex = parts.findIndex(
-        (p) => p.toLowerCase() === initialData.part?.toLowerCase()
+  // Get presigned URL for media
+  const getPresignedUrl = async (key: string): Promise<string> => {
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(key)}`
       );
-      
-      console.log("🔍 Part index in URL:", partIndex);
-
-      if (partIndex !== -1 && parts.length > partIndex + 1) {
-        // Everything between part name and the last segment (miles) is the specification
-        const lastPart = parts[parts.length - 1];
-        
-        // Check if last part is miles (numeric)
-        if (/^\d+$/.test(lastPart)) {
-          milesValue = lastPart.replace(/[^\d]/g, "");
-          // Specification is everything between part name and miles
-          specFromUrl = parts
-            .slice(partIndex + 1, parts.length - 1)
-            .join(" ")
-            .replace(/-/g, " ")
-            .trim()
-            .toLowerCase();
-        } else {
-          // No miles at the end, everything after part is specification
-          specFromUrl = parts
-            .slice(partIndex + 1)
-            .join(" ")
-            .replace(/-/g, " ")
-            .trim()
-            .toLowerCase();
-        }
-      }
-
-      console.log("📝 Extracted from URL - Spec:", specFromUrl, "Miles:", milesValue);
+      if (!res.ok) throw new Error(`Presign failed for ${key}`);
+      const data = await res.json();
+      return data.url;
+    } catch (error) {
+      console.error("Error getting presigned URL:", error);
+      return "";
     }
+  };
 
-    /****************************************
-     * 3. MATCH BY SPECIFICATION (EXACT OR PARTIAL)
-     ****************************************/
-    if (!defaultVariant && specFromUrl) {
-      console.log("🔎 Attempting to match specification:", specFromUrl);
-
-      // Normalize spec from URL by removing all spaces and dots
-      const normalizedUrlSpec = specFromUrl
-        .replace(/\s+/g, "")
-        .replace(/\./g, "")
-        .toLowerCase();
-
-      console.log("📝 Normalized URL spec:", normalizedUrlSpec);
-
-      // Try exact match first
-      for (const group of initialData.groupedVariants) {
-        const groupSpec = group.subPart.name
-          .replace(/[,()-]/g, "")
-          .replace(/\s+/g, "")
-          .replace(/\./g, "")
-          .trim()
-          .toLowerCase();
-
-        console.log("Comparing normalized URL spec:", normalizedUrlSpec, "with normalized group spec:", groupSpec);
-
-        // Exact match
-        if (groupSpec === normalizedUrlSpec) {
-          defaultGroup = group;
-          
-          // If we have miles, find matching variant
-          if (milesValue) {
-            const milesMatch = group.variants.find((v: any) => {
-              const vm = v.miles?.toString().replace(/[^\d]/g, "");
-              return vm === milesValue;
-            });
-            defaultVariant = milesMatch || group.variants[0];
-          } else {
-            defaultVariant = group.variants[0];
-          }
-          
-          console.log("✅ Exact spec match found!");
-          break;
-        }
-      }
-
-      // If no exact match, try partial match
-      if (!defaultVariant) {
-        for (const group of initialData.groupedVariants) {
-          const groupSpec = group.subPart.name
-            .replace(/[,()]/g, "")
-            .replace(/\s+/g, "")
-            .replace(/\./g, "")
-            .trim()
-            .toLowerCase();
-
-          // Partial match (contains)
-          if (
-            groupSpec.includes(normalizedUrlSpec) ||
-            normalizedUrlSpec.includes(groupSpec)
-          ) {
-            defaultGroup = group;
-            
-            // If we have miles, find matching variant
-            if (milesValue) {
-              const milesMatch = group.variants.find((v: any) => {
-                const vm = v.miles?.toString().replace(/[^\d]/g, "");
-                return vm === milesValue;
-              });
-              defaultVariant = milesMatch || group.variants[0];
-            } else {
-              defaultVariant = group.variants[0];
-            }
-            
-            console.log("✅ Partial spec match found!");
-            break;
-          }
-        }
-      }
-    }
-
-    /****************************************
-     * 4. MATCH BY MILES ONLY (if spec matching failed)
-     ****************************************/
-    if (!defaultVariant && milesValue) {
-      console.log("🔎 Attempting to match by miles only:", milesValue);
-      
-      for (const group of initialData.groupedVariants) {
-        const found = group.variants.find((v: any) => {
-          const vm = v.miles?.toString().replace(/[^\d]/g, "");
-          return vm === milesValue;
-        });
-
-        if (found) {
-          defaultGroup = group;
-          defaultVariant = found;
-          console.log("✅ Matched by miles!");
-          break;
-        }
-      }
-    }
-
-    /****************************************
-     * 5. FALLBACK TO FIRST AVAILABLE
-     ****************************************/
-    if (!defaultVariant && initialData.groupedVariants.length > 0) {
-      console.log("⚠️ Using fallback - first available option");
-      defaultGroup = initialData.groupedVariants[0];
-      defaultVariant = defaultGroup.variants[0];
-    }
-
-    /****************************************
-     * 6. SET SELECTED VALUES
-     ****************************************/
-    if (defaultGroup && defaultVariant) {
-      console.log("🎯 Final selection - Group:", defaultGroup.subPart.name, "Variant SKU:", defaultVariant.sku);
-      
-      setSelectedSubPartId(defaultGroup.subPart.id);
-      setSelectedMilesSku(defaultVariant.sku);
-
-      setSelectedProduct({
-        ...defaultVariant,
-        make: initialData.make,
-        model: initialData.model,
-        year: initialData.year,
-        part: initialData.part,
-        subPart: defaultGroup.subPart,
-      });
-    }
-  }, [initialData, setSku, item]);
-
-
-
-
-
-
+  // Load media URLs
   useEffect(() => {
     if (!selectedProduct?.media?.length) {
       setMediaUrls([]);
@@ -770,12 +422,13 @@ export default function EngineProductClient({
 
     setMediaLoading(true);
     setImageLoaded(false);
+    
     (async () => {
       try {
         const urls = await Promise.all(
           (selectedProduct.media as string[]).map((key) => getPresignedUrl(key))
         );
-        setMediaUrls(urls);
+        setMediaUrls(urls.filter(url => url)); // Filter out empty URLs
       } catch (error) {
         console.error("Error fetching media URLs:", error);
         setMediaUrls([]);
@@ -785,147 +438,44 @@ export default function EngineProductClient({
     })();
   }, [selectedProduct]);
 
-  const getPresignedUrl = async (key: string): Promise<string> => {
-    //   GET /api/s3/presigned?key=<url‑encoded-key>
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(
-        key
-      )}`
-    );
-    if (!res.ok) throw new Error(`Presign failed for ${key}`);
-    const data = await res.json(); // { url: string }
-    return data.url;
-  };
-
-  // useEffect(() => {
-
-  //   if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
-  //     return;
-  //   const group = groupedVariants.find(
-  //     (g: any) => g.subPart.id === selectedSubPartId
-  //   );
-  //   if (group) {
-  //     const variant = group.variants.find(
-  //       (v: any) => v.sku === selectedMilesSku
-  //     );
-  //     if (variant) {
-  //       setSelectedProduct({
-  //         ...variant,
-  //         make: productInfo.make || make,
-  //         model: productInfo.model || model,
-  //         year: productInfo.year || year,
-  //         part: productInfo.part || part,
-  //       });
-  //     } else {
-  //       setSelectedProduct(null);
-  //     }
-  //   }
-  // }, [
-  //   selectedSubPartId,
-  //   selectedMilesSku,
-  //   groupedVariants,
-  //   productInfo,
-  //   make,
-  //   model,
-  //   year,
-  //   part,
-  // ]);
-
-
+  // Update selected product when dropdowns change
   useEffect(() => {
-  if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0)
-    return;
-  
-  const group = groupedVariants.find(
-    (g: any) => g.subPart.id === selectedSubPartId
-  );
-  
-  if (group) {
-    const variant = group.variants.find(
-      (v: any) => v.sku === selectedMilesSku
+    if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0) {
+      return;
+    }
+    
+    const group = groupedVariants.find(
+      (g: any) => g.subPart.id === selectedSubPartId
     );
     
-    if (variant) {
-      setSelectedProduct({
-        ...variant,
-        make: productInfo.make || make,
-        model: productInfo.model || model,
-        year: productInfo.year || year,
-        part: productInfo.part || part,
-        subPart: group.subPart, // ADD THIS - Important for proper subPart display
-      });
-    } else {
-      setSelectedProduct(null);
+    if (group) {
+      const variant = group.variants.find(
+        (v: any) => v.sku === selectedMilesSku
+      );
+      
+      if (variant) {
+        const newProduct = {
+          ...variant,
+          make: productInfo.make || make,
+          model: productInfo.model || model,
+          year: productInfo.year || year,
+          part: productInfo.part || part,
+          subPart: group.subPart,
+        };
+        setSelectedProduct(newProduct);
+      } else {
+        setSelectedProduct(null);
+      }
     }
-  }
-}, [
-  selectedSubPartId,
-  selectedMilesSku,
-  groupedVariants,
-  productInfo,
-  make,
-  model,
-  year,
-  part,
-]);
+  }, [selectedSubPartId, selectedMilesSku, groupedVariants, productInfo, make, model, year, part]);
 
-  
-
-  const handleAddToCart = () => {
-    if (!selectedProduct) return;
-    const selectedGroup = groupedVariants.find(
-      (g) => g.subPart.id === selectedSubPartId
-    );
-    if (!selectedGroup) return;
-
-    setSelectedProductForVerify({
-      ...selectedProduct,
-      subPart: selectedGroup.subPart,
-    });
-    setIsVerifyPopupOpen(true);
-  };
-
-  const handleAddToCartAndRedirect = (product: any, quantity = 1) => {
-    const price = product.discountedPrice ?? product.actualprice ?? 0;
-
-    addItem({
-      id: product.sku,
-      name: `${product.year || ""} ${product.make || ""} ${
-        product.model || ""
-      } ${product.part || ""}`.trim(),
-      //title: `${product.year || ""} ${product.make || ""} ${product.model || ""} ${product.part || ""}`.trim(),
-      title: product.title,
-      subtitle: product.specification + " " + product.miles,
-      image:
-        product.product?.images && product.product.images.length > 0
-          ? product.product.images[0]
-          : product.part === "Engine"
-          ? "/catalog/Engine 1.png"
-          : "/catalog/Trasmission_.png",
-      price,
-      quantity,
-    });
-
-    setShowCartPopup(true);
-    setInCart(true);
-
-    setTimeout(() => {
-      setIsVerifyPopupOpen(false);
-      setSelectedProductForVerify(null);
-      setShowCartPopup(false);
-      router.push("/account/cart");
-      window.location.href = `/account/cart?make=${selectedProduct.make}&model=${selectedProduct.model}&year=${selectedProduct.year}&part=${selectedProduct.part}`;
-    }, 100);
-  };
-
+  // Track product view in dataLayer
   useEffect(() => {
     if (!selectedProduct) return;
 
-    // Ensure dataLayer exists
-    (window as any).dataLayer = (window as any).dataLayer || [];
-
-    (window as any).dataLayer.push({
-      event: "product_view", // or "view_item" if using GA4 standard
+    const dataLayer = (window as any).dataLayer || [];
+    dataLayer.push({
+      event: "product_view",
       ecommerce: {
         items: [
           {
@@ -948,21 +498,61 @@ export default function EngineProductClient({
         ],
       },
     });
-  }, [selectedProduct]);
-  const cleanMiles = (m: any) =>
-  m?.toString().replace(/[^\d]/g, "");
+  }, [selectedProduct, selectedSubPartId, groupedVariants]);
 
+  // Helper to clean miles display
+  const cleanMiles = (m: any) => m?.toString().replace(/[^\d]/g, "") || "";
 
+  // Handle add to cart
+  const handleAddToCart = () => {
+    if (!selectedProduct) return;
+    
+    const selectedGroup = groupedVariants.find(
+      (g) => g.subPart.id === selectedSubPartId
+    );
+    
+    if (!selectedGroup) return;
 
+    setSelectedProductForVerify({
+      ...selectedProduct,
+      subPart: selectedGroup.subPart,
+    });
+    setIsVerifyPopupOpen(true);
+  };
 
-  // Removed client-side SEO manipulation - all SEO handled by server generateMetadata
+  // Handle add to cart and redirect
+  const handleAddToCartAndRedirect = (product: any, quantity = 1) => {
+    const price = product.discountedPrice ?? product.actualprice ?? 0;
 
-  // Debug: Log render state
-  console.log("🎨 About to render - isLoading:", isLoading, "hasSelectedProduct:", !!selectedProduct);
+    addItem({
+      id: product.sku,
+      name: `${product.year || ""} ${product.make || ""} ${
+        product.model || ""
+      } ${product.part || ""}`.trim(),
+      title: product.title,
+      subtitle: (product.specification || "") + " " + (product.miles || ""),
+      image:
+        product.product?.images && product.product.images.length > 0
+          ? product.product.images[0]
+          : product.part === "Engine"
+          ? "/catalog/Engine 1.png"
+          : "/catalog/Trasmission_.png",
+      price,
+      quantity,
+    });
 
-  // Show loading only if we don't have a selected product AND we're loading
+    setShowCartPopup(true);
+
+    setTimeout(() => {
+      setIsVerifyPopupOpen(false);
+      setSelectedProductForVerify(null);
+      setShowCartPopup(false);
+      window.location.href = `/account/cart?make=${product.make}&model=${product.model}&year=${product.year}&part=${product.part}`;
+    }, 100);
+  };
+
+  // Show loading if no selected product and still loading
   const shouldShowLoading = !selectedProduct && isLoading;
-  console.log("🎨 shouldShowLoading:", shouldShowLoading);
 
   return (
     <>
@@ -980,11 +570,11 @@ export default function EngineProductClient({
           transform: translate(-50%, -50%);
         }
         @keyframes spin {
-          to {
-            transform: rotate(360deg) translate(-50%, -50%);
-          }
+          0% { transform: translate(-50%, -50%) rotate(0deg); }
+          100% { transform: translate(-50%, -50%) rotate(360deg); }
         }
       `}</style>
+      
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}
@@ -1047,7 +637,7 @@ export default function EngineProductClient({
         <div className="w-full bg-[#091b33] text-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
             <div className="flex flex-col md:flex-row gap-1 md:gap-8 items-start pt-0 md lg:pt-10">
-           <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
+              <div className="flex justify-center lg:justify-start pt-4 md:pt-8">
                 <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
                   {mediaUrls.length > 0 ? (
                     <>
@@ -1057,7 +647,6 @@ export default function EngineProductClient({
                         rel="noopener noreferrer"
                         className="cursor-pointer"
                         style={{ display: 'contents' }}
-                        onClick={(e) => e.stopPropagation()}
                       >
                         <Image
                           src={mediaUrls[0]}
@@ -1084,7 +673,6 @@ export default function EngineProductClient({
                         rel="noopener noreferrer"
                         className="cursor-pointer"
                         style={{ display: 'contents' }}
-                        onClick={(e) => e.stopPropagation()}
                       >
                         <Image
                           src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
@@ -1107,7 +695,6 @@ export default function EngineProductClient({
                         rel="noopener noreferrer"
                         className="cursor-pointer"
                         style={{ display: 'contents' }}
-                        onClick={(e) => e.stopPropagation()}
                       >
                         <Image
                           src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
@@ -1137,14 +724,6 @@ export default function EngineProductClient({
                     letterSpacing: "0.1em",
                   }}
                 >
-                  {/* {productInfo.year ||
-                  productInfo.make ||
-                  productInfo.model ||
-                  productInfo.part
-                    ? `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${productInfo.part}`
-                        .replace(/\s+/g, " ")
-                        .trim()
-                    : "ENGINE ASSEMBLY"} */}
                   {(
                     selectedProduct?.title ??
                     `${productInfo.year || ""} ${productInfo.make || ""} ${
@@ -1156,114 +735,109 @@ export default function EngineProductClient({
                 </h1>
 
                 <div className="text-sm sm:text-base text-gray-400 font-semibold">
-                options:{" "}
-                {groupedVariants.find(
-                  (g) => g.subPart.id === selectedSubPartId
-                )?.subPart.name || "Select a specification"}
-              </div>
+                  options:{" "}
+                  {groupedVariants.find(
+                    (g) => g.subPart.id === selectedSubPartId
+                  )?.subPart.name || "Select a specification"}
+                </div>
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   <select
-                    value={selectedSubPartId ?? ""}
-                  onChange={(e) => {
-                    const subPartId = Number(e.target.value);
-                    setSelectedSubPartId(subPartId);
+                    value={selectedSubPartId || ""}
+                    onChange={(e) => {
+                      const subPartId = Number(e.target.value);
+                      setSelectedSubPartId(subPartId);
 
-                    const group = groupedVariants.find(
-                      (g: any) => g.subPart.id === subPartId
-                    );
+                      const group = groupedVariants.find(
+                        (g: any) => g.subPart.id === subPartId
+                      );
 
-                    if (group && group.variants.length > 0) {
-                      const variant = group.variants.find((v: any) => v.inStock) || group.variants[0];
+                      if (group && group.variants.length > 0) {
+                        const variant = group.variants.find((v: any) => v.inStock) || group.variants[0];
 
-                      setSelectedMilesSku(variant.sku);
-                      setSelectedProduct({
-                        ...variant,
-                        make: productInfo.make,
-                        model: productInfo.model,
-                        year: productInfo.year,
-                        part: productInfo.part,
-                        subPart: group.subPart,
-                      });
-                      updateProductUrl(variant, group.subPart.name);
-                    }
-                  }}
-                  
-
+                        setSelectedMilesSku(variant.sku);
+                        setSelectedProduct({
+                          ...variant,
+                          make: productInfo.make,
+                          model: productInfo.model,
+                          year: productInfo.year,
+                          part: productInfo.part,
+                          subPart: group.subPart,
+                        });
+                        updateProductUrl(variant, group.subPart.name);
+                      }
+                    }}
                     className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto"
                   >
-                    
                     <option value="">Select Specification</option>
                     {groupedVariants.map((group: any) => (
                       <option key={group.subPart.id} value={group.subPart.id}>
                         {group.subPart.name}
                       </option>
                     ))}
-                   
-
                   </select>
 
-                <select
-              value={selectedMilesSku}
-              onChange={(e) => {
-                const sku = e.target.value;
-                setSelectedMilesSku(sku);
+                  <select
+                    value={selectedMilesSku}
+                    onChange={(e) => {
+                      const sku = e.target.value;
+                      setSelectedMilesSku(sku);
 
-                const group = groupedVariants.find(
-                  (g: any) => g.subPart.id === selectedSubPartId
-                );
-                
-                if (group) {
-                  const variant = group.variants.find((v: any) => v.sku === sku);
-                  
-                  if (variant) {
-                    setSelectedProduct({
-                      ...variant,
-                      make: productInfo.make,
-                      model: productInfo.model,
-                      year: productInfo.year,
-                      part: productInfo.part,
-                      subPart: group.subPart, // ADD THIS
-                    });
-                    updateProductUrl(variant, group.subPart.name);
-                  }
-                }
-              }
-              }
-              className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={!selectedSubPartId}
-            >
-              <option value="">
-                {selectedSubPartId ? "Select Miles" : "Select specification first"}
-              </option>
-
-              {selectedSubPartId &&
-                groupedVariants
-                  .find((g: any) => g.subPart.id === selectedSubPartId)
-                  ?.variants.map((variant: any) => (
-                    <option key={variant.sku} value={variant.sku}>
-                      {cleanMiles(variant.miles)} miles   {/* FIXED */}
+                      const group = groupedVariants.find(
+                        (g: any) => g.subPart.id === selectedSubPartId
+                      );
+                      
+                      if (group) {
+                        const variant = group.variants.find((v: any) => v.sku === sku);
+                        
+                        if (variant) {
+                          setSelectedProduct({
+                            ...variant,
+                            make: productInfo.make,
+                            model: productInfo.model,
+                            year: productInfo.year,
+                            part: productInfo.part,
+                            subPart: group.subPart,
+                          });
+                          updateProductUrl(variant, group.subPart.name);
+                        }
+                      }
+                    }}
+                    className="bg-[#12263A] text-white rounded border border-blue-400 text-base sm:text-sm md:text-base py-3 px-4 sm:py-2 sm:px-3 w-full sm:w-auto disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!selectedSubPartId}
+                  >
+                    <option value="">
+                      {selectedSubPartId ? "Select Miles" : "Select specification first"}
                     </option>
-                  ))}
-            </select>
-                            </div>
 
-                            <div className="flex flex-row gap-2 mt-4 mb-6">
-              <div className="text-sm sm:text-base text-white">
-                Availability:{" "}
-                <span className="text-gray-400">
-                  {selectedProduct?.inStock === undefined
-                    ? "Select options"
-                    : selectedProduct.inStock
-                    ? "In stock"
-                    : "Out of stock"}
-                </span>
-              </div>
-              <div className="text-sm sm:text-base text-white">
-                Condition: <span className="text-gray-400">Used</span>
-              </div>
-            </div>
+                    {selectedSubPartId &&
+                      groupedVariants
+                        .find((g: any) => g.subPart.id === selectedSubPartId)
+                        ?.variants.map((variant: any) => (
+                          <option key={variant.sku} value={variant.sku}>
+                            {cleanMiles(variant.miles)} miles
+                          </option>
+                        ))}
+                  </select>
+                </div>
 
-                {selectedProduct?.inStock ? (
+                <div className="flex flex-row gap-2 mt-4 mb-6">
+                  <div className="text-sm sm:text-base text-white">
+                    Availability:{" "}
+                    <span className="text-gray-400">
+                      {selectedProduct?.inStock === undefined
+                        ? "Select options"
+                        : selectedProduct.inStock
+                        ? "In stock"
+                        : "Out of stock"}
+                    </span>
+                  </div>
+                  <div className="text-sm sm:text-base text-white">
+                    Condition: <span className="text-gray-400">Used</span>
+                  </div>
+                </div>
+
+                {!isTrulyOutOfStock ? (
                   <>
                     <div className="flex items-end gap-4 mb-4">
                       <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
@@ -1294,7 +868,7 @@ export default function EngineProductClient({
                         disabled={inCart}
                         onClick={handleAddToCart}
                       >
-                        Add to cart
+                        {inCart ? "Already in Cart" : "Add to cart"}
                       </button>
                       <button
                         onClick={handleBuyNow}
@@ -1313,10 +887,11 @@ export default function EngineProductClient({
                       Part Request
                     </button>
                     {showPopup && (
-                      <PartRequestPopup setClosePopup={setShowPopup} 
-                      defaultMake={selectedProduct?.make || ""}
-                      defaultModel={selectedProduct?.model || ""}
-                      defaultYear={selectedProduct?.year || ""}
+                      <PartRequestPopup 
+                        setClosePopup={setShowPopup} 
+                        defaultMake={selectedProduct?.make || ""}
+                        defaultModel={selectedProduct?.model || ""}
+                        defaultYear={selectedProduct?.year || ""}
                       />
                     )}
                   </>
@@ -1346,7 +921,6 @@ export default function EngineProductClient({
           </div>
 
           <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
-            {/* {accordionData[activeTab].content} */}
             {activeTab === 0 ? (
               <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
                 {selectedProduct?.description || accordionData[0].content}
@@ -1358,6 +932,7 @@ export default function EngineProductClient({
             )}
           </div>
         </div>
+        
         <div className="w-full py-8 sm:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-2 lg:px-8">
             <div className="text-left md:px-10">
@@ -1411,13 +986,8 @@ export default function EngineProductClient({
           model={selectedProduct.model ?? undefined}
           year={selectedProduct.year ?? undefined}
           part={selectedProduct.part ?? undefined}
-          // seoDescription= {selectedProduct.seoDescription ?? undefined }
         />
       )}
     </>
   );
 }
-
-
-
-

@@ -126,23 +126,21 @@ export async function generateMetadata({
         
         // Parse specification and miles after part
         const remainingSegments = segments.slice(partIndex + 1);
-        
-        if (remainingSegments.length > 0) {
-          // Check if last segment looks like miles (ends with 'k' or is a number)
-          const lastSegment = remainingSegments[remainingSegments.length - 1];
-          const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
-          
-          if (looksLikeMiles && remainingSegments.length > 1) {
-            miles = lastSegment;
-            specification = remainingSegments.slice(0, -1).join("-");
-          } else if (looksLikeMiles && remainingSegments.length === 1) {
-            miles = lastSegment;
-            specification = "";
-          } else {
-            specification = remainingSegments.join("-");
-            miles = "";
-          }
-        }
+if (remainingSegments.length > 0) {
+  const lastSegment = remainingSegments[remainingSegments.length - 1];
+  
+  if (lastSegment === 'n-a') {
+    miles = 'n-a';
+    specification = remainingSegments.slice(0, -1).join("-");
+  } else if (/^\d+k?$/i.test(lastSegment)) {
+    miles = lastSegment;
+    specification = remainingSegments.slice(0, -1).join("-");
+  } else {
+    specification = remainingSegments.join("-");
+    miles = "";
+  }
+}
+
       } else {
         // Fallback: assume model is at index 2
         model = segments[2];
@@ -406,25 +404,20 @@ export default async function EngineProductPage({
       
       const remainingSegments = segments.slice(partIndex + 1);
       
-      if (remainingSegments.length > 0) {
-        // Check if last segment looks like miles (ends with 'k' or is a number)
-        const lastSegment = remainingSegments[remainingSegments.length - 1];
-        const looksLikeMiles = /^\d+k?$/i.test(lastSegment); // Matches: 10k, 90000, 30K, etc.
-        
-        if (looksLikeMiles && remainingSegments.length > 1) {
-          // Last segment is miles, everything else is specification
-          miles = lastSegment;
-          specification = remainingSegments.slice(0, -1).join("-");
-        } else if (looksLikeMiles && remainingSegments.length === 1) {
-          // Only one segment and it's miles
-          miles = lastSegment;
-          specification = "";
-        } else {
-          // No miles found, everything is specification
-          specification = remainingSegments.join("-");
-          miles = "";
-        }
-      }
+     if (remainingSegments.length > 0) {
+  const lastSegment = remainingSegments[remainingSegments.length - 1];
+  
+  if (lastSegment === 'n-a') {
+    miles = 'n-a';                                    // ✅ Out of stock
+    specification = remainingSegments.slice(0, -1).join("-");
+  } else if (/^\d+k?$/i.test(lastSegment)) {
+    miles = lastSegment;                              // ✅ In stock miles
+    specification = remainingSegments.slice(0, -1).join("-");
+  } else {
+    specification = remainingSegments.join("-");
+    miles = "";
+  }
+}
     } else {
       // Fallback: assume model is at index 2
       model = segments[2];
@@ -433,21 +426,22 @@ export default async function EngineProductPage({
       // Apply same logic for spec and miles
       const remainingSegments = segments.slice(4);
       
-      if (remainingSegments.length > 0) {
-        const lastSegment = remainingSegments[remainingSegments.length - 1];
-        const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
-        
-        if (looksLikeMiles && remainingSegments.length > 1) {
-          miles = lastSegment;
-          specification = remainingSegments.slice(0, -1).join("-");
-        } else if (looksLikeMiles && remainingSegments.length === 1) {
-          miles = lastSegment;
-          specification = "";
-        } else {
-          specification = remainingSegments.join("-");
-          miles = "";
-        }
-      }
+    // INSIDE fallback block - ADD n-a check:
+if (remainingSegments.length > 0) {
+  const lastSegment = remainingSegments[remainingSegments.length - 1];
+  
+  if (lastSegment === 'n-a') {        
+    miles = 'n-a';
+    specification = remainingSegments.slice(0, -1).join("-");
+  } else if (/^\d+k?$/i.test(lastSegment)) {
+    miles = lastSegment;
+    specification = remainingSegments.slice(0, -1).join("-");
+  } else {
+    specification = remainingSegments.join("-");
+    miles = "";
+  }
+}
+
     }
   }
 

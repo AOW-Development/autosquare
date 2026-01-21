@@ -647,10 +647,10 @@ const filteredProducts = (() => {
   const cartItem = cartItems.find((i) => i.id === item.sku);
   const modelSlug = createSlug(model);
   
-  // ✅ FIXED: Use ACTUAL SKU for out-of-stock products
-  const engineSpecification = item.inStock 
-    ? createSlug(item.subPart?.name || "") 
-    : item.sku.split('-').slice(-3).join('-'); // Gets "23L-NOSTOCK" from "AUDI-100-1990-ENGINE-23L-NOSTOCK"
+   const productSlug = item.inStock 
+    ? `${createSlug(item.subPart?.name || "")}-${item.miles || "n-a"}`
+    : `${createSlug(item.subPart?.name || "")}-n-a`;
+
 
   return (
     <div key={`${item.id}-${item.sku}`} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group">
@@ -658,11 +658,10 @@ const filteredProducts = (() => {
   setSku(item.sku);
   document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
   
-  // ✅ FIXED URL - Matches your /product/[item] perfectly
   const productSlug = item.inStock 
-    ? `${createSlug(item.subPart?.name || "")}-${item.miles || "na"}`
-    : item.sku.split('-').slice(-3).join('-');
-    
+  ? `${createSlug(item.subPart?.name || "")}-${item.miles?.replace(/[^\d]/g, "") || "n-a"}`
+  : `${createSlug(item.subPart?.name || "")}-n-a`;
+  
   router.push(`/product/${year}-${make.toLowerCase()}-${modelSlug}-${part.toLowerCase()}-${productSlug}`);
 }}>
 
@@ -695,7 +694,7 @@ const filteredProducts = (() => {
       </div>
 
       <div className="flex justify-between items-center mt-3 relative z-30">
-        {item.inStock ? (
+        {item.inStock && productSlug !== 'n-a' ? (
           <>
             <span className="text-2xl font-bold text-white">${item.discountedPrice}</span>
             <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">$ {item.actualprice}</span>

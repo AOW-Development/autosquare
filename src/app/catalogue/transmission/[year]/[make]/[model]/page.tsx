@@ -36,6 +36,12 @@ function createSlug(text: string): string {
   
   return text
     .toLowerCase()
+    // NEW: Remove "Truck" (KEEP T100/Tundra Truck)
+    .replace(/\btruck\b(?!(?:\s*t100|tundra))/gi, '')
+    
+    // NEW: Remove "&" and "and"
+    .replace(/&|and/gi, '')
+    // Your existing logic (PERFECT!)
     .replace(/,/g, ' ')
     .replace(/\//g, ' ')
     .replace(/[()]/g, ' ')
@@ -44,7 +50,8 @@ function createSlug(text: string): string {
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/\s/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, ''); 
 }
  
 // Helper function to convert URL model slug back to database model format
@@ -135,12 +142,11 @@ async function getProductsFromAPI({
   year: string;
   part: string;
 }): Promise<ApiResponse> {
-  const apiUrl =
-    `${process.env.NEXT_PUBLIC_API_URL}/products` +
-    `?make=${encodeURIComponent(capitalize(make))}` +
-    `&model=${encodeURIComponent(capitalize(model))}` +
-    `&year=${encodeURIComponent(year)}` +
-    `&part=${encodeURIComponent(capitalize(part))}`;
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts` + 
+  `?make=${encodeURIComponent(make)}` +
+  `&model=${encodeURIComponent(model)}` +
+  `&year=${encodeURIComponent(year)}` +
+  `&part=${encodeURIComponent("transmission")}`;
  
   const response = await fetch(apiUrl, { next: { revalidate: 300 } });
  

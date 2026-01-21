@@ -27,6 +27,12 @@ function createSlug(text: string): string {
   
   return text
     .toLowerCase()
+    // NEW: Remove "Truck" (KEEP T100/Tundra Truck)
+    // .replace(/\btruck\b(?!(?:\s*t100|tundra))/gi, '')
+    
+    // NEW: Remove "&" and "and"
+    .replace(/&|and/gi, '')
+    // Your existing logic (PERFECT!)
     .replace(/,/g, ' ')
     .replace(/\//g, ' ')
     .replace(/[()]/g, ' ')
@@ -35,8 +41,10 @@ function createSlug(text: string): string {
     .replace(/\s+/g, ' ')
     .trim()
     .replace(/\s/g, '-')
-    .replace(/-+/g, '-');
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, ''); 
 }
+
  
 // Helper function to convert URL model slug back to database model format
 function convertUrlModelToDbModel(urlModel: string, make: string): string {

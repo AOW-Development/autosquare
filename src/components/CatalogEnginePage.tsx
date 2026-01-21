@@ -288,7 +288,7 @@ export default function CatalogEnginePage({
     }
   }, [make, model, year, part, initialProducts.length]);
  
-// FIXED SORTING (no createdAt dependency)
+// SORTING (no createdAt dependency)
 const filteredProducts = (() => {
   let result = subPartFilter !== null
     ? products.filter(
@@ -655,12 +655,17 @@ const filteredProducts = (() => {
   return (
     <div key={`${item.id}-${item.sku}`} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group">
       <div className="block cursor-pointer" onClick={() => {
-        setSku(item.sku);
-        document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
-        
-        // ✅ FIXED URL for out-of-stock products
-        router.push(`/product/${year}-${make.toLowerCase()}-${modelSlug}-${part.toLowerCase()}-${engineSpecification}-${encodeURIComponent(item.miles || "N-A")}`);
-      }}>
+  setSku(item.sku);
+  document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
+  
+  // ✅ FIXED URL - Matches your /product/[item] perfectly
+  const productSlug = item.inStock 
+    ? `${createSlug(item.subPart?.name || "")}-${item.miles || "na"}`
+    : item.sku.split('-').slice(-3).join('-');
+    
+  router.push(`/product/${year}-${make.toLowerCase()}-${modelSlug}-${part.toLowerCase()}-${productSlug}`);
+}}>
+
         <div className="relative mx-auto mb-3 flex justify-center items-center rounded-md" style={{
           background: "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
           width: "250px",

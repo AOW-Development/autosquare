@@ -57,7 +57,7 @@ export default function EngineProductClient({
   const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
-  
+
   // Initialize state
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productInfo, setProductInfo] = useState({
@@ -72,22 +72,26 @@ export default function EngineProductClient({
   const [allSubParts, setAllSubParts] = useState<SubPart[]>([]);
   const [allVariants, setAllVariants] = useState<any[]>([]);
   const [groupedVariants, setGroupedVariants] = useState<any[]>(
-    initialData?.groupedVariants || []
+    initialData?.groupedVariants || [],
   );
-  
-  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(null);
+
+  const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(
+    null,
+  );
   const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
-  
+
   const [activeTab, setActiveTab] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [showPopup, setShowPopup] = useState(false);
   const [isVerifyPopupOpen, setIsVerifyPopupOpen] = useState(false);
-  const [selectedProductForVerify, setSelectedProductForVerify] = useState<any | null>(null);
+  const [selectedProductForVerify, setSelectedProductForVerify] = useState<
+    any | null
+  >(null);
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
-  
+
   const initialLoadRef = useRef(false);
 
   // Check if product is in cart
@@ -120,7 +124,7 @@ export default function EngineProductClient({
 
     let targetGroup = null;
     let targetVariant = null;
-    
+
     // Try to match by SKU first
     if (setSku) {
       for (const group of initialData.groupedVariants) {
@@ -132,45 +136,56 @@ export default function EngineProductClient({
         }
       }
     }
-    
+
     // If SKU not found, try to match by specification and miles from URL
     if (!targetVariant && specification) {
-      const normalizeSpec = (spec: string) => 
+      const normalizeSpec = (spec: string) =>
         spec.toLowerCase().replace(/[^a-z0-9]/g, "");
       const specNormalized = normalizeSpec(specification);
-      
+
       for (const group of initialData.groupedVariants) {
         const groupSpec = group.subPart?.name || "";
         const groupNormalized = normalizeSpec(groupSpec);
-        
-        if (groupNormalized.includes(specNormalized) || 
-            specNormalized.includes(groupNormalized)) {
+
+        if (
+          groupNormalized.includes(specNormalized) ||
+          specNormalized.includes(groupNormalized)
+        ) {
           targetGroup = group;
-          
+
           // Try to match miles
           if (miles) {
-            const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
+            const milesNormalized = miles
+              .toLowerCase()
+              .replace(/[^a-z0-9]/g, "");
             targetVariant = group.variants.find((v: any) => {
-              const variantMiles = v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "";
+              const variantMiles =
+                v.miles
+                  ?.toString()
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]/g, "") || "";
               return variantMiles === milesNormalized;
             });
           }
-          
+
           // If no miles match, use first variant
           if (!targetVariant) {
-            targetVariant = group.variants.find((v: any) => v.inStock) || group.variants[0];
+            targetVariant =
+              group.variants.find((v: any) => v.inStock) || group.variants[0];
           }
           break;
         }
       }
     }
-    
+
     // Fallback to first available
     if (!targetVariant && initialData.groupedVariants.length > 0) {
       targetGroup = initialData.groupedVariants[0];
-      targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+      targetVariant =
+        targetGroup.variants.find((v: any) => v.inStock) ||
+        targetGroup.variants[0];
     }
-    
+
     if (targetVariant && targetGroup) {
       return {
         ...targetVariant,
@@ -179,19 +194,22 @@ export default function EngineProductClient({
         year: initialData.year,
         part: initialData.part,
         subPart: targetGroup.subPart,
+        title:
+          targetVariant.title ||
+          `${initialData.year || ""} ${initialData.make || ""} ${initialData.model || ""}${initialData.model ? ", " : ""} ${initialData.part === "Engine" ? "Used Engine" : "Used Transmission"}`.trim(),
       };
     }
-    
+
     return null;
   };
 
   // Initialize product from server data
   useEffect(() => {
     if (initialLoadRef.current || !initialData?.groupedVariants?.length) return;
-    
+
     console.log("Initializing from server data");
     initialLoadRef.current = true;
-    
+
     // Build all variants array
     const variants: any[] = [];
     initialData.groupedVariants.forEach((group: any) => {
@@ -215,7 +233,7 @@ export default function EngineProductClient({
         });
       });
     });
-    
+
     setAllVariants(variants);
     setGroupedVariants(initialData.groupedVariants || []);
     setProductInfo({
@@ -224,32 +242,41 @@ export default function EngineProductClient({
       year: initialData.year || "",
       part: initialData.part || "",
     });
-    
+
     // Get initial product
     const initialProduct = getInitialProduct();
     if (initialProduct) {
       setSelectedProduct(initialProduct);
-      setSelectedSubPartId(initialProduct.subPart?.id || initialData.groupedVariants[0]?.subPart?.id || null);
-      setSelectedMilesSku(initialProduct.sku || initialData.groupedVariants[0]?.variants?.[0]?.sku || "");
+      setSelectedSubPartId(
+        initialProduct.subPart?.id ||
+          initialData.groupedVariants[0]?.subPart?.id ||
+          null,
+      );
+      setSelectedMilesSku(
+        initialProduct.sku ||
+          initialData.groupedVariants[0]?.variants?.[0]?.sku ||
+          "",
+      );
     }
-    
+
     setIsLoading(false);
   }, [initialData, setSku, specification, miles]);
 
   // Update URL when selection changes
   const updateProductUrl = (variant: any, subPartName: string) => {
     if (!variant || !subPartName) return;
-    
+
     const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "";
     const spec = subPartName
       .replace(/[ ,()./]/g, "-")
       .replace(/-+/g, "-")
       .toLowerCase();
-    
+
     const modelSlug = formatModelForUrl(model);
-    
-    const newUrl = `/product/${year}-${make}-${modelSlug}-${part}-${spec}${milesValue ? `-${milesValue}` : ""}`.toLowerCase();
-    
+
+    const newUrl =
+      `/product/${year}-${make}-${modelSlug}-${part}-${spec}${milesValue ? `-${milesValue}` : ""}`.toLowerCase();
+
     router.replace(newUrl, { scroll: false });
   };
 
@@ -295,15 +322,16 @@ export default function EngineProductClient({
           selectedProduct.year || ""
         } ${selectedProduct.part || ""}`.trim(),
       subtitle:
-        (selectedProduct.specification || "") + " " + (selectedProduct.miles || "") ||
-        selectedProduct.sku,
+        (selectedProduct.specification || "") +
+          " " +
+          (selectedProduct.miles || "") || selectedProduct.sku,
       image:
         selectedProduct.product?.images &&
         selectedProduct.product.images.length > 0
           ? selectedProduct.product.images[0]
           : selectedProduct.part === "Engine"
-          ? "/catalog/Engine 1.png"
-          : "/catalog/Trasmission_.png",
+            ? "/catalog/Engine 1.png"
+            : "/catalog/Trasmission_.png",
       price:
         selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0,
       quantity,
@@ -384,20 +412,19 @@ export default function EngineProductClient({
     },
   ];
 
-  // Check if product is out of stock
- const isTrulyOutOfStock = useMemo(() => {
-  // ✅ FORCE n-a FIRST - ALWAYS Part Request
-  if (miles === 'n-a') return true;
-  if (!selectedProduct) return true;
-  return !selectedProduct.inStock;
-}, [selectedProduct, miles]);
-
+  // FIXED: Correct out of stock logic
+  // The issue was that `isTrulyOutOfStock` was incorrectly checking `miles === 'n-a'`
+  // This should be based on the product's actual stock status, not the URL parameter
+  const isOutOfStock = useMemo(() => {
+    if (!selectedProduct) return true;
+    return !selectedProduct.inStock;
+  }, [selectedProduct]);
 
   // Get presigned URL for media
   const getPresignedUrl = async (key: string): Promise<string> => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(key)}`
+        `${process.env.NEXT_PUBLIC_API_URL}/presigned-url/${encodeURIComponent(key)}`,
       );
       if (!res.ok) throw new Error(`Presign failed for ${key}`);
       const data = await res.json();
@@ -419,13 +446,15 @@ export default function EngineProductClient({
 
     setMediaLoading(true);
     setImageLoaded(false);
-    
+
     (async () => {
       try {
         const urls = await Promise.all(
-          (selectedProduct.media as string[]).map((key) => getPresignedUrl(key))
+          (selectedProduct.media as string[]).map((key) =>
+            getPresignedUrl(key),
+          ),
         );
-        setMediaUrls(urls.filter(url => url)); // Filter out empty URLs
+        setMediaUrls(urls.filter((url) => url)); // Filter out empty URLs
       } catch (error) {
         console.error("Error fetching media URLs:", error);
         setMediaUrls([]);
@@ -437,19 +466,23 @@ export default function EngineProductClient({
 
   // Update selected product when dropdowns change
   useEffect(() => {
-    if (!selectedSubPartId || !selectedMilesSku || groupedVariants.length === 0) {
+    if (
+      !selectedSubPartId ||
+      !selectedMilesSku ||
+      groupedVariants.length === 0
+    ) {
       return;
     }
-    
+
     const group = groupedVariants.find(
-      (g: any) => g.subPart.id === selectedSubPartId
+      (g: any) => g.subPart.id === selectedSubPartId,
     );
-    
+
     if (group) {
       const variant = group.variants.find(
-        (v: any) => v.sku === selectedMilesSku
+        (v: any) => v.sku === selectedMilesSku,
       );
-      
+
       if (variant) {
         const newProduct = {
           ...variant,
@@ -464,7 +497,16 @@ export default function EngineProductClient({
         setSelectedProduct(null);
       }
     }
-  }, [selectedSubPartId, selectedMilesSku, groupedVariants, productInfo, make, model, year, part]);
+  }, [
+    selectedSubPartId,
+    selectedMilesSku,
+    groupedVariants,
+    productInfo,
+    make,
+    model,
+    year,
+    part,
+  ]);
 
   // Track product view in dataLayer
   useEffect(() => {
@@ -503,11 +545,11 @@ export default function EngineProductClient({
   // Handle add to cart
   const handleAddToCart = () => {
     if (!selectedProduct) return;
-    
+
     const selectedGroup = groupedVariants.find(
-      (g) => g.subPart.id === selectedSubPartId
+      (g) => g.subPart.id === selectedSubPartId,
     );
-    
+
     if (!selectedGroup) return;
 
     setSelectedProductForVerify({
@@ -532,8 +574,8 @@ export default function EngineProductClient({
         product.product?.images && product.product.images.length > 0
           ? product.product.images[0]
           : product.part === "Engine"
-          ? "/catalog/Engine 1.png"
-          : "/catalog/Trasmission_.png",
+            ? "/catalog/Engine 1.png"
+            : "/catalog/Trasmission_.png",
       price,
       quantity,
     });
@@ -567,11 +609,15 @@ export default function EngineProductClient({
           transform: translate(-50%, -50%);
         }
         @keyframes spin {
-          0% { transform: translate(-50%, -50%) rotate(0deg); }
-          100% { transform: translate(-50%, -50%) rotate(360deg); }
+          0% {
+            transform: translate(-50%, -50%) rotate(0deg);
+          }
+          100% {
+            transform: translate(-50%, -50%) rotate(360deg);
+          }
         }
       `}</style>
-      
+
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}
@@ -583,8 +629,8 @@ export default function EngineProductClient({
             selectedProduct.product.images.length > 0
               ? selectedProduct.product.images[0]
               : selectedProduct.part === "Engine"
-              ? "/catalog/Engine 1.png"
-              : "/catalog/Trasmission_.png"
+                ? "/catalog/Engine 1.png"
+                : "/catalog/Trasmission_.png"
           }
         />
       )}
@@ -638,12 +684,12 @@ export default function EngineProductClient({
                 <div className="relative w-[250px] h-[250px] sm:w-[300px] sm:h-[300px] md:w-[350px] md:h-[350px] lg:w-[400px] lg:h-[400px] bg-[#12263A] rounded-lg flex flex-col items-center justify-center">
                   {mediaUrls.length > 0 ? (
                     <>
-                      <a 
-                        href={mediaUrls[0]} 
-                        target="_blank" 
+                      <a
+                        href={mediaUrls[0]}
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="cursor-pointer"
-                        style={{ display: 'contents' }}
+                        style={{ display: "contents" }}
                       >
                         <Image
                           src={mediaUrls[0]}
@@ -664,12 +710,12 @@ export default function EngineProductClient({
                     </>
                   ) : part === "Engine" || part == "engine" ? (
                     <>
-                      <a 
-                        href="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png" 
-                        target="_blank" 
+                      <a
+                        href="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="cursor-pointer"
-                        style={{ display: 'contents' }}
+                        style={{ display: "contents" }}
                       >
                         <Image
                           src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
@@ -686,12 +732,12 @@ export default function EngineProductClient({
                     </>
                   ) : part === "Transmission" || part == "transmission" ? (
                     <>
-                      <a 
-                        href="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png" 
-                        target="_blank" 
+                      <a
+                        href="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
+                        target="_blank"
                         rel="noopener noreferrer"
                         className="cursor-pointer"
-                        style={{ display: 'contents' }}
+                        style={{ display: "contents" }}
                       >
                         <Image
                           src="https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png"
@@ -721,23 +767,33 @@ export default function EngineProductClient({
                     letterSpacing: "0.1em",
                   }}
                 >
-                  {(
-                    selectedProduct?.title ??
-                    `${productInfo.year || ""} ${productInfo.make || ""} ${
-                      productInfo.model || ""
-                    } Used ${productInfo.part || ""}`
-                  )
-                    .replace(/\s+/g, " ")
-                    .trim() || "ENGINE ASSEMBLY"}
+                  {(() => {
+                    const year =
+                      selectedProduct?.year || productInfo.year || "";
+                    const make =
+                      selectedProduct?.make || productInfo.make || "";
+                    const model =
+                      selectedProduct?.model || productInfo.model || "";
+                    const part = (
+                      selectedProduct?.part ||
+                      productInfo.part ||
+                      ""
+                    ).toLowerCase();
+
+                    const partName = part.includes("engine")
+                      ? "Engine"
+                      : "Transmission";
+                    return `${year} ${make} ${model} Used ${partName}`.trim();
+                  })()}
                 </h1>
 
                 <div className="text-sm sm:text-base text-gray-400 font-semibold">
                   options:{" "}
                   {groupedVariants.find(
-                    (g) => g.subPart.id === selectedSubPartId
+                    (g) => g.subPart.id === selectedSubPartId,
                   )?.subPart.name || "Select a specification"}
                 </div>
-                
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   <select
                     value={selectedSubPartId || ""}
@@ -746,11 +802,13 @@ export default function EngineProductClient({
                       setSelectedSubPartId(subPartId);
 
                       const group = groupedVariants.find(
-                        (g: any) => g.subPart.id === subPartId
+                        (g: any) => g.subPart.id === subPartId,
                       );
 
                       if (group && group.variants.length > 0) {
-                        const variant = group.variants.find((v: any) => v.inStock) || group.variants[0];
+                        const variant =
+                          group.variants.find((v: any) => v.inStock) ||
+                          group.variants[0];
 
                         setSelectedMilesSku(variant.sku);
                         setSelectedProduct({
@@ -760,7 +818,15 @@ export default function EngineProductClient({
                           year: productInfo.year,
                           part: productInfo.part,
                           subPart: group.subPart,
+                          title: (() => {
+                            const p = productInfo.part?.toLowerCase() || "";
+                            const partName = p.includes("engine")
+                              ? "Engine"
+                              : "Transmission";
+                            return `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${partName}`.trim();
+                          })(),
                         });
+
                         updateProductUrl(variant, group.subPart.name);
                       }
                     }}
@@ -781,12 +847,14 @@ export default function EngineProductClient({
                       setSelectedMilesSku(sku);
 
                       const group = groupedVariants.find(
-                        (g: any) => g.subPart.id === selectedSubPartId
+                        (g: any) => g.subPart.id === selectedSubPartId,
                       );
-                      
+
                       if (group) {
-                        const variant = group.variants.find((v: any) => v.sku === sku);
-                        
+                        const variant = group.variants.find(
+                          (v: any) => v.sku === sku,
+                        );
+
                         if (variant) {
                           setSelectedProduct({
                             ...variant,
@@ -795,7 +863,15 @@ export default function EngineProductClient({
                             year: productInfo.year,
                             part: productInfo.part,
                             subPart: group.subPart,
+                            title: (() => {
+                              const p = productInfo.part?.toLowerCase() || "";
+                              const partName = p.includes("engine")
+                                ? "Engine"
+                                : "Transmission";
+                              return `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${partName}`.trim();
+                            })(),
                           });
+
                           updateProductUrl(variant, group.subPart.name);
                         }
                       }
@@ -804,7 +880,9 @@ export default function EngineProductClient({
                     disabled={!selectedSubPartId}
                   >
                     <option value="">
-                      {selectedSubPartId ? "Select Miles" : "Select specification first"}
+                      {selectedSubPartId
+                        ? "Select Miles"
+                        : "Select specification first"}
                     </option>
 
                     {selectedSubPartId &&
@@ -825,8 +903,8 @@ export default function EngineProductClient({
                       {selectedProduct?.inStock === undefined
                         ? "Select options"
                         : selectedProduct.inStock
-                        ? "In stock"
-                        : "Out of stock"}
+                          ? "In stock"
+                          : "Out of stock"}
                     </span>
                   </div>
                   <div className="text-sm sm:text-base text-white">
@@ -834,63 +912,71 @@ export default function EngineProductClient({
                   </div>
                 </div>
 
-                {(miles === 'n-a' || isTrulyOutOfStock) ? (
-  <>
-    <button
-      onClick={() => setShowPopup(true)}
-      className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-3 rounded-md transition-colors w-full sm:w-auto"
-    >
-      Part Request
-    </button>
-    {showPopup && (
-      <PartRequestPopup 
-        setClosePopup={setShowPopup} 
-        defaultMake={selectedProduct?.make || productInfo.make || ""}
-        defaultModel={selectedProduct?.model || productInfo.model || ""}
-        defaultYear={selectedProduct?.year || productInfo.year || ""}
-      />
-    )}
-  </>
-) : (
-  <>
-    <div className="flex items-end gap-4 mb-4">
-      <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
-        $
-        {selectedProduct?.discountedPrice
-          ? `${selectedProduct.discountedPrice}`
-          : selectedProduct?.actualprice
-          ? `${selectedProduct.actualprice}`
-          : "n-a"}
-      </span>
-      {selectedProduct?.actualprice &&
-        selectedProduct.discountedPrice &&
-        selectedProduct.actualprice !== selectedProduct.discountedPrice && (
-          <span className="text-lg sm:text-xl md:text-2xl text-gray-400 line-through">
-            ${selectedProduct.actualprice}
-          </span>
-        )}
-    </div>
-    <div className="flex flex-col sm:flex-row gap-3">
-      <button
-        className={`flex-1 py-3 px-4 rounded transition mb-4 md:mb-0 text-sm sm:text-base ${
-          inCart
-            ? "bg-[#1d3759] text-white cursor-default"
-            : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
-        }`}
-        disabled={inCart}
-        onClick={handleAddToCart}
-      >
-        {inCart ? "Already in Cart" : "Add to cart"}
-      </button>
-      <button
-        onClick={handleBuyNow}
-        className="flex-1 cursor-pointer bg-[#00a3ff] text-white py-3 px-4 md:mb-0 rounded border border-sky-400 hover:bg-[#1558b0] transition text-sm sm:text-base mb-8"
-      >
-        Buy in one click
-      </button>
-    </div>
-  </>
-)}
+                {/* FIXED: Simplified condition - only show Part Request if product is actually out of stock */}
+                {isOutOfStock ? (
+                  <>
+                    <button
+                      onClick={() => setShowPopup(true)}
+                      className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-3 rounded-md transition-colors w-full sm:w-auto"
+                    >
+                      Part Request
+                    </button>
+                    {showPopup && (
+                      <PartRequestPopup
+                        setClosePopup={setShowPopup}
+                        defaultMake={
+                          selectedProduct?.make || productInfo.make || ""
+                        }
+                        defaultModel={
+                          selectedProduct?.model || productInfo.model || ""
+                        }
+                        defaultYear={
+                          selectedProduct?.year || productInfo.year || ""
+                        }
+                      />
+                    )}
+                  </>
+                ) : (
+                  <>
+                    <div className="flex items-end gap-4 mb-4">
+                      <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
+                        $
+                        {selectedProduct?.discountedPrice
+                          ? `${selectedProduct.discountedPrice}`
+                          : selectedProduct?.actualprice
+                            ? `${selectedProduct.actualprice}`
+                            : "0"}
+                      </span>
+                      {selectedProduct?.actualprice &&
+                        selectedProduct.discountedPrice &&
+                        selectedProduct.actualprice !==
+                          selectedProduct.discountedPrice && (
+                          <span className="text-lg sm:text-xl md:text-2xl text-gray-400 line-through">
+                            ${selectedProduct.actualprice}
+                          </span>
+                        )}
+                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <button
+                        className={`flex-1 py-3 px-4 rounded transition mb-4 md:mb-0 text-sm sm:text-base ${
+                          inCart
+                            ? "bg-[#1d3759] text-white cursor-default"
+                            : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
+                        }`}
+                        disabled={inCart}
+                        onClick={handleAddToCart}
+                      >
+                        {inCart ? "Already in Cart" : "Add to cart"}
+                      </button>
+                      <button
+                        onClick={handleBuyNow}
+                        className="flex-1 cursor-pointer bg-[#00a3ff] text-white py-3 px-4 md:mb-0 rounded border border-sky-400 hover:bg-[#1558b0] transition text-sm sm:text-base mb-8"
+                      >
+                        Buy in one click
+                      </button>
+                    </div>
+                  </>
+                )}
               </div>
             </div>
           </div>
@@ -927,7 +1013,7 @@ export default function EngineProductClient({
             )}
           </div>
         </div>
-        
+
         <div className="w-full py-8 sm:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-2 lg:px-8">
             <div className="text-left md:px-10">

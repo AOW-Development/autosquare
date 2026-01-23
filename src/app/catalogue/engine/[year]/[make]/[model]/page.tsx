@@ -139,19 +139,28 @@ async function getProductsFromAPI({
   year,
   part,
 }: any) {
-  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${model}&year=${year}&part=${part}`;
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts` + 
+    `?make=${encodeURIComponent(make)}` +
+    `&model=${encodeURIComponent(model)}` +
+    `&year=${encodeURIComponent(year)}` +
+    `&part=${encodeURIComponent(part)}`;
+ 
+  console.log(`🔍 API Request: ${apiUrl}`);
  
   const response = await fetch(apiUrl, {
     next: { revalidate: 300 },
   });
  
   if (!response.ok) {
+    console.error(`❌ API Error: ${response.status} for ${apiUrl}`);
     if (response.status === 404) {
       return { groupedVariants: [] };
     }
     throw new Error(`API ${response.status}`);
   }
-  return response.json();
+  const data = await response.json();
+  console.log(`✅ API Response: ${data.groupedVariants?.length || 0} groups found`);
+  return data;
 }
  
 function hasDataInDatabase(make: string, model: string): boolean {
@@ -181,20 +190,68 @@ export default async function CatalogueEnginePageWrapper({ params }: Props) {
     });
  
     if (response.groupedVariants && Array.isArray(response.groupedVariants)) {
+      console.log(`📦 Total groups received: ${response.groupedVariants.length}`);
+      // const validEngineGroups = response.groupedVariants.filter(
+      //   (group: any) => {
+      //     const spec = (group.subPart?.name || "").toLowerCase();
+      //     return (
+      //       !spec.includes("e4od") &&
+      //       !spec.includes("e40d") &&
+      //       !spec.includes("transmission") &&
+      //       !spec.includes("vin") &&
+      //       !spec.includes("4.9l") &&
+      //       !spec.includes("5.0l") &&
+      //       !spec.includes("5.8l")
+      //     );
+      //   }
+      // );
       const validEngineGroups = response.groupedVariants.filter(
         (group: any) => {
           const spec = (group.subPart?.name || "").toLowerCase();
-          return (
-            !spec.includes("e4od") &&
-            !spec.includes("e40d") &&
-            !spec.includes("transmission") &&
-            !spec.includes("vin") &&
-            !spec.includes("4.9l") &&
-            !spec.includes("5.0l") &&
-            !spec.includes("5.8l")
-          );
+          
+          // Check subPart name for transmission keywords
+          // const hasTransmissionInSubPart = 
+          //   spec.includes("e4od") ||
+          //   spec.includes("e40d") ||
+          //   spec.includes("transmission") ||
+          //   spec.includes("vin") ||
+          //   spec.includes("4.9l") ||
+          //   spec.includes("5.0l") ||
+          //   spec.includes("5.8l");
+          
+          // if (hasTransmissionInSubPart) {
+          //   console.log(`🚫 Filtered out group (subPart): ${group.subPart?.name}`);
+          //   return false;
+          // }
+          
+          // Check individual variants for transmission-related data
+          const hasValidVariants = group.variants?.some((variant: any) => {
+            const variantSpec = (variant.specification || variant.description || "").toLowerCase();
+            const variantSku = (variant.sku || "").toLowerCase();
+            const variantTitle = (variant.title || "").toLowerCase();
+            
+            // const isTransmission = 
+            //   variantSpec.includes("transmission") ||
+            //   variantSku.includes("transmission") ||
+            //   variantTitle.includes("transmission") ||
+            //   variantSpec.includes("e4od") ||
+            //   variantSpec.includes("e40d");
+            
+            // if (isTransmission) {
+            //   console.log(`🚫 Filtered out variant (transmission): SKU=${variant.sku}`);
+            //   return false;
+            // }
+            
+            // Valid engine variant
+            console.log(`✅ Valid engine variant: SKU=${variant.sku}, Miles=${variant.miles || 'N/A'}, Spec=${variantSpec.substring(0, 50)}`);
+            return true;
+          });
+          
+          return hasValidVariants;
         }
       );
+      
+      console.log(`✅ Valid engine groups after filtering: ${validEngineGroups.length}`);
  
       products = validEngineGroups.flatMap((group: any) =>
         (group.variants || []).map((variant: any, i: number) => {

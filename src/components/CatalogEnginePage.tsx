@@ -224,6 +224,7 @@ export default function CatalogEnginePage({
   useEffect(() => {
     setSubPartFilter(null);
     setCurrentPage(1);
+    console.log("initialProducts", initialProducts.length);
  
     if (initialProducts.length === 0 && make && model && year && part) {
       const fetchProducts = async () => {
@@ -235,6 +236,7 @@ export default function CatalogEnginePage({
             year,
             part: part.toLowerCase(),
           });
+          console.log(`📦 Total groups received(front-end): ${response.data.groupedVariants.length}`);
  
           const flattenedProducts: Product[] =
             response.data.groupedVariants.flatMap((group: any) =>

@@ -51,7 +51,11 @@ function convertUrlModelToDbModel(urlModel: string, make: string): string {
   if (!urlModel || !make) return urlModel;
   
   // Capitalize make for MODELS lookup
-  const makeKey = make.charAt(0).toUpperCase() + make.slice(1);
+  let makeKey = make.charAt(0).toUpperCase() + make.slice(1);
+  if(makeKey === "Landrover") {
+    makeKey = "LandRover";
+  }
+  console.log("models", MODELS);
   const modelsForMake = MODELS[makeKey as keyof typeof MODELS];
   
   if (!modelsForMake || !Array.isArray(modelsForMake)) {

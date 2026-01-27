@@ -105,6 +105,12 @@ export default function PartDetailPage() {
       possibleCategories.includes(p.category?.toLowerCase() ?? "")
   );
 
+  if (!part) {
+    notFound();
+    return null; // 👈 THIS LINE fixes the TS error
+  }
+
+  const sections = part.desc ? Object.values(part.desc) : [];
 
   if (!part) {
     notFound();
@@ -159,7 +165,7 @@ export default function PartDetailPage() {
 
         {/* Content */}
         <div className="bg-[#11213a] rounded-xl shadow-lg border border-[#1f2e47] p-6 md:p-8">
-          {Object.values(part.desc).map((section: any, index) => (
+          {sections.map((section: any, index) => (
             <ContentSection
               key={index}
               title={section.title}

@@ -205,10 +205,10 @@ useEffect(() => {
   // Skip if already on correct catalogue page
   if (path === cleanUrl) return;
 
-  // Skip product pages (protect product navigation)
-  if (path.startsWith("/product/")) return;
+  // Skip product pages UNLESS user manually changed selections
+  if (path.startsWith("/product/") && !userChangedRef.current) return;
 
-  // Redirect from homepage OR wrong catalogue page
+  // Redirect from homepage, product page (if user changed), OR wrong catalogue page
   localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
   
   if (path.startsWith("/catalogue/")) {
@@ -216,6 +216,9 @@ useEffect(() => {
   } else {
     router.push(cleanUrl);     // Homepage/other → push (add history)
   }
+  
+  // Reset the flag after redirect
+  userChangedRef.current = false;
 }, [make, model, year, part, path, router]);
 
 

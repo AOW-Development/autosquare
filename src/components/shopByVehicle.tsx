@@ -179,37 +179,66 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
 
   // Redirect when all selections are made
   // Corrected useEffect hook in your ShopByVehicle.tsx file
+  // useEffect(() => {
+  //   if (make && model && year && part) {
+  //     const query = new URLSearchParams({ make, model, year, part }).toString();
+  //     const partSlug = part.toLowerCase(); // engine | transmission
+  //     const newUrl = `/catalogue/${partSlug}/home?${query}`;
+
+
+  //     // Save selection to local storage
+  //     localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
+
+  //     // If user is on product page, always do a full redirect
+  //     if (path.startsWith("/product/") && userChanged) {
+  //       window.location.assign(newUrl); // full redirect
+  //       return; // exit so no history push happens
+  //     }
+
+  //     // Otherwise, normal flow
+  //     const isInitialSearchPage =
+  //       path === "/" ||
+  //       path === "/engine" ||
+  //       path === "/transmission" ||
+  //       path === "/autoParts";
+
+  //     if (isInitialSearchPage) {
+  //       // router.push(newUrl);
+  //       window.location.href = newUrl;
+  //     } else if (path.startsWith("/catalogue/")) {
+  //       window.history.pushState(null, '', newUrl);
+  //     }
+  //   }
+  // }, [make, model, year, part, path, router, userChanged]);
+    const hasMountedRef = useRef(false);
+ 
   useEffect(() => {
-    if (make && model && year && part) {
-      const query = new URLSearchParams({ make, model, year, part }).toString();
-      const partSlug = part.toLowerCase(); // engine | transmission
-      const newUrl = `/catalogue/${partSlug}/home?${query}`;
-
-
-      // Save selection to local storage
-      localStorage.setItem("shopByVehicle", JSON.stringify({ make, model, year, part }));
-
-      // If user is on product page, always do a full redirect
-      if (path.startsWith("/product/") && userChanged) {
-        window.location.assign(newUrl); // full redirect
-        return; // exit so no history push happens
-      }
-
-      // Otherwise, normal flow
-      const isInitialSearchPage =
-        path === "/" ||
-        path === "/engine" ||
-        path === "/transmission" ||
-        path === "/autoParts";
-
-      if (isInitialSearchPage) {
-        // router.push(newUrl);
-        window.location.href = newUrl;
-      } else if (path.startsWith("/catalogue/")) {
-        window.history.pushState(null, '', newUrl);
-      }
+    if (!make || !model || !year || !part) return;
+ 
+    const query = new URLSearchParams({ make, model, year, part }).toString();
+    const partSlug = part.toLowerCase();
+    const newUrl = `/catalogue/${partSlug}/home?${query}`;
+ 
+    localStorage.setItem(
+      "shopByVehicle",
+      JSON.stringify({ make, model, year, part })
+    );
+ 
+    // 🚫 Skip first render on product pages
+    if (path.startsWith("/product/") && !hasMountedRef.current) {
+      hasMountedRef.current = true;
+      return;
     }
-  }, [make, model, year, part, path, router, userChanged]);
+ 
+    // product pages → full reload AFTER user interaction
+    if (path.startsWith("/product/")) {
+      window.location.assign(newUrl);
+      return;
+    }
+ 
+    router.push(newUrl);
+  }, [make, model, year, part, path, router]);
+ 
 
   // useEffect(() => {
   //   if (!make || !model || !year || !part) return;

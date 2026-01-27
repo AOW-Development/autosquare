@@ -1073,7 +1073,7 @@ export default function EngineProductClient({
                         />
                       </a>
                       <span className="absolute bottom-2 right-2 text-xs text-gray-300 pointer-events-none z-10">
-                        *Stock image
+                       Image shown is for reference only. Actual product may vary.
                       </span>
                     </>
                   ) : part === "Engine" || part == "engine" ? (
@@ -1096,7 +1096,7 @@ export default function EngineProductClient({
                         />
                       </a>
                       <span className="absolute bottom-2 right-2 text-xs text-gray-300 pointer-events-none z-10">
-                        *Stock image
+                        Image shown is for reference only. Actual product may vary.
                       </span>
                     </>
                   ) : part === "Transmission" || part == "transmission" ? (
@@ -1119,7 +1119,7 @@ export default function EngineProductClient({
                         />
                       </a>
                       <span className="absolute bottom-2 right-2 text-xs text-gray-300 pointer-events-none z-10">
-                        *Stock image
+                        Image shown is for reference only. Actual product may vary.
                       </span>
                     </>
                   ) : null}

@@ -1301,7 +1301,7 @@ useEffect(() => {
                   <span className="text-sm md:text-lg font-exo2">
                     I have Read and Accept the
                     <Link
-                      href="/account/t&c"
+                      href="/account/terms-and-condition"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"

@@ -211,10 +211,10 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "forgot password, reset password, parts central password reset, account recovery, auto parts account help, regain account access",
   },
-  "/account/t&c": {
+  "/account/terms-and-condition": {
     title: "Terms & Conditions | Parts Central – User Agreement",
     alternates: {
-      canonical: "https://partscentral.us/account/t&c",
+      canonical: "https://partscentral.us/account/terms-and-condition",
     },
     description:
       "Read the Terms and Conditions of Parts Central to understand your rights, responsibilities, and policies when using our platform to buy auto parts and manage your account.",
@@ -723,32 +723,32 @@ export function generateDynamicCatalogTransmissionMetadata(searchParams: {
 }
 
 
-export function generateDynamicCategoryMetadata(
-  category: string,
-  partName: string
-): Metadata {
-  // Format the category and part name for the URL (replace spaces with hyphens)
-  const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
-  const partSlug = partName.toLowerCase().replace(/\s+/g, '-');
+// export function generateDynamicCategoryMetadata(
+//   category: string,
+//   partName: string
+// ): Metadata {
+//   // Format the category and part name for the URL (replace spaces with hyphens)
+//   const categorySlug = category.toLowerCase().replace(/\s+/g, '-');
+//   const partSlug = partName.toLowerCase().replace(/\s+/g, '-');
 
-  // Generate the canonical URL
-  const canonical = `https://partscentral.us/autoParts/${categorySlug}/${partSlug}`;
+//   // Generate the canonical URL
+//   const canonical = `https://partscentral.us/parts/${categorySlug}/${partSlug}`;
 
-  // Generate title
-  const title = `${partName} | ${category} | Parts Central`;
+//   // Generate title
+//   const title = `${partName} | ${category} | Parts Central`;
 
-  // Generate description
-  const description = `Buy quality ${partName} in the ${category} category at Parts Central. Affordable, reliable auto parts with warranty and fast shipping across the United States.`;
+//   // Generate description
+//   const description = `Buy quality ${partName} in the ${category} category at Parts Central. Affordable, reliable auto parts with warranty and fast shipping across the United States.`;
 
-  // Generate keywords
-  const keywords = `${partName}, ${category}, auto parts, car parts, buy ${partName} USA, ${partName} for sale, Parts Central`;
+//   // Generate keywords
+//   const keywords = `${partName}, ${category}, auto parts, car parts, buy ${partName} USA, ${partName} for sale, Parts Central`;
 
-  return {
-    title,
-    description,
-    keywords,
-    alternates: {
-      canonical,
-    },
-  };
-}
+//   return {
+//     title,
+//     description,
+//     keywords,
+//     alternates: {
+//       canonical,
+//     },
+//   };
+// }

@@ -669,7 +669,7 @@ export default function CatalogEnginePage() {
                         document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
                         console.log("SKU set to:", item.sku);
 
-                        window.location.href = `/product/${year}-${make}-${regexModel}-${part}-${engineSpecification}-${encodeURIComponent(item.miles || "N-A")}`;
+                        window.location.href = `/product/${year}-${make}-${regexModel}-${part}-${engineSpecification}-${encodeURIComponent(item.miles || "n-a")}`;
                       }}
                     >
                       {/* Image container */}

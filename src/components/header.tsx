@@ -407,7 +407,7 @@ const navLinks = [
       { label: "Warranty and Return", href: "/account/warrantyAndReturn" },
       { label: "Shipping and Payment", href: "/account/shippingPaymentPolicy" },
       { label: "Privacy Policy", href: "/account/privacyPolicy" },
-      { label: "Terms & Conditions", href: "/account/t&c" },
+      { label: "Terms & Conditions", href: "/account/terms-and-condition" },
       { label: "Blogs", href: "/Blog/blogListing" },
       { label: "Testimonials", href: "/testimonials" },
       { label: "FAQ", href: "/account/faq" },

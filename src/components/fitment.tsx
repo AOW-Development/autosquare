@@ -43,6 +43,7 @@ interface VerifyPartPopupProps {
   part?: string
   subPartsList?: SubPart[]
   selectedProduct?: Product | null
+  subPartFilter?: number | null
   vinNumber?: string
   onConfirm: () => void
 }
@@ -93,15 +94,20 @@ export function VerifyPartPopup({
   )
 
   const isSpecMatch = (): boolean => {
-    if (!selectedProduct || !selectedSubPart) return false
-    const makeMatch = !selectedProduct.make || selectedProduct.make === make
-    const modelMatch = !selectedProduct.model || selectedProduct.model === model
-    const yearMatch = !selectedProduct.year || selectedProduct.year === year
-    const partMatch =
-      !selectedProduct.subPart || selectedProduct.subPart.name === selectedSubPart.name
+  if (!selectedProduct || !selectedSubPart) return false;
+  
+  const makeMatch = !selectedProduct.make || 
+    selectedProduct.make?.toLowerCase() === make.toLowerCase();
+  const modelMatch = !selectedProduct.model || 
+    selectedProduct.model?.toLowerCase() === model.toLowerCase();
+  const yearMatch = !selectedProduct.year || 
+    selectedProduct.year === year;
+  const partMatch = !selectedProduct.subPart || 
+    selectedProduct.subPart.name === selectedSubPart.name;
 
-    return makeMatch && modelMatch && yearMatch && partMatch
-  }
+  return makeMatch && modelMatch && yearMatch && partMatch;
+};
+
 
   const isFitCorrect = isSpecMatch()
 

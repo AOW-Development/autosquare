@@ -10,10 +10,10 @@ export const revalidate = 0;
 // Helper function to convert URL-friendly model to database model
 function convertUrlModelToDbModel(urlModel: string, make: string): string {
   if (!urlModel || !make) return urlModel;
-  
+
   // Decode URL-encoded characters (e.g., %26 → &)
   const decodedUrlModel = decodeURIComponent(urlModel);
-  
+
   // Try different capitalization strategies to find the make in MODELS
   // vehicleData.ts has: Ford, GMC, BMW, Cadillac, etc.
   const makeVariations = [
@@ -21,10 +21,10 @@ function convertUrlModelToDbModel(urlModel: string, make: string): string {
     make.charAt(0).toUpperCase() + make.slice(1).toLowerCase(), // Ford, Cadillac
     make.charAt(0).toUpperCase() + make.slice(1), // Keep original case after first char
   ];
-  
+
   let makeKey: string | null = null;
   let modelsForMake: string[] | null = null;
-  
+
   // Try each variation
   for (const variation of makeVariations) {
     if (MODELS[variation as keyof typeof MODELS]) {
@@ -33,40 +33,50 @@ function convertUrlModelToDbModel(urlModel: string, make: string): string {
       break;
     }
   }
-  
+
   // If still not found, try case-insensitive search
   if (!modelsForMake) {
     const availableMakes = Object.keys(MODELS);
-    const foundMake = availableMakes.find(m => m.toLowerCase() === make.toLowerCase());
+    const foundMake = availableMakes.find(
+      (m) => m.toLowerCase() === make.toLowerCase(),
+    );
     if (foundMake) {
       makeKey = foundMake;
       modelsForMake = MODELS[foundMake as keyof typeof MODELS];
     }
   }
-  
+
   if (!modelsForMake || !Array.isArray(modelsForMake)) {
     console.log(`⚠️ No models found for make: ${make}`);
     console.log(`⚠️ Available makes in MODELS:`, Object.keys(MODELS));
     return decodedUrlModel;
   }
-  
-  console.log(`🔍 Looking for URL model "${decodedUrlModel}" in ${makeKey} models`);
-  
+
+  console.log(
+    `🔍 Looking for URL model "${decodedUrlModel}" in ${makeKey} models`,
+  );
+
   // Normalize the URL model for comparison (remove all special chars)
-  const normalizedUrlModel = decodedUrlModel.toLowerCase().replace(/[^a-z0-9]/g, "");
-  
+  const normalizedUrlModel = decodedUrlModel
+    .toLowerCase()
+    .replace(/[^a-z0-9]/g, "");
+
   // Find matching model in MODELS
   const matchingModel = modelsForMake.find((dbModel: string) => {
     const normalizedDbModel = dbModel.toLowerCase().replace(/[^a-z0-9]/g, "");
     return normalizedDbModel === normalizedUrlModel;
   });
-  
+
   if (matchingModel) {
-    console.log(`✅ Converted URL model "${decodedUrlModel}" to DB model "${matchingModel}"`);
+    console.log(
+      `✅ Converted URL model "${decodedUrlModel}" to DB model "${matchingModel}"`,
+    );
   } else {
-    console.log(`⚠️ No match found for URL model "${decodedUrlModel}" in ${modelsForMake.length} ${makeKey} models`);
+    console.log(
+      `⚠️ No match found for URL model "${decodedUrlModel}" in ${modelsForMake.length} ${makeKey} models`,
+    );
   }
-  
+
   // Return the original database model if found, otherwise return decoded URL model
   return matchingModel || decodedUrlModel;
 }
@@ -87,7 +97,6 @@ type Props = {
     seoDescription?: string;
   }>;
 };
-
 
 export async function generateMetadata({
   params,
@@ -113,31 +122,30 @@ export async function generateMetadata({
     if (!queryParams.make && segments.length >= 4) {
       year = segments[0];
       make = segments[1];
-      
+
       // Find the part index (engine or transmission)
       const partIndex = segments.findIndex(
-        (seg) => seg.toLowerCase() === "engine" || seg.toLowerCase() === "transmission"
+        (seg) =>
+          seg.toLowerCase() === "engine" ||
+          seg.toLowerCase() === "transmission",
       );
-      
+
       if (partIndex > 2) {
         // Model is everything between make and part (keep hyphens to match URL format)
         model = segments.slice(2, partIndex).join("-");
         part = segments[partIndex];
-        
+
         // Parse specification and miles after part
         const remainingSegments = segments.slice(partIndex + 1);
-        
         if (remainingSegments.length > 0) {
-          // Check if last segment looks like miles (ends with 'k' or is a number)
           const lastSegment = remainingSegments[remainingSegments.length - 1];
-          const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
-          
-          if (looksLikeMiles && remainingSegments.length > 1) {
+
+          if (lastSegment === "n-a") {
+            miles = "n-a";
+            specification = remainingSegments.slice(0, -1).join("-");
+          } else if (/^\d+k?$/i.test(lastSegment)) {
             miles = lastSegment;
             specification = remainingSegments.slice(0, -1).join("-");
-          } else if (looksLikeMiles && remainingSegments.length === 1) {
-            miles = lastSegment;
-            specification = "";
           } else {
             specification = remainingSegments.join("-");
             miles = "";
@@ -147,13 +155,13 @@ export async function generateMetadata({
         // Fallback: assume model is at index 2
         model = segments[2];
         part = segments[3];
-        
+
         const remainingSegments = segments.slice(4);
-        
+
         if (remainingSegments.length > 0) {
           const lastSegment = remainingSegments[remainingSegments.length - 1];
           const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
-          
+
           if (looksLikeMiles && remainingSegments.length > 1) {
             miles = lastSegment;
             specification = remainingSegments.slice(0, -1).join("-");
@@ -166,8 +174,15 @@ export async function generateMetadata({
           }
         }
       }
-      
-      console.log("Parsed from URL:", { year, make, model, part, specification, miles });
+
+      console.log("Parsed from URL:", {
+        year,
+        make,
+        model,
+        part,
+        specification,
+        miles,
+      });
     } else {
       // Use query params if available
       year = queryParams.year || "";
@@ -176,15 +191,25 @@ export async function generateMetadata({
       part = queryParams.part || "";
     }
 
-    console.log("Final parsed values:", { year, make, model, part, specification, miles });
+    console.log("Final parsed values:", {
+      year,
+      make,
+      model,
+      part,
+      specification,
+      miles,
+    });
 
     const allParams = {
       ...queryParams,
       item: routeParams.item,
     };
 
+    if (!year || !make || !model || !part) {
+      return generateDynamicEngineMetadata(allParams); // early return
+    }
     const baseMetadata = generateDynamicEngineMetadata(allParams);
-    
+
     let apiseo: {
       seoTitle?: string;
       seoDescription?: string;
@@ -196,17 +221,17 @@ export async function generateMetadata({
       try {
         // Convert URL model to database model format
         const dbModel = convertUrlModelToDbModel(model, make);
-        const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
-        //  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
+        // const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
+        const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${make}&model=${encodeURIComponent(dbModel)}&year=${year}&part=${part}`;
         console.log("🔍 Fetching SEO data from:", apiUrl);
         console.log("🔄 Model conversion: URL=", model, "→ DB=", dbModel);
-        
+
         const apiResponse = await fetch(apiUrl, {
-          cache: 'no-store',
+          cache: "no-store",
           next: { revalidate: 0 },
           headers: {
-            'Content-Type': 'application/json',
-          }
+            "Content-Type": "application/json",
+          },
         });
 
         if (!apiResponse.ok) {
@@ -225,53 +250,87 @@ export async function generateMetadata({
 
         if (apiData.groupedVariants && apiData.groupedVariants.length > 0) {
           // Helper function to normalize specification strings
-          const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
-          
+          const normalizeSpec = (spec: string) =>
+            spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+
           // Try to match by specification first
           let targetGroup = null;
-          
+
           if (specification) {
             const specNormalized = normalizeSpec(specification);
-            console.log("🔎 Looking for specification:", specification, "normalized:", specNormalized);
-            
+            console.log(
+              "🔎 Looking for specification:",
+              specification,
+              "normalized:",
+              specNormalized,
+            );
+
             targetGroup = apiData.groupedVariants.find((group: any) => {
               const groupName = group.subPart?.name || "";
               const groupNormalized = normalizeSpec(groupName);
-              
-              return groupNormalized === specNormalized || 
-                     groupNormalized.includes(specNormalized) ||
-                     specNormalized.includes(groupNormalized);
+
+              return (
+                groupNormalized === specNormalized ||
+                groupNormalized.includes(specNormalized) ||
+                specNormalized.includes(groupNormalized)
+              );
             });
-            
+
             if (targetGroup) {
-              console.log("✅ Found matching specification group:", targetGroup.subPart.name);
-              
+              console.log(
+                "✅ Found matching specification group:",
+                targetGroup.subPart.name,
+              );
+
               // If miles is also specified, try to find matching variant
               if (miles) {
-                const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
-                console.log("🔎 Looking for miles:", miles, "normalized:", milesNormalized);
-                
+                const milesNormalized = miles
+                  .toLowerCase()
+                  .replace(/[^a-z0-9]/g, "");
+                console.log(
+                  "🔎 Looking for miles:",
+                  miles,
+                  "normalized:",
+                  milesNormalized,
+                );
+
                 selectedVariant = targetGroup.variants.find((v: any) => {
-                  const variantMiles = v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "";
-                  return variantMiles === milesNormalized || variantMiles.includes(milesNormalized);
+                  const variantMiles =
+                    v.miles
+                      ?.toString()
+                      .toLowerCase()
+                      .replace(/[^a-z0-9]/g, "") || "";
+                  return (
+                    variantMiles === milesNormalized ||
+                    variantMiles.includes(milesNormalized)
+                  );
                 });
-                
+
                 if (selectedVariant) {
-                  console.log("✅ Found matching miles variant:", selectedVariant.miles);
+                  console.log(
+                    "✅ Found matching miles variant:",
+                    selectedVariant.miles,
+                  );
                 }
               }
-              
+
               // If no miles match or miles not specified, use first in-stock variant from this spec group
               if (!selectedVariant) {
-                selectedVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
-                console.log("✅ Using first available variant from matched spec group");
+                selectedVariant =
+                  targetGroup.variants.find((v: any) => v.inStock) ||
+                  targetGroup.variants[0];
+                console.log(
+                  "✅ Using first available variant from matched spec group",
+                );
               }
             }
           }
-          
+
           // Fallback: Use first in-stock variant overall
           if (!selectedVariant) {
-            console.log("⚠️ No specification/miles match, using first in-stock variant");
+            console.log(
+              "⚠️ No specification/miles match, using first in-stock variant",
+            );
             for (const group of apiData.groupedVariants) {
               const inStockVariant = group.variants.find((v: any) => v.inStock);
               if (inStockVariant) {
@@ -280,7 +339,7 @@ export async function generateMetadata({
                 break;
               }
             }
-            
+
             // Last resort: first variant overall
             if (!selectedVariant) {
               selectedVariant = apiData.groupedVariants[0].variants[0];
@@ -298,7 +357,7 @@ export async function generateMetadata({
           console.log("✅ SEO data extracted:", {
             title: apiseo.seoTitle?.substring(0, 60),
             hasDescription: !!apiseo.seoDescription,
-            canonical: apiseo.seoCanonical
+            canonical: apiseo.seoCanonical,
           });
         } else {
           console.log("⚠️ No variant found, using fallback metadata");
@@ -311,9 +370,14 @@ export async function generateMetadata({
     }
 
     // Build final metadata with proper type handling
-    const finalTitle = apiseo?.seoTitle?.trim() || baseMetadata.title || undefined;
-    const finalDescription = apiseo?.seoDescription?.trim() || baseMetadata.description || undefined;
-    
+    const finalTitle =
+      apiseo?.seoTitle?.trim() ||
+      `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)}`;
+
+    const finalDescription =
+      apiseo?.seoDescription?.trim() ||
+      `Used ${year} ${make.toUpperCase()} ${model.toUpperCase()} ${part}. Tested and inspected for quality and performance. Available with verified mileage and ready for installation.`;
+
     // FIXED: Canonical should always match the current URL (decode URL-encoded characters)
     const decodedItem = decodeURIComponent(routeParams.item);
     const currentUrl = `https://partscentral.us/product/${decodedItem}`;
@@ -332,30 +396,29 @@ export async function generateMetadata({
         title: finalTitle,
         description: finalDescription,
         url: finalCanonical,
-        type: 'website',
+        type: "website",
       },
       // Add Twitter Card tags
       twitter: {
-        card: 'summary_large_image',
+        card: "summary_large_image",
         title: finalTitle,
         description: finalDescription,
       },
     };
-    
+
     console.log("🎯 Final metadata:", {
       title: finalMetadata.title,
       hasDescription: !!finalMetadata.description,
       canonical: finalMetadata.alternates?.canonical,
-      usedApiSEO: !!apiseo?.seoTitle
+      usedApiSEO: !!apiseo?.seoTitle,
     });
-    
+
     return finalMetadata;
   } catch (error) {
     console.error("❌ Error generating metadata:", error);
     return generateDynamicEngineMetadata({});
   }
 }
-
 
 export default async function EngineProductPage({
   params,
@@ -386,41 +449,37 @@ export default async function EngineProductPage({
     // Parse from URL segments
     year = segments[0];
     make = segments[1];
-    
+
     // Find the part index (engine or transmission)
     const partIndex = segments.findIndex(
-      (seg) => seg.toLowerCase() === "engine" || seg.toLowerCase() === "transmission"
+      (seg) =>
+        seg.toLowerCase() === "engine" || seg.toLowerCase() === "transmission",
     );
-    
+
     if (partIndex > 2) {
       // Model is everything between make and part (keep hyphens to match URL format)
       model = segments.slice(2, partIndex).join("-");
       part = segments[partIndex];
-      
+
       // Parse specification and miles after part
       // Miles is typically the LAST segment and ends with 'k' or is a pure number
       // Specification is everything between part and miles
       // Example: 2016-audi-a8-engine-4-0l-vin-3-5th-digit-turbo-gasoline-engine-id-ctgf-10k
       //          specification = "4-0l-vin-3-5th-digit-turbo-gasoline-engine-id-ctgf"
       //          miles = "10k"
-      
+
       const remainingSegments = segments.slice(partIndex + 1);
-      
+
       if (remainingSegments.length > 0) {
-        // Check if last segment looks like miles (ends with 'k' or is a number)
         const lastSegment = remainingSegments[remainingSegments.length - 1];
-        const looksLikeMiles = /^\d+k?$/i.test(lastSegment); // Matches: 10k, 90000, 30K, etc.
-        
-        if (looksLikeMiles && remainingSegments.length > 1) {
-          // Last segment is miles, everything else is specification
-          miles = lastSegment;
+
+        if (lastSegment === "n-a") {
+          miles = "n-a"; // ✅ Out of stock
           specification = remainingSegments.slice(0, -1).join("-");
-        } else if (looksLikeMiles && remainingSegments.length === 1) {
-          // Only one segment and it's miles
-          miles = lastSegment;
-          specification = "";
+        } else if (/^\d+k?$/i.test(lastSegment)) {
+          miles = lastSegment; // ✅ In stock miles
+          specification = remainingSegments.slice(0, -1).join("-");
         } else {
-          // No miles found, everything is specification
           specification = remainingSegments.join("-");
           miles = "";
         }
@@ -429,20 +488,20 @@ export default async function EngineProductPage({
       // Fallback: assume model is at index 2
       model = segments[2];
       part = segments[3];
-      
+
       // Apply same logic for spec and miles
       const remainingSegments = segments.slice(4);
-      
+
+      // INSIDE fallback block - ADD n-a check:
       if (remainingSegments.length > 0) {
         const lastSegment = remainingSegments[remainingSegments.length - 1];
-        const looksLikeMiles = /^\d+k?$/i.test(lastSegment);
-        
-        if (looksLikeMiles && remainingSegments.length > 1) {
+
+        if (lastSegment === "n-a") {
+          miles = "n-a";
+          specification = remainingSegments.slice(0, -1).join("-");
+        } else if (/^\d+k?$/i.test(lastSegment)) {
           miles = lastSegment;
           specification = remainingSegments.slice(0, -1).join("-");
-        } else if (looksLikeMiles && remainingSegments.length === 1) {
-          miles = lastSegment;
-          specification = "";
         } else {
           specification = remainingSegments.join("-");
           miles = "";
@@ -451,27 +510,39 @@ export default async function EngineProductPage({
     }
   }
 
-  console.log("🔄 Server-side parsed params:", { year, make, model, part, specification, miles });
-
+  console.log("🔄 Server-side parsed params:", {
+    year,
+    make,
+    model,
+    part,
+    specification,
+    miles,
+  });
 
   // Fetch product data on server
   let initialData = null;
-  
+
   if (make && model && year && part) {
     try {
       // Convert URL model to database model format
       const dbModel = convertUrlModelToDbModel(model, make);
-       const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
-      // const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
-      
+      //  const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts?make=${encodeURIComponent(make)}&model=${encodeURIComponent(dbModel)}&year=${encodeURIComponent(year)}&part=${encodeURIComponent(part)}`;
+
       console.log("🔄 Server fetching from:", apiUrl);
-      console.log("📋 Parsed params:", { make, model: model, dbModel, year, part });
-      
-      const res = await fetch(apiUrl, { 
-        cache: "no-store",
-        next: { revalidate: 0 }
+      console.log("📋 Parsed params:", {
+        make,
+        model: model,
+        dbModel,
+        year,
+        part,
       });
-      
+
+      const res = await fetch(apiUrl, {
+        cache: "no-store",
+        next: { revalidate: 0 },
+      });
+
       if (res.ok) {
         initialData = await res.json();
         console.log("✅ Server-side data fetched successfully");
@@ -481,12 +552,22 @@ export default async function EngineProductPage({
           make: initialData?.make,
           model: initialData?.model,
           year: initialData?.year,
-          part: initialData?.part
+          part: initialData?.part,
         });
-        
-        if (!initialData?.groupedVariants || initialData.groupedVariants.length === 0) {
-          console.error("⚠️ API returned empty groupedVariants - model mismatch likely");
-          console.error("⚠️ URL model:", model, "| API model:", initialData?.model);
+
+        if (
+          !initialData?.groupedVariants ||
+          initialData.groupedVariants.length === 0
+        ) {
+          console.error(
+            "⚠️ API returned empty groupedVariants - model mismatch likely",
+          );
+          console.error(
+            "⚠️ URL model:",
+            model,
+            "| API model:",
+            initialData?.model,
+          );
         }
       } else {
         console.error("❌ Server fetch failed:", res.status);
@@ -503,49 +584,67 @@ export default async function EngineProductPage({
     hasGroupedVariants: !!initialData?.groupedVariants,
     variantCount: initialData?.groupedVariants?.length,
     specification,
-    miles
+    miles,
   });
 
   // Generate JSON-LD Product Schema
   let jsonLdSchema = null;
-  
-  if (initialData?.groupedVariants?.length > 0 && make && model && year && part) {
+
+  if (
+    initialData?.groupedVariants?.length > 0 &&
+    make &&
+    model &&
+    year &&
+    part
+  ) {
     // Find the matching variant based on specification and miles
     let selectedVariant = null;
     let selectedSubPart = null;
-    
-    const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
-    
+
+    const normalizeSpec = (spec: string) =>
+      spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+
     // Try to match specification
     if (specification) {
       const specNormalized = normalizeSpec(specification);
       const targetGroup = initialData.groupedVariants.find((group: any) => {
         const groupName = group.subPart?.name || "";
         const groupNormalized = normalizeSpec(groupName);
-        return groupNormalized === specNormalized || 
-               groupNormalized.includes(specNormalized) ||
-               specNormalized.includes(groupNormalized);
+        return (
+          groupNormalized === specNormalized ||
+          groupNormalized.includes(specNormalized) ||
+          specNormalized.includes(groupNormalized)
+        );
       });
-      
+
       if (targetGroup) {
         selectedSubPart = targetGroup.subPart;
-        
+
         // Try to match miles within this group
         if (miles) {
           const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
           selectedVariant = targetGroup.variants.find((v: any) => {
-            const variantMiles = v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "";
-            return variantMiles === milesNormalized || variantMiles.includes(milesNormalized);
+            const variantMiles =
+              v.miles
+                ?.toString()
+                .toLowerCase()
+                .replace(/[^a-z0-9]/g, "") || "";
+            return (
+              variantMiles === milesNormalized ||
+              variantMiles.includes(milesNormalized)
+            );
           });
         }
-        
+
         // Fallback to first in-stock variant in this group
         if (!selectedVariant) {
-          selectedVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+          selectedVariant =
+            targetGroup.variants.find((v: any) => v.inStock) ||
+            targetGroup.variants[0];
         }
       }
     }
-    
+
     // Fallback to first available variant overall
     if (!selectedVariant) {
       for (const group of initialData.groupedVariants) {
@@ -556,57 +655,62 @@ export default async function EngineProductPage({
           break;
         }
       }
-      
+
       if (!selectedVariant && initialData.groupedVariants[0]) {
         selectedVariant = initialData.groupedVariants[0].variants[0];
         selectedSubPart = initialData.groupedVariants[0].subPart;
       }
     }
-    
+
     if (selectedVariant) {
       const decodedModel = decodeURIComponent(model);
       const productName = `${year} ${make.toUpperCase()} ${decodedModel.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
       // Decode URL-encoded characters in the item parameter for clean URLs
       const decodedItem = decodeURIComponent(routeParams.item);
       const productUrl = `https://partscentral.us/product/${decodedItem}`;
-      const imageUrl = selectedVariant.product?.images?.[0] 
+      const imageUrl = selectedVariant.product?.images?.[0]
         ? `https://partscentral.us${selectedVariant.product.images[0]}`
-        : part.toLowerCase() === "engine" 
+        : part.toLowerCase() === "engine"
           ? "https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
           : "https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png";
-      
-      const price = selectedVariant.discountedPrice || selectedVariant.actualprice || 0;
-      const availability = selectedVariant.inStock 
-        ? "https://schema.org/InStock" 
+
+      const price =
+        selectedVariant.discountedPrice || selectedVariant.actualprice || 0;
+      const availability = selectedVariant.inStock
+        ? "https://schema.org/InStock"
         : "https://schema.org/OutOfStock";
-      
+
       // Clean SKU for schema
-      const cleanSku = selectedVariant.sku?.replace(/[\/\s]/g, "-") || 
-        `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || ""}`.replace(/[\/\s,()]/g, "-");
-      
+      const cleanSku =
+        selectedVariant.sku?.replace(/[\/\s]/g, "-") ||
+        `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || ""}`.replace(
+          /[\/\s,()]/g,
+          "-",
+        );
+
       const description = `This ${make.charAt(0).toUpperCase() + make.slice(1)} ${model} ${part.charAt(0).toUpperCase() + part.slice(1)} is from ${year} models. Each ${part.charAt(0).toUpperCase() + part.slice(1)} is tested and ready to install and offers improved performance. This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
-      
+
       jsonLdSchema = {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": productName,
-        "image": imageUrl,
-        // "description": description,
-        // "sku": cleanSku,
-        "brand": {
+        name: productName,
+        image: imageUrl,
+        description: description,
+        sku: cleanSku,
+        brand: {
           "@type": "Brand",
-          "name": make.charAt(0).toUpperCase() + make.slice(1)
+          name: make.charAt(0).toUpperCase() + make.slice(1),
         },
-        "offers": {
+        offers: {
           "@type": "Offer",
-          "url": productUrl,
-          "priceCurrency": "USD",
-          "price": price.toFixed(2),
-          "itemCondition": "https://schema.org/UsedCondition",
-          "availability": availability
-        }
+          url: productUrl,
+          priceCurrency: "USD",
+          price: price.toFixed(2),
+          itemCondition: "https://schema.org/UsedCondition",
+          availability: availability,
+        },
       };
-      
+
       console.log("✅ Generated JSON-LD schema for:", productName);
     }
   }
@@ -620,8 +724,8 @@ export default async function EngineProductPage({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchema) }}
         />
       )}
-      <EngineProductClient 
-        initialItem={routeParams.item} 
+      <EngineProductClient
+        initialItem={routeParams.item}
         initialData={initialData}
         setSku={queryParams.sku}
         setModal={undefined}
@@ -631,4 +735,3 @@ export default async function EngineProductPage({
     </>
   );
 }
-

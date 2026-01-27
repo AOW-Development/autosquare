@@ -85,7 +85,8 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
  
   // Reset or load saved values based on page
   useEffect(() => {
-    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/auto-Parts" || path.startsWith("/parts") || path.startsWith("/used-auto-parts")) {
+    console.log("path", path);
+    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/autoParts" || path === "/auto-parts" || path.startsWith("/parts") || path.startsWith("/used-auto-parts")) {
       setMake("");
       setModel("");
       setYear("");
@@ -111,8 +112,13 @@ const ShopByVehicle: React.FC<ShopByVehicleProps> = ({
  
   // Parse pathname for new URL format: /catalogue/engine/2025/bmw/1m
   useEffect(() => {
+    // Don't parse URL if we're on a reset page
+    if (path === "/" || path === "/engine" || path === "/transmission" || path === "/auto-Parts" || path === "/autoParts" || path.startsWith("/parts") || path.startsWith("/used-auto-parts")) {
+      return;
+    }
+    
     if (!path.startsWith("/catalogue/")) return;
- 
+
     const pathParts = path.split('/').filter(Boolean);
     // Expected: ['catalogue', 'engine', '2025', 'bmw', '1m']
     

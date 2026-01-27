@@ -124,6 +124,11 @@ const nextConfig: NextConfig = {
         destination: '/account/payment-details',
         permanent: true,
       },
+       {
+        source: '/account/t&c',
+        destination: '/account/terms-and-condition',
+        permanent: true,
+      },
       {
         source: '/account/orderDetails',
         destination: '/account/order-details',

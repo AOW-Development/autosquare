@@ -11,8 +11,8 @@ import { getGroupedProducts } from "@/utils/api";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { VerifyPartPopup } from "@/components/fitment";
 import { useSkuStore } from "@/store/skuStore";
-
-
+ 
+ 
  
 // Import your models data from vehicleData
 import { MODELS} from "@/components/vehicleData";
@@ -106,8 +106,8 @@ const createSlug = (text: string): string => {
     .replace(/-+/g, '-');
 };
  
-
-
+ 
+ 
 // Helper function to find matching model from MODELS array
 const findMatchingModel = (make: string, modelSlug: string): string => {
   if (!make || !modelSlug) return modelSlug;
@@ -297,15 +297,15 @@ const filteredProducts = (() => {
         (p) => typeof p.subPart?.id === "number" && p.subPart?.id === subPartFilter
       )
     : products;
-
+ 
   // Apply sorting
   switch (currentSort) {
     case 'price-low-high':
-      return [...result].sort((a, b) => 
+      return [...result].sort((a, b) =>
         Number(a.discountedPrice || a.actualprice || 0) - Number(b.discountedPrice || b.actualprice || 0)
       );
     case 'price-high-low':
-      return [...result].sort((a, b) => 
+      return [...result].sort((a, b) =>
         Number(b.discountedPrice || b.actualprice || 0) - Number(a.discountedPrice || a.actualprice || 0)
       );
     case 'newest':
@@ -315,8 +315,8 @@ const filteredProducts = (() => {
       return result;
   }
 })();
-
-
+ 
+ 
  
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const indexOfLastItem = currentPage * itemsPerPage;
@@ -462,7 +462,7 @@ const filteredProducts = (() => {
      router.push(
   `/account/cart?make=${make.toLowerCase()}&model=${createSlug(model)}&year=${year}&part=${part.toLowerCase()}`
 );
-
+ 
     }, 100);
   };
  
@@ -600,7 +600,7 @@ const filteredProducts = (() => {
   <option value="price-high-low">Price: High to Low</option>
   <option value="newest">Newest Arrivals</option>
 </select>
-
+ 
  
                 <div className="absolute right-3 pointer-events-none">
                   <svg
@@ -649,24 +649,24 @@ const filteredProducts = (() => {
   const cartItem = cartItems.find((i) => i.id === item.sku);
   const modelSlug = createSlug(model);
   
-   const productSlug = item.inStock 
+   const productSlug = item.inStock
     ? `${createSlug(item.subPart?.name || "")}-${item.miles || "n-a"}`
     : `${createSlug(item.subPart?.name || "")}-n-a`;
-
-
+ 
+ 
   return (
     <div key={`${item.id}-${item.sku}`} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group">
       <div className="block cursor-pointer" onClick={() => {
   setSku(item.sku);
   document.cookie = `sku=${item.sku}; path=/; max-age=3600; SameSite=Lax`;
   
-  const productSlug = item.inStock 
+  const productSlug = item.inStock
   ? `${createSlug(item.subPart?.name || "")}-${item.miles?.replace(/[^\d]/g, "") || "n-a"}`
   : `${createSlug(item.subPart?.name || "")}-n-a`;
   
   router.push(`/product/${year}-${make.toLowerCase()}-${modelSlug}-${part.toLowerCase()}-${productSlug}`);
 }}>
-
+ 
         <div className="relative mx-auto mb-3 flex justify-center items-center rounded-md" style={{
           background: "radial-gradient(circle at center, rgba(255, 255, 255, 0.4) 0%, rgba(12, 42, 77, 0) 70%, transparent 100%)",
           width: "250px",
@@ -685,7 +685,7 @@ const filteredProducts = (() => {
             </>
           )}
         </div>
-
+ 
         <div className="relative z-20 pt-2 w-full text-left">
           <h3 className="text-white text-base mb-1">{year} {make} {model}</h3>
           <p className="text-sm text-gray-300 mb-1">used {part}</p>
@@ -694,7 +694,7 @@ const filteredProducts = (() => {
           <p className="text-xs text-gray-400 mb-2">{item.warranty || "90 Days Warranty"}</p>
         </div>
       </div>
-
+ 
       <div className="flex justify-between items-center mt-3 relative z-30">
         {item.inStock && productSlug !== 'n-a' ? (
           <>
@@ -742,7 +742,7 @@ const filteredProducts = (() => {
     </div>
   );
 })}
-
+ 
  
               {showCartPopup && selectedProductForVerify && (
                 <AddedCartPopup
@@ -777,7 +777,7 @@ const filteredProducts = (() => {
   }}
   make={make}           // ✅ Uses CATALOG make "Toyota"
   model={model}         // ✅ Uses CATALOG model "Camry"
-  year={year}           // ✅ Uses CATALOG year "2018" 
+  year={year}           // ✅ Uses CATALOG year "2018"
   part={part}           // ✅ Uses CATALOG part "Engine"
   subPartsList={subPartsList}
   selectedProduct={selectedProductForVerify}
@@ -789,7 +789,7 @@ const filteredProducts = (() => {
   }}
   vinNumber=""
 />
-
+ 
           </main>
         </div>
       </div>

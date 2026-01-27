@@ -6440,6 +6440,757 @@ export const PARTS = [
         },
     },
     {
+        category: "Engine",
+        name: "Air Cleaner",
+        image: "/parts/Air Cleaner Filter.png",
+        desc: {
+            intro: {
+                title: "What Is an Air Cleaner and Why It’s Important for Your Vehicle",
+                text: [
+                    "An **air cleaner**, commonly known as an **engine air filter**, is responsible for filtering dust, dirt, and debris from the air entering the engine.",
+                    "By supplying clean air for combustion, the air cleaner helps maintain engine power, fuel efficiency, and long-term reliability.",
+                    "Available in **paper, cotton, and synthetic materials**, a properly functioning auto air filter cleaner protects internal engine components from premature wear and contamination.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle Needs a New Air Cleaner",
+                points: [
+                    "**Reduced engine power or sluggish acceleration**.",
+                    "**Decreased fuel efficiency**.",
+                    "**Dirty or clogged filter element**.",
+                    "**Unusual engine sounds during acceleration**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Dirty Air Cleaner Affects Engine Performance",
+                text: [
+                    "A clogged air cleaner limits the amount of clean air reaching the engine, leading to incomplete combustion and power loss.",
+                    "Restricted airflow increases fuel consumption and raises emissions output.",
+                    "Over time, the engine is forced to work harder, accelerating wear on internal components and reducing overall efficiency.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Air Cleaner for Your Vehicle",
+                points: [
+                    "**Vehicle make, model, and engine specifications**.",
+                    "**Filter material type: paper, cotton, or synthetic**.",
+                    "**OEM or high-quality aftermarket compatibility**.",
+                    "**Intended driving conditions such as dusty or urban environments**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Air Cleaner Is Important",
+                text: [
+                    "Replacing a dirty air cleaner restores proper airflow and improves fuel efficiency.",
+                    "A clean filter helps the engine perform at its designed output and supports smoother, more responsive driving.",
+                    "Regular replacement also reduces internal engine wear and prolongs engine life.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Air Cleaner Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring a clogged or damaged air cleaner can lead to poor combustion and increased engine deposits.",
+                    "Sensor contamination and long-term engine damage may occur due to unfiltered air intake.",
+                    "Early air cleaner replacement prevents costly repairs and keeps the engine running clean, efficient, and protected.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Coolant Pump",
+        image: "/parts/Coolant Pump.png",
+        desc: {
+            intro: {
+                title: "What Is a Coolant Pump and Why It’s Important for Your Vehicle",
+                text: [
+                    "A **coolant pump**, also known as an **engine coolant pump**, is responsible for circulating coolant through the engine, radiator, and cooling passages.",
+                    "By maintaining continuous coolant flow, the pump regulates engine temperature and prevents overheating during operation.",
+                    "Available in **mechanical and electric variants**, a properly functioning coolant pump is essential for engine efficiency, performance stability, and long-term engine protection.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle Needs Coolant Pump Replacement",
+                points: [
+                    "**Engine overheating or a rising temperature gauge**.",
+                    "**Coolant leaks near the front of the engine**.",
+                    "**Whining, grinding, or squealing noises** from the pump area.",
+                    "**Steam coming from the engine bay**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Coolant Pump Affects Engine Performance",
+                text: [
+                    "A failing engine coolant pump disrupts proper temperature regulation, leading to inconsistent engine operating temperatures.",
+                    "The risk of overheating increases significantly, reducing engine efficiency and power output.",
+                    "Prolonged operation with poor coolant circulation can damage head gaskets and other internal engine components.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Coolant Pump for Your Vehicle",
+                points: [
+                    "**Compatibility with your vehicle’s make, model, and engine type**.",
+                    "**Mechanical or electric pump design requirements**.",
+                    "**OEM or high-quality aftermarket construction**.",
+                    "**Integration with timing belt or accessory drive systems**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Coolant Pump Is Important",
+                text: [
+                    "Replacing a failing coolant pump restores proper temperature regulation and steady coolant flow.",
+                    "It protects engine components from heat damage and ensures smooth, efficient operation.",
+                    "A healthy cooling system keeps the engine running within safe limits under all driving conditions.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Coolant Pump Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring coolant pump problems can result in severe overheating and coolant loss.",
+                    "Warped engine components, damaged head gaskets, and catastrophic engine failure may occur.",
+                    "Early coolant pump replacement prevents costly repairs and preserves long-term engine reliability and performance.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Cylinder Block",
+        image: "/parts/Cylinder Block.png",
+        desc: {
+            intro: {
+                title: "What Is a Cylinder Block and Why It’s Important for Your Vehicle",
+                text: [
+                    "The **cylinder block**, also known as the **engine block**, is the main structural foundation of an engine.",
+                    "It houses the engine cylinders, coolant passages, and oil galleries, supporting critical components such as pistons, the crankshaft, and the cylinder head.",
+                    "Typically made from **cast iron or aluminum**, the engine cylinder block provides the strength, durability, and precise alignment required for combustion, lubrication, and cooling.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Have Cylinder Block Issues",
+                points: [
+                    "**Persistent engine overheating**.",
+                    "**Coolant or oil leaks from the engine body**.",
+                    "**White smoke from the exhaust**.",
+                    "**Loss of engine compression or power**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Cylinder Block Affects Engine Performance",
+                text: [
+                    "A damaged engine block disrupts core engine functions, resulting in poor combustion efficiency.",
+                    "Coolant and oil may mix internally, increasing engine wear and contamination.",
+                    "Power output, reliability, and overall engine performance are significantly reduced.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Cylinder Block for Your Vehicle",
+                points: [
+                    "**Exact engine code and vehicle compatibility**.",
+                    "**Cast iron vs aluminum construction**.",
+                    "**Cylinder configuration and engine displacement**.",
+                    "**OEM specifications or precision-machined replacements**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Repairing or Replacing a Cylinder Block Is Important",
+                text: [
+                    "Restoring a damaged cylinder block reestablishes proper combustion, cooling, and lubrication.",
+                    "Whether repaired or replaced, a sound engine block ensures stable performance and reduced mechanical stress.",
+                    "A healthy cylinder block supports the engine’s full operating lifespan and long-term durability.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Cylinder Block Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring cylinder block damage can result in complete engine failure and blown head gaskets.",
+                    "Seized components or catastrophic internal damage may occur over time.",
+                    "Early diagnosis and repair prevent costly engine rebuilds and protect overall vehicle reliability.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Cylinder Head",
+        image: "/parts/Cylinder Head.png",
+        desc: {
+            intro: {
+                title: "What Is a Cylinder Head and Why It’s Important for Your Vehicle",
+                text: [
+                    "The **cylinder head** sits on top of the engine block and seals the engine cylinders, forming the combustion chamber.",
+                    "It houses critical components such as valves, spark plugs, fuel injectors, and camshafts while directing airflow for intake and exhaust.",
+                    "By managing combustion pressure, cooling flow, and valve timing, the cylinder head plays a key role in engine power, efficiency, and overall performance.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Have Cylinder Head Problems",
+                points: [
+                    "**Engine overheating or high cylinder head temperature**.",
+                    "**Coolant loss without visible leaks**.",
+                    "**White smoke or steam from the exhaust**.",
+                    "**Rough idle, misfires, or loss of power**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Cylinder Head Affects Engine Performance",
+                text: [
+                    "A damaged cylinder head disrupts combustion and airflow control, reducing engine efficiency and power output.",
+                    "Poor fuel combustion can lead to misfires and unstable engine operation.",
+                    "Coolant may enter the combustion chambers, increasing emissions and engine stress.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Cylinder Head for Your Vehicle",
+                points: [
+                    "**Engine type, displacement, and configuration**.",
+                    "**Valve count and camshaft compatibility**.",
+                    "**Material choice such as aluminum or cast iron**.",
+                    "**OEM specifications or precision-machined replacements**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Repairing or Replacing a Cylinder Head Is Important",
+                text: [
+                    "Repairing or replacing a faulty cylinder head restores compression and stabilizes combustion.",
+                    "Proper replacement regulates engine temperature and improves overall performance.",
+                    "A healthy cylinder head enhances fuel efficiency and supports long-term engine durability.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Cylinder Head Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring cylinder head problems can result in blown head gaskets and coolant or oil mixing.",
+                    "Severe overheating or complete engine failure may occur over time.",
+                    "Timely cylinder head repair or replacement prevents extensive engine damage and costly rebuilds.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Engine Assembly",
+        image: "/parts/Engine Assembly.png",
+        desc: {
+            intro: {
+                title: "What Is an Engine Assembly and Why It’s Important for Your Vehicle",
+                text: [
+                    "An **engine assembly** is the complete, fully integrated unit that combines the cylinder block, pistons, crankshaft, camshaft, bearings, and related internal components into one functioning system.",
+                    "As the heart of the powertrain, the engine assembly converts fuel into mechanical power that drives your vehicle.",
+                    "A properly built engine assembly ensures smooth combustion, balanced power delivery, and long-term durability, directly impacting performance, fuel efficiency, and reliability.",
+                ],
+            },
+
+            working: {
+                title: "How an Engine Assembly Works",
+                text: [
+                    "The engine assembly operates through a precise sequence of air intake, compression, combustion, and exhaust.",
+                    "Pistons move within the cylinder block, the crankshaft converts linear motion into rotational force, and the valvetrain manages airflow timing.",
+                    "During assembly, **engine assembly lube** is used to protect critical surfaces during initial startup, ensuring proper lubrication before full oil circulation begins.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need Engine Assembly Repair or Replacement",
+                points: [
+                    "**Knocking or grinding noises** from the engine.",
+                    "**Loss of power or poor acceleration**.",
+                    "**Excessive oil consumption or visible oil leaks**.",
+                    "**Overheating or coolant contamination**.",
+                    "**Severe internal damage discovered during inspection**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Engine Assembly Affects Performance and Reliability",
+                text: [
+                    "A compromised engine assembly can lead to reduced horsepower, unstable engine operation, and increased fuel consumption.",
+                    "In severe cases, internal failure can cause complete engine shutdown, leaving the vehicle inoperable.",
+                    "Continued driving with internal damage may also affect connected systems such as the transmission, cooling system, and exhaust components.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Engine Assembly for Your Vehicle",
+                points: [
+                    "**Exact compatibility with vehicle make, model, and engine code**.",
+                    "**Long block vs short block configuration**.",
+                    "**OEM specifications versus rebuilt or remanufactured units**.",
+                    "**Proper use of engine assembly lube during installation**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Engine Assembly Is Important",
+                text: [
+                    "Replacing a failing engine assembly restores original power output and smooth operation.",
+                    "It eliminates internal wear issues, improves fuel efficiency, and enhances overall reliability.",
+                    "A healthy engine assembly extends the lifespan of the vehicle and ensures dependable daily driving.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Engine Assembly Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring problems within an engine assembly can result in catastrophic engine failure, including damaged crankshafts, cracked blocks, or seized pistons.",
+                    "Over time, cooling, lubrication, and drivetrain components may also be affected.",
+                    "Early engine assembly repair or replacement prevents costly secondary damage and keeps the vehicle running safely and efficiently.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Harmonic Balancer",
+        image: "/parts/Harmonic Balancer.png",
+        desc: {
+            intro: {
+                title: "What Is a Harmonic Balancer and Why It’s Important for Your Vehicle",
+                text: [
+                    "A **harmonic balancer** is a vibration-dampening component mounted on the crankshaft that reduces torsional vibrations created during engine combustion.",
+                    "If left uncontrolled, these vibrations can damage the crankshaft and other internal engine components.",
+                    "By absorbing and neutralizing harmonic forces, the harmonic balancer protects engine integrity, improves smoothness, and supports long-term engine longevity.",
+                    "It also serves as a pulley to drive accessory belts for systems like the alternator, power steering, and air conditioning.",
+                ],
+            },
+
+            working: {
+                title: "How a Harmonic Balancer Works",
+                text: [
+                    "The harmonic balancer consists of a metal hub connected to an outer ring through a rubber or elastomer layer.",
+                    "As the crankshaft twists under load, this layer absorbs and dampens vibrations before they can travel through the engine.",
+                    "During installation or service, a **harmonic balancer installer** is required to ensure correct alignment and secure mounting without damaging the crankshaft.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need Harmonic Balancer Replacement",
+                points: [
+                    "**Excessive engine vibration**, especially at idle.",
+                    "**Squealing or slipping accessory belts**.",
+                    "**Visible wobbling of the crankshaft pulley**.",
+                    "**Cracked or separated rubber ring**.",
+                    "**Unusual noises from the front of the engine**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Harmonic Balancer Affects Engine Performance",
+                text: [
+                    "A failing harmonic balancer allows harmful vibrations to travel through the crankshaft, accelerating wear on bearings, seals, and internal engine components.",
+                    "Accessory belts may misalign or fail, affecting charging, cooling, and power steering systems.",
+                    "Over time, unchecked vibration can lead to serious internal engine damage.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Harmonic Balancer for Your Vehicle",
+                points: [
+                    "**Compatibility with your engine size and crankshaft design**.",
+                    "**OEM specifications versus performance-grade replacements**.",
+                    "**Proper fit for accessory belt configurations**.",
+                    "**Use of a correct harmonic balancer installer during installation**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Harmonic Balancer Is Important",
+                text: [
+                    "Replacing a damaged harmonic balancer restores engine smoothness and protects the crankshaft from excessive vibration.",
+                    "It ensures stable accessory belt operation and preserves engine timing accuracy.",
+                    "A new harmonic balancer helps the engine run quietly, smoothly, and efficiently.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Harmonic Balancer Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring a failing harmonic balancer can result in crankshaft damage, broken belts, and seal leaks.",
+                    "Internal bearing wear or catastrophic engine failure may occur in severe cases.",
+                    "Early harmonic balancer replacement prevents costly repairs and safeguards the engine’s long-term health.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Intake Manifold",
+        image: "/parts/Intake Manifold.png",
+        desc: {
+            intro: {
+                title: "What Is an Intake Manifold and Why It’s Important for Your Vehicle",
+                text: [
+                    "The **intake manifold** is a crucial engine component that evenly distributes air—or an air-fuel mixture—to each cylinder for optimal combustion.",
+                    "Proper airflow management ensures efficient fuel use, smooth engine operation, and maximized power output.",
+                    "A well-designed **engine intake manifold** directly influences performance, responsiveness, and overall drivability.",
+                    "High-quality intake manifold assembly components help maintain consistent airflow, reduce turbulence, and support long-term engine reliability.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need an Intake Manifold Inspection or Replacement",
+                points: [
+                    "**Rough idling or engine misfires**.",
+                    "**Reduced engine power and poor acceleration**.",
+                    "**Coolant or vacuum leaks around the manifold**.",
+                    "**Check engine light illuminated**.",
+                    "**Unusual hissing or sucking noises from the engine bay**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Intake Manifold Affects Engine Performance",
+                text: [
+                    "A failing engine intake manifold disrupts airflow and combustion, decreasing engine power and throttle response.",
+                    "Fuel efficiency may suffer due to improper air distribution.",
+                    "Engine overheating or rough running can occur, placing additional strain on internal components.",
+                    "Sensors and connected engine systems may also be damaged over time.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Intake Manifold for Your Vehicle",
+                points: [
+                    "**Vehicle make, model, and engine compatibility**.",
+                    "**Material type such as aluminum or plastic**.",
+                    "**OEM versus high-quality aftermarket options**.",
+                    "**Inclusion of gaskets, sensors, and mounting hardware**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Intake Manifold Is Important",
+                text: [
+                    "Replacing a failing engine intake manifold restores engine power, efficiency, and throttle responsiveness.",
+                    "It prevents vacuum or coolant leaks and reduces the risk of engine misfires.",
+                    "Proper replacement ensures smooth airflow and consistent engine performance for everyday driving.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Intake Manifold Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Neglecting problems with an intake manifold assembly can lead to warped cylinder heads and damaged gaskets.",
+                    "Overheating, intake valve issues, and long-term engine damage may develop.",
+                    "Early intake manifold replacement protects connected components and preserves overall engine reliability.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Oil Pan",
+        image: "/parts/Oil Pan.png",
+        desc: {
+            intro: {
+                title: "What Is an Oil Pan and Why It’s Important for Your Vehicle",
+                text: [
+                    "The **oil pan** is a vital engine component mounted at the bottom of the engine block that stores engine oil used for lubrication and cooling.",
+                    "Acting as a reservoir, the **engine oil pan** ensures a steady supply of oil to moving engine parts, reducing friction and heat during operation.",
+                    "By maintaining proper oil circulation, the oil pan plays a direct role in protecting internal engine components and supporting long-term engine reliability.",
+                ],
+            },
+
+            working: {
+                title: "How an Oil Pan Works",
+                text: [
+                    "Engine oil flows down into the oil pan after circulating through the engine.",
+                    "From there, the oil pump draws oil back up and redistributes it to critical components such as bearings, pistons, and camshafts.",
+                    "Most oil pans include a drain plug for routine oil changes, while some designs feature cooling fins or baffles to improve oil temperature control and prevent oil sloshing during acceleration or cornering.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need Oil Pan Replacement",
+                points: [
+                    "**Oil leaks pooling under the vehicle**.",
+                    "**Low oil level warnings or frequent oil top-ups**.",
+                    "**Visible dents or cracks in the oil pan**.",
+                    "**Burning oil smell after driving**.",
+                    "**Reduced oil pressure readings**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Oil Pan Affects Engine Performance",
+                text: [
+                    "A compromised engine oil pan can lead to oil starvation, increased engine friction, and overheating.",
+                    "Even minor leaks can gradually reduce oil levels, accelerating wear on internal engine components.",
+                    "If ignored, continued oil loss may result in severe engine damage or complete engine failure.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Oil Pan for Your Vehicle",
+                points: [
+                    "**Compatibility with your engine make, model, and year**.",
+                    "**Steel versus aluminum oil pan construction**.",
+                    "**Proper oil capacity and drain plug placement**.",
+                    "**OEM or high-quality aftermarket options**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Oil Pan Is Important",
+                text: [
+                    "Replacing a damaged oil pan restores proper oil containment and prevents leaks.",
+                    "It protects vital engine components from premature wear and ensures safe oil pressure levels.",
+                    "A healthy oil pan supports consistent lubrication and smooth engine operation under all driving conditions.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Oil Pan Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring oil pan leaks or damage can lead to low oil levels, bearing failure, and engine overheating.",
+                    "Catastrophic engine damage may occur if oil loss continues unchecked.",
+                    "Early oil pan replacement prevents cascading failures and preserves long-term engine longevity while avoiding rising repair costs.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Short Cylinder Block",
+        image: "/parts/Short Cylinder Block.png",
+        desc: {
+            intro: {
+                title: "What Is a Short Cylinder Block and Why It’s Important for Your Vehicle",
+                text: [
+                    "A **short cylinder block**, commonly called a **short block engine**, is a partially assembled engine core that includes the cylinder block, crankshaft, pistons, connecting rods, and bearings.",
+                    "It does not include the cylinder head, valvetrain, or external accessories.",
+                    "This configuration makes a short cylinder block ideal for engine rebuilds or performance upgrades, allowing reuse of existing components while restoring the engine’s core structure and strength.",
+                ],
+            },
+
+            working: {
+                title: "How a Short Cylinder Block Works",
+                text: [
+                    "The short block forms the foundation of the engine’s rotating assembly.",
+                    "The crankshaft converts piston movement into rotational force, while pistons and connecting rods manage combustion forces within the cylinders.",
+                    "Once installed, existing or upgraded components such as the cylinder head, camshaft, intake, and fuel systems are mounted to complete the engine assembly.",
+                    "This makes **short block replacement** a flexible and cost-effective solution.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need a Short Block Replacement",
+                points: [
+                    "**Low compression across multiple cylinders**.",
+                    "**Knocking or deep metallic engine noises**.",
+                    "**Excessive oil consumption or blow-by**.",
+                    "**Spun bearings or damaged crankshaft journals**.",
+                    "**Engine failure due to overheating or oil starvation**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Worn Short Cylinder Block Affects Engine Performance",
+                text: [
+                    "A damaged short cylinder block compromises engine balance, lubrication, and combustion efficiency.",
+                    "Power output drops significantly, oil pressure becomes unstable, and engine vibration increases.",
+                    "Overall reliability and engine lifespan are greatly reduced.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Short Cylinder Block for Your Vehicle",
+                points: [
+                    "**Engine code, displacement, and mounting compatibility**.",
+                    "**OEM specifications versus performance-oriented builds**.",
+                    "**Material quality and machining tolerances**.",
+                    "**Intended use: daily driving, towing, or performance upgrades**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Short Cylinder Block Is Important",
+                text: [
+                    "Replacing a worn short cylinder block restores the engine’s structural integrity, compression, and oil control.",
+                    "It provides a solid foundation for rebuilding while allowing customization of top-end components.",
+                    "This approach balances performance, reliability, and cost compared to full engine replacement.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Short Cylinder Block Damage Can Lead to Bigger Repairs",
+                text: [
+                    "Continuing to operate an engine with internal block damage can lead to catastrophic failure, including seized engines, broken crankshafts, or thrown connecting rods.",
+                    "Such failures often damage reusable components and significantly increase repair costs.",
+                    "Early short block replacement prevents complete engine loss and protects the rest of the powertrain.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Spark Plug",
+        image: "/parts/Spark Plug.png",
+        desc: {
+            intro: {
+                title: "What Is a Spark Plug and Why It’s Important for Your Vehicle",
+                text: [
+                    "A **spark plug** is a critical ignition component that ignites the air-fuel mixture inside each engine cylinder.",
+                    "By generating a precise electrical spark, it initiates combustion that powers the engine.",
+                    "Available in **copper, platinum, and iridium** types, each spark plug is designed to balance durability, performance, and efficiency.",
+                    "Properly functioning spark plugs are essential for smooth engine operation, strong acceleration, and optimal fuel economy.",
+                ],
+            },
+
+            working: {
+                title: "How a Spark Plug Works",
+                text: [
+                    "The spark plug receives high voltage from the ignition coil and releases it across a small gap at its tip.",
+                    "This spark ignites the compressed air-fuel mixture, creating controlled combustion within the cylinder.",
+                    "Electrode material plays a key role: copper offers strong conductivity, platinum provides longer service life, and iridium delivers precise sparks with minimal wear, making it ideal for modern engines.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need Spark Plug Replacement",
+                points: [
+                    "**Engine misfires or rough idling**.",
+                    "**Difficulty starting the engine**.",
+                    "**Reduced fuel efficiency**.",
+                    "**Sluggish acceleration or noticeable power loss**.",
+                    "**Check engine light related to ignition faults**.",
+                ],
+            },
+
+            impact: {
+                title: "How Faulty Spark Plugs Affect Engine Performance",
+                text: [
+                    "When spark plugs fail to ignite properly, combustion becomes inconsistent and inefficient.",
+                    "Incomplete fuel burn leads to higher emissions and increased fuel consumption.",
+                    "Engine vibration, hesitation, and strain on ignition coils or the catalytic converter may occur over time.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Spark Plug for Your Vehicle",
+                points: [
+                    "**Manufacturer-recommended heat range**.",
+                    "**Electrode material: copper, platinum, or iridium**.",
+                    "**Correct thread size and reach**.",
+                    "**Compatibility with your ignition system**.",
+                    "**Use of the correct spark plug socket during installation**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing Worn Spark Plugs Is Important",
+                text: [
+                    "Replacing worn spark plugs restores efficient combustion and smoother engine response.",
+                    "Fresh plugs improve fuel economy, reduce emissions, and help the engine start easily.",
+                    "Proper spark plug performance ensures consistent power delivery and reliable everyday driving.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Spark Plug Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring worn spark plugs can cause repeated misfires and ignition coil failure.",
+                    "Unburned fuel may damage the catalytic converter and increase long-term engine stress.",
+                    "Early spark plug replacement prevents costly repairs and keeps the engine running efficiently and smoothly.",
+                ],
+            },
+        },
+    },
+    {
+        category: "Engine",
+        name: "Timing Cover",
+        image: "/parts/Timing Cover.png",
+        desc: {
+            intro: {
+                title: "What Is a Timing Cover and Why It’s Important for Your Vehicle",
+                text: [
+                    "A **timing cover** is a protective engine component that encloses and shields the timing belt or timing chain from dust, debris, moisture, and external damage.",
+                    "Mounted at the front of the engine, the **engine timing cover** also helps retain engine oil and maintain proper lubrication around critical timing components.",
+                    "By protecting precise timing mechanisms, the timing cover plays a key role in ensuring accurate valve timing, smooth engine operation, and long-term durability.",
+                ],
+            },
+
+            working: {
+                title: "How a Timing Cover Works",
+                text: [
+                    "The timing cover acts as a sealed barrier around the timing chain or belt assembly.",
+                    "It aligns closely with the engine block and cylinder head, using gaskets or seals to prevent oil leaks.",
+                    "In chain-driven systems, the timing chain cover also supports oil circulation to lubricate the chain, tensioners, and guides, ensuring consistent timing performance under all driving conditions.",
+                ],
+            },
+
+            signs: {
+                title: "Signs Your Vehicle May Need Timing Cover Replacement",
+                points: [
+                    "**Oil leaks from the front of the engine**.",
+                    "**Visible cracks or warping in the timing cover**.",
+                    "**Burning oil smell near the engine bay**.",
+                    "**Low engine oil levels without an obvious cause**.",
+                    "**Contaminated timing belt or chain area**.",
+                ],
+            },
+
+            impact: {
+                title: "How a Faulty Timing Cover Affects Engine Performance",
+                text: [
+                    "When the timing cover fails to seal properly, oil leakage and contamination can occur.",
+                    "Insufficient lubrication may cause premature wear of timing belts or chains.",
+                    "Engine noise may increase, and timing alignment can drift over time.",
+                    "If left unaddressed, these issues can compromise overall engine reliability.",
+                ],
+            },
+
+            selection: {
+                title: "How to Choose the Right Timing Cover for Your Vehicle",
+                points: [
+                    "**Compatibility with your vehicle’s make, model, and engine type**.",
+                    "**Belt-driven versus chain-driven timing system**.",
+                    "**Material type such as aluminum or reinforced composite**.",
+                    "**OEM or high-quality aftermarket construction**.",
+                ],
+            },
+
+            importance: {
+                title: "Why Replacing a Worn Timing Cover Is Important",
+                text: [
+                    "Replacing a damaged timing cover restores proper sealing and prevents oil loss.",
+                    "It protects timing components from contamination and wear.",
+                    "Proper replacement helps maintain accurate engine timing and consistent engine performance.",
+                ],
+            },
+
+            risk: {
+                title: "How Ignoring Timing Cover Issues Can Lead to Bigger Repairs",
+                text: [
+                    "Ignoring timing cover problems can result in severe oil leaks and timing chain or belt damage.",
+                    "Accelerated wear of internal engine components may follow.",
+                    "In extreme cases, timing system failure can occur, leading to major engine repairs.",
+                    "Early timing cover replacement helps avoid costly damage and preserves engine longevity.",
+                ],
+            },
+        },
+    },
+    {
         category: "Engine Accessories", name: "AC Compressor", image: "/parts/AC Compressor.png", desc: {
             intro: {
                 title: "What is an Airflow Meter and Why It's Important for Your Vehicle",

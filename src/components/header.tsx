@@ -6,7 +6,6 @@ import Link from "next/link";
 // import Arrow from "@/public/header/arrows (4).png";
 import { useCartStore } from "@/store/cartStore";
 import { useState, useRef } from "react";
-import { last } from "pdf-lib";
 
 const categories = [
   {
@@ -131,7 +130,21 @@ const categories = [
       "Windshield Wiper"
     ],
   },
-  { name: "Engine", href: "/engine" },
+  {
+    name: "Engine", sub: [
+      "Air Cleaner",
+      "Coolant Pump",
+      "Cylinder Block",
+      "Cylinder Head",
+      "Engine Assembly",
+      "Harmonic Balancer",
+      "Intake Manifold",
+      "Oil Pan",
+      "Short Cylinder Block",
+      "Spark Plug",
+      "Timing Cover"
+    ]
+  },
   {
     name: "Engine Accessories", sub: [
       "AC Compressor",
@@ -973,9 +986,7 @@ export default function Header() {
                       {categories.map((cat) => (
                         <div
                           key={cat.name}
-                          className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${activeCategory === cat.name
-                            ? "bg-gray-800 text-blue-400"
-                            : ""
+                          className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${activeCategory === cat.name ? "bg-gray-800 text-blue-400" : ""
                             }`}
                           onMouseEnter={() => setActiveCategory(cat.name)}
                           tabIndex={0}
@@ -983,15 +994,10 @@ export default function Header() {
                           aria-haspopup={!!cat.sub}
                           aria-expanded={activeCategory === cat.name}
                         >
-                          {cat.href ? (
-                            <Link href={cat.href} onClick={closeAll}>
-                              {cat.name}
-                            </Link>
-                          ) : (
-                            cat.name
-                          )}
+                          {cat.name}
                         </div>
                       ))}
+
                     </div>
                     {/* Subcategory Panel */}
                     <div className="w-1/2 px-4 pt-1 bg-[#0D3453]">

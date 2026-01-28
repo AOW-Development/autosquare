@@ -58,17 +58,17 @@ const nextConfig: NextConfig = {
         destination: '/contact-us',
         permanent: true,
       },
-      // {
-      //   source: '/Testimonials',
-      //   has: [
-      //     {
-      //       type: 'host',
-      //       value: 'partscentral.us',
-      //     },
-      //   ],
-      //   destination: '/testimonials',
-      //   permanent: true,
-      // },
+      {
+        source: '/Testimonials',
+        has: [
+          {
+            type: 'host',
+            value: 'partscentral.us',
+          },
+        ],
+        destination: '/testimonials',
+        permanent: true,
+      },
       {
         source: '/Blog/blogListing',
         destination: '/blog/blog-listing',
@@ -149,6 +149,12 @@ const nextConfig: NextConfig = {
         destination: '/account/warranty-policy',
         permanent: true,
       },
+
+      {
+        source: '/catalog',
+        destination:'/',
+        permanent: true,
+      }
     ];
   },
 };

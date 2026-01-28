@@ -266,10 +266,11 @@ export default function EngineProductClient({
   const updateProductUrl = (variant: any, subPartName: string) => {
     if (!variant || !subPartName) return;
  
-    const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "";
+    const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "n-a";
     const spec = subPartName
-      .replace(/[ ,()./]/g, "-")
+      .replace(/[ ,()./"";:]/g, "-")
       .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "")
       .toLowerCase();
  
     const modelSlug = formatModelForUrl(model);

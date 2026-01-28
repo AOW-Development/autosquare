@@ -268,7 +268,7 @@ export default function EngineProductClient({
  
     const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "n-a";
     const spec = subPartName
-      .replace(/[ ,()./"";:]/g, "-")
+      .replace(/[ ,()./"';:]/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-+|-+$/g, "")
       .toLowerCase();

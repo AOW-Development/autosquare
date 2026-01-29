@@ -29,7 +29,7 @@ function createSlug(text: string): string {
     .toLowerCase()
     // NEW: Remove "Truck" (KEEP T100/Tundra Truck)
     // .replace(/\btruck\b(?!(?:\s*t100|tundra))/gi, '')
-    
+
     // NEW: Remove "&" and "and"
     .replace(/&|and/gi, '')
     // Your existing logic (PERFECT!)
@@ -121,14 +121,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       images: ["https://partscentral.us/catalog/engine-placeholder.jpg"],
     },
     robots: {
-      index: true,
+      index: false,
       follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-image-preview": "large",
-        "max-snippet": -1
-      },
     },
   };
 }

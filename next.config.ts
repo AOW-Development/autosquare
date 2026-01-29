@@ -60,12 +60,12 @@ const nextConfig: NextConfig = {
       },
       {
         source: '/Testimonials',
-        has: [
-          {
-            type: 'host',
-            value: 'partscentral.us',
-          },
-        ],
+        // has: [
+        //   {
+        //     type: 'host',
+        //     value: 'partscentral.us',
+        //   },
+        // ],
         destination: '/testimonials',
         permanent: true,
       },

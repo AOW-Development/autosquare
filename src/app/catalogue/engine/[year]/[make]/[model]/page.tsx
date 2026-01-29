@@ -141,7 +141,7 @@ async function getProductsFromAPI({
   // if(make === "landrover") {
   //   make = "LandRover";
   // }
-  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts` + 
+  const apiUrl = `https://partscentral.us/api/products/v2/grouped-with-subparts` + 
     `?make=${encodeURIComponent(make)}` +
     `&model=${encodeURIComponent(model)}` +
     `&year=${encodeURIComponent(year)}` +

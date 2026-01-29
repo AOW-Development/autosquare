@@ -9,12 +9,12 @@ import { useCartStore } from "@/store/cartStore";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { useRouter } from "next/navigation";
 import { VerifyPartPopup } from "@/components/fitment";
-
+ 
 interface SubPart {
   id: number;
   name: string;
 }
-
+ 
 interface Product {
   sku: string;
   subParts: SubPart[];
@@ -30,13 +30,13 @@ interface Product {
   discountedPrice?: number;
   actualprice?: number;
 }
-
+ 
 const galleryImages = [
   "/Images/var.png",
   "/Images/main.png",
   "/Images/var.png",
 ];
-
+ 
 interface EngineProductClientProps {
   initialItem?: string;
   initialData?: any;
@@ -45,7 +45,7 @@ interface EngineProductClientProps {
   specification?: string;
   miles?: string;
 }
-
+ 
 export default function EngineProductClient({
   initialItem,
   initialData,
@@ -57,7 +57,7 @@ export default function EngineProductClient({
   const router = useRouter();
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
-
+ 
   // Initialize state
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
   const [productInfo, setProductInfo] = useState({
@@ -74,12 +74,12 @@ export default function EngineProductClient({
   const [groupedVariants, setGroupedVariants] = useState<any[]>(
     initialData?.groupedVariants || [],
   );
-
+ 
   const [selectedSubPartId, setSelectedSubPartId] = useState<number | null>(
     null,
   );
   const [selectedMilesSku, setSelectedMilesSku] = useState<string>("");
-
+ 
   const [activeTab, setActiveTab] = useState(0);
   const [showCartPopup, setShowCartPopup] = useState(false);
   const [quantity, setQuantity] = useState(1);
@@ -91,21 +91,21 @@ export default function EngineProductClient({
   const [mediaUrls, setMediaUrls] = useState<string[]>([]);
   const [mediaLoading, setMediaLoading] = useState<boolean>(false);
   const [imageLoaded, setImageLoaded] = useState<boolean>(false);
-
+ 
   const initialLoadRef = useRef(false);
-
+ 
   // Check if product is in cart
   const inCart = useMemo(() => {
     return items.some((item) => item.id === selectedProduct?.sku);
   }, [items, selectedProduct?.sku]);
-
+ 
   // Get product info from initialData
   const make = initialData?.make;
   const model = initialData?.model;
   const year = initialData?.year;
   const part = initialData?.part;
   const sku = setSku;
-
+ 
   // Helper function to format model for URL
   const formatModelForUrl = (modelStr: string | undefined) => {
     if (!modelStr) return "";
@@ -115,16 +115,16 @@ export default function EngineProductClient({
       .replace(/^-|-$/g, "")
       .toLowerCase();
   };
-
+ 
   // Get initial product from server data
   const getInitialProduct = () => {
     if (!initialData?.groupedVariants?.length) {
       return null;
     }
-
+ 
     let targetGroup = null;
     let targetVariant = null;
-
+ 
     // Try to match by SKU first
     if (setSku) {
       for (const group of initialData.groupedVariants) {
@@ -136,23 +136,23 @@ export default function EngineProductClient({
         }
       }
     }
-
+ 
     // If SKU not found, try to match by specification and miles from URL
     if (!targetVariant && specification) {
       const normalizeSpec = (spec: string) =>
         spec.toLowerCase().replace(/[^a-z0-9]/g, "");
       const specNormalized = normalizeSpec(specification);
-
+ 
       for (const group of initialData.groupedVariants) {
         const groupSpec = group.subPart?.name || "";
         const groupNormalized = normalizeSpec(groupSpec);
-
+ 
         if (
           groupNormalized.includes(specNormalized) ||
           specNormalized.includes(groupNormalized)
         ) {
           targetGroup = group;
-
+ 
           // Try to match miles
           if (miles) {
             const milesNormalized = miles
@@ -167,7 +167,7 @@ export default function EngineProductClient({
               return variantMiles === milesNormalized;
             });
           }
-
+ 
           // If no miles match, use first variant
           if (!targetVariant) {
             targetVariant =
@@ -177,7 +177,7 @@ export default function EngineProductClient({
         }
       }
     }
-
+ 
     // Fallback to first available
     if (!targetVariant && initialData.groupedVariants.length > 0) {
       targetGroup = initialData.groupedVariants[0];
@@ -185,7 +185,7 @@ export default function EngineProductClient({
         targetGroup.variants.find((v: any) => v.inStock) ||
         targetGroup.variants[0];
     }
-
+ 
     if (targetVariant && targetGroup) {
       return {
         ...targetVariant,
@@ -199,17 +199,17 @@ export default function EngineProductClient({
           `${initialData.year || ""} ${initialData.make || ""} ${initialData.model || ""}${initialData.model ? ", " : ""} ${initialData.part === "Engine" ? "Used Engine" : "Used Transmission"}`.trim(),
       };
     }
-
+ 
     return null;
   };
-
+ 
   // Initialize product from server data
   useEffect(() => {
     if (initialLoadRef.current || !initialData?.groupedVariants?.length) return;
-
+ 
     console.log("Initializing from server data");
     initialLoadRef.current = true;
-
+ 
     // Build all variants array
     const variants: any[] = [];
     initialData.groupedVariants.forEach((group: any) => {
@@ -233,7 +233,7 @@ export default function EngineProductClient({
         });
       });
     });
-
+ 
     setAllVariants(variants);
     setGroupedVariants(initialData.groupedVariants || []);
     setProductInfo({
@@ -242,7 +242,7 @@ export default function EngineProductClient({
       year: initialData.year || "",
       part: initialData.part || "",
     });
-
+ 
     // Get initial product
     const initialProduct = getInitialProduct();
     if (initialProduct) {
@@ -258,28 +258,29 @@ export default function EngineProductClient({
           "",
       );
     }
-
+ 
     setIsLoading(false);
   }, [initialData, setSku, specification, miles]);
-
+ 
   // Update URL when selection changes
   const updateProductUrl = (variant: any, subPartName: string) => {
     if (!variant || !subPartName) return;
-
-    const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "";
+ 
+    const milesValue = variant.miles?.toString().replace(/[^\d]/g, "") || "n-a";
     const spec = subPartName
-      .replace(/[ ,()./]/g, "-")
+      .replace(/[ ,()./"';:]/g, "-")
       .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "")
       .toLowerCase();
-
+ 
     const modelSlug = formatModelForUrl(model);
-
+ 
     const newUrl =
       `/product/${year}-${make}-${modelSlug}-${part}-${spec}${milesValue ? `-${milesValue}` : ""}`.toLowerCase();
-
+ 
     router.replace(newUrl, { scroll: false });
   };
-
+ 
   // Handle popup scroll locking
   useEffect(() => {
     if (showPopup) {
@@ -301,16 +302,16 @@ export default function EngineProductClient({
       }
     }
   }, [showPopup]);
-
+ 
   // Handle buy now
   const handleBuyNow = () => {
     if (!selectedProduct) return;
-
+ 
     const clear = useCartStore.getState().clear;
     const addItem = useCartStore.getState().addItem;
-
+ 
     clear();
-
+ 
     addItem({
       id: selectedProduct.sku,
       name: `${selectedProduct.make || ""} ${selectedProduct.model || ""} ${
@@ -336,10 +337,10 @@ export default function EngineProductClient({
         selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0,
       quantity,
     });
-
+ 
     window.location.href = "/account/payMethod?buyInOneClick=true";
   };
-
+ 
   // Accordion data
   const accordionData = [
     {
@@ -411,7 +412,7 @@ export default function EngineProductClient({
       ),
     },
   ];
-
+ 
   // FIXED: Correct out of stock logic
   // The issue was that `isTrulyOutOfStock` was incorrectly checking `miles === 'n-a'`
   // This should be based on the product's actual stock status, not the URL parameter
@@ -419,7 +420,7 @@ export default function EngineProductClient({
     if (!selectedProduct) return true;
     return !selectedProduct.inStock;
   }, [selectedProduct]);
-
+ 
   // Get presigned URL for media
   const getPresignedUrl = async (key: string): Promise<string> => {
     try {
@@ -434,7 +435,7 @@ export default function EngineProductClient({
       return "";
     }
   };
-
+ 
   // Load media URLs
   useEffect(() => {
     if (!selectedProduct?.media?.length) {
@@ -443,10 +444,10 @@ export default function EngineProductClient({
       setImageLoaded(false);
       return;
     }
-
+ 
     setMediaLoading(true);
     setImageLoaded(false);
-
+ 
     (async () => {
       try {
         const urls = await Promise.all(
@@ -463,7 +464,7 @@ export default function EngineProductClient({
       }
     })();
   }, [selectedProduct]);
-
+ 
   // Update selected product when dropdowns change
   useEffect(() => {
     if (
@@ -473,16 +474,16 @@ export default function EngineProductClient({
     ) {
       return;
     }
-
+ 
     const group = groupedVariants.find(
       (g: any) => g.subPart.id === selectedSubPartId,
     );
-
+ 
     if (group) {
       const variant = group.variants.find(
         (v: any) => v.sku === selectedMilesSku,
       );
-
+ 
       if (variant) {
         const newProduct = {
           ...variant,
@@ -507,11 +508,11 @@ export default function EngineProductClient({
     year,
     part,
   ]);
-
+ 
   // Track product view in dataLayer
   useEffect(() => {
     if (!selectedProduct) return;
-
+ 
     const dataLayer = (window as any).dataLayer || [];
     dataLayer.push({
       event: "product_view",
@@ -538,31 +539,31 @@ export default function EngineProductClient({
       },
     });
   }, [selectedProduct, selectedSubPartId, groupedVariants]);
-
+ 
   // Helper to clean miles display
   const cleanMiles = (m: any) => m?.toString().replace(/[^\d]/g, "") || "";
-
+ 
   // Handle add to cart
   const handleAddToCart = () => {
     if (!selectedProduct) return;
-
+ 
     const selectedGroup = groupedVariants.find(
       (g) => g.subPart.id === selectedSubPartId,
     );
-
+ 
     if (!selectedGroup) return;
-
+ 
     setSelectedProductForVerify({
       ...selectedProduct,
       subPart: selectedGroup.subPart,
     });
     setIsVerifyPopupOpen(true);
   };
-
+ 
   // Handle add to cart and redirect
   const handleAddToCartAndRedirect = (product: any, quantity = 1) => {
     const price = product.discountedPrice ?? product.actualprice ?? 0;
-
+ 
     addItem({
       id: product.sku,
       name: `${product.year || ""} ${product.make || ""} ${
@@ -579,9 +580,9 @@ export default function EngineProductClient({
       price,
       quantity,
     });
-
+ 
     setShowCartPopup(true);
-
+ 
     setTimeout(() => {
       setIsVerifyPopupOpen(false);
       setSelectedProductForVerify(null);
@@ -589,10 +590,10 @@ export default function EngineProductClient({
       window.location.href = `/account/cart?make=${product.make}&model=${product.model}&year=${product.year}&part=${product.part}`;
     }, 100);
   };
-
+ 
   // Show loading if no selected product and still loading
   const shouldShowLoading = !selectedProduct && isLoading;
-
+ 
   return (
     <>
       <style jsx>{`
@@ -617,7 +618,7 @@ export default function EngineProductClient({
           }
         }
       `}</style>
-
+ 
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}
@@ -634,7 +635,7 @@ export default function EngineProductClient({
           }
         />
       )}
-
+ 
       <div className="w-full bg-[#091b33] overflow-hidden">
         <div className="max-w-6xl mx-auto md:mx-16 lg:mx-20 px-4 flex items-start gap-2 py-6 text-[#0F1E35] text-[15px] font-medium">
           <Link href="/" className="flex items-center">
@@ -657,7 +658,7 @@ export default function EngineProductClient({
           <span className="text-white">Engines</span>
         </div>
       </div>
-
+ 
       <div className="w-full bg-[#091b33]">
         <div className="max-w-6xl mx-auto px-4">
           <div className="pt-18 pb-4">
@@ -665,7 +666,7 @@ export default function EngineProductClient({
           </div>
         </div>
       </div>
-
+ 
       {shouldShowLoading ? (
         <div className="w-full bg-[#091b33] text-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-6 lg:px-8 py-0 md:py-6 lg:py-8">
@@ -696,7 +697,7 @@ export default function EngineProductClient({
                           alt={`${selectedProduct?.title || part} image`}
                           width={250}
                           height={160}
-                          className={`object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350 
+                          className={`object-contain py-4 px-8 md:p-4 md:w-80 md:h-300 lg:w-100 lg:h-350
                             ${
                               imageLoaded ? "opacity-100" : "opacity-0"
                             } transition-opacity duration-200`}
@@ -758,7 +759,7 @@ export default function EngineProductClient({
                   )}
                 </div>
               </div>
-
+ 
               <div className="flex flex-col gap-4 pt-4 md:pt-8 lg:pl-1 w-full lg:w-[80%]">
                 <h1
                   className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-audiowide font-bold tracking-wide uppercase leading-tight"
@@ -779,37 +780,37 @@ export default function EngineProductClient({
                       productInfo.part ||
                       ""
                     ).toLowerCase();
-
+ 
                     const partName = part.includes("engine")
                       ? "Engine"
                       : "Transmission";
                     return `${year} ${make} ${model} Used ${partName}`.trim();
                   })()}
                 </h1>
-
+ 
                 <div className="text-sm sm:text-base text-gray-400 font-semibold">
                   options:{" "}
                   {groupedVariants.find(
                     (g) => g.subPart.id === selectedSubPartId,
                   )?.subPart.name || "Select a specification"}
                 </div>
-
+ 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 mb-4">
                   <select
                     value={selectedSubPartId || ""}
                     onChange={(e) => {
                       const subPartId = Number(e.target.value);
                       setSelectedSubPartId(subPartId);
-
+ 
                       const group = groupedVariants.find(
                         (g: any) => g.subPart.id === subPartId,
                       );
-
+ 
                       if (group && group.variants.length > 0) {
                         const variant =
                           group.variants.find((v: any) => v.inStock) ||
                           group.variants[0];
-
+ 
                         setSelectedMilesSku(variant.sku);
                         setSelectedProduct({
                           ...variant,
@@ -826,7 +827,7 @@ export default function EngineProductClient({
                             return `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${partName}`.trim();
                           })(),
                         });
-
+ 
                         updateProductUrl(variant, group.subPart.name);
                       }
                     }}
@@ -839,22 +840,22 @@ export default function EngineProductClient({
                       </option>
                     ))}
                   </select>
-
+ 
                   <select
                     value={selectedMilesSku}
                     onChange={(e) => {
                       const sku = e.target.value;
                       setSelectedMilesSku(sku);
-
+ 
                       const group = groupedVariants.find(
                         (g: any) => g.subPart.id === selectedSubPartId,
                       );
-
+ 
                       if (group) {
                         const variant = group.variants.find(
                           (v: any) => v.sku === sku,
                         );
-
+ 
                         if (variant) {
                           setSelectedProduct({
                             ...variant,
@@ -871,7 +872,7 @@ export default function EngineProductClient({
                               return `${productInfo.year} ${productInfo.make} ${productInfo.model} Used ${partName}`.trim();
                             })(),
                           });
-
+ 
                           updateProductUrl(variant, group.subPart.name);
                         }
                       }
@@ -884,7 +885,7 @@ export default function EngineProductClient({
                         ? "Select Miles"
                         : "Select specification first"}
                     </option>
-
+ 
                     {selectedSubPartId &&
                       groupedVariants
                         .find((g: any) => g.subPart.id === selectedSubPartId)
@@ -895,7 +896,7 @@ export default function EngineProductClient({
                         ))}
                   </select>
                 </div>
-
+ 
                 <div className="flex flex-row gap-2 mt-4 mb-6">
                   <div className="text-sm sm:text-base text-white">
                     Availability:{" "}
@@ -911,7 +912,7 @@ export default function EngineProductClient({
                     Condition: <span className="text-gray-400">Used</span>
                   </div>
                 </div>
-
+ 
                 {/* FIXED: Simplified condition - only show Part Request if product is actually out of stock */}
                 {isOutOfStock ? (
                   <>
@@ -982,7 +983,7 @@ export default function EngineProductClient({
           </div>
         </div>
       )}
-
+ 
       <div className="w-full bg-[#091b33] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 md:px-20 md:-mx-8 lg:mx-60 md:py-4 lg:py-6 pb-0">
           <div className="flex overflow-x-auto no-scrollbar border-b border-gray-700">
@@ -1000,7 +1001,7 @@ export default function EngineProductClient({
               </button>
             ))}
           </div>
-
+ 
           <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
             {activeTab === 0 ? (
               <div className="py-0 text-gray-300 text-sm sm:text-base lg:text-lg whitespace-pre-line justify-left align-left leading-relaxed break-words">
@@ -1013,14 +1014,14 @@ export default function EngineProductClient({
             )}
           </div>
         </div>
-
+ 
         <div className="w-full py-8 sm:py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-2 lg:px-8">
             <div className="text-left md:px-10">
               <h2 className="text-xl sm:text-2xl md:text-4xl font-bold text-white mb-2 sm:mb-8">
                 Talk To An <span className="font-extrabold">Expert</span>
               </h2>
-
+ 
               <div className="flex flex-wrap sm:flex-nowrap gap-3 sm:gap-4 items-center mb-6 sm:mb-8">
                 <a
                   href="mailto:support@partscentral.us"
@@ -1039,7 +1040,7 @@ export default function EngineProductClient({
           </div>
         </div>
       </div>
-
+ 
       <VerifyPartPopup
         isOpen={isVerifyPopupOpen}
         onClose={() => {
@@ -1059,7 +1060,7 @@ export default function EngineProductClient({
         }}
         vinNumber=""
       />
-
+ 
       {selectedProduct && (
         <ProductSection
           product={selectedProduct}
@@ -1072,3 +1073,4 @@ export default function EngineProductClient({
     </>
   );
 }
+ 

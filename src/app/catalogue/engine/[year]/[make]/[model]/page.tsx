@@ -51,9 +51,13 @@ function convertUrlModelToDbModel(urlModel: string, make: string): string {
   if (!urlModel || !make) return urlModel;
   
   // Capitalize make for MODELS lookup
-  const makeKey = make.charAt(0).toUpperCase() + make.slice(1);
+  let makeKey = make.charAt(0).toUpperCase() + make.slice(1);
+  if(makeKey === "Landrover") {
+    makeKey = "LandRover";
+  }
+  console.log("models", MODELS);
   const modelsForMake = MODELS[makeKey as keyof typeof MODELS];
-  
+  console.log("modelsForMake", modelsForMake);
   if (!modelsForMake || !Array.isArray(modelsForMake)) {
     console.log(`⚠️ No models found for make: ${make}`);
     return urlModel;
@@ -133,13 +137,17 @@ async function getProductsFromAPI({
   year,
   part,
 }: any) {
+  console.log(`🔍 API Request for make: ${make}`);
+  // if(make === "landrover") {
+  //   make = "LandRover";
+  // }
   const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/products/v2/grouped-with-subparts` + 
     `?make=${encodeURIComponent(make)}` +
     `&model=${encodeURIComponent(model)}` +
     `&year=${encodeURIComponent(year)}` +
     `&part=${encodeURIComponent(part)}`;
  
-  console.log(`🔍 API Request: ${apiUrl}`);
+  console.log(`🔍 API Request1: ${apiUrl}`);
  
   const response = await fetch(apiUrl, {
     next: { revalidate: 300 },
@@ -172,6 +180,8 @@ export default async function CatalogueEnginePageWrapper({ params }: Props) {
   let subPartsList: any[] = [];
  
   // Convert URL model to database model format
+  console.log(make);
+  console.log(model);
   const dbModel = convertUrlModelToDbModel(model, make);
   console.log(`🔄 Model conversion: URL="${model}" → DB="${dbModel}"`);
  

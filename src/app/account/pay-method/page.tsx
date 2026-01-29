@@ -160,31 +160,65 @@ function PayMethodContent() {
     state: "",
     zipCode: "",
   });
-const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
-  window.dataLayer = window.dataLayer || [];
+// const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
+//   window.dataLayer = window.dataLayer || [];
   
-  const items = cartItems.map((item, index) => ({
-    item_id: item.id || `item_${index}`,
-    item_name: item.title || item.name || 'Unknown Item',
-    item_category: item.title?.includes('Transmission') ? 'Transmissions' : 'Engines',
-    item_variant: item.subtitle || '',
-    price: item.price,
-    quantity: item.quantity,
-    index: index
-  }));
+//   const items = cartItems.map((item, index) => ({
+//     item_id: item.id || `item_${index}`,
+//     item_name: item.title || item.name || 'Unknown Item',
+//     item_category: item.title?.includes('Transmission') ? 'Transmissions' : 'Engines',
+//     item_url: typeof window !== "undefined" ? window.location.href : "",
+//     item_variant: item.subtitle || '',
+//     price: item.price,
+//     quantity: item.quantity,
+//     index: index
+//   }));
 
+//   window.dataLayer.push({
+//     event: 'begin_payment',
+//     ecommerce: {
+//       currency: 'USD',
+//       value: total,
+//       payment_type: 'card',
+//       items: items
+//     }
+//   });
+
+//   console.log('✅ GA4 begin_payment event pushed', { items, total });
+// };
+
+
+ const cartItemsArray = cartItems.map((item) => ({
+  item_id: item.id,
+  item_name: item.title || item.name,
+  item_url: typeof window !== "undefined" ? window.location.href : "",
+  price: item.price,
+  quantity: item.quantity,
+}));
+
+
+useEffect(() => {
+  if (
+    typeof window === "undefined" ||
+    !cartItems.length ||
+    (window as any).__beginCheckoutFired
+  ) {
+    return;
+  }
+
+  window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
-    event: 'begin_payment',
+    event: "begin_payment",
     ecommerce: {
-      currency: 'USD',
-      value: total,
-      payment_type: 'card',
-      items: items
-    }
+      items: cartItemsArray,
+    },
   });
 
-  console.log('✅ GA4 begin_payment event pushed', { items, total });
-};
+  // ✅ Prevent duplicate firing
+  (window as any).__beginPaymentFired = true;
+}, [cartItemsArray, cartItems.length]);
+
+
 
  const createPaymentIntent = async () => {
   if (isLoadingPayment || clientSecret) return; // Prevent duplicate calls
@@ -250,7 +284,7 @@ const pushBeginPaymentEvent = (cartItems: any[], total: number) => {
     // setClientSecret(data.clientSecret);
     // setPaymentIntentId(data.paymentIntentId);
     // toast.success('Ready to accept payment');
-     pushBeginPaymentEvent(cartItems, total);
+    //  pushBeginPaymentEvent(cartItems, total);
   } catch (error: any) {
     console.error('Failed to initialize payment:', error);
     toast.error('Failed to initialize payment. Please try again.');

@@ -217,7 +217,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/Testimonials" className="hover:text-white">
+                  <Link href="/account/Testimonials" className="hover:text-white">
                     Testimonials
                   </Link>
                 </li>

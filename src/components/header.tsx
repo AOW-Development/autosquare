@@ -422,7 +422,7 @@ const navLinks = [
       { label: "Privacy Policy", href: "/account/privacyPolicy" },
       { label: "Terms & Conditions", href: "/account/terms-and-condition" },
       { label: "Blogs", href: "/Blog/blogListing" },
-      { label: "Testimonials", href: "/Testimonials" },
+      { label: "Testimonials", href: "/account/Testimonials" },
       { label: "FAQ", href: "/account/faq" },
       { label: "Track my order", href: "/account/trackOrder" },
       { label: "Submit a ticket", href: "/account/submitTicket" },

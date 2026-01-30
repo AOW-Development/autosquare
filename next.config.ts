@@ -56,6 +56,7 @@ const nextConfig: NextConfig = {
         destination: '/contact-us',
         statusCode: 301,
       },
+      
       // {
       //   source: '/Testimonials',
       //   has: [

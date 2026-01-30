@@ -338,7 +338,7 @@ export default function EngineProductClient({
       quantity,
     });
  
-    window.location.href = "/account/payMethod?buyInOneClick=true";
+    window.location.href = "/account/pay-method?buyInOneClick=true";
   };
  
   // Accordion data

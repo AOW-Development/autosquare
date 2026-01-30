@@ -54,6 +54,16 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a
+                    href="mailto:support@partscentral.us"
+                    className="underline"
+                    style={{ padding: '0 50px' }}
+                  >
+                    support@partscentral.us
+                  </a>
+                </li>
+ 
+                <li>
                   Website:{" "}
                   <a href="https://partscentral.us/" className="underline">
                     www.partscentral.us

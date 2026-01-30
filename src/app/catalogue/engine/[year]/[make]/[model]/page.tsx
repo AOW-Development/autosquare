@@ -124,10 +124,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       images: ["https://partscentral.us/catalog/engine-placeholder.jpg"],
     },
-    robots: {
-      index: false,
-      follow: true,
-    },
+    // robots: {
+    //   index: false,
+    //   follow: true,
+    // },
   };
 }
  

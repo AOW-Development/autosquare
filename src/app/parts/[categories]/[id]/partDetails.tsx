@@ -1,115 +1,32 @@
 "use client";
 
-import { useParams, notFound } from "next/navigation";
 import Image from "next/image";
 import ShopByVehicle from "@/components/shopByVehicle";
 import FeaturedCategories from "@/components/FeaturedCategories";
-import { PARTS } from "@/data/parts";
 
-/* ---------------- helpers ---------------- */
-const normalize = (value?: string | string[]) => {
-  if (!value) return [];
-
-  const val = Array.isArray(value) ? value[0] : value;
-  const parts = val.toLowerCase().trim().split("-");
-
-  const results = new Set<string>();
-  const gaps = parts.length - 1; // number of hyphens
-
-  // each gap can be " " or "/"
-  const totalCombinations = 1 << gaps;
-
-  for (let mask = 0; mask < totalCombinations; mask++) {
-    let result = parts[0];
-
-    for (let i = 0; i < gaps; i++) {
-      const useSlash = (mask & (1 << i)) !== 0;
-      result += (useSlash ? "/" : " ") + parts[i + 1];
-    }
-
-    results.add(result);
-  }
-
-  return Array.from(results);
+type Props = {
+  part: any;
 };
 
+/* -------- helper to bold **double-star text** -------- */
+const renderWithBold = (text: string) => {
+  const parts = text.split(/(\*\*[^*]+\*\*)/g);
 
-const renderBoldText = (text: string) => {
-  return text.split(/(\*\*.*?\*\*)/g).map((chunk, index) => {
-    if (chunk.startsWith("**") && chunk.endsWith("**")) {
-      return <strong key={index}>{chunk.replace(/\*\*/g, "")}</strong>;
+  return parts.map((part, index) => {
+    if (part.startsWith("**") && part.endsWith("**")) {
+      return (
+        <strong key={index} className="font-semibold">
+          {part.slice(2, -2)}
+        </strong>
+      );
     }
-    return chunk;
+
+    return <span key={index}>{part}</span>;
   });
 };
 
-const ContentSection = ({
-  title,
-  text,
-  points,
-  conclusion,
-}: {
-  title: string;
-  text?: string[];
-  points?: string[];
-  conclusion?: string;
-}) => {
-  return (
-    <div className="mb-10">
-      <h3 className="font-audiowide text-base md:text-lg font-bold text-white mb-4" >
-        {title}
-      </h3>
-
-      {text?.map((paragraph, idx) => (
-        <p
-          key={idx}
-          className="font-exo2 text-white text-sm md:text-lg leading-relaxed mb-4"
-        >
-          {renderBoldText(paragraph)}
-        </p>
-      ))}
-
-      {points && (
-        <ul className="list-disc list-inside space-y-2 font-exo2 text-white text-sm md:text-lg mb-4">
-          {points.map((point, idx) => (
-            <li key={idx}>{renderBoldText(point)}</li>
-          ))}
-        </ul>
-      )}
-
-      {conclusion && (
-        <p className="font-exo2 text-white text-sm md:text-lg leading-relaxed mt-4">
-          {renderBoldText(conclusion)}
-        </p>
-      )}
-    </div>
-  );
-};
-
-/* ---------------- component ---------------- */
-
-export default function PartDetailPage() {
-  const params = useParams();
-
-  const possibleNames = normalize(params?.id);
-  const possibleCategories = normalize(params?.categories);
-
-  const part = PARTS.find(
-    (p) =>
-      possibleNames.includes(p.name.toLowerCase()) &&
-      possibleCategories.includes(p.category?.toLowerCase() ?? "")
-  );
-
-  if (!part) {
-    notFound();
-    return null; // 👈 THIS LINE fixes the TS error
-  }
-
+export default function PartDetailPage({ part }: Props) {
   const sections = part.desc ? Object.values(part.desc) : [];
-
-  if (!part) {
-    notFound();
-  }
 
   return (
     <div className="bg-[#091b33] min-h-screen">
@@ -124,13 +41,7 @@ export default function PartDetailPage() {
         />
 
         <div className="absolute inset-0 flex items-center justify-center">
-          <h1
-            className="font-audiowide uppercase text-white text-xl sm:text-3xl md:text-4xl lg:text-6xl text-center px-4 tracking-wide"
-            style={{
-              fontFamily: "Audiowide, sans-serif",
-              letterSpacing: "0.1em",
-            }}
-          >
+          <h1 className="font-audiowide uppercase text-white text-xl sm:text-3xl md:text-4xl lg:text-6xl text-center px-4 tracking-wide">
             {part.name}
           </h1>
         </div>
@@ -139,35 +50,26 @@ export default function PartDetailPage() {
       <ShopByVehicle />
 
       <section className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 lg:pt-24 pt-16">
-        {/* Breadcrumb */}
-        <div className="flex items-center gap-2 text-sm text-gray-400 mb-6">
-          <a href="/">
-            <Image src="/engine/HouseLine.png" alt="Home" width={20} height={20} />
-          </a>
-          <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-          <a href="/autoParts">AutoParts</a>
-          <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
-          <span className="text-white">{part.name}</span>
-        </div>
-
-        {/* Heading */}
-        <h2
-          className="font-audiowide uppercase tracking-wide text-2xl sm:text-4xl text-white mb-8"
-          style={{ letterSpacing: "0.04em" }}
-        >
+        <h2 className="font-audiowide uppercase tracking-wide text-2xl sm:text-4xl text-white mb-8">
           {part.name}
         </h2>
 
-        {/* Content */}
         <div className="bg-[#11213a] rounded-xl shadow-lg border border-[#1f2e47] p-6 md:p-8">
-          {sections.map((section: any, index) => (
-            <ContentSection
-              key={index}
-              title={section.title}
-              text={section.text}
-              points={section.points}
-              conclusion={section.conclusion}
-            />
+          {sections.map((section: any, index: number) => (
+            <div key={index} className="mb-10">
+              <h3 className="font-audiowide text-base md:text-lg font-bold text-white mb-4">
+                {section.title}
+              </h3>
+
+              {section.text?.map((t: string, i: number) => (
+                <p
+                  key={i}
+                  className="font-exo2 text-white text-sm md:text-lg mb-4 leading-relaxed"
+                >
+                  {renderWithBold(t)}
+                </p>
+              ))}
+            </div>
           ))}
         </div>
       </section>

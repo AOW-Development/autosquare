@@ -282,7 +282,7 @@ const variants: Variants = {
 const buildProductSlug = (prod: any) => {
   const clean = (val?: string) =>
     val
-      ?.replace(/[ ,()./]/g, "-")
+      ?.replace(/[ ,()./"';:]/g, "-")
       .replace(/-+/g, "-")
       .replace(/^-|-$/g, "")
       .toLowerCase()

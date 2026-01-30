@@ -29,14 +29,15 @@ const createSlug = (text: string) =>
 // Resolve model against MODELS to preserve canonical hyphens
 const resolveModelSlug = (make: string, modelParam: string) => {
   const models = MODELS[make.toUpperCase() as keyof typeof MODELS];
-  if (!models) return createSlug(modelParam);
+  if (!models) return normalizeForUrl(modelParam); // Use SAME normalizeForUrl
  
-  const incoming = createSlug(modelParam);
-  const match = models.find(
-    (m: string) => createSlug(m) === incoming
+  // Test ALL models with YOUR normalizeForUrl logic
+  const incoming = normalizeForUrl(modelParam);
+  const match = models.find((m: string) =>
+    normalizeForUrl(m) === incoming  //Same normalization!
   );
  
-  return createSlug(match ?? modelParam);
+  return match ? normalizeForUrl(match) : normalizeForUrl(modelParam);
 };
  
 export async function middleware(request: NextRequest) {

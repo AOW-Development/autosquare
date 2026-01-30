@@ -1338,7 +1338,7 @@ useEffect(() => {
                     if (isFormValid()) {
                       handleContinue();
                       // navigate to payment page
-                      window.location.href = "/account/payMethod";
+                      window.location.href = "/account/pay-method";
                     } else {
                       e.preventDefault();
                       toast.error(

@@ -1,6 +1,8 @@
 // types
 export type Part = {
     category: string;
+    title: string,
+    metaDesc: string,
     name: string;
     image: string;
     desc: string | any;
@@ -13,7 +15,7 @@ const descFromName = (name: string) =>
 
 export const PARTS = [
     {
-        category: "Air and Fuel", name: "Air Flow Meter", image: "/parts/Air Flow Meter.png", desc: {
+        category: "Air and Fuel", name: "Air Flow Meter", title: "Airflow Meter (MAF Sensor) |Car Mass Air Flow Replacement|PC", metaDesc: "Buy a quality airflow meter (MAF sensor) from PC for accurate air-fuel readings. Tested mass air flow sensor replacements for smooth engine performance.", image: " / parts / Air Flow Meter.png", desc: {
             intro: {
                 title: "What is an Airflow Meter and Why It's Important for Your Vehicle",
                 text: [
@@ -81,7 +83,10 @@ export const PARTS = [
 
     },
     {
-        category: "Air and Fuel", name: "Carburetor", image: "/parts/Carburetor.png", desc: {
+        category: "Air and Fuel", name: "Carburetor",
+        title: "Carburetor Parts & Replacement | Quality-Tested Fuel Parts | PC",
+        metaDesc: "Shop quality-tested carburetors and carburetor parts at PC. Reliable replacements engineered for smooth fuel delivery and consistent engine performance.",
+        image: "/parts/Carburetor.png", desc: {
             intro: {
                 title: "What Is a Carburetor & Why It's Important for Your Vehicle",
                 text: [
@@ -151,7 +156,10 @@ export const PARTS = [
         },
     },
     {
-        category: "Air and Fuel", name: "Fuel Injection Parts", image: "/parts/Fuel Injection Parts.png", desc: {
+        category: "Air and Fuel", name: "Fuel Injection Parts",
+        title: "Fuel Injector Parts & Replacement | Tested Fuel System – PC",
+        metaDesc: "Shop quality-tested fuel injector parts at PC. Reliable replacements designed for efficient fuel delivery, smoother performance, and better engine response.",
+        image: "/parts/Fuel Injection Parts.png", desc: {
             intro: {
                 title: "What Is a Fuel Injector & Why It's Important for Your Vehicle",
                 text: [
@@ -222,7 +230,9 @@ export const PARTS = [
 
     },
     {
-        category: "Air and Fuel", name: "Fuel Pump", image: "/parts/Fuel Pump.png", desc: {
+        category: "Air and Fuel", name: "Fuel Pump", title: "Fuel Pump Replacement & Parts | Quality-Tested Pumps – PC",
+        metaDesc: "PartsCentral offers quality-tested fuel pump assemblies for dependable replacement. Designed for consistent fuel delivery and reliable engine operation.",
+        image: "/parts/Fuel Pump.png", desc: {
             intro: {
                 title: "What Is a Fuel Pump & Why It's Important for Your Vehicle",
                 text: [
@@ -293,7 +303,9 @@ export const PARTS = [
 
     },
     {
-        category: "Air and Fuel", name: "Fuel Tank", image: "/parts/Fuel Tank.png", desc: {
+        category: "Air and Fuel", name: "Fuel Tank", title: "Fuel Tank Parts & Replacement | Tested Fuel Storage – PC",
+        metaDesc: "Buy quality-tested fuel tank replacements at PC. Durable fuel tank assemblies engineered for safe fuel storage and dependable vehicle performance.",
+        image: "/parts/Fuel Tank.png", desc: {
             intro: {
                 title: "What Is a Fuel Tank & Why It’s Important for Your Vehicle",
                 text: [
@@ -365,7 +377,9 @@ export const PARTS = [
 
     },
     {
-        category: "Air and Fuel", name: "Fuel Tank Sending Unit", image: "/parts/Fuel Tank Sending Unit.png", desc: {
+        category: "Air and Fuel", name: "Fuel Tank Sending Unit", title: "Tested Fuel Tank Sender Unit & Assemblies | PartsCentral",
+        metaDesc: "Buy fuel tank sender unit engineered to meet OEM standards. PartsCentral offers quality-tested replacements for precise fuel level measurement.",
+        image: "/parts/Fuel Tank Sending Unit.png", desc: {
             intro: {
                 title: "What Is a Fuel Tank Sender Unit & Why It's Important for Your Vehicle",
                 text: [
@@ -437,7 +451,9 @@ export const PARTS = [
 
     },
     {
-        category: "Air and Fuel", name: "Throttle Body", image: "/parts/Throttle Body.png", desc: {
+        category: "Air and Fuel", name: "Throttle Body", title: "Quality-Tested Throttle Body & Replacement Parts | PartsCentral",
+        metaDesc: "Replace your car’s throttle body with PartsCentral-tested units. Reliable air intake parts for smoother engine performance and better fuel efficiency.",
+        image: "/parts/Throttle Body.png", desc: {
             intro: {
                 title: "What Is a Throttle Body & Why It's Important for Your Vehicle",
                 text: [
@@ -509,7 +525,9 @@ export const PARTS = [
 
     },
     {
-        category: "Axle", name: "Axel Housing", image: "/parts/Axel Housing.png", desc: {
+        category: "Axle", name: "Axel Housing", title: "Axle Housing | Rear Axle Housing – Parts Central",
+        metaDesc: "Buy high-quality axle housing and rear axle housing parts at Parts Central. Designed for durability, proper fit, and long-term vehicle performance.",
+        image: "/parts/Axel Housing.png", desc: {
             intro: {
                 title: "What Is an Axle Housing and Why It's Important for Your Vehicle",
                 text: [
@@ -581,7 +599,9 @@ export const PARTS = [
 
     },
     {
-        category: "Axle", name: "Axel Shaft", image: "/parts/Axel Shaft.png", desc: {
+        category: "Axle", name: "Axel Shaft", title: "Axle Shaft & Rear Axle Shaft Parts | Parts Central",
+        metaDesc: "Shop durable axle shaft and rear axle shaft parts at Parts Central. Built for proper fit, strength, and long-lasting drivetrain performance.",
+        image: "/parts/Axel Shaft.png", desc: {
             intro: {
                 title: "What Is an Axle Shaft and Why It's Important for Your Vehicle",
                 text: [
@@ -652,7 +672,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Axle", name: "Carrier", image: "/parts/Carrier.png", desc: {
+        category: "Axle", name: "Carrier", title: "Differential Carrier Parts | OEM Replacements – Parts Central",
+        metaDesc: "Find reliable differential carrier parts at Parts Central. OEM-quality replacements built for durability, proper fit, and smooth drivetrain performance.",
+        image: "/parts/Carrier.png", desc: {
             intro: {
                 title: "What Is a Differential Carrier and Why It's Important for Your Vehicle",
                 text: [
@@ -724,7 +746,9 @@ export const PARTS = [
 
     },
     {
-        category: "Axle", name: "Differential", image: "/parts/Differential.png", desc: {
+        category: "Axle", name: "Differential", title: "Differential Parts & Carriers | OEM Quality – Parts Central",
+        metaDesc: "Shop high-quality differential parts at Parts Central. Durable OEM-fit components designed for smooth power transfer and long-lasting performance.",
+        image: "/parts/Differential.png", desc: {
             intro: {
                 title: "What Is a Differential and Why It's Important for Your Vehicle",
                 text: [
@@ -796,7 +820,9 @@ export const PARTS = [
 
     },
     {
-        category: "Axle", name: "Front Axel", image: "/parts/Front Axel.png", desc: {
+        category: "Axle", name: "Front Axel", title: "Front Axle Parts & Assemblies | OEM Fit – Parts Central",
+        metaDesc: "Buy reliable front axle parts at Parts Central. OEM-quality front axle assemblies designed for strength, smooth handling, and long-term performance.",
+        image: "/parts/Front Axel.png", desc: {
             intro: {
                 title: "What Is a Front Axle and Why It's Important for Your Vehicle",
                 text: [
@@ -868,7 +894,9 @@ export const PARTS = [
 
     },
     {
-        category: "Axle", name: "Front Drive Shaft", image: "/parts/Front Drive Shaft.png", desc: {
+        category: "Axle", name: "Front Drive Shaft", title: "Front Drive Shaft Assembly | OEM Replacement – Parts Central",
+        metaDesc: "Shop high-quality front drive shaft assemblies at Parts Central. Designed for smooth power transfer, durability, and reliable vehicle performance.",
+        image: "/parts/Front Drive Shaft.png", desc: {
             intro: {
                 title: "What Is a Front Drive Shaft and Why It's Important for Your Vehicle",
                 text: [
@@ -940,7 +968,9 @@ export const PARTS = [
 
     },
     {
-        category: "Axle", name: "Rear Axel", image: "/parts/Rear Axel.png", desc: {
+        category: "Axle", name: "Rear Axel", title: "Rear Axle Assembly | OEM Replacement – Parts Central",
+        metaDesc: "Buy reliable rear axle assemblies at Parts Central. Engineered for strength, proper alignment, and smooth power delivery for your vehicle.",
+        image: "/parts/Rear Axel.png", desc: {
             intro: {
                 title: "What Is a Rear Axle and Why It's Important for Your Vehicle",
                 text: [
@@ -1011,7 +1041,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Axle", name: "Rear Drive Shaft", image: "/parts/Rear Drive Shaft.png", desc: {
+        category: "Axle", name: "Rear Drive Shaft", title: "Rear Drive Shaft | OEM Replacement Parts – Parts Central",
+        metaDesc: "Shop high-quality rear drive shaft replacements at Parts Central. Designed for durability, smooth power transfer, and perfect vehicle fit.",
+        image: "/parts/Rear Drive Shaft.png", desc: {
             intro: {
                 title: "What Is a Rear Drive Shaft and Why It's Important for Your Vehicle",
                 text: [
@@ -1082,7 +1114,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Axle", name: "Ring Gear/Pinion", image: "/parts/Ring Gear/Pinion.png", desc: {
+        category: "Axle", name: "Ring Gear/Pinion", title: "Ring Gear / Pinion | OEM Differential Parts – Parts Central",
+        metaDesc: "Find premium Ring Gear / Pinion assemblies at Parts Central, built for reliable torque delivery, accurate fitment, and long-lasting drivetrain performance.",
+        image: "/parts/Ring Gear/Pinion.png", desc: {
             intro: {
                 title: "What Is a Ring Gear and Pinion and Why It's Important for Your Vehicle",
                 text: [
@@ -1153,7 +1187,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Brakes", name: "Anti Lock Brake Part", image: "/parts/Anti-Lock Brake Part.png", desc: {
+        category: "Brakes", name: "Anti Lock Brake Part", title: "Anti-Lock Brake System (ABS) Parts & Modules | Tested – PC",
+        metaDesc: "Shop quality-tested anti-lock brake system (ABS) parts at PartsCentral. Reliable ABS modules and components engineered for safe braking and OE fitment.",
+        image: "/parts/Anti-Lock Brake Part.png", desc: {
             intro: {
                 title: "What Is an Anti-Lock Brake System and Why It's Important for Your Vehicle",
                 text: [
@@ -1224,7 +1260,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Brakes", name: "Brake Master Cylinder", image: "/parts/Brake Master Cylinder.png", desc: {
+        category: "Brakes", name: "Brake Master Cylinder", title: "Brake Master Cylinder for Cars | Quality Tested Parts – PC",
+        metaDesc: "Buy trusted brake master cylinder at PartsCentral. Precision-tested components built to deliver accurate brake control and long-term reliability.",
+        image: "/parts/Brake Master Cylinder.png", desc: {
             intro: {
                 title: "What Is a Brake Master Cylinder and Why It's Important for Your Vehicle",
                 text: [
@@ -1295,7 +1333,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Brakes", name: "Hub", image: "/parts/Hub.png", desc: {
+        category: "Brakes", name: "Hub", title: "Wheel Hub Assembly & Bearing Units | Reliable Fit | PartsCentral",
+        metaDesc: "Find dependable wheel hub assembly replacements at PartsCentral. Tested bearing units built for quiet operation and long-term performance.",
+        image: "/parts/Hub.png", desc: {
             intro: {
                 title: "What Is a Wheel Hub Assembly and Why It's Important for Your Vehicle",
                 text: [
@@ -1366,7 +1406,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Brakes", name: "Locking Hubs", image: "/parts/Locking Hubs.png", desc: {
+        category: "Brakes", name: "Locking Hubs", title: "Locking Hub for 4x4 & AWD Vehicles | Tested – PartsCentral",
+        metaDesc: "Shop precision-tested locking hub assemblies at PartsCentral. Designed for smooth 4WD engagement, accurate fitment, and dependable performance.",
+        image: "/parts/Locking Hubs.png", desc: {
             intro: {
                 title: "What Is a Locking Hub and Why It's Important for Your Vehicle",
                 text: [
@@ -1437,7 +1479,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Brakes", name: "Power Brake Booster", image: "/parts/Power Brake Booster.png", desc: {
+        category: "Brakes", name: "Power Brake Booster", title: "Power Brake Booster for Smooth, Responsive Braking | PC",
+        metaDesc: "Improve braking response with a power brake booster from PartsCentral, engineered for smooth pedal feel and consistent stopping performance.",
+        image: "/parts/Power Brake Booster.png", desc: {
             intro: {
                 title: "What Is a Power Brake Booster and Why It's Important for Your Vehicle",
                 text: [
@@ -1508,7 +1552,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Brakes", name: "Rear Brakes", image: "/parts/Rear Brakes.png", desc: {
+        category: "Brakes", name: "Rear Brakes", title: "Rear Brakes Built for Control, Stability and Safer Stops | PC",
+        metaDesc: "Maintain balanced braking with rear brakes components from PartsCentral, engineered for smooth engagement and consistent stopping control.",
+        image: "/parts/Rear Brakes.png", desc: {
             intro: {
                 title: "What Are Rear Brakes and Why They're Important for Your Vehicle",
                 text: [
@@ -1579,7 +1625,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Center Body", name: "Convertible Top Motor", image: "/parts/Convertible Top Motor.png", desc: {
+        category: "Center Body", name: "Convertible Top Motor", title: "Convertible Top Motor | Tested Roof Motor Replacement – PC",
+        metaDesc: "Upgrade your convertible’s performance with quality-tested convertible top motors. Built for smooth roof operation and long-term reliability.",
+        image: "/parts/Convertible Top Motor.png", desc: {
             intro: {
                 title: "What Is a Convertible Top Motor and Why It's Important for Your Vehicle",
                 text: [
@@ -1650,7 +1698,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Center Body", name: "Convertible Top Lift", image: "/parts/Convertible Top Lift.png", desc: {
+        category: "Center Body", name: "Convertible Top Lift", title: "Convertible Top Lift | Smooth Roof Lift Replacement | PartsCentral",
+        metaDesc: "Restore smooth roof movement with a quality-tested convertible top lift from PartsCentral, engineered for consistent lifting and long-term reliability.",
+        image: "/parts/Convertible Top Lift.png", desc: {
             intro: {
                 title: "What Is a Convertible Top Lift and Why It's Important for Your Vehicle",
                 text: [
@@ -1721,7 +1771,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Center Body", name: "Roof", image: "/parts/Roof.png", desc: {
+        category: "Center Body", name: "Roof", title: "Automobile Roof Replacement & Panels | OEM-Fit Car Roof Parts",
+        metaDesc: "Shop quality-tested automobile roof panels and replacement car roofs. OEM-fit body parts engineered for durability, safety, and precise installation.",
+        image: "/parts/Roof.png", desc: {
             intro: {
                 title: "What Is an Automobile Roof and Why It's Important for Your Vehicle",
                 text: [
@@ -1792,7 +1844,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Center Body", name: "Roof Motor", image: "/parts/Roof Motor.png", desc: {
+        category: "Center Body", name: "Roof Motor", title: "Sunroof Motor Replacement | Reliable Roof Motor – PartsCentral",
+        metaDesc: "Upgrade your sunroof system using a PartsCentral quality-checked sunroof motor engineered for accurate movement and long-term mechanical reliability.",
+        image: "/parts/Roof Motor.png", desc: {
             intro: {
                 title: "What Is a Sunroof Motor and Why It's Important for Your Vehicle",
                 text: [
@@ -1863,7 +1917,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Center Body", name: "Running Board", image: "/parts/Running Board.png", desc: {
+        category: "Center Body", name: "Running Board", title: "Running Boards for Cars | Tested Side Steps – PartsCentral",
+        metaDesc: "Upgrade your vehicle with PartsCentral running boards for cars. Tested side step boards engineered for stability, easy installation, and durability.",
+        image: "/parts/Running Board.png", desc: {
             intro: {
                 title: "What Are Running Boards for Cars and Why They're Important for Your Vehicle",
                 text: [
@@ -1934,7 +1990,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Center Body", name: "Seat Belt Rear", image: "/parts/Seat Belt Rear.png", desc: {
+        category: "Center Body", name: "Seat Belt Rear", title: "Rear Seat Belt for Cars | Reliable Passenger Safety – PC",
+        metaDesc: "Ensure rear passenger safety with a PartsCentral-tested rear seat belt built for correct tensioning, secure locking, and factory-fit performance.",
+        image: "/parts/Seat Belt Rear.png", desc: {
             intro: {
                 title: "What Is a Rear Seat Belt and Why It's Important for Your Vehicle",
                 text: [
@@ -2006,7 +2064,9 @@ export const PARTS = [
 
     },
     {
-        category: "Center Body", name: "Sunroof Panel Assembly", image: "/parts/Sunroof Panel Assembly.png", desc: {
+        category: "Center Body", name: "Sunroof Panel Assembly", title: "Sunroof Assembly for Cars | OEM-Fit Glass & Mechanism – PC",
+        metaDesc: "Shop OEM-fit sunroof assemblies for cars including glass and mechanism components. Quality-tested for smooth operation, weather sealing, and long-term reliability.",
+        image: "/parts/Sunroof Panel Assembly.png", desc: {
             intro: {
                 title: "What Is a Sunroof Assembly and Why It's Important for Your Vehicle",
                 text: [
@@ -2077,7 +2137,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "AC Compressor Clutch", image: "/parts/AC Compressor Clutch.png", desc: {
+        category: "Cooling and Heating", name: "AC Compressor Clutch", title: "AC Compressor Clutch | OEM Replacement Parts – Parts Central",
+        metaDesc: "Parts Central offers high-quality AC compressor clutch replacements designed for proper fit and consistent cooling performance.",
+        image: "/parts/AC Compressor Clutch.png", desc: {
             intro: {
                 title: "What Is an AC Compressor Clutch and Why It’s Important for Your Vehicle",
                 text: [
@@ -2145,7 +2207,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "AC Compressor", image: "/parts/AC Compressor.png", desc: {
+        category: "Cooling and Heating", name: "AC Compressor", title: "AC Compressor | OEM Replacement Parts – Parts Central",
+        metaDesc: "Parts Central offers high-quality AC compressors designed for efficient cooling and proper vehicle fit. OEM replacement units tested for reliable performance.",
+        image: "/parts/AC Compressor.png", desc: {
             intro: {
                 title: "What Is an AC Compressor and Why It’s Important for Your Vehicle",
                 text: [
@@ -2213,7 +2277,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "AC Condenser", image: "/parts/AC Condenser.png", desc: {
+        category: "Cooling and Heating", name: "AC Condenser", title: "AC Condenser Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers high-quality AC condensers designed for efficient heat transfer and proper vehicle fit. OEM units tested for reliable cooling performance.",
+        image: "/parts/AC Condenser.png", desc: {
             intro: {
                 title: "What Is an AC Condenser and Why It’s Important for Your Vehicle",
                 text: [
@@ -2281,7 +2347,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "AC Evaporator", image: "/parts/AC Evaporator.png", desc: {
+        category: "Cooling and Heating", name: "AC Evaporator", title: "AC Evaporator Replacement for Cars | Parts Central",
+        metaDesc: "Parts Central offers high-quality AC evaporators designed for consistent cooling and vehicle fit. OEM replacement units tested for dependable performance.",
+        image: "/parts/AC Evaporator.png", desc: {
             intro: {
                 title: "What Is an AC Evaporator and Why It’s Important for Your Vehicle",
                 text: [
@@ -2348,7 +2416,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "AC Evaporator Housing", image: "/parts/AC Evaporator Housing.png", desc: {
+        category: "Cooling and Heating", name: "AC Evaporator Housing", title: "AC Evaporator Housing Replacement | Parts Central",
+        metaDesc: "Parts Central offers high-quality AC evaporator housings designed for proper fit and reliable HVAC operation. OEM replacement units inspected for durability.",
+        image: "/parts/AC Evaporator Housing.png", desc: {
             intro: {
                 title: "What Is an AC Evaporator Housing and Why It’s Important for Your Vehicle",
                 text: [
@@ -2415,7 +2485,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "Blower Motor", image: "/parts/Blower Motor.png", desc: {
+        category: "Cooling and Heating", name: "Blower Motor", title: "Blower Motor Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers high-quality blower motors designed to maintain proper airflow and cabin comfort. OEM replacement units tested for reliability.",
+        image: "/parts/Blower Motor.png", desc: {
             intro: {
                 title: "What Is a Blower Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -2483,7 +2555,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "Heater", image: "/parts/Heater.png", desc: {
+        category: "Cooling and Heating", name: "Heater", title: "Automotive Car Heater | Reliable Replacement Parts",
+        metaDesc: "Parts Central offers high-quality car heaters designed to keep your vehicle cabin warm and comfortable. OEM replacement units tested for reliable performance.",
+        image: "/parts/Heater.png", desc: {
             intro: {
                 title: "What Is a Car Heater and Why It’s Important for Your Vehicle",
                 text: [
@@ -2550,7 +2624,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "Heater Core", image: "/parts/Heater Core.png", desc: {
+        category: "Cooling and Heating", name: "Heater Core", title: "Heater Core Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers high-quality heater cores designed to keep your vehicle cabin warm. OEM replacement units tested for reliable performance.",
+        image: "/parts/Heater Core.png", desc: {
             intro: {
                 title: "What Is a Heater Core and Why It’s Important for Your Vehicle",
                 text: [
@@ -2618,7 +2694,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "Heater Housing", image: "/parts/Heater Housing.png", desc: {
+        category: "Cooling and Heating", name: "Heater Housing", title: "Heater Housing Replacement for Vehicles | Parts Central",
+        metaDesc: "Parts Central offers high-quality heater cores designed to keep your vehicle cabin warm. OEM replacement units tested for reliable performance.",
+        image: "/parts/Heater Housing.png", desc: {
             intro: {
                 title: "What Is a Heater Housing and Why It’s Important for Your Vehicle",
                 text: [
@@ -2686,7 +2764,9 @@ export const PARTS = [
 
     },
     {
-        category: "Cooling and Heating", name: "Radiator", image: "/parts/Radiator.png", desc: {
+        category: "Cooling and Heating", name: "Radiator", title: "Car Radiator Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers car radiators designed for engine cooling and proper vehicle fit. OEM replacement units inspected for dependable performance.",
+        image: "/parts/Radiator.png", desc: {
             intro: {
                 title: "What Is a Car Radiator and Why It’s Important for Your Vehicle",
                 text: [
@@ -2755,7 +2835,9 @@ export const PARTS = [
 
     },
     {
-        category: "Cooling and Heating", name: "Radiator Fan Motor", image: "/parts/Radiator Fan Motor.png", desc: {
+        category: "Cooling and Heating", name: "Radiator Fan Motor", title: "Radiator Fan Motor Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers radiator fan motors designed to support proper engine cooling. OEM replacement units inspected for dependable performance.",
+        image: "/parts/Radiator Fan Motor.png", desc: {
             intro: {
                 title: "What Is a Radiator Fan Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -2823,7 +2905,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "Radiator Shroud", image: "/parts/Radiator Shroud.png", desc: {
+        category: "Cooling and Heating", name: "Radiator Shroud", title: "Radiator Shroud Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers radiator shrouds designed to guide airflow and support efficient engine cooling. OEM replacement units inspected for durability.",
+        image: "/parts/Radiator Shroud.png", desc: {
             intro: {
                 title: "What Is a Radiator Shroud and Why It Matters for Engine Cooling",
                 text: [
@@ -2890,7 +2974,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Cooling and Heating", name: "Temperature Control", image: "/parts/Temperature Control.png", desc: {
+        category: "Cooling and Heating", name: "Temperature Control", title: "Car Temperature Control Parts | Parts Central",
+        metaDesc: "Parts Central offers car temperature control parts designed to regulate cabin comfort and operation. OEM replacement units inspected for reliable performance.",
+        image: "/parts/Temperature Control.png", desc: {
             intro: {
                 title: "How Car Temperature Control Maintains Cabin Comfort",
                 text: [
@@ -2957,7 +3043,9 @@ export const PARTS = [
 
     },
     {
-        category: "Doors", name: "Door Handle Exterior", image: "/parts/Door Handle Exterior.png", desc: {
+        category: "Doors", name: "Door Handle Exterior", title: "Car Exterior Door Handles | Tested Replacement Parts | PC",
+        metaDesc: "Shop quality-tested exterior door handles engineered for secure grip, precise fitment, and long-lasting durability. Reliable replacements for most vehicles.",
+        image: "/parts/Door Handle Exterior.png", desc: {
             intro: {
                 title: "What Are Exterior Door Handles and Why They Matter",
                 text: [
@@ -3024,7 +3112,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Door Handle Interior", image: "/parts/Door Handle Interior.png", desc: {
+        category: "Doors", name: "Door Handle Interior", title: "Interior Door Handle | OEM-Fit Car Door Handle Replacement | PC",
+        metaDesc: "Upgrade your vehicle’s interior with quality-tested interior door handle designed for smooth operation, secure grip, and dependable OEM fitment.",
+        image: "/parts/Door Handle Interior.png", desc: {
             intro: {
                 title: "What Is an Interior Door Handle and Why It Matters",
                 text: [
@@ -3091,7 +3181,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Door Trim Panel", image: "/parts/Door Trim Panel.png", desc: {
+        category: "Doors", name: "Door Trim Panel", title: "Rear Door Trim Panel Replacement | Interior Door Panels | PC",
+        metaDesc: "Replace worn or damaged rear door trim panel with durable, vehicle-specific interior door panels engineered for proper fit and lasting performance.",
+        image: "/parts/Door Trim Panel.png", desc: {
             intro: {
                 title: "What Is a Rear Door Trim Panel and Why It’s Important for Your Vehicle",
                 text: [
@@ -3159,7 +3251,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Door Vent Window Regulator Front", image: "/parts/Door Vent Window Regulator Front.png", desc: {
+        category: "Doors", name: "Door Vent Window Regulator Front", title: "Front Door Window Regulator | Trusted Power Window Parts | PC",
+        metaDesc: "Buy a quality-tested front door window regulator designed for smooth glass movement, dependable operation, and long-term performance you can trust.",
+        image: "/parts/Door Vent Window Regulator Front.png", desc: {
             intro: {
                 title: "What Is a Front Door Vent Window Regulator and Why It’s Important for Your Vehicle",
                 text: [
@@ -3228,7 +3322,9 @@ export const PARTS = [
 
     },
     {
-        category: "Doors", name: "Electric Door Motor", image: "/parts/Electric Door Motor.png", desc: {
+        category: "Doors", name: "Electric Door Motor", title: "Power Door Lock Actuator | Reliable Central Locking Part | PC",
+        metaDesc: "Restore secure locking with a quality-checked power door lock actuator built for consistent response, smooth operation, and long-lasting durability.",
+        image: "/parts/Electric Door Motor.png", desc: {
             intro: {
                 title: "What Is a Power Door Lock Actuator and Why It’s Important for Your Vehicle",
                 text: [
@@ -3296,7 +3392,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Front Door", image: "/parts/Front Door.png", desc: {
+        category: "Doors", name: "Front Door", title: "Front Door Assembly | OEM-Fit Car Door Panel & Frame | PC",
+        metaDesc: "Upgrade damaged doors with a quality-tested front door assembly designed for precise fitment, structural strength, and long-term exterior durability.",
+        image: "/parts/Front Door.png", desc: {
             intro: {
                 title: "What Is a Front Door Assembly and Why It’s Important for Your Vehicle",
                 text: [
@@ -3366,7 +3464,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Front Door Switch", image: "/parts/Front Door Switch.png", desc: {
+        category: "Doors", name: "Front Door Switch", title: "Car Door Switch | OEM Tested Door Switches with Warranty | PC",
+        metaDesc: "Buy a reliable car door switch from Parts Central. OEM tested for fit and durability, quality checked, backed by warranty, and shipped fast.",
+        image: "/parts/Front Door Switch.png", desc: {
             intro: {
                 title: "What Is a Car Door Switch and Why It’s Important for Your Vehicle",
                 text: [
@@ -3434,7 +3534,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Front Door Trim Panel", image: "/parts/Front Door Trim Panel.png", desc: {
+        category: "Doors", name: "Front Door Trim Panel", title: "Front Door Trim Panel | OEM Fit | Quality Checked | PartsCentral",
+        metaDesc: "Shop OEM front door trim panel at Parts Central. Perfect-fit replacements, quality inspected, ready to install, backed by warranty and fast shipping.",
+        image: "/parts/Front Door Trim Panel.png", desc: {
             intro: {
                 title: "What Is a Front Door Trim Panel and Why It’s Important for Your Vehicle",
                 text: [
@@ -3502,7 +3604,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Front Window Regulator", image: "/parts/Front Window Regulator.png", desc: {
+        category: "Doors", name: "Front Window Regulator", title: "Front Car Window Regulator | Genuine OEM Replacement | PC",
+        metaDesc: "Shop OEM front car window regulator at Parts Central. Quality inspected for smooth operation, proper fitment, durability, and backed by warranty.",
+        image: "/parts/Front Window Regulator.png", desc: {
             intro: {
                 title: "What Is a Car Window Regulator and Why It’s Important for Your Vehicle",
                 text: [
@@ -3570,7 +3674,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Power Window Motor", image: "/parts/Power Window Motor.png", desc: {
+        category: "Doors", name: "Power Window Motor", title: "Buy Power Window Motor | Genuine OEM Replacement | PC",
+        metaDesc: "Find the right power window motor at Parts Central. Verified OEM replacements designed for smooth operation, precise fitment, and dependable performance.",
+        image: "/parts/Power Window Motor.png", desc: {
             intro: {
                 title: "What Is a Power Window Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -3638,7 +3744,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Rear Back Door", image: "/parts/Rear Back Door.png", desc: {
+        category: "Doors", name: "Rear Back Door", title: "Rear Back Door Assembly | OEM Body Replacement | PC",
+        metaDesc: "Shop quality OEM rear back door assemblies at Parts Central. Carefully checked for panel condition, precise fitment, secure mounting, and long-term reliability.",
+        image: "/parts/Rear Back Door.png", desc: {
             intro: {
                 title: "What Is a Rear Back Door and Why It’s Important for Your Vehicle",
                 text: [
@@ -3707,7 +3815,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Rear Side Door", image: "/parts/Rear Side Door.png", desc: {
+        category: "Doors", name: "Rear Side Door", title: "OEM Rear Side Door | Factory Fit Replacement | PartsCentral",
+        metaDesc: "Replace damaged or rusted panels with OEM rear side door from Parts Central. Inspected for alignment, fitment, durability, and backed by warranty.",
+        image: "/parts/Rear Side Door.png", desc: {
             intro: {
                 title: "What Is a Rear Side Door and Why It’s Important for Your Vehicle",
                 text: [
@@ -3775,7 +3885,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Rear Window Regulator", image: "/parts/Rear Window Regulator.png", desc: {
+        category: "Doors", name: "Rear Window Regulator", title: "Rear Window Regulator | Reliable OEM Fit & Performance | PC",
+        metaDesc: "Buy a reliable rear window regulator from Parts Central. OEM tested for smooth window movement, exact fit, dependable performance, and fast shipping.",
+        image: "/parts/Rear Window Regulator.png", desc: {
             intro: {
                 title: "What Is a Rear Window Regulator and Why It’s Important for Your Vehicle",
                 text: [
@@ -3843,7 +3955,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Doors", name: "Side View Mirror", image: "/parts/Side View Mirror.png", ddesc: {
+        category: "Doors", name: "Side View Mirror", title: "OEM Side View Mirror Assembly | Precision Fit Replacement | PC",
+        metaDesc: "Buy a reliable side view mirror from Parts Central. OEM tested for clarity, exact fit, dependable performance, and fast shipping with warranty.",
+        image: "/parts/Side View Mirror.png", ddesc: {
             intro: {
                 title: "What Is a Side View Mirror and Why It’s Important for Your Vehicle",
                 text: [
@@ -3911,7 +4025,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Alternator", image: "/parts/Alternator.png", desc: {
+        category: "Electrical", name: "Alternator", title: "Alternator | Car Alternator Replacement & Parts – PartsCentral",
+        metaDesc: "Keep your car running smoothly with quality-tested alternator from PartsCentral. Reliable replacement parts for repair, performance, and long-term durability.",
+        image: "/parts/Alternator.png", desc: {
             intro: {
                 title: "What Is an Alternator and Why It’s Important for Your Vehicle",
                 text: [
@@ -3979,7 +4095,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Antenna", image: "/parts/Antenna.png", desc: {
+        category: "Electrical", name: "Antenna", title: "Best Car Antenna Replacement Parts | Tested Quality | PC",
+        metaDesc: "Shop quality-tested car antenna replacement parts at PC. Universal and short car antennas built for strong signal, easy fitment, and long-lasting performance.",
+        image: "/parts/Antenna.png", desc: {
             intro: {
                 title: "What Is a Car Antenna and Why It’s Important for Your Vehicle",
                 text: [
@@ -4047,7 +4165,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Audio Euipment Radio", image: "/parts/Audio Euipment Radio.png", desc: {
+        category: "Electrical", name: "Audio Euipment Radio", title: "Audio Equipment Radio | OEM Tested | Perfect Fit | PartsCentral",
+        metaDesc: "Upgrade your vehicle audio with OEM Audio Equipment Radio from Parts Central. Tested for sound clarity, proper fitment, reliable performance, and warranty.",
+        image: "/parts/Audio Euipment Radio.png", desc: {
             intro: {
                 title: "What Is an Audio Equipment Radio and Why It Matters for Your Vehicle",
                 text: [
@@ -4117,7 +4237,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Automatic Headlamp Dimmer", image: "/parts/Automatic Headlamp Dimmer.png", desc: {
+        category: "Electrical", name: "Automatic Headlamp Dimmer", title: "Automatic Headlamp Dimmer | OEM Light Control Module | PC",
+        metaDesc: "Improve night driving safety with OEM Automatic Headlamp Dimmer from Parts Central. Tested for accurate light sensing, proper fitment, and reliable operation.",
+        image: "/parts/Automatic Headlamp Dimmer.png", desc: {
             intro: {
                 title: "What Is an Automatic Headlamp Dimmer and Why It Matters",
                 text: [
@@ -4182,7 +4304,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Backup Light", image: "/parts/Backup Light.png", desc: {
+        category: "Electrical", name: "Backup Light", title: "Backup Light | OEM Reverse Lighting & Safety | PartsCentral",
+        metaDesc: "Improve rear visibility with OEM Backup Light from Parts Central. Quality tested for brightness, proper fitment, reliable operation, and safe reversing.",
+        image: "/parts/Backup Light.png", desc: {
             intro: {
                 title: "What Is a Backup Light and Why It Matters",
                 text: [
@@ -4247,7 +4371,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Blower Motor", image: "/parts/Blower Motor.png", desc: {
+        category: "Electrical", name: "Blower Motor", title: "Blower Motor | OEM HVAC Airflow Replacement | PartsCentral",
+        metaDesc: "Restore proper cabin airflow with OEM blower motor from Parts Central. Tested for smooth operation, correct speed control, durability, and warranty support.",
+        image: "/parts/Blower Motor.png", desc: {
             intro: {
                 title: "What Is a Blower Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -4314,7 +4440,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Camera/Projector", image: "/parts/Camera/Projector.png", desc: {
+        category: "Electrical", name: "Camera/Projector", title: "Car Camera System | Rear View, Backup & 360 Cameras – PC",
+        metaDesc: "Upgrade driving safety with quality-tested car camera system from PartsCentral. Rear view, backup, and 360 cameras for clear visibility.",
+        image: "/parts/Camera/Projector.png", desc: {
             intro: {
                 title: "What Is a Car Camera System and Why It’s Important for Your Vehicle",
                 text: [
@@ -4383,7 +4511,9 @@ export const PARTS = [
 
     },
     {
-        category: "Electrical", name: "Chassis ECM", image: "/parts/Chassis ECM.png", desc: {
+        category: "Electrical", name: "Chassis ECM", title: "Chassis ECM Module | OEM Control Unit Replacement | PC",
+        metaDesc: "Replace faulty chassis control systems using OEM Chassis ECM units from Parts Central. Inspected for accurate signal processing and dependable operation.",
+        image: "/parts/Chassis ECM.png", desc: {
             intro: {
                 title: "What Is a Chassis ECM and Why It’s Important for Your Vehicle",
                 text: [
@@ -4451,7 +4581,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Column Switch", image: "/parts/Column Switch.png", desc: {
+        category: "Electrical", name: "Column Switch", title: "Steering Column Switch | OEM Control Assembly | PartsCentral",
+        metaDesc: "Restore reliable steering controls with OEM column switch from Parts Central. Tested for turn signals, wipers, lights, proper fitment, and durability.",
+        image: "/parts/Column Switch.png", desc: {
             intro: {
                 title: "What Is a Column Switch and Why It’s Important for Your Vehicle",
                 text: [
@@ -4519,7 +4651,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Conv/Invert/Charger", image: "/parts/Conv/Invert/Charger.png", desc: {
+        category: "Electrical", name: "Conv/Invert/Charger", title: "Car Power Inverter | OEM Voltage Converter Unit | PartsCentral",
+        metaDesc: "Power your devices safely with OEM car power inverter from Parts Central. Tested for stable voltage output, vehicle compatibility & dependable performance.",
+        image: "/parts/Conv/Invert/Charger.png", desc: {
             intro: {
                 title: "What Is a Car Power Inverter and Why It’s Important for Your Vehicle",
                 text: [
@@ -4587,7 +4721,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Corner/Park Light", image: "/parts/Corner/Park Light.png", desc: {
+        category: "Electrical", name: "Corner/Park Light", title: "Corner Light | OEM Replacement Lighting Unit | PartsCentral",
+        metaDesc: "Replace damaged or faded corner light units with OEM parts from Parts Central. Tested for proper illumination, secure mounting, and long-term durability.",
+        image: "/parts/Corner/Park Light.png", desc: {
             intro: {
                 title: "What Are Corner Lights and Parking Lights and Why They’re Important for Your Vehicle",
                 text: [
@@ -4655,7 +4791,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Cruise Speed Regulator", image: "/parts/Cruise Speed Regulator.png", desc: {
+        category: "Electrical", name: "Cruise Speed Regulator", title: "Cruise Speed Regulator | OEM Cruise Control Module | PC",
+        metaDesc: "Maintain steady highway speeds with OEM cruise speed regulator from Parts Central. Tested for accurate speed control, compatibility & reliable performance.",
+        image: "/parts/Cruise Speed Regulator.png", desc: {
             intro: {
                 title: "What Is a Cruise Speed Regulator and Why It’s Important for Your Vehicle",
                 text: [
@@ -4723,7 +4861,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Dash/Interior/Seat Switch", image: "/parts/Dash/Interior/Seat Switch.png", desc: {
+        category: "Electrical", name: "Dash/Interior/Seat Switch", title: "Seat Switch | OEM Power Seat Switch Replacement | PartsCentral",
+        metaDesc: "Shop OEM seat switch replacements at Parts Central. Quality tested power seat control switches designed for accurate adjustment, proper fitment & durability.",
+        image: "/parts/Dash/Interior/Seat Switch.png", desc: {
             intro: {
                 title: "What Is a Seat Switch and Why It’s Important for Your Vehicle",
                 text: [
@@ -4791,7 +4931,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Electric Door Motor", image: "/parts/Electric Door Motor.png", desc: {
+        category: "Electrical", name: "Electric Door Motor", title: "Electrical Door Motor | Power Door Lock Actuator | PartsCentral",
+        metaDesc: "Find OEM electrical door motor and power door lock actuator replacements at Parts Central. Tested for consistent locking, compatibility, and dependable quality.",
+        image: "/parts/Electric Door Motor.png", desc: {
             intro: {
                 title: "What Is a Power Door Lock Actuator and Why It’s Important for Your Vehicle",
                 text: [
@@ -4859,7 +5001,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Engine ECM", image: "/parts/Engine ECM.png", desc: {
+        category: "Electrical", name: "Engine ECM", title: "Engine ECM | OEM Engine Control Module Replacement | PC",
+        metaDesc: "Restore smooth engine operation using OEM Engine ECM modules from Parts Central. Verified for correct programming, precise control, and dependable quality.",
+        image: "/parts/Engine ECM.png", desc: {
             intro: {
                 title: "What Is an Engine ECM and Why It’s Important",
                 text: [
@@ -4935,7 +5079,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Engine Wire Harness", image: "/parts/Engine Wire Harness.png", desc: {
+        category: "Electrical", name: "Engine Wire Harness", title: "Engine Wire Harness | Under-Hood Wiring Assembly | PC",
+        metaDesc: "Shop OEM engine wire harness replacements at Parts Central. Quality tested wiring assemblies designed for correct connections, proper fitment, and durability.",
+        image: "/parts/Engine Wire Harness.png", desc: {
             intro: {
                 title: "What Is an Engine Wire Harness and Why It’s Important",
                 text: [
@@ -5011,7 +5157,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Fog Lamp Rear", image: "/parts/Fog Lamp Rear.png", desc: {
+        category: "Electrical", name: "Fog Lamp Rear", title: "Fog Lamp Rear | OEM Rear Fog Light Assembly | PartsCentral",
+        metaDesc: "Improve rear visibility in low-light conditions with OEM fog lamp rear units from Parts Central. Quality tested for brightness, fitment, and durability.",
+        image: "/parts/Fog Lamp Rear.png", desc: {
             intro: {
                 title: "What Is a Fog Lamp Rear and Why It’s Important",
                 text: [
@@ -5086,7 +5234,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Front Door Switch", image: "/parts/Front Door Switch.png", desc: {
+        category: "Electrical", name: "Front Door Switch", title: "Front Door Switch | Car Door Switch OEM Replacement | PC",
+        metaDesc: "Buy OEM front door switch and car door switch units from Parts Central. Inspected for proper response, secure fit, long-lasting performance, and quality.",
+        image: "/parts/Front Door Switch.png", desc: {
             intro: {
                 title: "What Is a Car Door Switch and Why It’s Important for Your Vehicle",
                 text: [
@@ -5153,7 +5303,9 @@ export const PARTS = [
 
     },
     {
-        category: "Electrical", name: "Fuse Box Cabin", image: "/parts/Fuse Box Cabin.png", desc: {
+        category: "Electrical", name: "Fuse Box Cabin", title: "Fuse Box Switch Replacement Parts | Parts Central",
+        metaDesc: "Parts Central offers fuse box switches designed for proper electrical control and fit. OEM replacement units inspected for dependable performance.",
+        image: "/parts/Fuse Box Cabin.png", desc: {
             intro: {
                 title: "What Is a Cabin Fuse Box and Why It’s Important for Your Vehicle",
                 text: [
@@ -5222,7 +5374,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Fuse Box Engine", image: "/parts/Fuse Box Engine.png", desc: {
+        category: "Electrical", name: "Fuse Box Engine", title: "Fuse Box Engine Assembly | Electrical Control Unit",
+        metaDesc: "Find fuse box engine assemblies that protect and distribute power across key under-hood systems. Carefully checked units ready for installation.",
+        image: "/parts/Fuse Box Engine.png", desc: {
             intro: {
                 title: "What Is a Fuse Box Engine and Why It’s Important for Your Vehicle",
                 text: [
@@ -5291,7 +5445,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Headlight", image: "/parts/Headlight.png", desc: {
+        category: "Electrical", name: "Headlight", title: "Headlight Assemblies & Replacements | Parts Central",
+        metaDesc: "Browse headlight assemblies at Parts Central designed to restore road visibility and vehicle appearance. Tested units available for multiple models.",
+        image: "/parts/Headlight.png", desc: {
             intro: {
                 title: "What Is a Headlight and Why It’s Important for Your Vehicle",
                 text: [
@@ -5361,7 +5517,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Headlight Motor", image: "/parts/Headlight Motor.png", desc: {
+        category: "Electrical", name: "Headlight Motor", title: "Headlight Motor Assemblies | Parts Central",
+        metaDesc: "Find headlight motors at Parts Central used for pop-up and adjustable headlight systems. Tested assemblies available for select vehicle models.",
+        image: "/parts/Headlight Motor.png", desc: {
             intro: {
                 title: "What Is a Headlight Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -5430,7 +5588,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "High Mounted Stop Light", image: "/parts/High Mounted Stop Light.png", desc: {
+        category: "Electrical", name: "High Mounted Stop Light", title: "High Mount Stop Light Assemblies | Parts Central",
+        metaDesc: "Shop high mount stop lights at Parts Central to replace faulty or damaged brake lights. Reliable assemblies available for many vehicle models.",
+        image: "/parts/High Mounted Stop Light.png", desc: {
             intro: {
                 title: "What Is a Third Brake Light and Why It’s Important for Your Vehicle",
                 text: [
@@ -5499,7 +5659,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Ignitons Switch", image: "/parts/Ignitons Switch.png", desc: {
+        category: "Electrical", name: "Ignitons Switch", title: "Ignition Switch Replacement Parts | Parts Central",
+        metaDesc: "Find ignition switches at Parts Central designed to control vehicle startup and electrical functions. Tested units available for multiple models.",
+        image: "/parts/Ignitons Switch.png", desc: {
             intro: {
                 title: "What Is an Ignition Switch and Why It’s Important for Your Vehicle",
                 text: [
@@ -5569,7 +5731,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Info GPS TV Screen", image: "/parts/Info-GPS-TV Screen.png", desc: {
+        category: "Electrical", name: "Info GPS TV Screen", title: "Info GPS TV Screens & Displays | Parts Central",
+        metaDesc: "Shop info GPS TV screens at Parts Central to replace damaged or non-responsive vehicle displays. Compatible options available for select models.",
+        image: "/parts/Info-GPS-TV Screen.png", desc: {
             intro: {
                 title: "What Is a Car Infotainment System and Why It’s Important for Your Vehicle",
                 text: [
@@ -5640,7 +5804,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Instrument Cluster", image: "/parts/Instrument Cluster.png", desc: {
+        category: "Electrical", name: "Instrument Cluster", title: "Instrument Cluster Assemblies | Parts Central",
+        metaDesc: "Shop instrument clusters at Parts Central to replace faulty or worn dashboards. Reliable OEM units available for various vehicle models.",
+        image: "/parts/Instrument Cluster.png", desc: {
             intro: {
                 title: "What Is a Car Instrument Cluster and Why It’s Important for Your Vehicle",
                 text: [
@@ -5782,7 +5948,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Power Window Motor", image: "/parts/Power Window Motor.png", desc: {
+        category: "Electrical", name: "Power Window Motor", title: "Power Window Motor Assemblies | Parts Central",
+        metaDesc: "Browse power window motors at Parts Central built to operate vehicle windows smoothly. Tested assemblies available for many makes and models.",
+        image: "/parts/Power Window Motor.png", desc: {
             intro: {
                 title: "What Is a Power Window Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -5852,7 +6020,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Radiator Fan Motor", image: "/parts/Radiator Fan Motor.png", desc: {
+        category: "Electrical", name: "Radiator Fan Motor", title: "Radiator Fan Motor Assemblies | Parts Central",
+        metaDesc: "Shop radiator fan motors at Parts Central designed to control engine cooling airflow. Tested units available for a wide range of vehicles.",
+        image: "/parts/Radiator Fan Motor.png", desc: {
             intro: {
                 title: "What Is a Radiator Fan Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -5920,7 +6090,9 @@ export const PARTS = [
 
     },
     {
-        category: "Electrical", name: "Rear Door Switch", image: "/parts/Rear Door Switch.png", desc: {
+        category: "Electrical", name: "Rear Door Switch", title: "Rear Door Switch for Power Controls | Parts Central",
+        metaDesc: "Find rear door switches at Parts Central used to control door-related electrical functions. Tested assemblies available for multiple vehicle models.",
+        image: "/parts/Rear Door Switch.png", desc: {
             intro: {
                 title: "What Is a Rear Door Switch and Why It’s Important for Your Vehicle",
                 text: [
@@ -5988,7 +6160,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Rear Side Marker", image: "/parts/Rear Side Marker.png", desc: {
+        category: "Electrical", name: "Rear Side Marker", title: "Shop Rear Side Marker Lights | Parts Central",
+        metaDesc: "Shop rear side marker lights at Parts Central to replace damaged or non-functioning units. Reliable assemblies available for many vehicle models.",
+        image: "/parts/Rear Side Marker.png", desc: {
             intro: {
                 title: "What Is a Rear Side Marker Light and Why It’s Important for Your Vehicle",
                 text: [
@@ -6056,7 +6230,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Rear Wiper Motor", image: "/parts/Rear Wiper Motor.png", desc: {
+        category: "Electrical", name: "Rear Wiper Motor", title: "Rear Wiper Motor Assemblies | Parts Central",
+        metaDesc: "Find rear wiper motors at Parts Central designed to restore rear windshield wiping function. Tested units available for various vehicle models.",
+        image: "/parts/Rear Wiper Motor.png", desc: {
             intro: {
                 title: "What Is a Rear Wiper Motor and Why It’s Important for Your Vehicle",
                 text: [
@@ -6124,7 +6300,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Speedometer Cluster", image: "/parts/Speedometer Cluster.png", desc: {
+        category: "Electrical", name: "Speedometer Cluster", title: "Speedometer Cluster Assemblies & Gauges | Parts Central",
+        metaDesc: "Explore speedometer clusters at Parts Central displaying speed, mileage, and key vehicle data. Tested units available for many makes and models.",
+        image: "/parts/Speedometer Cluster.png", desc: {
             intro: {
                 title: "What Is a Speedometer Cluster and Why It’s Important for Your Vehicle",
                 text: [
@@ -6192,7 +6370,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Tail Light", image: "/parts/Tail Light.png", desc: {
+        category: "Electrical", name: "Tail Light", title: "Tail Light Assemblies & Rear Lamps | Parts Central",
+        metaDesc: "Shop tail lights at Parts Central designed for clear rear signaling and proper vehicle visibility. Tested assemblies available for various models.",
+        image: "/parts/Tail Light.png", desc: {
             intro: {
                 title: "What Is a Tail Light and Why It’s Important for Your Vehicle",
                 text: [
@@ -6260,7 +6440,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Temperature Control", image: "/parts/Temperature Control.png", desc: {
+        category: "Electrical", name: "Temperature Control", title: "Cabin Temperature Control Components | Parts Central",
+        metaDesc: "Find temperature control parts at Parts Central that help regulate in-vehicle climate settings. Compatible options available for multiple vehicle models.",
+        image: "/parts/Temperature Control.png", desc: {
             intro: {
                 title: "How Car Temperature Control Maintains Cabin Comfort",
                 text: [
@@ -6320,7 +6502,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Vacuum Pump", image: "/parts/Vacuum Pump.png", desc: {
+        category: "Electrical", name: "Vacuum Pump", title: "Automotive Vacuum Pump Units | Parts Central",
+        metaDesc: "Shop vacuum pumps at Parts Central used to support brake assist and engine system operation. Tested units available for various vehicle models.",
+        image: "/parts/Vacuum Pump.png", desc: {
             intro: {
                 title: "What Is a Vacuum Pump and Why It’s Important for Your Vehicle",
                 text: [
@@ -6380,7 +6564,9 @@ export const PARTS = [
         },
     },
     {
-        category: "Electrical", name: "Windshield Wiper", image: "/parts/Windshield Wiper.png", desc: {
+        category: "Electrical", name: "Windshield Wiper", title: "Windshield Wiper Motor Assemblies | Parts Central",
+        metaDesc: "Find windshield wiper motors at Parts Central designed to power smooth and consistent wiper movement. Tested units available for many vehicles.",
+        image: "/parts/Windshield Wiper.png", desc: {
             intro: {
                 title: "What Is a Windshield Wiper Motor and Why It’s Important for Your Vehicle",
                 text: [

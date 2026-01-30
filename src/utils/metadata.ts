@@ -171,10 +171,10 @@ export const metadataMap: Record<string, Metadata> = {
     keywords:
       "auto parts blog, car parts blog, vehicle maintenance tips, auto repair guides, parts central blog, automotive news and updates",
   },
-  "/testimonials": {
+  "/Testimonials": {
     title: "Customer Testimonials | Parts Central – Trusted Auto Parts Reviews",
     alternates: {
-      canonical: "https://partscentral.us/testimonials",
+      canonical: "https://partscentral.us/Testimonials",
     },
     description:
       "Read real customer testimonials and reviews about Parts Central. See why customers trust us for quality auto parts, reliable service, and fast delivery.",

@@ -222,7 +222,7 @@ export default function TestimonialsSection() {
           <div className="flex justify-center mt-8">
             <Link
               className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg  shadow-lg hover:bg-[#1558b0] transition"
-              href="/testimonials"
+              href="/Testimonials"
               passHref
             >
               {/* <a className="bg-[#00a3ff] text-white px-10 py-3 rounded-md text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition"> */}

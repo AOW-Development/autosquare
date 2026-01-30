@@ -56,17 +56,17 @@ const nextConfig: NextConfig = {
         destination: '/contact-us',
         statusCode: 301,
       },
-      {
-        source: '/Testimonials',
-        has: [
-          {
-            type: 'host',
-            value: 'partscentral.us',
-          },
-        ],
-        destination: '/testimonials',
-        statusCode: 301,
-      },
+      // {
+      //   source: '/Testimonials',
+      //   has: [
+      //     {
+      //       type: 'host',
+      //       value: 'partscentral.us',
+      //     },
+      //   ],
+      //   destination: '/testimonials',
+      //   statusCode: 301,
+      // },
       {
         source: '/Blog/blogListing',
         destination: '/blog/blog-listing',

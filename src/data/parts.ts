@@ -6627,7 +6627,8 @@ export const PARTS = [
     },
     {
         category: "Engine",
-        name: "Air Cleaner",
+        name: "Air Cleaner", title: "Air Cleaner Replacement Parts | Parts Central",
+        metaDesc: "Find air cleaner replacement parts at Parts Central to maintain proper engine airflow and filtration. Options available for various vehicle models.",
         image: "/parts/Air Cleaner Filter.png",
         desc: {
             intro: {
@@ -6690,6 +6691,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Coolant Pump",
+        title: "Coolant Pump Replacement Parts | Parts Central",
+        metaDesc: "Buy engine coolant pumps from Parts Central to help regulate temperatures and prevent overheating. Compatible options available across many models.",
         image: "/parts/Coolant Pump.png",
         desc: {
             intro: {
@@ -6752,6 +6755,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Cylinder Block",
+        title: "Cylinder Blocks for Vehicle Replacements | Parts Central",
+        metaDesc: "Find cylinder blocks at Parts Central for rebuilds or replacements. Suitable options available for a wide range of vehicle applications.",
         image: "/parts/Cylinder Block.png",
         desc: {
             intro: {
@@ -6814,6 +6819,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Cylinder Head",
+        title: "Cylinder Head Assemblies for Sale | Parts Central",
+        metaDesc: "Shop cylinder heads at Parts Central for repairs or replacements. Compatible options available for multiple vehicle makes and models.",
         image: "/parts/Cylinder Head.png",
         desc: {
             intro: {
@@ -6876,6 +6883,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Engine Assembly",
+        title: "Engine Assembly Replacement Units | Parts Central",
+        metaDesc: "Shop engine assemblies at Parts Central for complete replacement solutions. Fully assembled options available for various vehicle models.",
         image: "/parts/Engine Assembly.png",
         desc: {
             intro: {
@@ -6948,6 +6957,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Harmonic Balancer",
+        title: "Harmonic Balancer Replacement Parts | Parts Central",
+        metaDesc: "Shop harmonic balancers at Parts Central designed to reduce vibration and support smooth operation across many vehicle models.",
         image: "/parts/Harmonic Balancer.png",
         desc: {
             intro: {
@@ -7021,6 +7032,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Intake Manifold",
+        title: "Intake Manifold Assemblies & Replacements | Parts Central",
+        metaDesc: "Find intake manifolds at Parts Central for proper airflow and engine performance. Options available for a wide range of vehicle makes.",
         image: "/parts/Intake Manifold.png",
         desc: {
             intro: {
@@ -7086,6 +7099,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Oil Pan",
+        title: "Oil Pan Replacement & Fit Options | Parts Central",
+        metaDesc: "Shop oil pans at Parts Central designed for proper oil containment and dependable fit across many vehicle applications and models.",
         image: "/parts/Oil Pan.png",
         desc: {
             intro: {
@@ -7158,6 +7173,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Short Cylinder Block",
+        title: "Short Cylinder Block Replacement Units | Parts Central",
+        metaDesc: "Shop short cylinder blocks at Parts Central for rebuilds or replacements. Durable units available for a wide range of vehicle applications and models.",
         image: "/parts/Short Cylinder Block.png",
         desc: {
             intro: {
@@ -7231,6 +7248,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Spark Plug",
+        title: "Spark Plugs for Replacement & Performance | Parts Central",
+        metaDesc: "Shop spark plugs at Parts Central to ensure proper ignition and engine performance. Reliable units available for multiple vehicle makes and models.",
         image: "/parts/Spark Plug.png",
         desc: {
             intro: {
@@ -7305,6 +7324,8 @@ export const PARTS = [
     {
         category: "Engine",
         name: "Timing Cover",
+        title: "Timing Cover Replacement Parts | Parts Central",
+        metaDesc: "Shop timing covers at Parts Central to protect and seal your vehicle’s timing components. Reliable units available for many makes and models.",
         image: "/parts/Timing Cover.png",
         desc: {
             intro: {

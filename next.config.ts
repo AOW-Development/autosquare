@@ -69,6 +69,17 @@ const nextConfig: NextConfig = {
       //   statusCode: 301,
       // },
       {
+        source:'/Testimonials',
+        destination: '/account/Testimonials',
+        statusCode: 301,
+      },
+
+      {
+        source: '/$',
+        destination:'/',
+        statusCode:301,
+      },
+      {
         source: '/Blog/blogListing',
         destination: '/blog/blog-listing',
         statusCode: 301,
@@ -158,4 +169,5 @@ const nextConfig: NextConfig = {
 };
  
 export default nextConfig;
+
  

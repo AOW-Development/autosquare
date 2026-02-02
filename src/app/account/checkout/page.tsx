@@ -728,7 +728,7 @@ useEffect(() => {
           <div className="lg:col-span-2">
             <div className="flex justify-end items-end text-right mt-2 pr-1 md:pr-6 mb-4">
               <Link
-                href="/account/signIn"
+                href="/account/sign-in"
                 className="text-sm text-[#FFFFFF] hover:underline font-exo2"
               >
                 Have an account? Log in

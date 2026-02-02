@@ -146,7 +146,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
                 <span className="text-sm text-white/60">
                   Have an account?{" "}
                   <Link
-                    href="/account/signIn"
+                    href="/account/sign-in"
                     className="text-blue-400 underline"
                   >
                     Log in

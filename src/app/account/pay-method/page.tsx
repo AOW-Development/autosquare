@@ -2271,139 +2271,194 @@ const verifyOtp = async () => {
             Complete your purchase using a secure payment method.
           </p>
 
-          <div className="space-y-6">
+      <div className="space-y-4">
 
-            {/* Credit/Debit Card */}
-            <div className="bg-[#1A263D] text-white rounded-lg p-4 md:p-4 border border-[#1F2937]">
+  {/* CARD */}
+  <div className="bg-[#1A263D] text-white rounded-lg border border-[#1F2937] p-4">
+    <label className="flex items-center space-x-3 cursor-pointer mb-4">
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="card"
+        checked={paymentMethod === "card"}
+        onChange={(e) => setPaymentMethod(e.target.value)}
+        className="form-radio text-[#009AFF] w-4 h-4"
+      />
+      <span className="font-exo2 text-sm md:text-base">
+        Credit / Debit Card
+      </span>
+    </label>
 
-              {/* <label className="flex items-center justify-between cursor-pointer mb-6">
-                {/* <div className="flex items-center space-x-3">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="card"
-                    checked={paymentMethod === "card"}
-                    onChange={(e) => setPaymentMethod(e.target.value)}
-                    className="form-radio text-[#009AFF] focus:ring-blue-300 w-4 h-4"
-                  /> */}
-                  {/* <span className="font-exo2 text-sm text-blue-600 sm:text-base">
-                    Secure, fast checkout with Link
-                  </span>
-                {/* </div> */}
-              {/* </label>  */}
+    {paymentMethod === "card" && (
+      <div className="space-y-4">
 
-              {paymentMethod === "card" && (
-                <div className="space-y-4 text-gray-100">
+        {/* Card Number */}
+        <div className="relative">
+          <label className="block text-xs md:text-lg mb-1 font-exo2">
+            Card number
+          </label>
+          <input
+            type="text"
+            placeholder="1234 1234 1234 1234"
+            value={cardData.cardNumber}
+            onChange={(e) =>
+              handleCardInputChange("cardNumber", e.target.value)
+            }
+            className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
+          />
 
-                  {/* Card Number */}
-                  <div className="relative">
-                    <label className="block text-xs md:text-lg  mb-1 text-white font-exo2">
-                      Card number
-                    </label>
-
-                    <input
-                      type="text"
-                      placeholder="1234 1234 1234 1234"
-                      value={cardData.cardNumber}
-                      onChange={(e) =>
-                        handleCardInputChange("cardNumber", e.target.value)
-                      }
-                      className={`w-full bg-white border ${
-                        cardErrors.cardNumber ? "border-red-500" : "border-[#1E293B]"
-                      } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                    />
-
-                    {cardImage && (
-                      <div className="absolute right-3 md:top-14 transform top-12 -translate-y-1/2">
-                        <Image
-                          src={`/Images/home/${cardImage}`}
-                          width={20}
-                          height={15}
-                          alt="cardType"
-                          className="w-10 h-auto"
-                        />
-                      </div>
-                    )}
-
-                    {cardErrors.cardNumber && (
-                      <p className="text-red-500 text-xs mt-1 font-exo2">
-                        {cardErrors.cardNumber}
-                      </p>
-                    )}
-                  </div>
-
-                  {/* Expiry + CVC */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs mb-1 md:text-lg text-white font-exo2">
-                        Expiration date
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="MM / YY"
-                        value={cardData.expirationDate}
-                        onChange={(e) =>
-                          handleCardInputChange("expirationDate", e.target.value)
-                        }
-                        className={`w-full bg-white border ${
-                          cardErrors.expirationDate
-                            ? "border-red-500"
-                            : "border-[#1E293B]"
-                        } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs md:text-lg mb-1 text-white font-exo2">
-                        Security code
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="CVC"
-                        value={cardData.securityCode}
-                        onChange={(e) =>
-                          handleCardInputChange("securityCode", e.target.value)
-                        }
-                        className={`w-full bg-white border ${
-                          cardErrors.securityCode
-                            ? "border-red-500"
-                            : "border-[#1E293B]"
-                        } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Cardholder */}
-                  <div>
-                    <label className="block text-xs md:text-lg mb-1 text-white font-exo2">
-                      Cardholder name
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Full name"
-                      value={cardData.cardholderName}
-                      onChange={(e) =>
-                        handleCardInputChange("cardholderName", e.target.value)
-                      }
-                      className={`w-full bg-white border ${
-                        cardErrors.cardholderName
-                          ? "border-red-500"
-                          : "border-[#1E293B]"
-                      } text-gray-800 rounded-md px-4 py-3 font-exo2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400`}
-                    />
-                  </div>
-
-                  {/* Helper text */}
-                 
-                </div>
-                
-              )}
-              
+          {cardImage && (
+            <div className="absolute right-3 top-12 -translate-y-1/2">
+              <Image
+                src={`/Images/home/${cardImage}`}
+                width={40}
+                height={24}
+                alt="cardType"
+              />
             </div>
-             <p className="text-md text-gray-300 mt-2 font-exo2">
-                    Your payment details are encrypted and processed securely.
-                  </p>
-          </div>
+          )}
+        </div>
+
+        {/* Expiry + CVC */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <input
+            type="text"
+            placeholder="MM / YY"
+            value={cardData.expirationDate}
+            onChange={(e) =>
+              handleCardInputChange("expirationDate", e.target.value)
+            }
+            className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
+          />
+
+          <input
+            type="text"
+            placeholder="CVC"
+            value={cardData.securityCode}
+            onChange={(e) =>
+              handleCardInputChange("securityCode", e.target.value)
+            }
+            className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
+
+        {/* Cardholder */}
+        <input
+          type="text"
+          placeholder="Cardholder name"
+          value={cardData.cardholderName}
+          onChange={(e) =>
+            handleCardInputChange("cardholderName", e.target.value)
+          }
+          className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
+        />
+      </div>
+    )}
+  </div>
+
+  {/* PAYPAL */}
+  <div className="bg-[#1A263D] text-white rounded-lg border border-[#1F2937] p-4">
+    <label className="flex items-center justify-between cursor-pointer mb-4">
+      <div className="flex items-center space-x-3">
+        <input
+          type="radio"
+          name="paymentMethod"
+          value="paypal"
+          checked={paymentMethod === "paypal"}
+          onChange={(e) => setPaymentMethod(e.target.value)}
+          className="form-radio text-[#009AFF] w-4 h-4"
+        />
+        <span className="font-exo2 text-sm md:text-base">
+          PayPal
+        </span>
+      </div>
+
+      {/* PayPal Logo */}
+      <Image
+        src="/paypal.png"
+        alt="PayPal"
+        width={60}
+        height={20}
+        className="object-contain"
+      />
+    </label>
+
+
+    {paymentMethod === "paypal" && (
+      <button className="w-full bg-[#009AFF] text-white font-semibold py-3 rounded-md">
+        Continue with PayPal
+      </button>
+    )}
+  </div>
+
+  {/* GOOGLE PAY */}
+  <div className="bg-[#1A263D] text-white rounded-lg border border-[#1F2937] p-4">
+   <label className="flex items-center justify-between cursor-pointer mb-4">
+    <div className="flex items-center space-x-3">
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="googlepay"
+        checked={paymentMethod === "googlepay"}
+        onChange={(e) => setPaymentMethod(e.target.value)}
+        className="form-radio text-[#009AFF] w-4 h-4"
+      />
+      
+      <span className="font-exo2 text-sm md:text-base">Google Pay</span>
+      </div>
+        <Image
+        src="/google.png"
+        alt="Google Pay"
+        width={60}
+        height={20}
+        className="object-contain"
+      />
+    </label>
+
+    {paymentMethod === "googlepay" && (
+      <button className="w-full bg-[#009AFF] text-white font-semibold py-3 rounded-md">
+        Pay with Google Pay
+      </button>
+    )}
+  </div>
+
+  {/* APPLE PAY */}
+  <div className="bg-[#1A263D] text-white rounded-lg border border-[#1F2937] p-4">
+   <label className="flex items-center justify-between cursor-pointer mb-4">
+     <div className="flex items-center space-x-3">
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="applepay"
+        checked={paymentMethod === "applepay"}
+        onChange={(e) => setPaymentMethod(e.target.value)}
+        className="form-radio text-[#009AFF] w-4 h-4"
+      />
+      
+      <span className="font-exo2 text-sm md:text-base">Apple Pay</span>
+      </div>
+        <Image
+        src="/apple1.png"
+        alt="Apple Pay"
+        width={60}
+        height={20}
+        className="object-contain"
+      />
+    </label>
+
+    {paymentMethod === "applepay" && (
+      <button className="w-full bg-[#009AFF] text-white font-semibold py-3 rounded-md">
+        Pay with Apple Pay
+      </button>
+    )}
+  </div>
+
+  {/* SECURITY TEXT */}
+    <p className="text-sm text-gray-300 font-exo2">
+      Your payment details are encrypted and processed securely.
+    </p>
+  </div>
+
 
           {/* Pay Button */}
           <form onSubmit={handlePayment} className="mt-8">

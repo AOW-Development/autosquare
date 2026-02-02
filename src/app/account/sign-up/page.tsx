@@ -222,7 +222,7 @@ export default function RegistrationPage() {
             <div className="mt-4 text-center text-sm text-gray-400">
               Already have an account?{" "}
               <Link
-                href="/account/signIn"
+                href="/account/sign-in"
                 className="text-blue-400 hover:text-blue-600 font-medium "
               >
                 Sign in

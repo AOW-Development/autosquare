@@ -113,7 +113,7 @@ useEffect(() => {
 
         {/* Continue Shopping Button (Responsive positioning) */}
         <div className="flex justify-start md:justify-end mt-4 md:mt-0">
-          <Link href="/catalogue/engine/home" passHref>
+          <Link href="/" passHref>
             <button className="flex items-center space-x-2 bg-[#02305A] text-white px-4 py-2 md:px-6 md:py-3 rounded-md font-exo2 text-base md:text-lg hover:bg-[#023B6B] transition-colors">
               <span className="text-xl">←</span>
               <span>Continue Shopping</span>

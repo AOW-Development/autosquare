@@ -163,6 +163,11 @@ const nextConfig: NextConfig = {
         source: '/catalog',
         destination: '/',
         statusCode: 301,
+      },
+      {
+        source: '/used-auto-parts/mercedes-benz',
+        destination: '/used-auto-parts/mercedes',
+        statusCode: 301,
       }
     ];
   },

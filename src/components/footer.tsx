@@ -131,7 +131,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/autoParts" className="hover:text-white">
+                  <a href="/auto-parts" className="hover:text-white">
                     Auto parts
                   </a>
                 </li>
@@ -146,7 +146,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href="/contactUs" className="hover:text-white">
+                  <a href="/contact-us" className="hover:text-white">
                     Contacts
                   </a>
                 </li>
@@ -159,13 +159,13 @@ export default function Footer() {
               </h3>
               <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-[#CCCCCC] leading-[1.6]">
                 <li>
-                  <a href="/aboutUs" className="hover:text-white">
+                  <a href="/about-us" className="hover:text-white">
                     About us
                   </a>
                 </li>
                 <li>
                   <a
-                    href="/account/shippingPaymentPolicy"
+                    href="/account/shipping-payment-policy"
                     className="hover:text-white"
                   >
                     Delivery and Payment
@@ -173,7 +173,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <a
-                    href="/account/warrantyAndReturn"
+                    href="/account/warranty-and-return"
                     className="hover:text-white"
                   >
                     Warranty and Returns
@@ -188,12 +188,12 @@ export default function Footer() {
                   </a>
                 </li> */}
                 <li>
-                  <a href="/account/privacyPolicy" className="hover:text-white">
+                  <a href="/account/privacy-policy" className="hover:text-white">
                     Privacy Policy
                   </a>
                 </li>
                 <li>
-                  <a href="/account/cookiePolicy" className="hover:text-white">
+                  <a href="/account/cookie-policy" className="hover:text-white">
                     Cookie Policy
                   </a>
                 </li>
@@ -206,13 +206,13 @@ export default function Footer() {
               </h3>
               <ul className="space-y-[8px] text-[14px] md:text-[16px] lg:text-[18px] text-[#CCCCCC] leading-[1.6]">
                 <li>
-                  <Link href="/account/trackOrder" className="hover:text-white">
+                  <Link href="/account/track-order" className="hover:text-white">
                     Track my order
                   </Link>
                 </li>
                 <li>
                   <Link
-                    href="/account/paymentInfo"
+                    href="/account/payment-info"
                     className="hover:text-white"
                   >
                     Make a payment
@@ -220,7 +220,7 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/account/submitTicket"
+                    href="/account/submit-ticket"
                     className="hover:text-white"
                   >
                     Submit a ticket
@@ -232,7 +232,7 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
-                  <Link href="/Blog/blogListing" className="hover:text-white">
+                  <Link href="/blog/blog-listing" className="hover:text-white">
                     Blogs
                   </Link>
                 </li>

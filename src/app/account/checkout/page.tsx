@@ -1311,7 +1311,7 @@ useEffect(() => {
                     </Link>
                     ,
                     <Link
-                      href="/account/warrantyAndReturn"
+                      href="/account/warranty-and-return"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"
@@ -1321,7 +1321,7 @@ useEffect(() => {
                     </Link>
                     {""} and the{" "}
                     <Link
-                      href="/account/privacyPolicy"
+                      href="/account/privacy-policy"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-blue-400 hover:underline"

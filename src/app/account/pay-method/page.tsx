@@ -2435,7 +2435,7 @@ const verifyOtp = async () => {
           <div className="text-center text-sm text-gray-400 font-exo2">
             Free shipping · Easy returns ·{' '}
             <a
-              href="/account/warrantyAndReturn"
+              href="/account/warranty-and-return"
               className="text-[#009AFF] underline font-medium"
             >
               Warranty & return policy

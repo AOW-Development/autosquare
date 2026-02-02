@@ -102,7 +102,7 @@ export default function BlogListingPage() {
                   {blog.excerpt}
                 </p>
                 <Link
-                  href="/Blog/blogDetails"
+                  href="/blog/blog-details"
                   className="text-blue-400 text-right underline hover:underline font-medium text-sm mt-4"
                 >
                   Read more

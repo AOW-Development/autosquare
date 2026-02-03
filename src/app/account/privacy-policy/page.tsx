@@ -144,7 +144,7 @@ export default function PrivacyPolicy() {
               referred to as "we" or "us") are committed to protecting your
               privacy. This Privacy Policy explains how we collect, use, and
               share information when you use our website at
-              https://usedpartscentral.com ("the Site").
+              https://partscentral.us ("the Site").
             </p>
             <p className="font-exo2 text-sm md:text-base lg:text-lg leading-relaxed mt-2">
               Our services include credit card processing, shipping, and other

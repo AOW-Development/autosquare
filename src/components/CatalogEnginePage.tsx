@@ -675,13 +675,13 @@ const filteredProducts = (() => {
           {(part === "Engine" || part === "engine") && (
             <>
               <Image src="/catalog/Engine 1.png" alt="Engine" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
-              <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+              {/* <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Image shown is for reference only. Actual product may vary.</p> */}
             </>
           )}
           {(part === "Transmission" || part === "transmission") && (
             <>
               <Image src="/catalog/Trasmission_.png" alt="Transmission" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
-              <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+              {/* <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Image shown is for reference only. Actual product may vary.</p> */}
             </>
           )}
         </div>

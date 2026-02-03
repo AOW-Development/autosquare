@@ -579,46 +579,120 @@ const handlePaymentError = (error: string) => {
     setCardData((prev) => ({ ...prev, [field]: value }));
   };
 
+  const isExpirationValid = (expiry: string) => {
+  if (!/^\d{2}\/\d{2}$/.test(expiry)) return false;
+
+  const [monthStr, yearStr] = expiry.split("/");
+  const month = parseInt(monthStr, 10);
+  const year = parseInt(`20${yearStr}`, 10);
+
+  if (month < 1 || month > 12) return false;
+
+  const now = new Date();
+  const currentMonth = now.getMonth() + 1;
+  const currentYear = now.getFullYear();
+
+  if (year < currentYear) return false;
+  if (year === currentYear && month < currentMonth) return false;
+
+  return true;
+};
+
+
+  // const isFormValid = () => {
+
+  //   if (paymentMethod === "card") {
+  //     const cardType = getCardType(cardData.cardNumber);
+  //     const validLuhn = isValidCardNumber(cardData.cardNumber);
+
+  //     if (!cardType || !validLuhn) return false;
+
+  //     const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length;
+  //     const cvvLength = cardData.securityCode.length;
+
+  //     if (
+  //       (cardType === "Visa" ||
+  //         cardType === "MasterCard" ||
+  //         cardType === "Discover") &&
+  //       (cardNumberLength !== 16 || cvvLength !== 3)
+  //     )
+  //       return false;
+
+  //     if (
+  //       cardType === "American Express" &&
+  //       (cardNumberLength !== 15 || cvvLength !== 4)
+  //     )
+  //       return false;
+
+  //     return (
+  //       !!cardData.cardholderName &&
+  //       !!cardData.expirationDate &&
+  //       (buyInOneClick ? isVerified : true)
+  //     );
+  //   }
+
+  //   // Disable for unimplemented payment methods
+
+  //   if (buyInOneClick) {
+  //   if (!isShippingSaved) return false;
+  //   if (!sameAsShipping && !isBillingSaved) return false;
+  //   if (!isVerified) return false;
+  // }
+  //   return false;
+  // };
+
   const isFormValid = () => {
-    if (paymentMethod === "card") {
-      const cardType = getCardType(cardData.cardNumber);
-      const validLuhn = isValidCardNumber(cardData.cardNumber);
+  if (paymentMethod !== "card") return false;
 
-      if (!cardType || !validLuhn) return false;
-
-      const cardNumberLength = cardData.cardNumber.replace(/\D/g, "").length;
-      const cvvLength = cardData.securityCode.length;
-
-      if (
-        (cardType === "Visa" ||
-          cardType === "MasterCard" ||
-          cardType === "Discover") &&
-        (cardNumberLength !== 16 || cvvLength !== 3)
-      )
-        return false;
-
-      if (
-        cardType === "American Express" &&
-        (cardNumberLength !== 15 || cvvLength !== 4)
-      )
-        return false;
-
-      return (
-        !!cardData.cardholderName &&
-        !!cardData.expirationDate &&
-        (buyInOneClick ? isVerified : true)
-      );
-    }
-
-    // Disable for unimplemented payment methods
-
-    if (buyInOneClick) {
-    if (!isShippingSaved) return false;
-    if (!sameAsShipping && !isBillingSaved) return false;
-    if (!isVerified) return false;
-  }
+  // ❌ Block if any field-level error exists
+  if (
+    cardErrors.cardNumber ||
+    cardErrors.expirationDate ||
+    cardErrors.securityCode ||
+    cardErrors.cardholderName
+  ) {
     return false;
-  };
+  }
+
+  const cleanCardNumber = cardData.cardNumber.replace(/\D/g, "");
+  const cardType = getCardType(cleanCardNumber);
+
+  if (!cardType) return false;
+  if (!isValidCardNumber(cleanCardNumber)) return false;
+
+  const cardNumberLength = cleanCardNumber.length;
+  const cvvLength = cardData.securityCode.length;
+
+  // Visa / MC / Discover
+  if (
+    cardType !== "American Express" &&
+    (cardNumberLength !== 16 || cvvLength !== 3)
+  ) {
+    return false;
+  }
+
+  // American Express
+  if (
+    cardType === "American Express" &&
+    (cardNumberLength !== 15 || cvvLength !== 4)
+  ) {
+    return false;
+  }
+
+  // Expiry validation (MM/YY and future date)
+  if (!isExpirationValid(cardData.expirationDate)) {
+    return false;
+  }
+
+  // Required fields
+  if (!cardData.cardholderName) return false;
+
+  // One-click verification
+  if (buyInOneClick && !isVerified) return false;
+
+  return true;
+};
+
 
 //   const isFormValid = () => {
 //   if (buyInOneClick) {
@@ -2342,6 +2416,22 @@ const verifyOtp = async () => {
               }
               className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
             />
+            {cardErrors.cardNumber && (
+              <p className="mt-1 text-xs text-red-400">
+                {cardErrors.cardNumber}
+              </p>
+            )}
+             {cardImage && (
+            <div className="absolute right-3 top-12 -translate-y-1/2">
+              <Image
+                src={`/Images/home/${cardImage}`}
+                width={40}
+                height={24}
+                alt="cardType"
+              />
+            </div>
+          )}
+
           </div>
 
           {/* Expiry + CVC */}
@@ -2355,6 +2445,12 @@ const verifyOtp = async () => {
               }
               className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
             />
+            {cardErrors.expirationDate && (
+                <p className="mt-1 text-xs text-red-400">
+                  {cardErrors.expirationDate}
+                </p>
+              )}
+
 
             <input
               type="text"
@@ -2365,6 +2461,12 @@ const verifyOtp = async () => {
               }
               className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
             />
+            {cardErrors.securityCode && (
+              <p className="mt-1 text-xs text-red-400">
+                {cardErrors.securityCode}
+              </p>
+            )}
+
           </div>
 
           {/* Cardholder Name */}
@@ -2377,18 +2479,24 @@ const verifyOtp = async () => {
             }
             className="w-full bg-white text-gray-800 rounded-md px-4 py-3 text-sm focus:ring-2 focus:ring-blue-400"
           />
+          {cardErrors.cardholderName && (
+            <p className="mt-1 text-xs text-red-400">
+              {cardErrors.cardholderName}
+            </p>
+          )}
+
         </div>
     
 
-  {/* SECURITY TEXT */}
-  
+      {/* SECURITY TEXT */}
+    
 
-</div>
+      </div>
 
-<p className="text-sm text-gray-300 font-exo2">
-    Your payment details are encrypted and processed securely.
-  </p>
-</div>
+    <p className="text-sm text-gray-300 font-exo2">
+        Your payment details are encrypted and processed securely.
+      </p>
+    </div>
 
 
           {/* Pay Button */}

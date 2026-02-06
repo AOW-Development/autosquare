@@ -7,7 +7,7 @@ const normalizeForUrl = (value: string) =>
   value
     .replace(/[ ,().;"'’‘"“”′″/]/g, "-")
     .replace(/''/g, "-")
-    .replace(/([a-zA-Z]{2,})(\d+)/g, "$1-$2")
+    // .replace(/([a-zA-Z]{2,})(\d+)/g, "$1-$2")
     .replace(/-+/g, "-")
     .replace(/^-|-$/g, "")
     .toLowerCase();

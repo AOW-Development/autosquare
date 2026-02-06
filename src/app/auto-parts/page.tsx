@@ -6,7 +6,7 @@ import { useState } from "react";
 
 const PARTS = [
   {
-    name: "air and fuel",
+    name: "Used air and fuel",
     slug:"air-and-fuel",
     images: [
       "cards.png",
@@ -21,7 +21,7 @@ const PARTS = [
     ],
   },
   {
-    name: "axel",
+    name: "Used axel",
     slug:"axel",
     images: [
       "cards.png",
@@ -38,7 +38,7 @@ const PARTS = [
     ],
   },
   {
-    name: "brakes",
+    name: "Used brakes",
     slug:"brakes",
     images: [
        "cards.png",
@@ -51,7 +51,7 @@ const PARTS = [
     ],
   },
   {
-    name: "center body",
+    name: "Used center body",
     slug:"center-body",
     images: [
       "cards-1.png",
@@ -65,7 +65,7 @@ const PARTS = [
     ],
   },
   {
-    name: "cooling and heating",
+    name: "Used cooling and heating",
     slug:"cooling-and-heating",
     images: [
       "cards-1.png",
@@ -86,7 +86,7 @@ const PARTS = [
     ],
   },
   {
-    name: "doors",
+    name: "Used doors",
     slug:"doors",
     images: [
       "cards.png",
@@ -108,7 +108,7 @@ const PARTS = [
     ],
   },
   {
-    name: "electrical",
+    name: "Used electrical",
     slug:"electricals",
     images: [
       "cards.png",
@@ -153,7 +153,7 @@ const PARTS = [
     ],
   },
   {
-    name: "engine",
+    name: "Used engine",
     slug:"engines",
     images: [
       "cards.png",
@@ -172,7 +172,7 @@ const PARTS = [
     ],
   },
   {
-    name: "Engine_Accessories",
+    name: "Used Engine_Accessories",
     slug:"engine-accessories",
     images: [
       "cards.png",
@@ -200,12 +200,12 @@ const PARTS = [
     ],
   },
   {
-    name: "entertainment",
+    name: "Used entertainment",
     slug:"entertainments",
     images: ["cards.png","cards-1.png", "cards-2.png", "cards-3.png"],
   },
   {
-    name: "front body",
+    name: "Used front body",
     slug:"front-body",
     images: [
       "cards.png",
@@ -229,7 +229,7 @@ const PARTS = [
     ],
   },
   {
-    name: "glass and mirrors",
+    name: "Used glass and mirrors",
     slug:"glass-and-mirrors",
     images: [
       "cards.png",
@@ -247,7 +247,7 @@ const PARTS = [
     ],
   },
   {
-    name: "interior",
+    name: "Used interior",
     slug:"interior",
     images: [
       "cards.png",
@@ -271,7 +271,7 @@ const PARTS = [
     ],
   },
   {
-    name: "lights",
+    name: "Used lights",
     slug:"lights",
     images: [
       "cards.png",
@@ -286,7 +286,7 @@ const PARTS = [
     ],
   },
   {
-    name: "rear body",
+    name: "Used rear body",
     slug:"rear-body",
     images: [
       "cards.png",
@@ -314,7 +314,7 @@ const PARTS = [
     ],
   },
   {
-    name: "safety",
+    name: "Used safety",
     slug:"safety",
     images: [
       "cards.png",
@@ -326,7 +326,7 @@ const PARTS = [
     ],
   },
   {
-    name: "suspension or steering",
+    name: "Used suspension or steering",
     slug:"suspension-or-steering",
     images: [
       "cards.png",
@@ -357,7 +357,7 @@ const PARTS = [
     ],
   },
   {
-    name: "transmission",
+    name: "Used transmission",
     slug:"transmission",
     images: [
       "cards.png",
@@ -376,7 +376,7 @@ const PARTS = [
     ],
   },
   {
-    name: "wheels",
+    name: "Used wheels",
     slug:"wheels",
     images: [
       "cards.png",

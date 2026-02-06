@@ -63,7 +63,7 @@ function TransmissionFeaturedCategories() {
           letterSpacing: "0.04em",
         }}
       >
-        TRANSMISSION FOR YOUR MAKE
+        USED TRANSMISSION FOR YOUR MAKE
       </h2>
 
       <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-3 sm:gap-x-4 md:gap-x-8 lg:gap-x-12 gap-y-3 sm:gap-y-4 max-w-7xl md:mx-2 mx-auto">
@@ -145,13 +145,13 @@ export default function TransmissionPage() {
                 />
               </Link>
 
-              <Image src="/engine/arrows.png" alt=">" width={12} height={12} />
+              {/* <Image src="/engine/arrows.png" alt=">" width={12} height={12} />
 
               <a href="/autoParts">
                 <span className="text-gray-400 text-xs sm:text-lg">
                   AutoParts
                 </span>
-              </a>
+              </a> */}
 
               <Image src="/engine/arrows.png" alt=">" width={12} height={12} />
 
@@ -168,7 +168,7 @@ export default function TransmissionPage() {
               letterSpacing: "0.1em",
             }}
           >
-            TRANSMISSION TYPES
+           USED TRANSMISSION TYPES
           </h2>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8 p-2 sm:p-4 pb-0">

@@ -30,10 +30,10 @@ export default function EnginePage() {
       <a href="/">
         <Image src="/engine/HouseLine.png" alt="Home" width={20} height={20} />
       </a>
-      <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
+      {/* <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
       <a href="/autoParts">
         <span className="text-gray-500">AutoParts</span>
-      </a>
+      </a> */}
       <Image src="/engine/arrows.png" alt=">" width={16} height={16} />
       <span className="text-white">Engine</span>
     </div>
@@ -45,7 +45,7 @@ export default function EnginePage() {
         letterSpacing: "0.1em",
       }}
     >
-      Engine Types
+      Used Engine Types
     </h2>
 
 

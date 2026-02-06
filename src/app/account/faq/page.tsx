@@ -20,75 +20,116 @@ export default function PrivacyPolicy() {
     );
   };
 
-  const leftFAQItems: FAQItem[] = [
-    {
-      question: "What information do we collect from you?",
-      answer:
-        "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3–5 business days to process a credit back to your account and 2–3 business days for the credit to appear on your account. Engine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
-    },
-    {
-      question: "Where and how we collect and use your information?",
-      answer:
-        "We collect information through various channels including when you visit our website, make purchases, create an account, or contact our customer service. This information helps us process your orders, provide customer support, and improve our services.",
-    },
-    {
-      question: "With whom do we share your information?",
-      answer:
-        "We may share your information with trusted third-party service providers who assist us in operating our website, processing payments, and delivering orders. We do not sell, trade, or otherwise transfer your personal information to outside parties without your consent.",
-    },
-    {
-      question:
-        "How can you update or correct your Personally Identifiable Information?",
-      answer:
-        "You can update or correct your personal information by logging into your account and editing your profile information, or by contacting our customer service team directly.",
-    },
-    {
-      question:
-        "What are your choices regarding collection, use and distribution of your information?",
-      answer:
-        "You have the right to opt out of certain communications, request deletion of your data, and control how your information is used. You can manage these preferences through your account settings or by contacting us.",
-    },
-    {
-      question: 'Use of "cookies"',
-      answer:
-        "We use cookies to enhance your browsing experience, remember your preferences, and analyze website traffic. You can control cookie settings through your browser preferences.",
-    },
-  ];
+const leftFAQItems: FAQItem[] = [
+  {
+    question: "How can I find the right part for my vehicle?",
+    answer:
+      "Enter your vehicle’s make, model, and year in our search tool to find compatible OEM parts. If you need assistance, you can contact our support team at (888) 338-2540 for fitment verification.",
+  },
+  {
+    question: "Do you offer parts for all vehicle makes and models?",
+    answer:
+      "We supply OEM parts for a wide range of domestic and imported vehicles, including cars, trucks, and SUVs. If your vehicle is not listed, contact our team and we will assist in sourcing the correct part.",
+  },
+  {
+    question: "Why should I buy used OEM parts instead of new or aftermarket parts?",
+    answer:
+      "Used OEM parts are manufactured by the original vehicle manufacturer, ensuring proper fit, reliability, and performance. They are more cost-effective than new parts and more reliable than aftermarket alternatives.",
+  },
+  {
+    question: "Are the transmissions new or refurbished?",
+    answer:
+      "We sell genuine used OEM transmissions. Each unit is inspected and tested for quality and functionality before being made available for sale.",
+  },
+  {
+    question: "What types of used engines are available at Parts Central?",
+    answer:
+      "We offer OEM used engines for various vehicle brands including Toyota, Ford, Honda, Nissan, and more. Each engine listing includes compatibility details and specifications.",
+  },
+  {
+    question: "Can I be sure the engine or transmission will fit my vehicle?",
+    answer:
+      "Yes. Our compatibility system verifies fitment using vehicle make, model, year, and engine specifications. Our support team can also confirm compatibility before purchase.",
+  },
+  {
+    question: "Do engines and transmissions come with a warranty?",
+    answer:
+      "Yes. All engines and transmissions include a warranty. Warranty coverage details vary by product and are provided on the product page.",
+  },
+  {
+    question: "How can I be sure of the quality of your parts?",
+    answer:
+      "All OEM parts are inspected and tested to meet quality and performance standards before being listed for sale.",
+  },
+  {
+    question: "How long will it take for my order to arrive?",
+    answer:
+      "Most orders are processed and shipped within 7–8 business days. Delivery time may vary depending on your location.",
+  },
+  {
+    question: "Will I receive tracking information?",
+    answer:
+      "Yes. Once your order ships, you will receive tracking information via email.",
+  },
+];
+
 
   const rightFAQItems: FAQItem[] = [
-    {
-      question:
-        "What security precautions are in place to protect against the loss, misuse or alteration of your information?",
-      answer:
-        "We implement industry-standard security measures including SSL encryption, secure payment processing, and regular security audits to protect your personal information from unauthorized access, alteration, or disclosure.",
-    },
-    {
-      question:
-        "You should carefully review privacy policies of any third party sites accessible from the site.",
-      answer:
-        "Our website may contain links to third-party websites. We are not responsible for the privacy practices of these external sites. We encourage you to read their privacy policies before providing any personal information.",
-    },
-    {
-      question: "Children's Privacy",
-      answer:
-        "Our website is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you believe we have collected information from a child under 13, please contact us immediately.",
-    },
-    {
-      question: "partscentral.us General Privacy Policy",
-      answer:
-        "This privacy policy applies specifically to our website and services. For information about how partscentral.us handles your data across all platforms, please refer to our general privacy policy available on our main website.",
-    },
-    {
-      question: "Contacting Us About our Privacy Policy",
-      answer:
-        "If you have any questions about this Privacy Policy or our privacy practices, please contact us through our customer service channels or email us at privacy@partscentral.us",
-    },
-    {
-      question: "Privacy Policy Changes",
-      answer:
-        "We may update this Privacy Policy from time to time. We will notify you of any material changes by posting the new Privacy Policy on this page and updating the effective date. We encourage you to review this policy periodically.",
-    },
-  ];
+   
+  {
+    question: "How are shipping charges calculated?",
+    answer:
+      "Shipping costs depend on the order size and delivery location. Shipping terms are displayed during checkout.",
+  },
+  {
+    question: "Do you ship internationally?",
+    answer:
+      "Currently, we only ship within the United States.",
+  },
+  {
+    question: "What payment methods do you accept? and is checkout secure?",
+    answer:
+      "We accept all major credit and debit cards, as well as PayPal. Your information is always protected with SSL encryption, so you can shop with complete peace of mind.",
+  },
+  {
+    question: "Do you offer bulk purchase discounts?",
+    answer:
+      "Yes. If you’re buying multiple parts, our sales team can work out better pricing. Just let us know what you need.",
+  },
+  {
+    question: "Can I get a quote before purchasing?",
+    answer:
+      "Of course. Call (888) 338-2540 or submit a request online, and we’ll give you a clear, upfront quote—no hidden fees",
+  },
+  {
+    question: "Can I change my order after it's been placed?",
+    answer:
+      "Once it’s moving through the warehouse, changes are tricky. But if you contact us quickly, we’ll do our best to update it before it ships.",
+  },
+
+  {
+    question: "What should I do if I didn’t receive all my parts?",
+    answer:
+      "Keep your order number handy and call us at (888) 338-2540. We’ll get things sorted right away.",
+  },
+  {
+    question: "What if my parts were damaged during shipment?",
+    answer:
+      "Give us a call as soon as you spot the issue. With your order info, we’ll handle the replacement so you’re not left stuck.",
+  },
+  {
+    question: "Can I install parts myself, or should I seek professional help?",
+    answer:
+      " It depends on the part. Some are DIY-friendly, while engines and transmissions are best left to a mechanic. If you’re unsure, professional installation is always safer",
+  },
+
+  {
+    question: "Why are used engines and transmissions more affordable than new ones?",
+    answer:
+      "Used OEM components deliver reliability at a fraction of the cost of new ones. They’re tested, verified, and built to last—without the steep price tag of brand-new or aftermarket alternatives.",
+  },
+];
+
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">

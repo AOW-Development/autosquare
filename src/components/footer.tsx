@@ -47,21 +47,13 @@ export default function Footer() {
                 <li>
                   Email:{" "}
                   <a
-                    href="mailto:partscentralus@gmail.com"
-                    className="underline"
-                  >
-                    partscentralus@gmail.com
-                  </a>
-                </li>
-                <li>
-                  <a
                     href="mailto:support@partscentral.us"
                     className="underline"
-                    style={{ padding: '0 50px' }}
                   >
                     support@partscentral.us
                   </a>
                 </li>
+                 
  
                 <li>
                   Website:{" "}
@@ -132,17 +124,17 @@ export default function Footer() {
                 </li>
                 <li>
                   <a href="/auto-parts" className="hover:text-white">
-                    Auto parts
+                    Used Auto parts
                   </a>
                 </li>
                 <li>
                   <a href="/engine" className="hover:text-white">
-                    Engine
+                    Used Engine
                   </a>
                 </li>
                 <li>
                   <a href="/transmission" className="hover:text-white">
-                    Transmission
+                    Used Transmission
                   </a>
                 </li>
                 <li>
@@ -212,14 +204,6 @@ export default function Footer() {
                 </li>
                 <li>
                   <Link
-                    href="/account/payment-info"
-                    className="hover:text-white"
-                  >
-                    Make a payment
-                  </Link>
-                </li>
-                <li>
-                  <Link
                     href="/account/submit-ticket"
                     className="hover:text-white"
                   >
@@ -229,6 +213,11 @@ export default function Footer() {
                 <li>
                   <Link href="/account/Testimonials" className="hover:text-white">
                     Testimonials
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/account/faq" className="hover:text-white">
+                    FAQ
                   </Link>
                 </li>
                 <li>
@@ -357,7 +346,7 @@ export default function Footer() {
         {/* Copyright */}
         <div className="text-center mt-8">
           <p className="text-xs text-[#666D80]">
-            © 2025 Parts Central – All Rights Reserved.
+            © 2026 Parts Central – All Rights Reserved.
           </p>
         </div>
       </div>

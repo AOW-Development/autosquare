@@ -915,29 +915,45 @@ export default function EngineProductClient({
  
                 {/* FIXED: Simplified condition - only show Part Request if product is actually out of stock */}
                 {isOutOfStock ? (
-                  <>
-                    <button
-                      onClick={() => setShowPopup(true)}
-                      className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-3 rounded-md transition-colors w-full sm:w-auto"
-                    >
-                      Part Request
-                    </button>
-                    {showPopup && (
-                      <PartRequestPopup
-                        setClosePopup={setShowPopup}
-                        defaultMake={
-                          selectedProduct?.make || productInfo.make || ""
-                        }
-                        defaultModel={
-                          selectedProduct?.model || productInfo.model || ""
-                        }
-                        defaultYear={
-                          selectedProduct?.year || productInfo.year || ""
-                        }
-                      />
-                    )}
-                  </>
-                ) : (
+  <>
+    <div className="flex flex-col sm:flex-row gap-3 w-full">
+
+      {/* Part Request Button */}
+      <button
+        onClick={() => setShowPopup(true)}
+        className="flex-1 bg-[#00a3ff] hover:bg-[#1558b0] text-white py-3 px-4 rounded transition text-sm sm:text-base"
+      >
+        Part Request
+      </button>
+
+      {/* Call Us Button */}
+      <a
+        href="tel:+18883382540"
+        className="flex-1 text-center bg-[#00a3ff] text-white py-3 px-4 rounded border border-sky-400 hover:bg-[#1558b0] transition text-sm sm:text-base flex items-center justify-center"
+      >
+        Call Us
+      </a>
+
+    </div>
+
+    {/* Popup */}
+    {showPopup && (
+      <PartRequestPopup
+        setClosePopup={setShowPopup}
+        defaultMake={
+          selectedProduct?.make || productInfo.make || ""
+        }
+        defaultModel={
+          selectedProduct?.model || productInfo.model || ""
+        }
+        defaultYear={
+          selectedProduct?.year || productInfo.year || ""
+        }
+      />
+    )}
+  </>
+) : (
+
                   <>
                     <div className="flex items-end gap-4 mb-4">
                       <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
@@ -957,25 +973,39 @@ export default function EngineProductClient({
                           </span>
                         )}
                     </div>
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <button
-                        className={`flex-1 py-3 px-4 rounded transition mb-4 md:mb-0 text-sm sm:text-base ${
-                          inCart
-                            ? "bg-[#1d3759] text-white cursor-default"
-                            : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
-                        }`}
-                        disabled={inCart}
-                        onClick={handleAddToCart}
-                      >
-                        {inCart ? "Already in Cart" : "Add to cart"}
-                      </button>
-                      <button
-                        onClick={handleBuyNow}
-                        className="flex-1 cursor-pointer bg-[#00a3ff] text-white py-3 px-4 md:mb-0 rounded border border-sky-400 hover:bg-[#1558b0] transition text-sm sm:text-base mb-8"
-                      >
-                        Buy in one click
-                      </button>
-                    </div>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full">
+
+  {/* Add to Cart */}
+  <button
+    className={`flex-1 cursor-pointer py-3 px-4 rounded transition text-sm sm:text-base ${
+      inCart
+        ? "bg-[#1d3759] text-white cursor-default"
+        : "bg-[#00a3ff] text-white hover:bg-[#1558b0]"
+    }`}
+    disabled={inCart}
+    onClick={handleAddToCart}
+  >
+    {inCart ? "Already in Cart" : "Add to cart"}
+  </button>
+
+  {/* Buy Now */}
+  <button
+    onClick={handleBuyNow}
+    className="flex-1 cursor-pointer bg-[#00a3ff] text-white py-3 px-4 rounded border border-sky-400 hover:bg-[#1558b0] transition text-sm sm:text-base"
+  >
+    Buy in one click
+  </button>
+
+  {/* Call Us Button */}
+  <a
+    href="tel:+18883382540"
+    className="flex-1 text-center bg-[#00a3ff] text-white py-3 px-4 rounded border border-sky-400 hover:bg-[#1558b0] transition text-sm sm:text-base flex items-center justify-center"
+  >
+    Call Us
+  </a>
+
+</div>
+
                   </>
                 )}
               </div>

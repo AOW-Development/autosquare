@@ -53,6 +53,7 @@ function PayMethodContent() {
   const [isLoadingPayment, setIsLoadingPayment] = useState(false);
   const [orderNumber] = useState(() => generateOrderNumber());
   const [quickPay, setQuickPay] = useState<"paypal" | "applepay" | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   
   // const stripePromise = getStripe();
@@ -730,191 +731,165 @@ useEffect(() => {
   const router = useRouter();
 
   // Build payment info
-  const handlePayment = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
-    if (buyInOneClick) {
-      if (!isShippingSaved) {
-        toast.error(
-          "Please save your shipping information before confirming the order."
-        );
-        return;
-      }
+const handlePayment = async (e: React.FormEvent): Promise<void> => {
+  e.preventDefault();
+  
+  // Prevent multiple clicks
+  if (isProcessing) return;
+  
+  setIsProcessing(true);
 
-      // Check if billing info has been saved (unless same as shipping)
-      if (!sameAsShipping && !isBillingSaved) {
-        toast.error(
-          "Please save your billing information before confirming the order."
-        );
-        return;
-      }
-      const shippingRequiredFields = [
-        "firstName",
-        "lastName",
-        "email",
-        "phone",
+  // Validation for Buy in One Click
+  if (buyInOneClick) {
+    if (!isShippingSaved) {
+      toast.error(
+        "Please save your shipping information before confirming the order."
+      );
+      setIsProcessing(false);
+      return;
+    }
+
+    if (!sameAsShipping && !isBillingSaved) {
+      toast.error(
+        "Please save your billing information before confirming the order."
+      );
+      setIsProcessing(false);
+      return;
+    }
+
+    const shippingRequiredFields = [
+      "firstName",
+      "lastName",
+      "email",
+      "phone",
+      "country",
+      "address",
+      "city",
+      "state",
+      "zipCode",
+    ];
+    const shippingEmpty = shippingRequiredFields.some(
+      (field) =>
+        !shippingFormData[field as keyof typeof shippingFormData] ||
+        shippingFormData[field as keyof typeof shippingFormData]
+          .toString()
+          .trim() === ""
+    );
+
+    if (shippingEmpty) {
+      toast.error(
+        "Please save your shipping information before confirming the order."
+      );
+      setIsProcessing(false);
+      return;
+    }
+
+    if (!sameAsShipping) {
+      const billingRequiredFields = [
         "country",
         "address",
         "city",
         "state",
         "zipCode",
       ];
-      const shippingEmpty = shippingRequiredFields.some(
+      const billingEmpty = billingRequiredFields.some(
         (field) =>
-          !shippingFormData[field as keyof typeof shippingFormData] ||
-          shippingFormData[field as keyof typeof shippingFormData]
+          !billingFormData[field as keyof typeof billingFormData] ||
+          billingFormData[field as keyof typeof billingFormData]
             .toString()
             .trim() === ""
       );
 
-      if (shippingEmpty) {
+      if (billingEmpty) {
         toast.error(
-          "Please save your shipping information before confirming the order."
+          "Please save your billing information before confirming the order."
         );
+        setIsProcessing(false);
         return;
       }
-
-      if (!sameAsShipping) {
-        const billingRequiredFields = [
-          "country",
-          "address",
-          "city",
-          "state",
-          "zipCode",
-        ];
-        const billingEmpty = billingRequiredFields.some(
-          (field) =>
-            !billingFormData[field as keyof typeof billingFormData] ||
-            billingFormData[field as keyof typeof billingFormData]
-              .toString()
-              .trim() === ""
-        );
-
-        if (billingEmpty) {
-          toast.error(
-            "Please save your billing information before confirming the order."
-          );
-          return;
-        }
-      }
     }
+  }
 
-    localStorage.setItem("paymentMethod", paymentMethod);
-    if (paymentMethod === "card") {
-      localStorage.setItem("cardData", JSON.stringify(cardData));
-    }
-
-    // Build payment info
-    const payment = {
-      paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
-      cardData,
-      billingData: billingFormData,
-      billingAddressExpanded,
-    } as PaymentInfo;
-
-    const orderNumber = generateOrderNumber(); // Generate order number once
-
-    // Update Redis with payment information (for BOTH logged in and guest users)
-    const existingData = await getCheckoutData(sessionId);
-
-    if (existingData) {
-      // Update existing data with payment info
-      await updateCheckoutData(
-        {
-          paymentInfo: {
-            paymentMethod: paymentMethod,
-            cardData:
-              paymentMethod === "card"
-                ? {
-                    cardNumber: cardData.cardNumber,
-                    cardholderName: cardData.cardholderName,
-                    expirationDate: cardData.expirationDate,
-                    securityCode: cardData.securityCode,
-                    cardType: cardType,
-                  }
-                : undefined,
-          },
-          orderNumber: orderNumber,
+  // For logged in user
+  if (user) {
+    try {
+      const orderData = {
+        user,
+        payment: {
+          paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
+          cardData,
+          billingData: billingFormData,
+          billingAddressExpanded,
         },
-        sessionId
-      );
-      console.log(" Payment details updated in Redis");
-    }
-
-    // Store sessionId for ThankYou page to update status
-    sessionStorage.setItem("checkoutSessionId", sessionId);
-
-    if (user) {
-      try {
-        // IMPORTANT:
-        // Both shipping and billing info are sent from the shipping store, regardless of which form was filled last.
-        // This is intentional and required by backend/email logic. If 'Same as shipping' is unchecked, handleSave1 will have put billing info in shipping store.
-        const orderData = {
-          user,
-          payment,
-          shipping: shippingInfo, // always from shipping store
-          billing: sameAsShipping ? shippingInfo : billingInfo, // correct billing info sent
-          cartItems: cartItems.length ? cartItems : (cartItems as any),
-          orderNumber, // Include the generated order number
-        };
-
-        // Store order data for Thank You page
-        sessionStorage.setItem("orderData", JSON.stringify(orderData));
-
-        //  Backup cart items to sessionStorage for Thank You page
-        sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
-
-        //  iOS: Verify storage was successful
-        const isIOS =
-          /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-          !(window as any).MSStream;
-        if (isIOS) {
-          console.log("📱 iOS detected: Verifying sessionStorage...");
-          const verifyBackup = sessionStorage.getItem("checkoutCartItems");
-          if (!verifyBackup) {
-            console.error(" iOS: Failed to store cart backup, retrying...");
-            // Try one more time with a small delay
-            setTimeout(() => {
-              sessionStorage.setItem(
-                "checkoutCartItems",
-                JSON.stringify(cartItems)
-              );
-              console.log(" iOS: Cart backup retry completed");
-            }, 100);
-          } else {
-            console.log(" iOS: Cart backup verified");
-          }
-        }
-
-        // router.push("/account/thankYou");
-        window.location.href = "/account/thankYou";
-      } catch (error) {
-        console.error("Error processing payment:", error);
-        // Handle the error appropriately, maybe show a toast message to the user
-      }
-    } else {
-      // Determine customer email - from buy-in-one-click form or checkout page
-      const customerEmail = buyInOneClick
-        ? shippingFormData.email
-        : shippingInfo?.email;
-
-      const orderDataForGuest = {
-        payment,
-        shipping: buyInOneClick ? shippingFormData : shippingInfo, // use appropriate shipping data
-        billing: sameAsShipping
-          ? buyInOneClick
-            ? shippingFormData
-            : shippingInfo
-          : buyInOneClick
-          ? billingFormData
-          : billingInfo,
-        cartItems,
-        customerEmail, // use email for invoicing regardless of flow
-        orderNumber, // Include the generated order number for guest users
+        shipping: shippingInfo,
+        billing: sameAsShipping ? shippingInfo : billingInfo,
+        cartItems: cartItems.length ? cartItems : (cartItems as any),
+        orderNumber,
       };
 
-      // Save to Redis if Buy-in-One-Click
-      if (buyInOneClick) {
-        const saveSuccess = await saveCheckoutData(
+      sessionStorage.setItem("orderData", JSON.stringify(orderData));
+      sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
+      sessionStorage.setItem("checkoutSessionId", sessionId);
+
+      // iOS check
+      const isIOS =
+        /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+        !(window as any).MSStream;
+      if (isIOS) {
+        setTimeout(() => {
+          sessionStorage.setItem(
+            "checkoutCartItems",
+            JSON.stringify(cartItems)
+          );
+        }, 100);
+      }
+
+      // Redirect immediately
+      window.location.href = "/account/thankYou";
+      // Note: We don't set isProcessing(false) here because page will redirect
+    } catch (error) {
+      console.error("Error processing payment:", error);
+      toast.error("Error processing payment. Please try again.");
+      setIsProcessing(false);
+    }
+  } else {
+    // Guest user flow
+    if (buyInOneClick && !isVerified) {
+      toast.error(
+        "Please verify your phone number before confirming the order."
+      );
+      setIsProcessing(false);
+      return;
+    }
+
+    const customerEmail = buyInOneClick
+      ? shippingFormData.email
+      : shippingInfo?.email;
+
+    const orderDataForGuest = {
+      payment: {
+        paymentMethod: paymentMethod as "card" | "paypal" | "apple" | "google",
+        cardData,
+        billingData: billingFormData,
+        billingAddressExpanded,
+      },
+      shipping: buyInOneClick ? shippingFormData : shippingInfo,
+      billing: sameAsShipping
+        ? buyInOneClick
+          ? shippingFormData
+          : shippingInfo
+        : buyInOneClick
+        ? billingFormData
+        : billingInfo,
+      cartItems,
+      customerEmail,
+      orderNumber,
+    };
+
+    // Save to Redis if Buy-in-One-Click
+    if (buyInOneClick) {
+      try {
+        await saveCheckoutData(
           {
             customerInfo: {
               firstName: shippingFormData.firstName,
@@ -966,44 +941,21 @@ useEffect(() => {
             orderNumber: orderNumber,
             buyInOneClick: true,
             termsAccepted: true,
-            isOrderCreatedInBackend: false, // Will be updated by ThankYou page
+            isOrderCreatedInBackend: false,
           },
           sessionId
         );
-
-        if (saveSuccess) {
-          console.log(" Buy-in-One-Click data saved to Redis successfully");
-        }
+      } catch (error) {
+        console.error("Failed to save to Redis:", error);
       }
+    }
 
-      sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
+    sessionStorage.setItem("orderData", JSON.stringify(orderDataForGuest));
+    sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
+    
+    // Redirect immediately for guest
+    window.location.href = "/account/thankYou";
 
-      //  Backup cart items to sessionStorage for Thank You page
-      sessionStorage.setItem("checkoutCartItems", JSON.stringify(cartItems));
-
-      //  iOS: Verify storage was successful
-      const isIOS =
-        /iPad|iPhone|iPod/.test(navigator.userAgent) &&
-        !(window as any).MSStream;
-      if (isIOS) {
-        console.log("📱 iOS detected (guest): Verifying sessionStorage...");
-        const verifyBackup = sessionStorage.getItem("checkoutCartItems");
-        if (!verifyBackup) {
-          console.error(
-            " iOS (guest): Failed to store cart backup, retrying..."
-          );
-          setTimeout(() => {
-            sessionStorage.setItem(
-              "checkoutCartItems",
-              JSON.stringify(cartItems)
-            );
-            console.log(" iOS (guest): Cart backup retry completed");
-          }, 100);
-        } else {
-          console.log(" iOS (guest): Cart backup verified");
-        }
-      }
-       window.location.href = "/account/thankYou";
       if (buyInOneClick && !isVerified) {
         toast.error(
           "Please verify your phone number before confirming the order."
@@ -2502,17 +2454,42 @@ const verifyOtp = async () => {
           {/* Pay Button */}
           <form onSubmit={handlePayment} className="mt-8">
             <button
-              type="submit"
-              disabled={!isFormValid()}
-              className={`w-full py-4 rounded-md font-exo2 text-base md:text-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 ${
-                isFormValid()
-                  ? "bg-[#009AFF] text-white hover:bg-blue-500"
-                  : "bg-gray-700 text-gray-400 cursor-not-allowed"
-              }`}
-            >
-              {/* Pay ${total.toFixed(2)} */}
-              Confirm Order
-            </button>
+  type="submit"
+  disabled={!isFormValid() || isProcessing}
+  className={`w-full py-4 rounded-md font-exo2 text-base md:text-lg transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 flex items-center justify-center ${
+    isFormValid() && !isProcessing
+      ? "bg-[#009AFF] text-white hover:bg-blue-500"
+      : "bg-gray-700 text-gray-400 cursor-not-allowed"
+  }`}
+>
+  {isProcessing ? (
+    <>
+      <svg
+        className="animate-spin h-5 w-5 mr-3 text-white"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          className="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          strokeWidth="4"
+        />
+        <path
+          className="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
+      </svg>
+      Processing...
+    </>
+  ) : (
+    `Confirm Order`
+  )}
+</button>
           </form>
                   <div className="text-center text-lg text-gray-300 font-exo2">
             Need assistance?{' '}

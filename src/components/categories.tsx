@@ -6,32 +6,32 @@ import ShopByVehicle from "./shopByVehicle";
 const categories = [
   {
     src: "/categories_section/engine.png",
-    alt: "Engine",
+    alt: "Used Engine",
     link: "/engine",
   },
   {
     src: "/categories_section/transmission.png",
-    alt: "Transmission",
+    alt: "Used Transmission",
     link: "/transmission",
   },
   {
     src: "/categories_section/axel.png",
-    alt: "Axle Assembly",
+    alt: "Used Axle Assembly",
     link: "/parts/axle/axel-shaft",
   },
   {
     src: "/categories_section/transfer-case.png",
-    alt: "Transfer Case",
+    alt: "Used Transfer Case",
     link: "/parts/transmission/transfer-case",
   },
   {
     src: "/categories_section/head-light.png",
-    alt: "Headlight",
+    alt: "Used Headlight",
     link: "/parts/lights/headlight",
   },
   {
     src: "/categories_section/tail-light.png",
-    alt: "Tail Light",
+    alt: "Used Tail Light",
     link: "/parts/lights/tail-light",
   },
 ];

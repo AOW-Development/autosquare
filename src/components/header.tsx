@@ -405,12 +405,12 @@ const categories = [
 const navLinks = [
   { label: "Shop by Categories", type: "categories" },
   {
-    label: "Auto Parts",
+    label: "Used Auto Parts",
     type: "link",
     href: "/auto-parts",
   },
-  { label: "Engine", type: "link", href: "/engine" },
-  { label: "Transmission", type: "link", href: "/transmission" },
+  { label: "Used Engine", type: "link", href: "/engine" },
+  { label: "Used Transmission", type: "link", href: "/transmission" },
   { label: "Contact Us", type: "link", href: "/contact-us" },
   {
     label: "Info",
@@ -426,7 +426,7 @@ const navLinks = [
       { label: "FAQ", href: "/account/faq" },
       { label: "Track my order", href: "/account/track-order" },
       { label: "Submit a ticket", href: "/account/submit-ticket" },
-      { label: "Make a Payment", href: "/account/payment-details" },
+      
     ],
   },
 ];

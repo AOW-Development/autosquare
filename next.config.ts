@@ -168,6 +168,11 @@ const nextConfig: NextConfig = {
         source: '/used-auto-parts/mercedes-benz',
         destination: '/used-auto-parts/mercedes',
         statusCode: 301,
+      },
+      {
+        source: '/account/warranty-policy',
+        destination: '/account/warranty-and-return',
+        statusCode: 301,
       }
     ];
   },

@@ -143,10 +143,10 @@ export default function ContactUsPage() {
                         Email address
                       </span>
                       <a
-                        href="mailto:partscentralus@gmail.com"
+                        href="mailto:support@partscentral.us"
                         className="underline"
                       >
-                        partscentralus@gmail.com
+                        support@partscentral.us
                       </a>
                     </div>
                   </div>
@@ -162,6 +162,7 @@ export default function ContactUsPage() {
                         Office location
                       </span>
                       <span className="text-gray-200 text-sm">
+                        Parts Central LLC
                         76 Imperial Dr Suite E Evanston, WY 82930, USA
                       </span>
                     </div>

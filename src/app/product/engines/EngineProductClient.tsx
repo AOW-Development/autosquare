@@ -367,12 +367,12 @@ export default function EngineProductClient({
     {
       title: "WARRANTY & REFUNDS",
       content:
-        "You may return any item in its original condition for a full refund within 30 days of receipt of your shipment, less shipping charges. It typically takes us approximately 3-5 business days to process a credit back to your account and 2-3 business days for the credit to appear on your account.\n\nEngine warranties are limited to manufacturing defects in the block, heads, pistons, crankshafts, camshafts, rockers, and oil pumps.",
+        "Returns are accepted within 15 days of delivery, provided the item is in its original condition and return authorization has been approved. Approved refunds are issued to the original payment method after the returned item is received and inspected. Refund processing typically takes 3–5 business days.\n\nReturns for non-defective items may be subject to a restocking fee of up to 30%. Shipping charges are non-refundable unless the return is due to a defective or incorrectly supplied part.\n\nWe provide a 90-day limited warranty on engines, transmissions, and eligible OEM parts. Warranty coverage applies only to manufacturing defects in covered internal components under normal use and installation. Warranty does not cover labor costs, improper installation, misuse, or external components.",
     },
     {
       title: "SHIPPING",
       content:
-        "Standard shipping 3-5 business days. Expedited options available at checkout. Tracking provided.",
+        "We offer free standard shipping within the continental United States. Orders are typically processed and delivered within 7–9 business days. Tracking information is provided once the order has shipped.\n\nOrders outside the continental United States, including Alaska, Hawaii, and Puerto Rico, may be subject to additional shipping charges. Delivery timelines may vary depending on product availability and shipping location.",
     },
     {
       title: "PAYMENT",
@@ -905,7 +905,7 @@ export default function EngineProductClient({
                         ? "Select options"
                         : selectedProduct.inStock
                           ? "In stock"
-                          : "Out of stock"}
+                          : "Contact Us for availability"}
                     </span>
                   </div>
                   <div className="text-sm sm:text-base text-white">

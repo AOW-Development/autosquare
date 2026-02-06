@@ -64,7 +64,7 @@ export default function WarrantyAndReturn() {
 
             <div className="space-y-6">
 
-              {/* FIXED SECTION */}
+              {/* Returns */}
               <div>
                 <h3 className="font-exo2 font-semibold mt-4 mb-2">
                   15-Day Returns (Conditions Apply):
@@ -72,16 +72,15 @@ export default function WarrantyAndReturn() {
 
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
                   You may request a return within 15 days of receiving your shipment,
-                  provided the item remains in its original condition. Approved refunds
-                  are issued to the original payment method within 3–5 business days
-                  after the returned item is received and inspected. Shipping charges
-                  may be non-refundable unless the return is due to a defective or
-                  incorrectly supplied part.
+                  provided the item remains in its original condition. This return
+                  period is separate from warranty coverage. Approved refunds are issued to the original payment method used during purchase within 3–5 business days after the returned item is received and inspected. Shipping charges may be
+                  non-refundable unless the return is due to a defective or incorrectly
+                  supplied part.
                 </p>
               </div>
 
 
-              {/* FIXED RESTOCKING TEXT */}
+              {/* Restocking */}
               <div>
                 <h3 className="font-exo2 font-semibold mt-4 mb-2">
                   Return & Cancellation Policy:
@@ -107,7 +106,8 @@ export default function WarrantyAndReturn() {
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
                   If you receive a defective or incorrect part, you may request a replacement.
                   Replacement eligibility and shipping responsibility will be communicated during
-                  the replacement authorization process.
+                  the replacement authorization process. Replacement shipping is provided at no
+                  additional cost when the issue is due to a defective or incorrectly supplied part.
                 </p>
               </div>
 
@@ -134,11 +134,12 @@ export default function WarrantyAndReturn() {
                 </h3>
 
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
-                  Replacement parts may require the return of the original part. Return instructions
-                  and shipping responsibilities will be communicated during the replacement process.
-                  Failure to return the original part when required may affect replacement eligibility.
-                  For assistance, contact customer support at{" "}
-                  <a href="tel:+18883382540">(888) 338-2540</a> or email partscentralus@gmail.com.
+                  Replacement parts may require the return of the original part.
+                  Return instructions and shipping responsibilities will be communicated
+                  during the replacement process. Failure to return the original part when
+                  required may affect replacement eligibility. For assistance, contact
+                  customer support at <a href="tel:+18883382540" className="underline">(888) 338-2540</a> or email 
+                 <a href= " mailto:support@partscentral.us " className="underline" > support@partscentral.us </a>.
                 </p>
               </div>
 
@@ -150,14 +151,14 @@ export default function WarrantyAndReturn() {
                 </h3>
 
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
-                  Some used auto parts may include wear components or accessories that are not covered
-                  under warranty. Customers may need to replace wear items before installation depending
-                  on part condition.
+                  Some used auto parts may include wear components or accessories that are
+                  not covered under warranty. Customers may need to replace wear items before
+                  installation depending on part condition.
                 </p>
 
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed mt-2">
-                  Cosmetic aspects such as color may vary. Parts may require refinishing to match the
-                  customer's vehicle.
+                  Cosmetic aspects such as color may vary. Parts may require refinishing to
+                  match the customer's vehicle.
                 </p>
               </div>
 
@@ -205,16 +206,19 @@ export default function WarrantyAndReturn() {
 
             <div className="space-y-6">
 
-              {/* FIXED WARRANTY CLAIM */}
+              {/* Correct Warranty */}
               <div>
                 <h3 className="font-exo2 font-semibold mt-4 mb-2">
-                  90 days Limited Warranty:
+                  Limited Warranty Coverage:
                 </h3>
 
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
-                  We provide a 90-day limited warranty on eligible used OEM parts, engines,
-                  and transmissions. Warranty coverage applies to manufacturing defects
-                  in covered components as outlined in the warranty terms below.
+                  Warranty coverage varies based on the type of part purchased.
+                  Engines and transmissions include a 90-day limited warranty from
+                  the date of delivery. Smaller parts and accessories include a
+                  30-day limited warranty from the date of delivery. Warranty coverage
+                  applies only to eligible defects in materials and workmanship under
+                  normal use, as outlined in the warranty terms below.
                 </p>
               </div>
 
@@ -232,16 +236,17 @@ export default function WarrantyAndReturn() {
               </div>
 
 
-              {/* Warranty Terms (UNCHANGED STRUCTURE) */}
+              {/* Warranty Terms */}
               <div>
                 <h3 className="font-exo2 font-semibold mt-4 mb-2">
                   Warranty Terms:
                 </h3>
 
                 <p className="font-exo2 text-base lg:text-lg leading-relaxed">
-                  Warranty coverage applies only to eligible manufacturing defects in covered components.
-                  Warranty exclusions include damage caused by misuse, improper installation, accidents,
-                  or modifications.
+                  Warranty coverage applies only to eligible defects in materials and
+                  workmanship under normal use. Warranty exclusions include damage
+                  caused by misuse, improper installation, accidents, modifications,
+                  or external causes beyond normal operating conditions.
                 </p>
 
               </div>

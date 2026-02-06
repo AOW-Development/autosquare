@@ -140,10 +140,10 @@ export default function SubmitTicketPage() {
                     Email address
                   </span>
                   <a
-                    href="mailto:partscentralus@gmail.com"
+                    href="mailto:support@partscentral.us"
                     className="text-gray-200 text-sm underline"
                   >
-                    partscentralus@gmail.com
+                      support@partscentral.us
                   </a>
                 </div>
               </div>

@@ -380,7 +380,7 @@ const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
             <label htmlFor="accept" className="text-xs text-white/70 select-none">
               I have Read and Accept the{" "}
               <a href="#" className="text-blue-400 underline">terms and conditions</a>, return policy and the{" "}
-              <a href="#" className="text-blue-400 underline">Privacy Policy</a> of autosquare.us *
+              <a href="#" className="text-blue-400 underline">Privacy Policy</a> of partscentral.us *
             </label>
           </div>
 

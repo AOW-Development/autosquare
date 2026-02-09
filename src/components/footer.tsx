@@ -216,6 +216,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/account/payment-details" className="hover:text-white">
+                    Make a payment
+                  </Link>
+                </li>
+                <li>
                   <Link href="/account/faq" className="hover:text-white">
                     FAQ
                   </Link>

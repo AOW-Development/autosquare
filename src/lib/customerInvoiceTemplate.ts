@@ -1,466 +1,852 @@
-import nodemailer from "nodemailer";
 import type { OrderEmailData } from "./mail"
-import { NextResponse } from "next/server"
-
-// Function to send invoice email with professional design
-export const sendInvoiceEmail = async (data: OrderEmailData, to: string): Promise<{ success: boolean; message?: string }> => {
-  try {
-    const { orderNumber, orderDate, shipping, cartItems, orderTotal, user, payment } = data;
-
-    // Create SMTP transporter
-    const transporter = nodemailer.createTransport({
-      host: "smtp.office365.com",
-      port: 587,
-      secure: false,
-      auth: {
-        user: process.env.SMTP_USERNAME_SALES,
-        pass: process.env.SMTP_PASSWORD_SALES,
-      },
-    });
-
-    // Determine if this is an engine or transmission order for the image
-    const partType = data.cartItems[0]?.title?.toLowerCase() || "";
-    const imageUrl = partType.includes("engine")
-      ? "https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
-      : "https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png";
-
-    // Calculate subtotal
-    const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-
-    const htmlTemplate = `
-    <!DOCTYPE html>
-    <html lang="en">
+import { PDFDocument, StandardFonts, rgb } from "pdf-lib"
+import fs from "fs"
+import path from "path"
+ 
+export const generateCustomerInvoiceHTML = (data: OrderEmailData): string => {
+  const { user, payment, billing, shipping, cartItems, orderTotal, orderNumber, orderDate, stripePayment } = data
+ 
+  console.log("user", user)
+ 
+  return `<!DOCTYPE html>
+    <html>
     <head>
-      <meta charset="UTF-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Invoice #${orderNumber} - Parts Central</title>
-      <style>
-        @media only screen and (max-width: 600px) {
-          .container { width: 100% !important; }
-          .header-nav { display: none !important; }
-          .hero-title { font-size: 24px !important; padding: 30px 20px !important; }
-          .message-text { font-size: 13px !important; padding: 20px !important; }
-          .invoice-details td { display: block !important; width: 100% !important; }
-          .items-table th, .items-table td { padding: 8px 5px !important; font-size: 12px !important; }
-          .benefits-grid td { display: block !important; width: 100% !important; }
-        }
-      </style>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Invoice - ${orderNumber}</title>
     </head>
-
-    <body style="margin:0;padding:0;font-family:Arial,sans-serif;background:#f5f5f5;">
-    <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:20px 0;">
-    <tr>
-    <td align="center">
-
-    <table class="container" width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;overflow:hidden;max-width:600px;">
-   
-    <!-- ================= HEADER WITH LOGO ================= -->
-    <tr>
-      <td style="background:#1a1a2e;padding:15px 30px;">
-        <table width="100%">
-          <tr>
-            <td align="left">
-              <img src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/logos/header-3.png" alt="Parts Central" height="40" style="display:block;" />
-            </td>
-            <td class="header-nav" align="right" style="font-size:12px;">
-              <a href="https://www.partscentral.us/aboutUs" style="color:#ffffff;text-decoration:none;margin:0 8px;">About Us</a>
-              <a href="https://www.partscentral.us/engine" style="color:#ffffff;text-decoration:none;margin:0 8px;">Engine</a>
-              <a href="https://www.partscentral.us/transmission" style="color:#ffffff;text-decoration:none;margin:0 8px;">Transmission</a>
-              <a href="https://www.partscentral.us/contactUs" style="color:#ffffff;text-decoration:none;margin:0 8px;">Contact Us</a>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <!-- ================= INVOICE NUMBER ================= -->
-    <tr>
-      <td style="background:#1a1a2e;padding:15px 20px;text-align:center;">
-        <table width="100%" cellpadding="0" cellspacing="0">
-          <tr>
-            <td align="center">
-              <div style="display:inline-block;background:#ffffff;padding:8px 24px;border-radius:20px;">
-                <span style="color:#1a5cff;font-size:16px;font-weight:bold;">INVOICE #${orderNumber}</span>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <!-- ================= PART IMAGE ================= -->
-    <tr>
-      <td align="center" style="padding:25px 20px;background:#0b1a2f;">
-        <img 
-          src="${imageUrl}" 
-          alt="${partType.includes('engine') ? 'Engine' : 'Transmission'}" 
-          width="280" 
-          style="display:block;margin:0 auto;border-radius:8px;border:2px solid #1a5cff;"
-        />
-      </td>
-    </tr>
-
-    <!-- ================= MAIN TITLE ================= -->
-    <tr>
-      <td class="hero-title" align="center" style="padding:40px 30px;background:#1a1a2e;">
-        <h1 style="margin:0 0 12px;color:#ffffff;font-size:32px;font-weight:bold;line-height:1.3;">
-          Your Invoice is Ready!
-        </h1>
-        <p style="margin:0;color:#ffffff;font-size:16px;">
-          Invoice Date: ${new Date(orderDate).toLocaleDateString('en-US', { 
-            year: 'numeric', 
-            month: 'long', 
-            day: 'numeric' 
-          })}
-        </p>
-      </td>
-    </tr>
-
-    <!-- ================= PERSONAL MESSAGE ================= -->
-    <tr>
-      <td class="message-text" style="padding:30px 30px 20px;background:#ffffff;">
-        <p style="margin:0 0 5px;color:#123b7a;font-size:20px;font-weight:bold;">
-          ${shipping.firstName} ${shipping.lastName},
-        </p>
-        <p style="margin:15px 0;color:#333333;font-size:16px;line-height:1.6;">
-          Please find your invoice for order <strong>#${orderNumber}</strong>. 
-          As per our tele-conversation, we will charge your card ending with 
-          <strong>${payment.cardData.cardNumber.slice(-4)}</strong> for the total amount of 
-          <strong style="color:#1a5cff;">$${orderTotal.toFixed(2)}</strong>.
-        </p>
-        <p style="margin:0;color:#333333;font-size:16px;line-height:1.6;">
-          This authorization is for a single transaction only and does not provide authorization 
-          for any additional unrelated debits or credits to your account.
-        </p>
-      </td>
-    </tr>
-
-    <!-- ================= INVOICE DETAILS ================= -->
-    <tr>
-      <td style="padding:0 30px 20px;">
-        <h2 style="margin:0 0 20px;color:#1a1a2e;font-size:20px;font-weight:bold;">
-          Invoice Details
-        </h2>
-       
-        <!-- Billing & Shipping Information -->
-        <table width="100%" cellpadding="15" cellspacing="0" style="background:#f9f9f9;margin-bottom:2px;border-radius:8px;">
-          <tr>
-            <td width="50%" style="vertical-align:top;border-right:1px solid #e0e0e0;">
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;font-weight:bold;">
-                BILLING INFORMATION
-              </p>
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;">
-                <strong>Name:</strong> ${user.name || `${shipping.firstName} ${shipping.lastName}`}
-              </p>
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;">
-                <strong>Email:</strong> ${user.email}
-              </p>
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;">
-                <strong>Card:</strong> **** **** **** ${payment.cardData.cardNumber.slice(-4)}
-              </p>
-            </td>
-
-            <td width="50%" style="vertical-align:top;padding-left:20px;">
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;font-weight:bold;">
-                SHIPPING ADDRESS
-              </p>
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;">
-                <strong>Name:</strong> ${shipping.firstName} ${shipping.lastName}
-              </p>
-              ${shipping.company ? `<p style="margin:0 0 8px;color:#666666;font-size:13px;"><strong>Company:</strong> ${shipping.company}</p>` : ''}
-              <p style="margin:0 0 8px;color:#666666;font-size:13px;">
-                <strong>Address:</strong> ${shipping.address}${shipping.apartment ? `, ${shipping.apartment}` : ''}
-              </p>
-              <p style="margin:0;color:#666666;font-size:13px;">
-                <strong>City/State/ZIP:</strong> ${shipping.city}, ${shipping.state} ${shipping.zipCode}
-              </p>
-            </td>
-          </tr>
-        </table>
-
-        <!-- Items Table -->
-        <table width="100%" cellpadding="10" cellspacing="0" style="margin-top:20px;border-collapse:collapse;" class="items-table">
-          <thead>
-            <tr style="background:#f8f9fa;">
-              <th style="text-align:left;padding:12px 15px;border-bottom:2px solid #ddd;color:#333;font-size:14px;">Item Description</th>
-              <th style="text-align:center;padding:12px 15px;border-bottom:2px solid #ddd;color:#333;font-size:14px;">Price</th>
-              <th style="text-align:center;padding:12px 15px;border-bottom:2px solid #ddd;color:#333;font-size:14px;">Qty</th>
-              <th style="text-align:right;padding:12px 15px;border-bottom:2px solid #ddd;color:#333;font-size:14px;">Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${cartItems.map((item, index) => `
-              <tr ${index % 2 === 0 ? 'style="background:#fafafa;"' : ''}>
-                <td style="padding:12px 15px;border-bottom:1px solid #eee;font-size:14px;color:#555;">
-                  ${item.title}${item.subtitle ? ` ${item.subtitle}` : ''}
-                </td>
-                <td style="padding:12px 15px;border-bottom:1px solid #eee;text-align:center;font-size:14px;color:#555;">
-                  $${(item.price ?? 0).toFixed(2)}
-                </td>
-                <td style="padding:12px 15px;border-bottom:1px solid #eee;text-align:center;font-size:14px;color:#555;">
-                  ${item.quantity ?? 1}
-                </td>
-                <td style="padding:12px 15px;border-bottom:1px solid #eee;text-align:right;font-size:14px;color:#555;">
-                  $${((item.price ?? 0) * (item.quantity ?? 1)).toFixed(2)}
-                </td>
-              </tr>
-            `).join('')}
-          </tbody>
-        </table>
-
-        <!-- Total Summary -->
-        <table width="100%" cellpadding="12" cellspacing="0" style="margin-top:20px;">
-          <tr>
-            <td style="color:#666666;font-size:14px;border-bottom:1px solid #e0e0e0;padding:10px 0;">
-              Subtotal
-            </td>
-            <td align="right" style="color:#1a1a2e;font-size:14px;border-bottom:1px solid #e0e0e0;padding:10px 0;">
-              $${subtotal.toFixed(2)}
-            </td>
-          </tr>
-          <tr>
-            <td style="color:#1a1a2e;font-size:16px;font-weight:bold;padding:12px 0 0;">
-              Total Amount
-            </td>
-            <td align="right" style="color:#d32f2f;font-size:22px;font-weight:bold;padding:12px 0 0;">
-              $${orderTotal.toFixed(2)}
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <!-- ================= NEXT STEPS ================= -->
-    <tr>
-      <td style="padding:30px;background:#ffffff;">
-        <h3 style="margin:0 0 20px;color:#000000;font-size:20px;font-weight:bold;text-align:center;">
-          How to Complete Your Order
-        </h3>
-
-        <table class="benefits-grid" width="100%" cellpadding="0" cellspacing="0">
-          <tr>
-            <!-- STEP 1 -->
-            <td width="50%" style="padding:8px;vertical-align:top;">
-              <table width="100%" cellpadding="15" cellspacing="0" style="background-color:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;">
-                <tr>
-                  <td style="text-align:center;">
-                    <div style="background:#1a5cff;color:white;width:36px;height:36px;border-radius:50%;line-height:36px;margin:0 auto 8px;font-weight:bold;font-size:18px;">
-                      1
-                    </div>
-                    <p style="margin:0 0 4px;color:#1a1a2e;font-size:14px;font-weight:bold;">
-                      Reply "YES" by Email
-                    </p>
-                    <p style="margin:0;color:#666666;font-size:11px;">
-                      Reply to this email with "YES" as acknowledgement
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-
-            <!-- STEP 2 -->
-            <td width="50%" style="padding:8px;vertical-align:top;">
-              <table width="100%" cellpadding="15" cellspacing="0" style="background-color:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;">
-                <tr>
-                  <td style="text-align:center;">
-                    <div style="background:#1a5cff;color:white;width:36px;height:36px;border-radius:50%;line-height:36px;margin:0 auto 8px;font-weight:bold;font-size:18px;">
-                      2
-                    </div>
-                    <p style="margin:0 0 4px;color:#1a1a2e;font-size:14px;font-weight:bold;">
-                      Provide Valid ID Proof
-                    </p>
-                    <p style="margin:0;color:#666666;font-size:11px;">
-                      Attach government-issued ID with your reply
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-
-          <tr>
-            <!-- STEP 3 -->
-            <td width="50%" style="padding:8px;vertical-align:top;">
-              <table width="100%" cellpadding="15" cellspacing="0" style="background-color:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;">
-                <tr>
-                  <td style="text-align:center;">
-                    <div style="background:#1a5cff;color:white;width:36px;height:36px;border-radius:50%;line-height:36px;margin:0 auto 8px;font-weight:bold;font-size:18px;">
-                      3
-                    </div>
-                    <p style="margin:0 0 4px;color:#1a1a2e;font-size:14px;font-weight:bold;">
-                      Review Invoice Details
-                    </p>
-                    <p style="margin:0;color:#666666;font-size:11px;">
-                      Verify all information above is correct
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-
-            <!-- STEP 4 -->
-            <td width="50%" style="padding:8px;vertical-align:top;">
-              <table width="100%" cellpadding="15" cellspacing="0" style="background-color:#f8f9fa;border:1px solid #e0e0e0;border-radius:8px;">
-                <tr>
-                  <td style="text-align:center;">
-                    <div style="background:#1a5cff;color:white;width:36px;height:36px;border-radius:50%;line-height:36px;margin:0 auto 8px;font-weight:bold;font-size:18px;">
-                      4
-                    </div>
-                    <p style="margin:0 0 4px;color:#1a1a2e;font-size:14px;font-weight:bold;">
-                      Complete Within 48 Hours
-                    </p>
-                    <p style="margin:0;color:#666666;font-size:11px;">
-                      Complete all steps to avoid order delay
-                    </p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <!-- ================= CTA BUTTONS ================= -->
-    <tr>
-      <td style="padding:30px;text-align:center;">
-        <a href="mailto:partscentralus@gmail.com?subject=Invoice%20${orderNumber}%20-%20Approval&body=YES%0A%0AOrder%20Number:%20${orderNumber}%0ACustomer%20Name:%20${shipping.firstName}%20${shipping.lastName}%0ACard%20Ending:%20${payment.cardData.cardNumber.slice(-4)}%0ATotal%20Amount:%20$${orderTotal.toFixed(2)}%0A%0AAttached:%20ID%20Proof" 
-           style="display:inline-block;padding:15px 45px;background:#d32f2f;color:#ffffff;text-decoration:none;font-size:16px;font-weight:bold;border-radius:4px;margin:0 10px 10px 0;">
-          Reply with "YES" and ID Proof
-        </a>
-        <a href="tel:+18883382540" 
-           style="display:inline-block;padding:15px 45px;background:#ffffff;color:#d32f2f;text-decoration:none;font-size:16px;font-weight:bold;border-radius:4px;border:2px solid #d32f2f;margin:0 0 10px 10px;">
-          Call for Assistance
-        </a>
-        <p style="margin:15px 0 0;color:#666;font-size:13px;">
-          Please complete all steps within 48 hours
-        </p>
-      </td>
-    </tr>
-
-    <!-- ================= CONTACT SECTION ================= -->
-    <tr>
-      <td style="padding:30px;background:#f4f6f8;">
-        <table width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;margin:0 auto;background:#ffffff;border-radius:12px;border:1px solid #e5e7eb;">
-          <tr>
-            <td style="padding:28px;text-align:center;">
-              <p style="margin:0 0 10px;color:#000000;font-size:18px;font-weight:700;">
-                Have Questions About Your Invoice?
-              </p>
-              <p style="margin:0 0 24px;color:#000000;font-size:14px;">
-                Our billing team is here to help you
-              </p>
-
-              <table cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                <tr>
-                  <td style="padding:0 8px;">
-                    <a href="tel:+18883382540"
-                       style="display:inline-block;padding:12px 26px;background:#0b3a82;color:#ffffff;text-decoration:none;font-size:14px;font-weight:600;border-radius:8px;">
-                      Call: (888) 338-2540
-                    </a>
-                  </td>
-                  <td style="padding:0 8px;">
-                    <a href="mailto:partscentralus@gmail.com"
-                       style="display:inline-block;padding:12px 26px;background:#ffffff;color:#0b3a82;text-decoration:none;font-size:14px;font-weight:600;border-radius:8px;border:2px solid #0b3a82;">
-                      Email Billing Team
-                    </a>
-                  </td>
-                </tr>
-              </table>
-
-              <p style="margin:20px 0 0;padding-top:20px;border-top:1px solid #e5e7eb;color:#666;font-size:12px;line-height:1.6;">
-                <strong>Parts Central LLC</strong><br>
-                76 Imperial Dr Suite E Evanston, WY 82930, USA<br>
-                Phone: (888) 338-2540 | Fax: (312) 845-9711<br>
-                Email: partscentralus@gmail.com
-              </p>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-
-    <!-- ================= FOOTER ================= -->
-    <tr>
-      <td style="background-color:#1a1a2e;padding:25px 30px;text-align:center;">
-        <p style="margin:0 0 12px;color:#ffffff;font-size:14px;font-weight:bold;">
-          Your Trusted Auto Parts Partner Since 2010
-        </p>
-        <p style="margin:0;color:#ffffff;font-size:13px;">
-          <a href="mailto:partscentralus@gmail.com" style="color:#ffffff;text-decoration:none;">partscentralus@gmail.com</a>
-          <span style="color:#666666;margin:0 8px;">|</span>
-          <a href="tel:+18883382540" style="color:#ffffff;text-decoration:none;">+1 (888) 338-2540</a>
-        </p>
-        <p style="margin:15px 0 0;padding-top:15px;border-top:1px solid #333333;color:#999999;font-size:11px;">
-          © ${new Date().getFullYear()} Parts Central. All rights reserved.
-        </p>
-        <p style="margin:8px 0 0;font-size:11px;">
-          <a href="https://www.partscentral.us/aboutUs" style="color:#999999;text-decoration:none;margin:0 8px;">About Us</a>
-          <a href="https://www.partscentral.us/engine" style="color:#999999;text-decoration:none;margin:0 8px;">Engine</a>
-          <a href="https://www.partscentral.us/transmission" style="color:#999999;text-decoration:none;margin:0 8px;">Transmission</a>
-          <a href="https://www.partscentral.us/contactUs" style="color:#999999;text-decoration:none;margin:0 8px;">Contact Us</a>
-        </p>
-      </td>
-    </tr>
-
-    </table>
-    </td>
-    </tr>
-    </table>
+    <body style="margin:0; padding:0; font-family: Arial, sans-serif; background-color: #f9fafb;">
+      <div>
+        <h3>Hello, ${shipping.firstName} ${shipping.lastName}</h3>
+        <p>Please find the attached invoice for the order you have placed with us.</p>
+        <p>Kindly reply "YES" to this email as an acknowledgement, and also sign the invoice copy and send it back to us. Please send us a Valid ID proof as well.</p>
+        <p>As per our tele-conversation, we will charge your card ending with (${payment.cardData.cardNumber.slice(-4)}) for the amount of $${orderTotal.toFixed(2)}. This authorization is for a single transaction only and does not provide authorization for any additional unrelated debits or credits to your account.</p>
+        <p style="margin-top:36px;">Regards,</p>
+        <p>Parts Central LLC</p>
+        <p>Contact: (888) 338-2540</p>
+        <p>Fax#: (312) 845-9711</p>
+      </div>
     </body>
-    </html>`;
-
-    // Send email
-    await transporter.sendMail({
-      from: `"Parts Central" <${process.env.SMTP_USERNAME_SALES}>`,
-      to: to,
-      cc: "partscentralus@gmail.com",
-      subject: `Invoice #${orderNumber} - ${shipping.firstName} ${shipping.lastName} - $${orderTotal.toFixed(2)}`,
-      html: htmlTemplate,
-      // No attachments since PDF is removed
-    });
-
-    return { success: true };
+    </html>`
+}
+ 
+// Utility function to load background image
+async function loadBackgroundImage(pdfDoc: PDFDocument) {
+  try {
+    const backgroundPath = path.join(process.cwd(), "public", "smtpHeader.jpg")
+    const backgroundBytes = fs.readFileSync(backgroundPath)
+    return await pdfDoc.embedJpg(backgroundBytes)
   } catch (error) {
-    console.error("Error sending invoice email:", error);
-    return { 
-      success: false, 
-      message: error instanceof Error ? error.message : "Failed to send invoice email" 
-    };
+    console.error("Error loading background image:", error)
+    return null
   }
 }
-
-// API Route handler
-export async function POST(req: Request) {
+ 
+// Utility function to load logo
+async function loadLogo(pdfDoc: PDFDocument) {
   try {
-    const { orderData, customerEmail } = await req.json();
-
-    if (!orderData || !customerEmail) {
-      return NextResponse.json(
-        { message: "Missing required fields: orderData and customerEmail" },
-        { status: 400 }
-      );
+    const logoPath = path.resolve("./public/logos/header-3.png")
+    const logoImageBytes = fs.readFileSync(logoPath)
+    return await pdfDoc.embedPng(logoImageBytes)
+  } catch (error) {
+    console.error("Error loading logo:", error)
+    return null
+  }
+}
+ 
+// Function to draw customer information section
+function drawCustomerInfo(page: any, y: number, data: any, bold: any, times: any, rgb: any) {
+  const orderX = 40
+  let orderY = y - 15 // Move both sections up by reducing the offset
+  const startY = y
+  const lineHeight = 18
+ 
+  // Order By section
+  page.drawText(`Order By: ${data.shipping.firstName} ${data.shipping.lastName || ""}`, {
+    x: orderX,
+    y: orderY,
+    size: 11,
+    font: times,
+    color: rgb(0, 0, 0.8),
+  })
+  orderY -= lineHeight
+ 
+  if (data.user.email) {
+    page.drawText(`Email: ${data.user.email}`, {
+      x: orderX,
+      y: orderY,
+      size: 11,
+      font: times,
+      color: rgb(0, 0, 0.8),
+    })
+    orderY -= lineHeight
+  }
+ 
+  if (data.shipping.phone) {
+    page.drawText(`Mobile: ${data.shipping.phone}`, {
+      x: orderX,
+      y: orderY,
+      size: 11,
+      font: times,
+      color: rgb(0, 0, 0.8),
+    })
+    orderY -= lineHeight
+  }
+ 
+  const endY = orderY
+  const lineX = 270
+  const lineTopY = startY - 10 // Align separator with the moved content
+  const lineBottomY = endY - 5
+ 
+  // Draw vertical separator line - extended to stretch from top to bottom of content
+  page.drawLine({
+    start: { x: lineX, y: lineTopY + 20 }, // Start higher to stretch more
+    end: { x: lineX, y: lineBottomY - 20 }, // End lower to stretch more
+    color: rgb(0.07, 0.15, 0.3),
+    thickness: 2,
+  })
+ 
+  // Bill To section
+  const billX = lineX + 80
+  let billY = y - 5 // Move billing info up to match order info
+ 
+  page.drawText("Bill To:", {
+    x: billX,
+    y: billY,
+    size: 12,
+    font: bold,
+    color: rgb(0, 0, 0.8),
+  })
+  billY -= 20
+ 
+  page.drawText(`${data.shipping.firstName} ${data.shipping.lastName}` || " ", {
+    x: billX,
+    y: billY,
+    size: 11,
+    font: times,
+    color: rgb(0, 0, 0.8),
+  })
+  billY -= lineHeight
+ 
+  // Billing address
+  if (data.billing) {
+    const { address, apartment, city, state, zipCode } = data.billing
+ 
+    if (address) {
+      page.drawText(address, {
+        x: billX, // Use consistent x position for billing address
+        y: billY,
+        size: 11,
+        font: times,
+        color: rgb(0, 0, 0.8),
+      })
+      billY -= 15
     }
-
-    const result = await sendInvoiceEmail(orderData, customerEmail);
-
-    if (result.success) {
-      return NextResponse.json({ 
-        success: true, 
-        message: "Invoice email sent successfully",
-        orderNumber: orderData.orderNumber
-      });
+ 
+    if (apartment) {
+      page.drawText(apartment, {
+        x: billX, // Use consistent x position for billing address
+        y: billY,
+        size: 11,
+        font: times,
+        color: rgb(0, 0, 0.8),
+      })
+      billY -= 15
+    }
+ 
+    if (city || state || zipCode) {
+      const cityStateZip = `${city || ""}${city && state ? ", " : ""}${state || ""}${zipCode ? " " + zipCode : ""}`
+      page.drawText(cityStateZip, {
+        x: billX, // Use consistent x position for billing address
+        y: billY,
+        size: 11,
+        font: times,
+        color: rgb(0, 0, 0.8),
+      })
+      billY -= 15
+    }
+  }
+}
+ 
+// Function to wrap and draw text with custom line spacing
+function drawWrappedText(
+  page: any,
+  text: string,
+  x: number,
+  y: number,
+  options: {
+    fontSize: number
+    font: any
+    maxWidth: number
+    lineHeight: number
+    color?: any
+  },
+) {
+  const { fontSize, font, maxWidth, lineHeight } = options
+  const words = text.split(" ")
+  let line = ""
+  let currentY = y
+ 
+  for (let i = 0; i < words.length; i++) {
+    const testLine = line + words[i] + " "
+    const testWidth = font.widthOfTextAtSize(testLine, fontSize)
+ 
+    if (testWidth > maxWidth && i > 0) {
+      page.drawText(line.trim(), {
+        x: x,
+        y: currentY,
+        size: fontSize,
+        font: font,
+        color: options.color,
+      })
+      currentY -= lineHeight
+      line = words[i] + " "
     } else {
-      return NextResponse.json(
-        { message: result.message || "Failed to send invoice email" },
-        { status: 500 }
-      );
+      line = testLine
+    }
+  }
+ 
+  if (line.trim().length > 0) {
+    page.drawText(line.trim(), {
+      x: x,
+      y: currentY,
+      size: fontSize,
+      font: font,
+      color: options.color,
+    })
+  }
+ 
+  return currentY
+}
+ 
+export const generateInvoicePDF = async (data: OrderEmailData): Promise<Uint8Array> => {
+  const pdfDoc = await PDFDocument.create()
+  const times = await pdfDoc.embedFont(StandardFonts.TimesRoman)
+  const bold = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
+ 
+  // Calculate dynamic height based on cart items
+  let dynamicHeight = 850
+  for (let i = 1; i < data.cartItems.length; i++) {
+    dynamicHeight += 70
+  }
+ 
+  // PAGE 1: Invoice Summary
+  const page = pdfDoc.addPage([600, dynamicHeight])
+  const { height, width } = page.getSize()
+  let y = height - 80
+ 
+  // Header background
+  const backgroundImage = await loadBackgroundImage(pdfDoc)
+  if (backgroundImage) {
+    page.drawImage(backgroundImage, {
+      x: 0,
+      y: height - 100,
+      width: width,
+      height: 100,
+    })
+  } else {
+    page.drawRectangle({
+      x: 0,
+      y: height - 100,
+      width,
+      height: 100,
+      color: rgb(0.07, 0.15, 0.3),
+    })
+  }
+ 
+  // Logo
+  try {
+    const logoImage = await loadLogo(pdfDoc)
+    if (logoImage) {
+      const logoDims = logoImage.scale(0.5)
+      page.drawImage(logoImage, {
+        x: 30,
+        y: height - 40,
+        width: logoDims.width,
+        height: logoDims.height,
+      })
+    } else {
+      page.drawText("PARTS CENTRAL", {
+        x: 40,
+        y: height - 40,
+        size: 18,
+        font: bold,
+        color: rgb(1, 1, 1),
+      })
     }
   } catch (error) {
-    console.error("Invoice email API error:", error);
-    return NextResponse.json(
-      { message: "Internal server error" },
-      { status: 500 }
-    );
+    console.error("Error loading logo:", error)
+    page.drawText("PARTS CENTRAL", {
+      x: 40,
+      y: height - 40,
+      size: 18,
+      font: bold,
+      color: rgb(1, 1, 1),
+    })
   }
+ 
+  const margin1 = 36
+ 
+  // Contact information with icons
+  const locationBytes1 = fs.readFileSync(path.join(process.cwd(), "public", "location.png"))
+  const websiteBytes1 = fs.readFileSync(path.join(process.cwd(), "public", "website.png"))
+  const phoneBytes1 = fs.readFileSync(path.join(process.cwd(), "public", "phone.png"))
+ 
+  const locationIcon1 = await pdfDoc.embedPng(locationBytes1)
+  const websiteIcon1 = await pdfDoc.embedPng(websiteBytes1)
+  const phoneIcon1 = await pdfDoc.embedPng(phoneBytes1)
+ 
+  const iconSize1 = 10
+  y = height - 50
+ 
+  const infoRows1 = [
+    { icon: locationIcon1, label: "Location:", value: "76 Imperial Dr Suite E Evanston, WY 82930, USA" },
+    { icon: websiteIcon1, label: "Website:", value: "https://partscentral.us" },
+    { icon: phoneIcon1, label: "Phone:", value: "(888) 338-2540" },
+  ]
+ 
+  for (const row of infoRows1) {
+    page.drawImage(row.icon, {
+      x: margin1,
+      y: y - 2,
+      width: iconSize1,
+      height: iconSize1,
+    })
+ 
+    page.drawText(row.label, {
+      x: margin1 + iconSize1 + 4,
+      y,
+      size: 10,
+      font: bold,
+      color: rgb(1, 1, 1),
+    })
+ 
+    page.drawText(row.value, {
+      x: margin1 + 70,
+      y,
+      size: 10,
+      font: times,
+      color: rgb(1, 1, 1),
+    })
+ 
+    y -= 20
+  }
+ 
+  y = height - 140
+ 
+  // Invoice information
+  page.drawText(`Invoice: ${data.orderNumber}`, {
+    x: width - 180,
+    y: y,
+    size: 11,
+    font: bold,
+    color: rgb(0, 0, 0.8),
+  })
+ 
+  const currentDate = new Date().toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  })
+ 
+  // Date
+  page.drawText(`Date: ${currentDate}`, {
+    x: width - 180,
+    y: y - 20,
+    size: 11,
+    font: times,
+    color: rgb(0, 0, 0.8),
+  })
+ 
+  y = height - 180
+  drawCustomerInfo(page, y, data, bold, times, rgb)
+ 
+  y = height - 280
+  const headerY = y - 20
+ 
+  page.drawRectangle({
+    x: 40,
+    y: headerY,
+    width: width - 80,
+    height: 20,
+    color: rgb(0.07, 0.15, 0.3),
+  })
+ 
+  page.drawText("ITEM DESCRIPTION", { x: 50, y: headerY + 5, size: 10, font: bold, color: rgb(1, 1, 1) })
+  page.drawText("PRICE", { x: 250, y: headerY + 5, size: 10, font: bold, color: rgb(1, 1, 1) })
+  page.drawText("QTY.", { x: 400, y: headerY + 5, size: 10, font: bold, color: rgb(1, 1, 1) })
+  page.drawText("TOTAL", { x: 500, y: headerY + 5, size: 10, font: bold, color: rgb(1, 1, 1) })
+ 
+  y -= 35
+ 
+  // Products
+  if (data.cartItems) {
+    for (const product of data.cartItems) {
+      const title = product.title+" "+product.subtitle || ""
+      const maxWidth = 160 // Further reduce max width to prevent overlap with price column
+      const fontSize = 10
+ 
+      const wrapText = (text: string, maxWidth: number) => {
+        const words = text.split(" ")
+        let line = ""
+        const lines: string[] = []
+ 
+        for (const word of words) {
+          const testLine = line ? `${line} ${word}` : word
+          const width = times.widthOfTextAtSize(testLine, fontSize)
+ 
+          if (width > maxWidth) {
+            if (line) {
+              // Only push line if it's not empty
+              lines.push(line)
+              line = word
+            } else {
+              if (word.length > 20) {
+                lines.push(word.substring(0, 20) + "-")
+                line = word.substring(20)
+              } else {
+                lines.push(word)
+                line = ""
+              }
+            }
+          } else {
+            line = testLine
+          }
+        }
+        if (line) lines.push(line)
+        return lines
+      }
+ 
+      const titleLines = wrapText(title, maxWidth)
+      const allLines = [...titleLines]
+      const startY = y + 5
+ 
+      for (let i = 0; i < titleLines.length; i++) {
+        page.drawText(titleLines[i], {
+          x: 50,
+          y: startY - i * 12,
+          size: fontSize,
+          font: times,
+        })
+      }
+ 
+      page.drawText(`$${(product.price ?? 0).toFixed(2)}`, {
+        x: 250, // Adjust x position to align with header
+        y: startY,
+        size: fontSize,
+        font: times,
+      })
+ 
+      page.drawText(`${product.quantity ?? 1}`, {
+        x: 400,
+        y: startY,
+        size: fontSize,
+        font: times,
+      })
+ 
+      const itemTotal = (product.price ?? 0) * (product.quantity ?? 1)
+      page.drawText(`$${itemTotal.toFixed(2)}`, {
+        x: 500,
+        y: startY,
+        size: fontSize,
+        font: times,
+      })
+ 
+      y = startY - Math.max(allLines.length * 12, 20) - 15
+    }
+  }
+ 
+  y -= 40
+ 
+  // Total
+  const subtotal = data.cartItems?.reduce((sum, p) => sum + (p.price ?? 0) * (p.quantity ?? 1), 0) ?? 0
+ 
+  page.drawRectangle({
+    x: 430,
+    y: y - 5,
+    width: 150,
+    height: 25,
+    color: rgb(0.9, 0.9, 0.95),
+  })
+ 
+  page.drawText(`TOTAL: $${subtotal.toFixed(2)}`, {
+    x: 440,
+    y: y,
+    size: 14,
+    font: bold,
+    color: rgb(0, 0, 0.8),
+  })
+ 
+  y -= 30
+ 
+  // Shipping disclaimer
+  page.drawText("Shipping Disclaimer:", {
+    x: 40,
+    y: y - 10,
+    size: 12,
+    font: bold,
+    color: rgb(0, 0, 0.8),
+  })
+ 
+  y -= 35
+  page.drawText(
+    'Shipment without Lift gate (forklift) at the shipping address will be charged extra as per the transporting carriers for freight parts. I authorize Parts Central LLC to charge my Debit/Credit card listed above & agree for terms & conditions upon purchases including merchandise & shipping charges by signing the invoice or replying to the email. Signatures: This contract may be signed electronically or in hard copy. If signed in hard copy, it must be printed out, signed, scanned and returned to the Email - partscentralus@gmail.com or a valid record. Electronic signatures count as original for all purposes. By typing their names as signatures and replying to this same email typing - "Approved/ authorized", both parties agree to the terms and provisions of this agreement.',
+    {
+      x: 40,
+      y,
+      size: 11,
+      font: times,
+      maxWidth: 520,
+      color: rgb(0, 0, 0.8),
+    },
+  )
+ 
+  y -= 170
+ 
+  // Payment details
+  page.drawText("PAYMENT DETAILS:", {
+    x: 40,
+    y,
+    size: 11,
+    font: bold,
+    color: rgb(0, 0, 0.8),
+  })
+ 
+  y -= 15
+  if (data.payment.cardData.cardholderName) {
+    page.drawText(`Name: ${data.payment.cardData.cardholderName}`, {
+      x: 40,
+      y,
+      size: 10,
+      font: times,
+      color: rgb(0, 0, 0.8),
+    })
+  }
+ 
+  // if (data.stripePayment.cardDetails) {
+  //   page.drawText(`Card Number: **** **** **** ${data.stripePayment.cardDetails.last4}`, {
+  //     x: 40,
+  //     y: y - 15,
+  //     size: 10,
+  //     font: times,
+  //     color: rgb(0, 0, 0.8),
+  //   })
+  // }
+   if (data.payment.cardData.cardNumber) {
+    page.drawText(`Card Number: **** **** **** ${data.payment.cardData.cardNumber.slice(-4)}`, {
+      x: 40,
+      y: y - 15,
+      size: 10,
+      font: times,
+      color: rgb(0, 0, 0.8),
+    })
+  }
+ 
+      page.drawText("Shipping DETAILS:", {
+        x: 400,
+        y: y + 15,
+        size: 11,
+        font: bold,
+        color: rgb(0, 0, 0.8),
+      });
+ 
+      if (data.shipping) {
+        const { address, apartment, city, state, zipCode, company } = data.shipping;
+ 
+        const drawLine = (text: string) => {
+          page.drawText(text, {
+            x: 400,
+            y: y,
+            size: 11,
+            font: times,
+            color: rgb(0, 0, 0.8),
+          });
+          y -= 15; // decrement only when text is drawn
+        };
+ 
+        if (company) drawLine(company);
+        if (address) drawLine(address);
+        if (apartment) drawLine(apartment);
+ 
+        if (city || state || zipCode) {
+          const cityStateZip = `${city || ""}${city && state ? ", " : ""}${state || ""}${zipCode ? " " + zipCode : ""}`;
+          if (cityStateZip.trim() !== "") drawLine(cityStateZip);
+        }
+      }
+ 
+       
+ 
+  y -= 30
+ 
+  page.drawText("Authorize Signature", {
+    x: 450,
+    y: y - 70,
+    size: 11,
+    font: bold,
+    color: rgb(0, 0, 0.8),
+  })
+ 
+  if (backgroundImage) {
+    page.drawImage(backgroundImage, {
+      x: 0,
+      y: 0,
+      width: width,
+      height: 100,
+    })
+  } else {
+    // Fallback to solid color if image loading fails
+    page.drawRectangle({
+      x: 0,
+      y: 0,
+      width,
+      height: 100,
+      color: rgb(0.07, 0.15, 0.3), // dark blue header
+    })
+  }
+ 
+  // PAGE 2: Full Disclaimer & Policies
+  const page2 = pdfDoc.addPage([600, 800])
+  const { height: page2Height } = page2.getSize()
+  let y2 = page2Height - 10
+  const margin = 36
+ 
+  // Header background for page 2
+  const backgroundImage2 = await loadBackgroundImage(pdfDoc)
+  if (backgroundImage2) {
+    page2.drawImage(backgroundImage2, {
+      x: 0,
+      y: page2Height - 100,
+      width: width,
+      height: 100,
+    })
+  } else {
+    page2.drawRectangle({
+      x: 0,
+      y: page2Height - 100,
+      width,
+      height: 100,
+      color: rgb(0.07, 0.15, 0.3),
+    })
+  }
+ 
+  // Logo for page 2
+  try {
+    const logoImage = await loadLogo(pdfDoc)
+    if (logoImage) {
+      const logoDims = logoImage.scale(0.5)
+      page2.drawImage(logoImage, {
+        x: 30,
+        y: page2Height - 40,
+        width: logoDims.width,
+        height: logoDims.height,
+      })
+    } else {
+      page2.drawText("PARTS CENTRAL", {
+        x: 40,
+        y: page2Height - 40,
+        size: 18,
+        font: bold,
+        color: rgb(1, 1, 1),
+      })
+    }
+  } catch (error) {
+    console.error("Error loading logo:", error)
+    page2.drawText("PARTS CENTRAL", {
+      x: 40,
+      y: page2Height - 40,
+      size: 18,
+      font: bold,
+      color: rgb(1, 1, 1),
+    })
+  }
+ 
+  // Contact info for page 2
+  const locationBytes = fs.readFileSync(path.join(process.cwd(), "public", "location.png"))
+  const websiteBytes = fs.readFileSync(path.join(process.cwd(), "public", "website.png"))
+  const phoneBytes = fs.readFileSync(path.join(process.cwd(), "public", "phone.png"))
+ 
+  const locationIcon = await pdfDoc.embedPng(locationBytes)
+  const websiteIcon = await pdfDoc.embedPng(websiteBytes)
+  const phoneIcon = await pdfDoc.embedPng(phoneBytes)
+ 
+  const iconSize = 10
+  let iconHeight = 98
+ 
+  for (let j = 1; j < data.cartItems.length; j++) {
+    iconHeight += 70
+  }
+ 
+  y = height - iconHeight
+ 
+  const infoRows = [
+    { icon: locationIcon, label: "Location:", value: "76 Imperial Dr Suite E Evanston, WY 82930, USA" },
+    { icon: websiteIcon, label: "Website:", value: "https://partscentral.us" },
+    { icon: phoneIcon, label: "Phone:", value: "(888) 338-2540" },
+  ]
+ 
+  for (const row of infoRows) {
+    page2.drawImage(row.icon, {
+      x: margin,
+      y: y - 2,
+      width: iconSize,
+      height: iconSize,
+    })
+ 
+    page2.drawText(row.label, {
+      x: margin + iconSize + 4,
+      y,
+      size: 10,
+      font: bold,
+      color: rgb(1, 1, 1),
+    })
+ 
+    page2.drawText(row.value, {
+      x: margin + 70,
+      y,
+      size: 10,
+      font: times,
+      color: rgb(1, 1, 1),
+    })
+ 
+    y -= 20
+  }
+ 
+  y2 = 650
+ 
+  page2.drawText("Disclaimer Engine:", {
+    x: 40,
+    y: y2,
+    size: 14,
+    font: bold,
+    color: rgb(1, 0, 0),
+  })
+ 
+  y2 -= 23
+  const engineText =
+    "Engines are sold as an assemblies with manifolds, timing cover, belts, oil pan, fuel injectors or carburetors, pulleys and other accessories. Due to warranty only on the long block, all accessories like manifolds, timing cover, belts, oil pan, fuel injectors or carburetors, pulleys, and other accessories are sold as is (NO WARRANTY APPLICABLE)."
+  y2 = drawWrappedText(page2, engineText, 40, y2, {
+    fontSize: 10,
+    font: times,
+    maxWidth: 520,
+    lineHeight: 12,
+  })
+ 
+  y2 -= 40
+ 
+  page2.drawText("Disclaimer Transmission:", {
+    x: 40,
+    y: y2,
+    size: 14,
+    font: bold,
+    color: rgb(1, 0, 0),
+  })
+ 
+  y2 -= 23
+  const transmissionText =
+    "The transmission is guaranteed to shift gears and bearings to be good. The oil pan and oil filter needs to be replaced before installation. Flush out all the liquid and from test cooler lines. The torque convertor needs to be fully engaged to the front pump. For manual transmission a new clutch needs to be installed along with the pressure plate and slave cylinder. The flywheel must be turned once before installation."
+  y2 = drawWrappedText(page2, transmissionText, 40, y2, {
+    fontSize: 10,
+    font: times,
+    maxWidth: 520,
+    lineHeight: 12,
+  })
+ 
+  y2 -= 40
+ 
+  page2.drawText("Installation:", {
+    x: 40,
+    y: y2,
+    size: 14,
+    font: bold,
+    color: rgb(1, 0, 0),
+  })
+ 
+  y2 -= 23
+  const installationText = "Part needs to be installed within 10 days from the date of delivery."
+  y2 = drawWrappedText(page2, installationText, 40, y2, {
+    fontSize: 10,
+    font: times,
+    maxWidth: 520,
+    lineHeight: 12,
+  })
+ 
+  y2 -= 40
+ 
+  page2.drawText("Cancellation:", {
+    x: 40,
+    y: y2,
+    size: 14,
+    font: bold,
+    color: rgb(1, 0, 0),
+  })
+ 
+  y2 -= 23
+  const cancellationText =
+    "After placing an order, if the customer wants-to cancel the order, he/she should do so within 24 hours and a charge of 30% restocking fee and one-way shipping cost will be deducted from the paid amount. Any Cancellations of orders should be validated via E-mail and Call to customer service is mandatory."
+  y2 = drawWrappedText(page2, cancellationText, 40, y2, {
+    fontSize: 10,
+    font: times,
+    maxWidth: 520,
+    lineHeight: 12,
+  })
+ 
+  y2 -= 40
+ 
+  page2.drawText("Return Policy:", {
+    x: 40,
+    y: y2,
+    size: 14,
+    font: bold,
+    color: rgb(1, 0, 0),
+  })
+ 
+  y2 -= 23
+  const returnText =
+    "If in case of damaged or defective returns will be accepted within 10 calendar days from the date of delivery for mechanical parts and 7 calendar days for body parts. Parts ordered for testing or trial purposes will not be available for return. If the customer received the part and if it is damaged, defective or if the shipping is delayed, the customer has to contact Parts Central LLC before disputing the charges."
+  y2 = drawWrappedText(page2, returnText, 40, y2, {
+    fontSize: 10,
+    font: times,
+    maxWidth: 520,
+    lineHeight: 12,
+  })
+ 
+  y2 -= 40
+ 
+  page2.drawText("Refund Policy:", {
+    x: 40,
+    y: y2,
+    size: 14,
+    font: bold,
+    color: rgb(1, 0, 0),
+  })
+ 
+  y2 -= 23
+  const refundText =
+    "Parts must be returned within 7 business days from the date of delivery for a full refund. However, shipping & handling is non-refundable. Return shipping charges must be covered at the customer's expense. Customers have to provide a registered/certified mechanic's detailed report to prove the same for mechanical parts, which shall be investigated further before processing a refund. Once the part is returned, we will be happy to send a replacement or issue a refund within 5-7 business days."
+  y2 = drawWrappedText(page2, refundText, 40, y2, {
+    fontSize: 10,
+    font: times,
+    maxWidth: 520,
+    lineHeight: 12,
+  })
+ 
+  if (backgroundImage2) {
+    page2.drawImage(backgroundImage2, {
+      x: 0,
+      y: 0,
+      width: width,
+      height: 100,
+    })
+  } else {
+    page2.drawRectangle({
+      x: 0,
+      y: 0,
+      width,
+      height: 100,
+      color: rgb(0.07, 0.15, 0.3),
+    })
+  }
+ 
+  const pdfBytes = await pdfDoc.save()
+  return pdfBytes
 }

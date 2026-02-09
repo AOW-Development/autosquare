@@ -143,19 +143,19 @@ export default function TestimonialsPage() {
       </div>
 
       {/* View More Button */}
-      <div className="flex justify-center mt-12 z-20 relative">
+      {/* <div className="flex justify-center mt-12 z-20 relative">
         <button className="bg-[#1B6CF6] text-white px-10 py-3 rounded-lg text-lg font-semibold shadow-lg hover:bg-[#1558b0] transition cursor-pointer">
           View more
         </button>
-      </div>
+      </div> */}
 
       {/* Blue Gradient Shade */}
       <div
         className="pointer-events-none absolute bottom-0 left-0 w-full h-284 z-10"
-        style={{
-          background:
-            "linear-gradient(0deg, #0A1621 0%, rgba(10,22,33,0.0) 100%)",
-        }}
+        // style={{
+        //   background:
+        //     "linear-gradient(0deg, #0A1621 0%, rgba(10,22,33,0.0) 100%)",
+        // }}
       />
     </div>
   );

@@ -159,7 +159,8 @@ export async function GET() {
  
                     /* ---------- FEED FIELDS ---------- */
                     const title = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part}`;
-                    const description = `This ${make} ${model} ${part} fits ${year} models. Fully tested and ready to install. A reliable used ${part} offering excellent performance.`;
+                    const description = `This ${make} ${model} ${part} fits ${year} models. Fully tested and ready to install. A reliable used ${part} offering excellent performance.
+                    This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
                     const actualPrice = variant.actualprice||500;
                     const priceValue = variant.discountedPrice ||500;
                     const Make=escapeXml(make.charAt(0).toUpperCase() + make.slice(1).toLowerCase());

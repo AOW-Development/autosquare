@@ -83,7 +83,7 @@ export async function GET() {
       "Model",
       "Year",
       "Part",
-      "Specification",
+      "Option",
       "Mile",
       "Google Product Category",
       "Product Type",
@@ -159,7 +159,8 @@ export async function GET() {
                 const seqId = sequenceId++;
 
                 const title = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part}`;
-                const description = `This ${make} ${model} ${part} fits ${year} models. Fully tested and ready to install. A reliable used ${part} offering excellent performance.`;
+                const description = `This ${make} ${model} ${part} fits ${year} models. Fully tested and ready to install. A reliable used ${part} offering excellent performance.
+                This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
 
                 const actualPrice = variant.actualprice || 500;
                 const salePrice = variant.discountedPrice || 500;
@@ -171,7 +172,7 @@ export async function GET() {
                 const Year = String(year);
                 const Part =
                   part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
-                const Specification =
+                const Option =
                   specification.charAt(0).toUpperCase() +
                   specification.slice(1).toLowerCase();
                 const Miles = miles == "null" ? "n/a" : miles;
@@ -209,7 +210,7 @@ export async function GET() {
                   Model,
                   Year,
                   Part,
-                  Specification,
+                  Option,
                   Miles,
                   google_product_category,
                   product_type,

@@ -905,7 +905,7 @@ export default function EngineProductClient({
                         ? "Select options"
                         : selectedProduct.inStock
                           ? "In stock"
-                          : "Contact Us for availability"}
+                          : "Out of stock"}
                     </span>
                   </div>
                   <div className="text-sm sm:text-base text-white">

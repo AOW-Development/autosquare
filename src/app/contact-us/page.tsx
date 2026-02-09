@@ -162,7 +162,7 @@ export default function ContactUsPage() {
                         Office location
                       </span>
                       <span className="text-gray-200 text-sm">
-                        Parts Central LLC
+                        Parts Central LLC <br />
                         76 Imperial Dr Suite E Evanston, WY 82930, USA
                       </span>
                     </div>

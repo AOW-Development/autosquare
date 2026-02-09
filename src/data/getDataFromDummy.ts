@@ -1,38 +1,42 @@
 import { PARTS } from "@/data/parts";
 
-const normalize = (value?: string | string[]) => {
-  if (!value) return [];
-
-  const val = Array.isArray(value) ? value[0] : value;
-  const lower = val.toLowerCase().trim();
-  const parts = lower.split("-");
-
-  const results = new Set<string>();
-  results.add(parts.join(" "));
-
-  for (let i = 0; i < parts.length - 1; i++) {
-    const withSlash = parts
-      .map((part, idx) => {
-        if (idx === i) return part + "/" + parts[idx + 1];
-        if (idx === i + 1) return null;
-        return part;
-      })
-      .filter(Boolean)
-      .join(" ");
-
-    results.add(withSlash);
-  }
-
-  return Array.from(results);
-};
-
+/**
+ * Get a part from the dummy data by matching URL slugs to part names
+ * 
+ * This function handles ALL possible formats in your data:
+ * - "Conv/Invert/Charger" (all slashes)
+ * - "Corner/Park Light" (slash + space)
+ * - "Air Flow Meter" (all spaces)
+ * - "Alternator" (single word)
+ * 
+ * URL slugs are always hyphenated:
+ * - conv-invert-charger
+ * - corner-park-light
+ * - air-flow-meter
+ * - alternator
+ */
 export function getPartFromDummy(categories: string, id: string) {
-  const possibleNames = normalize(id);
-  const possibleCategories = normalize(categories);
-
-  return PARTS.find(
-    (p) =>
-      possibleNames.includes(p.name.toLowerCase()) &&
-      possibleCategories.includes(p.category?.toLowerCase() ?? "")
-  );
+  const categorySlug = categories.toLowerCase().trim();
+  const idSlug = id.toLowerCase().trim();
+  
+  return PARTS.find((p) => {
+    const partName = p.name.toLowerCase().trim();
+    const partCategory = (p.category || "").toLowerCase().trim();
+    
+    // Convert the part name to slug format for comparison
+    // This handles: "Conv/Invert/Charger" → "conv-invert-charger"
+    //               "Corner/Park Light" → "corner-park-light"
+    //               "Air Flow Meter" → "air-flow-meter"
+    const partNameSlug = partName
+      .replace(/\//g, "-")    // Replace slashes with hyphens
+      .replace(/\s+/g, "-");  // Replace spaces with hyphens
+    
+    // Convert the category to slug format for comparison
+    const partCategorySlug = partCategory
+      .replace(/\//g, "-")
+      .replace(/\s+/g, "-");
+    
+    // Now compare slugs directly
+    return partNameSlug === idSlug && partCategorySlug === categorySlug;
+  });
 }

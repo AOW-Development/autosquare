@@ -229,10 +229,10 @@ export default function CookiePolicy() {
            <p className="font-exo2 text-sm md:text-lg leading-relaxed">
                 Email:{" "}
                 <a
-                    href="mailto:partscentralus@gmail.com"
+                    href="mailto:support@partscentral.us"
                     className="underline"
                 >
-                    partscentralus@gmail.com
+                    support@partscentral.us
                 </a>
                 </p>
                 </section>

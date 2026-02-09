@@ -54,7 +54,7 @@ export async function middleware(request: NextRequest) {
     if (pathname !== newPath) {
       console.log(`🔄 301: ${pathname} → ${newPath}`);
       const res = NextResponse.redirect(new URL(newPath, request.url), 301);
-      res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+      res.headers.set("Cache-Control", "public, max-age=31536000, immutable");
       return res;
     }
   }
@@ -73,7 +73,7 @@ export async function middleware(request: NextRequest) {
       );
  
       const res = NextResponse.redirect(newUrl, 301);
-      res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+      res.headers.set("Cache-Control", "public, max-age=31536000, immutable");
       return res;
     }
   }
@@ -92,7 +92,7 @@ export async function middleware(request: NextRequest) {
       );
  
       const res = NextResponse.redirect(newUrl, 301);
-      res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+     res.headers.set("Cache-Control", "public, max-age=31536000, immutable");
       return res;
     }
   }
@@ -144,7 +144,7 @@ export async function middleware(request: NextRequest) {
           }`;
  
           const res = NextResponse.redirect(new URL(newUrl, request.url), 301);
-          res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+          res.headers.set("Cache-Control", "public, max-age=31536000, immutable");
           return res;
         }
       } catch (error) {

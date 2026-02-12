@@ -410,7 +410,7 @@ const visibleProducts = featuredProducts.slice(currentIndex, currentIndex + prod
                         className="relative z-10 rounded-md object-contain"
                         priority
                       />
-                      <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p>
+                      {/* <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Stock image</p> */}
                     </div>
 
                     <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-black to-transparent z-10 rounded-b-lg pointer-events-none"></div>

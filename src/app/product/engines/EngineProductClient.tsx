@@ -9,6 +9,28 @@ import { useCartStore } from "@/store/cartStore";
 import PartRequestPopup from "@/components/partRequestPopup";
 import { useRouter } from "next/navigation";
 import { VerifyPartPopup } from "@/components/fitment";
+
+// ✅ HELPER: Get the correct display price
+const getDisplayPrice = (product: any): { price: number; showDiscount: boolean; originalPrice: number | null } => {
+  const actualPrice = product?.actualprice || 0;
+  const discountedPrice = product?.discountedPrice || 0;
+  
+  // If discounted price exists AND is less than actual price, show discount
+  if (discountedPrice > 0 && discountedPrice < actualPrice) {
+    return {
+      price: discountedPrice,
+      showDiscount: true,
+      originalPrice: actualPrice
+    };
+  }
+  
+  // Otherwise, just show actual price
+  return {
+    price: actualPrice,
+    showDiscount: false,
+    originalPrice: null
+  };
+};
  
 interface SubPart {
   id: number;
@@ -311,6 +333,9 @@ export default function EngineProductClient({
     const addItem = useCartStore.getState().addItem;
  
     clear();
+
+    // ✅ Use correct price
+    const { price } = getDisplayPrice(selectedProduct);
  
     addItem({
       id: selectedProduct.sku,
@@ -333,8 +358,7 @@ export default function EngineProductClient({
           : selectedProduct.part === "Engine"
             ? "/catalog/Engine 1.png"
             : "/catalog/Trasmission_.png",
-      price:
-        selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0,
+      price: price,
       quantity,
     });
  
@@ -413,9 +437,7 @@ export default function EngineProductClient({
     },
   ];
  
-  // FIXED: Correct out of stock logic
-  // The issue was that `isTrulyOutOfStock` was incorrectly checking `miles === 'n-a'`
-  // This should be based on the product's actual stock status, not the URL parameter
+  // ✅ FIXED: Correct out of stock logic
   const isOutOfStock = useMemo(() => {
     if (!selectedProduct) return true;
     return !selectedProduct.inStock;
@@ -512,6 +534,9 @@ export default function EngineProductClient({
   // Track product view in dataLayer
   useEffect(() => {
     if (!selectedProduct) return;
+
+    // ✅ Use correct price
+    const { price } = getDisplayPrice(selectedProduct);
  
     const dataLayer = (window as any).dataLayer || [];
     dataLayer.push({
@@ -526,10 +551,7 @@ export default function EngineProductClient({
                 selectedProduct.year || ""
               } ${selectedProduct.part || ""}`.trim(),
             item_url: window.location.href,
-            price:
-              selectedProduct.discountedPrice ??
-              selectedProduct.actualprice ??
-              0,
+            price: price,
             item_category: selectedProduct.part || "",
             item_category2:
               groupedVariants.find((g) => g.subPart.id === selectedSubPartId)
@@ -562,7 +584,8 @@ export default function EngineProductClient({
  
   // Handle add to cart and redirect
   const handleAddToCartAndRedirect = (product: any, quantity = 1) => {
-    const price = product.discountedPrice ?? product.actualprice ?? 0;
+    // ✅ Use correct price
+    const { price } = getDisplayPrice(product);
  
     addItem({
       id: product.sku,
@@ -577,7 +600,7 @@ export default function EngineProductClient({
           : product.part === "Engine"
             ? "/catalog/Engine 1.png"
             : "/catalog/Trasmission_.png",
-      price,
+      price: price,
       quantity,
     });
  
@@ -593,6 +616,11 @@ export default function EngineProductClient({
  
   // Show loading if no selected product and still loading
   const shouldShowLoading = !selectedProduct && isLoading;
+
+  // ✅ Get pricing for display
+  const productPricing = useMemo(() => {
+    return getDisplayPrice(selectedProduct);
+  }, [selectedProduct]);
  
   return (
     <>
@@ -622,9 +650,7 @@ export default function EngineProductClient({
       {showCartPopup && selectedProduct && (
         <AddedCartPopup
           title={`${selectedProduct.sku || ""}`}
-          price={
-            selectedProduct.discountedPrice ?? selectedProduct.actualprice ?? 0
-          }
+          price={productPricing.price}
           image={
             selectedProduct.product?.images &&
             selectedProduct.product.images.length > 0
@@ -913,7 +939,7 @@ export default function EngineProductClient({
                   </div>
                 </div>
  
-                {/* FIXED: Simplified condition - only show Part Request if product is actually out of stock */}
+                {/* ✅ FIXED: Simplified condition - only show Part Request if product is actually out of stock */}
                 {isOutOfStock ? (
   <>
     <div className="flex flex-col sm:flex-row gap-3 w-full">
@@ -957,21 +983,13 @@ export default function EngineProductClient({
                   <>
                     <div className="flex items-end gap-4 mb-4">
                       <span className="product-price text-2xl sm:text-3xl md:text-4xl font-bold">
-                        $
-                        {selectedProduct?.discountedPrice
-                          ? `${selectedProduct.discountedPrice}`
-                          : selectedProduct?.actualprice
-                            ? `${selectedProduct.actualprice}`
-                            : "0"}
+                        ${productPricing.price}
                       </span>
-                      {selectedProduct?.actualprice &&
-                        selectedProduct.discountedPrice &&
-                        selectedProduct.actualprice !==
-                          selectedProduct.discountedPrice && (
-                          <span className="text-lg sm:text-xl md:text-2xl text-gray-400 line-through">
-                            ${selectedProduct.actualprice}
-                          </span>
-                        )}
+                      {productPricing.showDiscount && productPricing.originalPrice && (
+                        <span className="text-lg sm:text-xl md:text-2xl text-gray-400 line-through">
+                          ${productPricing.originalPrice}
+                        </span>
+                      )}
                     </div>
                     <div className="flex flex-col sm:flex-row gap-3 w-full">
 
@@ -1103,4 +1121,3 @@ export default function EngineProductClient({
     </>
   );
 }
- 

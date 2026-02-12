@@ -662,113 +662,80 @@ export default async function EngineProductPage({
       }
     }
  
-    if (selectedVariant) {
-      const decodedModel = decodeURIComponent(model);
-      const productName = `${year} ${make.toUpperCase()} ${decodedModel.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
-      // Decode URL-encoded characters in the item parameter for clean URLs
-      const decodedItem = decodeURIComponent(routeParams.item);
-      const productUrl = `https://partscentral.us/product/${decodedItem}`;
-      const imageUrl = selectedVariant.product?.images?.[0]
-        ? `https://partscentral.us${selectedVariant.product.images[0]}`
-        : part.toLowerCase() === "engine"
-          ? "https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
-          : "https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png";
- 
-      const rawPrice =
-  selectedVariant.discountedPrice || selectedVariant.actualprice;
- 
-const hasValidOffer =
-  selectedVariant.inStock &&
-  rawPrice &&
-  rawPrice > 0;
- 
-      // Clean SKU for schema
-      const cleanSku =
-        selectedVariant.sku?.replace(/[\/\s]/g, "-") ||
-        `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || ""}`.replace(
-          /[\/\s,()]/g,
-          "-",
-        );
- 
-      const description = `This ${make.charAt(0).toUpperCase() + make.slice(1)} ${model} ${part.charAt(0).toUpperCase() + part.slice(1)} is from ${year} models. Each ${part.charAt(0).toUpperCase() + part.slice(1)} is tested and ready to install and offers improved performance. This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
- 
-      if (hasValidOffer) {
- 
-  jsonLdSchema = {
- 
-    "@context": "https://schema.org",
- 
-    "@type": "Product",
- 
-    name: productName,
- 
-    image: imageUrl,
- 
-    description,
- 
-    sku: cleanSku,
- 
-    brand: {
- 
-      "@type": "Brand",
- 
-      name: make.charAt(0).toUpperCase() + make.slice(1),
- 
-    },
- 
-    offers: {
- 
-      "@type": "Offer",
- 
-      url: productUrl,
- 
-      priceCurrency: "USD",
- 
-      price: rawPrice.toFixed(2),
- 
-      itemCondition: "https://schema.org/UsedCondition",
- 
-      availability: "https://schema.org/InStock",
- 
-    },
- 
-  };
- 
+  if (selectedVariant) {
+  const decodedModel = decodeURIComponent(model);
+  const productName = `${year} ${make.toUpperCase()} ${decodedModel.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
+  
+  const decodedItem = decodeURIComponent(routeParams.item);
+  const productUrl = `https://partscentral.us/product/${decodedItem}`;
+  const imageUrl = selectedVariant.product?.images?.[0]
+    ? `https://partscentral.us${selectedVariant.product.images[0]}`
+    : part.toLowerCase() === "engine"
+      ? "https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png"
+      : "https://s3.us-east-1.amazonaws.com/partscentral.us/Trasmission_.png";
+
+  // ✅ FIXED: Validate price before using in schema
+  const actualPrice = selectedVariant.actualprice || 0;
+  const discountedPrice = selectedVariant.discountedPrice || 0;
+  
+  const rawPrice = 
+    (discountedPrice > 0 && discountedPrice < actualPrice) 
+      ? discountedPrice 
+      : actualPrice;
+
+  const hasValidOffer =
+    selectedVariant.inStock &&
+    rawPrice &&
+    rawPrice > 0;
+
+  // Clean SKU for schema
+  const cleanSku =
+    selectedVariant.sku?.replace(/[\/\s]/g, "-") ||
+    `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || ""}`.replace(
+      /[\/\s,()]/g,
+      "-",
+    );
+
+  const description = `This ${make.charAt(0).toUpperCase() + make.slice(1)} ${model} ${part.charAt(0).toUpperCase() + part.slice(1)} is from ${year} models. Each ${part.charAt(0).toUpperCase() + part.slice(1)} is tested and ready to install and offers improved performance. This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
+
+  if (hasValidOffer) {
+    jsonLdSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: productName,
+      image: imageUrl,
+      description,
+      sku: cleanSku,
+      brand: {
+        "@type": "Brand",
+        name: make.charAt(0).toUpperCase() + make.slice(1),
+      },
+      offers: {
+        "@type": "Offer",
+        url: productUrl,
+        priceCurrency: "USD",
+        price: rawPrice.toFixed(2),  // ✅ Now uses validated price
+        itemCondition: "https://schema.org/UsedCondition",
+        availability: "https://schema.org/InStock",
+      },
+    };
+  } else {
+    jsonLdSchema = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: productName,
+      image: imageUrl,
+      description,
+      sku: cleanSku,
+      brand: {
+        "@type": "Brand",
+        name: make.charAt(0).toUpperCase() + make.slice(1),
+      },
+    };
+  }
+
+  console.log("✅ Generated JSON-LD schema for:", productName);
 }
- 
- 
-else {
- 
-  jsonLdSchema = {
- 
-    "@context": "https://schema.org",
- 
-    "@type": "Product",
- 
-    name: productName,
- 
-    image: imageUrl,
- 
-    description,
- 
-    sku: cleanSku,
- 
-    brand: {
- 
-      "@type": "Brand",
- 
-      name: make.charAt(0).toUpperCase() + make.slice(1),
- 
-    },
- 
-  };
- 
-}
- 
- 
- 
-      console.log("✅ Generated JSON-LD schema for:", productName);
-    }
   }
  
   // Pass server-fetched data to client component

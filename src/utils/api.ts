@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL , // || 'http://localhost:3001/api'
+  baseURL: process.env.NEXT_PUBLIC_API_URL, //|| 'http://localhost:3001/api',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -49,3 +49,33 @@ export const orders = {
 };
 
 export default api;
+
+export const leads = {
+
+  fetchById: async (referenceNo: string | number) => {
+
+    try {
+
+      const response = await api.get(`/leads/manual`);
+
+      const lead = response.data.data.find(
+        (item: any) => item.lead_id === referenceNo
+      );
+
+      if (!lead) {
+        throw new Error("Reference number not found");
+      }
+
+      return lead;
+
+    } catch (error) {
+
+      console.error("Error fetching lead:", error);
+
+      throw error;
+
+    }
+
+  }
+
+};

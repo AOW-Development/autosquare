@@ -664,7 +664,7 @@ export default async function EngineProductPage({
  
   if (selectedVariant) {
   const decodedModel = decodeURIComponent(model);
-  const productName = `${year} ${make.toUpperCase()} ${decodedModel.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || ""}`;
+  const productName = `${year} ${make.toUpperCase()} ${decodedModel.toUpperCase()} Used ${part.charAt(0).toUpperCase() + part.slice(1)} ${selectedSubPart?.name || specification || ""} ${selectedVariant.miles || miles || "n-a"}`;
   
   const decodedItem = decodeURIComponent(routeParams.item);
   const productUrl = `https://partscentral.us/product/${decodedItem}`;
@@ -691,7 +691,7 @@ export default async function EngineProductPage({
   // Clean SKU for schema
   const cleanSku =
     selectedVariant.sku?.replace(/[\/\s]/g, "-") ||
-    `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || ""}`.replace(
+    `${make.toUpperCase()}-${model.toUpperCase()}-${year}-${part.toUpperCase()}-${selectedSubPart?.name || specification || ""}-${selectedVariant.miles || miles || "n-a"}`.replace(
       /[\/\s,()]/g,
       "-",
     );
@@ -730,6 +730,7 @@ export default async function EngineProductPage({
       brand: {
         "@type": "Brand",
         name: make.charAt(0).toUpperCase() + make.slice(1),
+        url: productUrl,
       },
     };
   }

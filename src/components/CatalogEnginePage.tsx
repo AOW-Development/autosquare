@@ -313,35 +313,113 @@ export default function CatalogEnginePage({
   }, [make, model, year, part, initialProducts.length]);
  
 // SORTING (no createdAt dependency)
-const filteredProducts = (() => {
-  let result = subPartFilter !== null
-    ? products.filter(
-        (p) => typeof p.subPart?.id === "number" && p.subPart?.id === subPartFilter
-      )
-    : products;
+// const filteredProducts = (() => {
+//   let result = subPartFilter !== null
+//     ? products.filter(
+//         (p) => typeof p.subPart?.id === "number" && p.subPart?.id === subPartFilter
+//       )
+//     : products;
  
-  // Apply sorting
+//   // Apply sorting
+//   switch (currentSort) {
+//     case 'price-low-high':
+//       return [...result].sort((a, b) => {
+//         const priceA = getDisplayPrice(a).price;
+//         const priceB = getDisplayPrice(b).price;
+//         return priceA - priceB;
+//       });
+//     case 'price-high-low':
+//       return [...result].sort((a, b) => {
+//         const priceA = getDisplayPrice(a).price;
+//         const priceB = getDisplayPrice(b).price;
+//         return priceB - priceA;
+//       });
+//     case 'newest':
+//       // Fallback: sort by SKU (newer SKUs have higher numbers)
+//       return [...result].sort((a, b) => b.sku.localeCompare(a.sku));
+//     default: // recommended
+//       return result;
+//   }
+// })();
+
+// SORTING (no createdAt dependency)
+const filteredProducts = (() => {
+  let result =
+    subPartFilter !== null
+      ? products.filter(
+          (p) =>
+            typeof p.subPart?.id === "number" &&
+            p.subPart?.id === subPartFilter
+        )
+      : products;
+
+  // ✅ Deduplicate ONLY when spec + miles both same
+  const deduped = Object.values(
+    result.reduce((acc, item) => {
+      let spec = item.subPart?.name || "";
+      let miles = item.miles || 0;
+
+      let key = spec + "-" + miles;
+
+      // STRICT condition for only this vehicle
+      if (
+        item.make?.toLowerCase() === "gmc" &&
+        item.model?.toLowerCase() === "acadia" &&
+        item.modelYear === "2020" &&
+        spec.includes("2.5L") &&
+        spec.includes("VIN A") &&
+        spec.includes("LCV") &&
+        spec.includes("FWD")
+      ) {
+        // normalize spec formatting only here
+        key = "2020-GMC-ACADIA-2.5L-VIN-A-LCV-FWD-" + miles;
+      }
+
+      if (!acc[key]) {
+        acc[key] = item;
+      } else {
+        // keep lower price
+        const existingPrice = getDisplayPrice(acc[key]).price;
+        const currentPrice = getDisplayPrice(item).price;
+
+        if (currentPrice < existingPrice) {
+          acc[key] = item;
+        }
+      }
+
+      return acc;
+    }, {} as Record<string, Product>)
+  );
+
+  // 🔽 YOUR ORIGINAL SORTING (UNCHANGED)
   switch (currentSort) {
-    case 'price-low-high':
-      return [...result].sort((a, b) => {
+    case "price-low-high":
+      return [...deduped].sort((a, b) => {
         const priceA = getDisplayPrice(a).price;
         const priceB = getDisplayPrice(b).price;
         return priceA - priceB;
       });
-    case 'price-high-low':
-      return [...result].sort((a, b) => {
+
+    case "price-high-low":
+      return [...deduped].sort((a, b) => {
         const priceA = getDisplayPrice(a).price;
         const priceB = getDisplayPrice(b).price;
         return priceB - priceA;
       });
-    case 'newest':
-      // Fallback: sort by SKU (newer SKUs have higher numbers)
-      return [...result].sort((a, b) => b.sku.localeCompare(a.sku));
-    default: // recommended
-      return result;
+
+    case "newest":
+      return [...deduped].sort((a, b) =>
+        b.sku.localeCompare(a.sku)
+      );
+
+    default:
+      return deduped;
   }
 })();
- 
+
+
+
+
  
  
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);

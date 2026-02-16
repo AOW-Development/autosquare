@@ -215,11 +215,11 @@ export default function Footer() {
                     Testimonials
                   </Link>
                 </li>
-                <li>
+                {/* <li>
                   <Link href="/account/payment-details" className="hover:text-white">
                     Make a payment
                   </Link>
-                </li>
+                </li> */}
                 <li>
                   <Link href="/account/faq" className="hover:text-white">
                     FAQ

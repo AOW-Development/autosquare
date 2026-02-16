@@ -30,11 +30,11 @@ function generateProductSlug(product: {
   }
 
   const milesValue = product.miles?.trim();
-  if (milesValue && milesValue !== "null" && milesValue !== "undefined") {
-    parts.push(milesValue);
-  } else {
-    parts.push("n-a");
-  }
+  parts.push(
+    milesValue && milesValue !== "null" && milesValue !== "undefined"
+      ? milesValue
+      : "n-a"
+  );
 
   return parts.join("-");
 }
@@ -65,7 +65,6 @@ export async function GET() {
 
   const parts = ["engine", "transmission"];
   const CURRENCY = "USD";
-
   let sequenceId = 1;
 
   try {
@@ -77,7 +76,7 @@ export async function GET() {
       "Image Link",
       "Availability",
       "Price",
-      "Final Price",
+      "Sale Price",
       "Condition",
       "Brand",
       "Model",
@@ -91,6 +90,7 @@ export async function GET() {
       "Custom Label 1",
       "Custom Label 2",
       "Custom Label 3",
+      "Identifier Exists",
     ];
 
     let csvContent = headers.join(",") + "\n";
@@ -139,8 +139,6 @@ export async function GET() {
               const specification = group.subPart?.name || "";
 
               for (const variant of group.variants || []) {
-
-                // ✅ ONLY IN-STOCK PRODUCTS
                 if (Number(variant.inStock) !== 1) continue;
 
                 const miles =
@@ -159,11 +157,33 @@ export async function GET() {
                 const seqId = sequenceId++;
 
                 const title = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part}`;
-                const description = `This ${make} ${model} ${part} fits ${year} models. Fully tested and ready to install. A reliable used ${part} offering excellent performance.
-                This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
+                const description = ` This ${make} ${model} ${part} is from ${year} models. Each ${part} is tested and ready to install and offers improved performance.
+                   This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
+               
+                const actualPrice = Number(variant.actualprice || 500);
+                const discountedPrice = Number(
+                  variant.discountedPrice || 0
+                );
 
-                const actualPrice = variant.actualprice || 500;
-                const salePrice = variant.discountedPrice || 500;
+                const hasValidDiscount =
+                  discountedPrice > 0 && discountedPrice < actualPrice;
+
+                const effectivePrice = hasValidDiscount
+                  ? discountedPrice
+                  : actualPrice;
+
+                /* ---------- PRICE BUCKET ---------- */
+                let priceBucket = "bl-2000";
+                if (effectivePrice >= 2000 && effectivePrice < 3500) {
+                  priceBucket = "bl-3500";
+                } else if (
+                  effectivePrice >= 3500 &&
+                  effectivePrice < 5000
+                ) {
+                  priceBucket = "bl-5000";
+                } else if (effectivePrice >= 5000) {
+                  priceBucket = "ab-5000";
+                }
 
                 const Make =
                   make.charAt(0).toUpperCase() + make.slice(1).toLowerCase();
@@ -173,24 +193,26 @@ export async function GET() {
                 const Part =
                   part.charAt(0).toUpperCase() + part.slice(1).toLowerCase();
                 const Option =
-                  specification.charAt(0).toUpperCase() +
-                  specification.slice(1).toLowerCase();
-                const Miles = miles == "null" ? "n/a" : miles;
+                  specification
+                    ? specification.charAt(0).toUpperCase() +
+                      specification.slice(1).toLowerCase()
+                    : "";
+                const Miles = miles === "null" ? "n/a" : miles;
 
-                const google_product_category = part === "engine" ? 888 : 913;
+                const google_product_category =
+                  part === "engine" ? 888 : 913;
                 const product_type =
                   part === "engine"
                     ? "Car Parts > Engine Parts"
                     : "Auto Parts > Transmission Parts > Used Transmissions";
-                const custom_label_0 = `${Make}-bl-2000`;
+
+                const custom_label_0 = `${Make}-${priceBucket}`;
                 const custom_label_1 = `${Make}-${Model}`;
                 const custom_label_2 =
                   part === "engine"
                     ? `${Make}-Engine`
                     : `${Make}-Transmission`;
                 const custom_label_3 = `${Make}-xml`;
-
-                const availability = "in stock";
 
                 const imageUrl = variant.product_img?.startsWith("http")
                   ? variant.product_img
@@ -202,9 +224,11 @@ export async function GET() {
                   description,
                   productUrl,
                   imageUrl,
-                  availability,
-                  `${Number(actualPrice).toFixed(2)} ${CURRENCY}`,
-                  `${Number(salePrice).toFixed(2)} ${CURRENCY}`,
+                  "in stock",
+                  `${actualPrice.toFixed(2)} ${CURRENCY}`,
+                  hasValidDiscount
+                    ? `${discountedPrice.toFixed(2)} ${CURRENCY}`
+                    : "",
                   "used",
                   Make,
                   Model,
@@ -218,6 +242,7 @@ export async function GET() {
                   custom_label_1,
                   custom_label_2,
                   custom_label_3,
+                  "false",
                 ];
 
                 csvContent += row.map(escapeCsvField).join(",") + "\n";

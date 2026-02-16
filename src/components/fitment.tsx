@@ -201,7 +201,9 @@ export function VerifyPartPopup({
                 <p className="text-red-500 font-medium text-xs sm:text-sm mb-2">
                   Selected option does not match the vehicle specifications.
                 </p>
-                <a
+                {part === "engine" ? (
+                  <a
+                
                   href={`/catalogue/engine/home?make=${encodeURIComponent(make)}&model=${encodeURIComponent(
                     model
                   )}&year=${encodeURIComponent(year)}&subPartFilter=${encodeURIComponent(
@@ -212,8 +214,19 @@ export function VerifyPartPopup({
                   View Products for {year} {make} {model} used {part} {selectedSubPart ? ` ${selectedSubPart.name}` : ""}
                 
                 </a>
-               </div>
-              )}
+                ) : (
+              
+                <a
+                  href={`/catalogue/transmission/home?make=${encodeURIComponent(make)}&model=${encodeURIComponent(
+                    model
+                  )}&year=${encodeURIComponent(year)}&subPartFilter=${encodeURIComponent( selectedSubPart?.id || "")}`}
+                  className="inline-block mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition-colors text-xs sm:text-sm"
+                >
+                  View Products for {year} {make} {model} used {part} {selectedSubPart ? ` ${selectedSubPart.name}` : ""}
+                </a>  
+                ) }
+                </div>
+              )} 
             </div>
           )}
 

@@ -51,6 +51,28 @@ interface Product {
   partType: string | null;
   product_img?: string;
 }
+
+// ✅ HELPER: Get the correct display price
+const getDisplayPrice = (item: Product): { price: number; showDiscount: boolean; originalPrice: number | null } => {
+  const actualPrice = item.actualprice || 0;
+  const discountedPrice = item.discountedPrice || 0;
+  
+  // If discounted price exists AND is less than actual price, show discount
+  if (discountedPrice > 0 && discountedPrice < actualPrice) {
+    return {
+      price: discountedPrice,
+      showDiscount: true,
+      originalPrice: actualPrice
+    };
+  }
+  
+  // Otherwise, just show actual price
+  return {
+    price: actualPrice,
+    showDiscount: false,
+    originalPrice: null
+  };
+};
  
 interface CatalogEnginePageProps {
   products?: Product[];
@@ -301,13 +323,17 @@ const filteredProducts = (() => {
   // Apply sorting
   switch (currentSort) {
     case 'price-low-high':
-      return [...result].sort((a, b) =>
-        Number(a.discountedPrice || a.actualprice || 0) - Number(b.discountedPrice || b.actualprice || 0)
-      );
+      return [...result].sort((a, b) => {
+        const priceA = getDisplayPrice(a).price;
+        const priceB = getDisplayPrice(b).price;
+        return priceA - priceB;
+      });
     case 'price-high-low':
-      return [...result].sort((a, b) =>
-        Number(b.discountedPrice || b.actualprice || 0) - Number(a.discountedPrice || a.actualprice || 0)
-      );
+      return [...result].sort((a, b) => {
+        const priceA = getDisplayPrice(a).price;
+        const priceB = getDisplayPrice(b).price;
+        return priceB - priceA;
+      });
     case 'newest':
       // Fallback: sort by SKU (newer SKUs have higher numbers)
       return [...result].sort((a, b) => b.sku.localeCompare(a.sku));
@@ -438,6 +464,9 @@ const filteredProducts = (() => {
     product: Product,
     quantity: number = 1
   ) => {
+    // ✅ Use the correct display price
+    const { price } = getDisplayPrice(product);
+    
     addItem({
       id: product.sku,
       name: `${make} ${model} ${year} ${part || "Engine assembly"}`,
@@ -450,7 +479,7 @@ const filteredProducts = (() => {
           ? "/catalog/Engine 1.png"
           : "/catalog/Trasmission_.png"),
       quantity: quantity,
-      price: product.discountedPrice || 0,
+      price: price, // ✅ Use validated price
     });
  
     setShowCartPopup(true);
@@ -652,7 +681,9 @@ const filteredProducts = (() => {
    const productSlug = item.inStock
     ? `${createSlug(item.subPart?.name || "")}-${item.miles || "n-a"}`
     : `${createSlug(item.subPart?.name || "")}-n-a`;
- 
+
+  // ✅ Get correct pricing
+  const { price, showDiscount, originalPrice } = getDisplayPrice(item);
  
   return (
     <div key={`${item.id}-${item.sku}`} className="bg-[#0C2A4D] p-4 rounded-lg shadow-md hover:scale-[1.02] transition-all relative overflow-hidden group">
@@ -675,13 +706,11 @@ const filteredProducts = (() => {
           {(part === "Engine" || part === "engine") && (
             <>
               <Image src="/catalog/Engine 1.png" alt="Engine" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
-              {/* <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Image shown is for reference only. Actual product may vary.</p> */}
             </>
           )}
           {(part === "Transmission" || part === "transmission") && (
             <>
               <Image src="/catalog/Trasmission_.png" alt="Transmission" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
-              {/* <p className="absolute bottom-2 right-2 text-xs text-gray-400 z-20">Image shown is for reference only. Actual product may vary.</p> */}
             </>
           )}
         </div>
@@ -698,8 +727,10 @@ const filteredProducts = (() => {
       <div className="flex justify-between items-center mt-3 relative z-30">
         {item.inStock && productSlug !== 'n-a' ? (
           <>
-            <span className="text-2xl font-bold text-white">${item.discountedPrice}</span>
-            <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">$ {item.actualprice}</span>
+            <span className="text-2xl font-bold text-white">${price}</span>
+            {showDiscount && originalPrice && (
+              <span className="text-lg sm:text-xl md:text-xl text-gray-400 line-through">${originalPrice}</span>
+            )}
             {cartItem ? (
               <button className="bg-sky-600 hover:bg-sky-700 w-10 h-9 text-white text-base py-1 rounded-md transition-colors flex items-center justify-center gap-3" style={{ minWidth: 120 }} tabIndex={0} onClick={(e) => e.preventDefault()}>
                 <span className="cursor-pointer select-none text-3xl px-1" onClick={(e) => {
@@ -750,7 +781,7 @@ const filteredProducts = (() => {
                     part || "Engine assembly"
                   }`}
                   subtitle={selectedProductForVerify.sku}
-                  price={selectedProductForVerify.actualprice || 0}
+                  price={getDisplayPrice(selectedProductForVerify).price}
                   image={
                     part === "Engine"
                       ? "/catalog/Engine 1.png"
@@ -775,13 +806,13 @@ const filteredProducts = (() => {
     setIsPopupOpen(false);
     setSelectedProductForVerify(null);
   }}
-  make={make}           // ✅ Uses CATALOG make "Toyota"
-  model={model}         // ✅ Uses CATALOG model "Camry"
-  year={year}           // ✅ Uses CATALOG year "2018"
-  part={part}           // ✅ Uses CATALOG part "Engine"
+  make={make}
+  model={model}
+  year={year}
+  part={part}
   subPartsList={subPartsList}
   selectedProduct={selectedProductForVerify}
-  subPartFilter={subPartFilter}  // ✅ NEW: Pass current filter
+  subPartFilter={subPartFilter}
   onConfirm={() => {
     if (selectedProductForVerify) {
       handleAddToCartAndRedirect(selectedProductForVerify);

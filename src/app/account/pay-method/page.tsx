@@ -37,6 +37,46 @@ function PayMethodContent() {
   const { shippingInfo, setShippingInfo } = useShippingStore();
   const { user } = useAuthStore();
   const cartItems = useCartStore((s) => s.items);
+  const addItem = useCartStore((s) => s.addItem);
+useEffect(() => {
+
+  if (typeof window === "undefined") return;
+
+  const referenceOrder =
+    sessionStorage.getItem("referenceOrder");
+
+  if (!referenceOrder) return;
+
+  // ✅ IMPORTANT: only restore if cart is empty
+  if (useCartStore.getState().items.length > 0) return;
+
+  try {
+
+    const parsed = JSON.parse(referenceOrder);
+
+    // handle both single item and array
+    if (Array.isArray(parsed)) {
+
+      parsed.forEach(item =>
+        useCartStore.getState().addItem(item)
+      );
+
+    } else {
+
+      useCartStore.getState().addItem(parsed);
+
+    }
+
+    console.log("✅ restored reference order safely");
+
+  } catch (error) {
+
+    console.error("restore failed", error);
+
+  }
+
+}, []);
+
   const [userType, setUserType] = useState("Individual");
   const [sameAsShipping, setSameAsShipping] = useState(false);
   const [buyInOneClick, setBuyInOneClick] = useState(false);

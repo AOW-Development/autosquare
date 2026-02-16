@@ -983,22 +983,30 @@ export default function Header() {
                   >
                     {/* Category List */}
                     <div className="w-1/2 h-full border-r border-gray-700">
-                      {categories.map((cat) => (
-                        <div
-                          key={cat.name}
-                          className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${activeCategory === cat.name ? "bg-gray-800 text-blue-400" : ""
-                            }`}
-                          onMouseEnter={() => setActiveCategory(cat.name)}
-                          tabIndex={0}
-                          role="menuitem"
-                          aria-haspopup={!!cat.sub}
-                          aria-expanded={activeCategory === cat.name}
-                        >
-                          {cat.name}
-                        </div>
-                      ))}
 
-                    </div>
+  {/* NEW MAIN HEADING */}
+  <div className="px-4 py-3 text-lg font-semibold text-white border-b border-gray-700 bg-gray-800 flex items-center justify-center">
+    Used OEM Parts
+  </div>
+
+  {/* Categories */}
+  {categories.map((cat) => (
+    <div
+      key={cat.name}
+      className={`px-4 py-2 cursor-pointer hover:bg-gray-800 ${
+        activeCategory === cat.name ? "bg-gray-800 text-blue-400" : ""
+      }`}
+      onMouseEnter={() => setActiveCategory(cat.name)}
+      tabIndex={0}
+      role="menuitem"
+      aria-haspopup={!!cat.sub}
+      aria-expanded={activeCategory === cat.name}
+    >
+      {cat.name}
+    </div>
+  ))}
+
+</div>
                     {/* Subcategory Panel */}
                     <div className="w-1/2 px-4 pt-1 bg-[#0D3453]">
                       {(() => {

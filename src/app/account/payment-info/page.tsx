@@ -11,49 +11,135 @@ import toast from "react-hot-toast";
 import { leads } from "@/utils/api";
 
 export default function PaymentInfoPage() {
+
   const { isLoggedIn } = useAuthStore();
   const { billingInfo, setBillingInfo } = useBillingStore();
+
   const [isAccepted, setIsAccepted] = useState(false);
   const [showError, setShowError] = useState(false);
+
   const router = useRouter();
   const searchParams = useSearchParams();
+
   const [userType, setUserType] = useState("Individual");
+
   const [lead, setLead] = useState<any>(null);
   const [loading, setLoading] = useState(false);
-  
-  // Get reference from URL
+
   const ref = searchParams.get("ref");
 
-  // Fetch lead data when component mounts
+
+  /**
+   * Fetch lead data
+   */
   useEffect(() => {
+
     const fetchLeadData = async () => {
+
       if (!ref) return;
-      
+
       try {
+
         setLoading(true);
+
         const leadData = await leads.fetchById(ref);
+
         setLead(leadData);
-      } catch (error) {
-        console.error("Error fetching lead data:", error);
-        toast.error("Failed to load order details");
-      } finally {
-        setLoading(false);
+
       }
+      catch (error) {
+
+        console.error("Error fetching lead data:", error);
+
+        toast.error("Failed to load order details");
+
+      }
+      finally {
+
+        setLoading(false);
+
+      }
+
     };
 
     fetchLeadData();
+
   }, [ref]);
 
+
+  /**
+   * FIXED handleContinue (NO UI CHANGE)
+   */
   const handleContinue = () => {
+
     if (!isAccepted) {
+
       setShowError(true);
+
       return;
+
     }
+
+    if (!lead?.data) {
+
+      toast.error("Order data missing");
+
+      return;
+
+    }
+
     setShowError(false);
-    router.push('/account/payMethod');
+
+
+    /**
+     * Save order for payment page
+     * Does NOT affect UI
+     */
+ const referenceOrder = {
+
+  id: lead.lead_id,
+
+  leadId: lead.lead_id,
+
+  referenceNo: lead.lead_id,    
+
+  title: lead.data.part || "Auto Part",
+
+  subtitle:
+    `${lead.data.make || ""} ${lead.data.model || ""} ${lead.data.year || ""}`,
+
+  image:
+    lead.data.part?.toLowerCase() === "transmission"
+      ? "/catalog/Trasmission_.png"
+      : "/catalog/Engine 1.png",
+
+  price:
+    Number(lead.data.selling_price) ||
+    Number(lead.data.price) ||
+    0,
+
+  quantity: 1,
+
+  leadData: lead.data,
+
+};
+
+
+
+    sessionStorage.setItem(
+      "referenceOrder",
+      JSON.stringify(referenceOrder)
+    );
+
+
+    router.push("/account/payMethod");
+
   };
 
-  // Local state for form fields, initialized from billingInfo
+
+  /**
+   * Billing form state
+   */
   const [fields, setFields] = useState(
     billingInfo || {
       firstName: "",
@@ -70,57 +156,108 @@ export default function PaymentInfoPage() {
     }
   );
 
+
   useEffect(() => {
+
     if (billingInfo) {
+
       setFields({
         ...fields,
         ...billingInfo,
       });
+
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    // eslint-disable-next-line
   }, [billingInfo]);
 
-  // Handle field changes
-  const handleChange = (field: string, value: string) => {
+
+  const handleChange = (
+    field: string,
+    value: string
+  ) => {
+
     if (field === "country") {
-      setFields((prev) => ({
+
+      setFields(prev => ({
         ...prev,
         country: value,
-        state: "", // reset state when country changes
+        state: "",
       }));
-    } else {
-      setFields((prev) => ({
+
+    }
+    else {
+
+      setFields(prev => ({
         ...prev,
         [field]: value,
       }));
+
     }
+
   };
 
-  // Save billing info to store
-  const handleSave = (e: React.FormEvent) => {
+
+  const handleSave = (
+    e: React.FormEvent
+  ) => {
+
     e.preventDefault();
+
     setBillingInfo(fields);
-    toast.success("Shipping details saved successfully!");
+
+    toast.success(
+      "Shipping details saved successfully!"
+    );
+
   };
 
-  const [states, setStates] = useState<{ name: string; isoCode: string }[]>([]);
+
+  const [states, setStates] = useState<
+    { name: string; isoCode: string }[]
+  >([]);
+
 
   useEffect(() => {
+
     if (fields.country) {
-      const fetchedStates = State.getStatesOfCountry(fields.country);
+
+      const fetchedStates =
+        State.getStatesOfCountry(fields.country);
+
       setStates(fetchedStates || []);
-    } else {
-      setStates([]);
+
     }
+    else {
+
+      setStates([]);
+
+    }
+
   }, [fields.country]);
 
-  const handleUserTypeChange = (type: 'Individual' | 'Commercial') => {
+
+  const handleUserTypeChange = (
+    type: "Individual" | "Commercial"
+  ) => {
+
     setUserType(type);
-    setFields((prev) => ({ ...prev, customerType: type }));
+
+    setFields(prev => ({
+      ...prev,
+      customerType: type,
+    }));
+
   };
 
-  // Calculate price from lead data
-  const price = lead?.data?.selling_price ?? lead?.data?.price ?? 0;
+
+  /**
+   * Price calculation (fixed safely)
+   */
+  const price =
+    Number(lead?.data?.selling_price) ||
+    Number(lead?.data?.price) ||
+    0;
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">

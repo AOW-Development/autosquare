@@ -58,8 +58,10 @@ export const leads = {
 
       const response = await api.get(`/leads/manual`);
 
-      const lead = response.data.data.find(
-        (item: any) => item.lead_id === referenceNo
+      const leadsArray = response.data?.data || response.data?.leads || [];
+
+      const lead = leadsArray.find(
+        (item: any) => String(item.lead_id).trim() === String(referenceNo).trim()
       );
 
       if (!lead) {

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { redirect, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { leads } from "@/utils/api";
+import { normalizeLeadData } from "@/utils/leadNormalizer";  
 
 export default function PaymentDetailsPage() {
 
@@ -64,41 +65,48 @@ export default function PaymentDetailsPage() {
   }, [params]);
 
 
-  const handleSearch = async (ref?: string) => {
+const handleSearch = async (ref?: string) => {
+  try {
+    setLoading(true);
 
-    try {
+    const searchRef = ref || referenceNo;
+    if (!searchRef) return;
 
-      setLoading(true);
+    const rawLead = await leads.fetchById(searchRef);
 
-      const searchRef = ref || referenceNo;
+    console.log("RAW LEAD RECEIVED:", rawLead);
 
-      if (!searchRef) return;
+    /**
+     * Normalize Meta OR Manual lead automatically
+     */
+    const normalizedData = normalizeLeadData(
+      rawLead?.data || rawLead
+    );
 
-      const leadData = await leads.fetchById(searchRef);
+    const finalLead = {
+      ...rawLead,
+      data: normalizedData,
+      lead_id:
+        normalizedData.lead_id ||
+        rawLead?.lead_id ||
+        rawLead?.id ||
+        "",
+    };
 
-      console.log("LEAD RECEIVED:", leadData);
+    console.log("NORMALIZED LEAD:", finalLead);
 
-      setLead(leadData);
+    setLead(finalLead);
 
-      setShow(false);
+    setShow(false);
+    setPayment(true);
+  } catch (error) {
+    console.error(error);
+    alert("Reference number not found");
+  } finally {
+    setLoading(false);
+  }
+};
 
-      setPayment(true);
-
-    }
-    catch (error) {
-
-      console.error(error);
-
-      alert("Reference number not found");
-
-    }
-    finally {
-
-      setLoading(false);
-
-    }
-
-  };
 
 
   return (

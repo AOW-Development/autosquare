@@ -27,6 +27,8 @@ export default function PaymentInfoPage() {
   const [loading, setLoading] = useState(false);
 
   const ref = searchParams.get("ref");
+  const urlPrice = searchParams.get("price");
+const urlMiles = searchParams.get("miles");
 
 
   /**
@@ -95,13 +97,13 @@ export default function PaymentInfoPage() {
      * Save order for payment page
      * Does NOT affect UI
      */
- const referenceOrder = {
+const referenceOrder = {
 
   id: lead.lead_id,
 
   leadId: lead.lead_id,
 
-  referenceNo: lead.lead_id,    
+  referenceNo: lead.lead_id,
 
   title: lead.data.part || "Auto Part",
 
@@ -113,10 +115,8 @@ export default function PaymentInfoPage() {
       ? "/catalog/Trasmission_.png"
       : "/catalog/Engine 1.png",
 
-  price:
-    Number(lead.data.selling_price) ||
-    Number(lead.data.price) ||
-    0,
+  price: price,                   
+  miles: urlMiles || lead.data.miles_promised || "-",   
 
   quantity: 1,
 
@@ -126,13 +126,16 @@ export default function PaymentInfoPage() {
 
 
 
+
     sessionStorage.setItem(
       "referenceOrder",
       JSON.stringify(referenceOrder)
     );
 
 
-    router.push("/account/payMethod");
+   router.push(
+  `/account/payMethod?ref=${lead.lead_id}&price=${price}&miles=${urlMiles || lead.data.miles_promised || ""}`
+);
 
   };
 
@@ -254,10 +257,12 @@ export default function PaymentInfoPage() {
   /**
    * Price calculation (fixed safely)
    */
-  const price =
-    Number(lead?.data?.selling_price) ||
-    Number(lead?.data?.price) ||
-    0;
+ const price =
+  urlPrice !== null
+    ? Number(urlPrice)
+    : Number(lead?.data?.selling_price) ||
+      Number(lead?.data?.price) ||
+      0;
 
   return (
     <div className="min-h-screen bg-[#091B33] text-[#ffffff]">
@@ -483,9 +488,11 @@ export default function PaymentInfoPage() {
                         {lead.data.warranty && (
                           <div className="text-xs text-white/70">Warranty: {lead.data.warranty}</div>
                         )}
-                        {lead.data.miles_promised && (
-                          <div className="text-xs text-white/70">Miles: {lead.data.miles_promised}</div>
-                        )}
+                        {(urlMiles || lead.data.miles_promised) && (
+  <div className="text-xs text-white/70">
+    Miles: {urlMiles || lead.data.miles_promised}
+  </div>
+)}
                         <div className="text-xs text-white/70">1 pc.</div>
                       </div>
                       <div className="font-bold text-sm mt-1">${price}</div>

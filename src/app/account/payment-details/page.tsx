@@ -33,12 +33,13 @@ export default function PaymentDetailsPage() {
    * FIXED TOTAL PRICE
    * Handles empty string, null, undefined properly
    */
-  const price =
-  urlPrice && urlPrice !== ""
-    ? Number(urlPrice)   // use quotation price FIRST
-    : lead?.data?.selling_price && lead.data.selling_price !== ""
-    ? Number(lead.data.selling_price)   // fallback
-    : 0;
+const price =
+  urlPrice !== null
+    ? Number(urlPrice)
+    : Number(lead?.data?.selling_price) || 0;
+
+    const miles =
+  urlMiles || lead?.data?.miles_promised || "";
 
   /**
    * Detect part type
@@ -126,7 +127,7 @@ export default function PaymentDetailsPage() {
                 </div>
 
                 <Link
-                  href={`/account/paymentInfo?ref=${lead.lead_id}`}
+                  href={`/account/paymentInfo?ref=${lead.lead_id}&price=${price}&miles=${miles}`}
                   className="bg-blue-600 hover:bg-blue-700 px-8 py-2 rounded-lg font-semibold"
                 >
                   Pay

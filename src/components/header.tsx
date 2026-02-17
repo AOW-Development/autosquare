@@ -426,6 +426,7 @@ const navLinks = [
       { label: "FAQ", href: "/account/faq" },
       { label: "Track my order", href: "/account/track-order" },
       { label: "Submit a ticket", href: "/account/submit-ticket" },
+      { label: "Make a payment", href: "/account/payment-details" },
       
     ],
   },

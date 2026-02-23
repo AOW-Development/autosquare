@@ -60,7 +60,9 @@ function getDefaultImage(part: string) {
 
 /* ---------------- FEED ---------------- */
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const makeParam = searchParams.get("make");
   const API_BASE =
     process.env.NEXT_PUBLIC_API_URL || "https://partscentral.us/api";
 
@@ -82,7 +84,7 @@ export async function GET() {
           )
         );
 
-        for (const make of MAKES) {
+        for (const make of (makeParam ? [makeParam] : MAKES)) {
           const makeKey = Object.keys(MODELS).find(
             (m) => m.toLowerCase() === make.toLowerCase()
           );

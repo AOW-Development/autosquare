@@ -783,7 +783,7 @@ const filteredProducts = (() => {
         }}>
           {(part === "Engine" || part === "engine") && (
             <>
-              <Image src="/catalog/Engine 1.png" alt="Engine" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
+              <Image src="https://s3.us-east-1.amazonaws.com/partscentral.us/public/engine-1.png" alt="Engine" width={250} height={160} className="relative z-10 rounded-md object-contain" priority />
             </>
           )}
           {(part === "Transmission" || part === "transmission") && (

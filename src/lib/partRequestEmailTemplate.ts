@@ -1,7 +1,7 @@
 import type { PartRequestFormData } from "./partRequestMail";
 
 export const generatePartRequestEmailHTML = (data: PartRequestFormData): string => {
-  const { make, model, year, fullName, email, phone, zip } = data;
+  const {  make, model, year, specification, fullName, email, phone, zip } = data;
 
   return `<!DOCTYPE html>
     <html>
@@ -24,6 +24,7 @@ export const generatePartRequestEmailHTML = (data: PartRequestFormData): string 
             <p style="margin: 0 0 4px 0; color: #1f2937;">Make: <strong>${escapeHtml(make)}</strong></p>
             <p style="margin: 0 0 4px 0; color: #1f2937;">Model: <strong>${escapeHtml(model)}</strong></p>
             <p style="margin: 0 0 16px 0; color: #1f2937;">Year: <strong>${escapeHtml(year)}</strong></p>
+            <p style="margin: 0 0 16px 0; color: #1f2937;">Specification: <strong>${escapeHtml(specification)}</strong></p>
             
             <p style="margin: 0 0 12px 0; color: #6b7280;"><strong>Customer Information:</strong></p>
             <p style="margin: 0 0 4px 0; color: #1f2937;">Name: <strong>${escapeHtml(fullName)}</strong></p>

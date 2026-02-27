@@ -6,6 +6,7 @@ export interface PartRequestFormData {
   model: string;
   year: string;
   fullName: string;
+  specification: string;
   email: string;
   phone: string;
   zip: string;
@@ -82,8 +83,26 @@ export const sendPartRequestConfirmationEmail = async (
           
           <div style="margin: 24px 0; padding: 16px; background: #f3f4f6; border-left: 4px solid #00a3ff; border-radius: 4px;">
             <p style="margin: 0 0 8px 0; color: #6b7280;"><strong>Your Request Details:</strong></p>
-            <p style="margin: 0 0 4px 0; color: #1f2937;">Vehicle: <strong>${escapeHtml(data.year)} ${escapeHtml(data.make)} ${escapeHtml(data.model)}</strong></p>
-            <p style="margin: 0; color: #1f2937;">ZIP Code: <strong>${escapeHtml(data.zip)}</strong></p>
+
+<p style="margin: 0 0 4px 0; color: #1f2937;">
+Make: <strong>${escapeHtml(data.make)}</strong>
+</p>
+
+<p style="margin: 0 0 4px 0; color: #1f2937;">
+Model: <strong>${escapeHtml(data.model)}</strong>
+</p>
+
+<p style="margin: 0 0 4px 0; color: #1f2937;">
+Year: <strong>${escapeHtml(data.year)}</strong>
+</p>
+
+<p style="margin: 0 0 4px 0; color: #1f2937;">
+Specification: <strong>${escapeHtml(data.specification)}</strong>
+</p>
+
+<p style="margin: 0; color: #1f2937;">
+ZIP Code: <strong>${escapeHtml(data.zip)}</strong>
+</p>
           </div>
           
           <p style="color: #1f2937; line-height: 1.6;">Our sales team typically responds to quote requests within <strong>24-48 business hours</strong> during our working hours:</p>
@@ -133,6 +152,7 @@ export const sendPartRequestConfirmationEmail = async (
 };
 
 function escapeHtml(unsafe: string): string {
+   if (!unsafe) return "";
   return unsafe
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")

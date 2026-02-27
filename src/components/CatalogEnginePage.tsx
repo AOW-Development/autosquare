@@ -765,9 +765,13 @@ const filteredProducts = (() => {
             )}
           </>
         ) : (
-          <button onClick={() => setShowPopup(true)} className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center md:w-full w-full block mb-6">
-            Part Request
-          </button>
+          <button onClick={(e) => {
+  e.stopPropagation();
+  setSelectedProductForVerify(item);   
+  setShowPopup(true);
+}} className="bg-sky-500 hover:bg-yellow-600 text-white text-sm px-4 py-2 rounded-md transition-colors text-center md:w-full w-full block mb-6">
+  Part Request
+</button> 
         )}
       </div>
     </div>
@@ -797,6 +801,7 @@ const filteredProducts = (() => {
             defaultMake={make || ""}
             defaultModel={model || ""}
             defaultYear={year || ""}
+            defaultEngine={selectedProductForVerify?.subPart?.name || ""}
             />
             }
  

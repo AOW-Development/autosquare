@@ -6,7 +6,7 @@ import {
 
 export async function POST(req: NextRequest) {
   try {
-    const { make, model, year, fullName, email, phone, zip } =
+    const { make, model, year, specification, fullName, email, phone, zip } =
       await req.json();
 
     // Validate required fields
@@ -31,6 +31,7 @@ export async function POST(req: NextRequest) {
       make,
       model,
       year,
+      specification,
       fullName,
       email,
       phone,
@@ -43,6 +44,7 @@ export async function POST(req: NextRequest) {
       make,
       model,
       year,
+      specification,
       fullName,
       email,
       phone,

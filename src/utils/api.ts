@@ -58,11 +58,21 @@ export const leads = {
 
       const response = await api.get(`/leads/manual`);
 
-      const leadsArray = response.data?.data || response.data?.leads || [];
+      const leadsArray =
+        response.data?.data ||
+        response.data?.leads ||
+        [];
 
-      const lead = leadsArray.find(
-        (item: any) => String(item.lead_id).trim() === String(referenceNo).trim()
-      );
+      const searchValue = String(referenceNo).trim();
+
+      const lead = leadsArray.find((item: any) => {
+
+        return (
+          String(item.lead_id).trim() === searchValue || // UUID
+          String(item.id).trim() === searchValue         // Numeric ID
+        );
+
+      });
 
       if (!lead) {
         throw new Error("Reference number not found");
@@ -73,7 +83,6 @@ export const leads = {
     } catch (error) {
 
       console.error("Error fetching lead:", error);
-
       throw error;
 
     }

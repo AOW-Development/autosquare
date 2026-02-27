@@ -46,48 +46,60 @@ const price =
    */
   const partType = lead?.data?.part?.toLowerCase() || "";
 
-  useEffect(() => {
-    const ref = params.get("ref") || lead?.lead_id;
-    if (ref) {
-      setReferenceNo(ref);
-      handleSearch(ref);
-    }
-  }, [params]);
+ useEffect(() => {
+  const uuid = params.get("ref"); // UUID (fetch)
+  const reference = params.get("reference"); // Numeric ID (display)
 
-  const handleSearch = async (ref?: string) => {
-    try {
-      setLoading(true);
+  if (uuid) {
+    handleSearch(uuid);
+  }
 
-      const searchRef = ref || referenceNo;
-      if (!searchRef) return;
+  if (reference) {
+    setReferenceNo(reference);
+  }
+}, [params]);
 
-      const rawLead = await leads.fetchById(searchRef);
+const handleSearch = async (ref?: string) => {
+  try {
 
-      console.log("RAW LEAD RECEIVED:", rawLead);
+    setLoading(true);
 
-      /**
-       * Normalize Meta OR Manual lead automatically
-       */
-      const normalizedData = normalizeLeadData(rawLead?.data || rawLead);
+    const searchRef = ref || referenceNo;
+    if (!searchRef) return;
 
-      const finalLead = {
-        ...rawLead,
-        data: normalizedData,
-        lead_id: normalizedData.lead_id || rawLead?.lead_id || rawLead?.id || "",
-      };
+    const rawLead = await leads.fetchById(searchRef);
 
-      console.log("NORMALIZED LEAD:", finalLead);
+    const normalizedData =
+      normalizeLeadData(rawLead?.data || rawLead);
 
-      setLead(finalLead);
-      setShow(false);
-      setPayment(true);
-    } catch (error) {
-      console.error(error);
-      alert("Reference number not found");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const finalLead = {
+      ...rawLead,
+      data: normalizedData,
+      lead_id:
+        normalizedData.lead_id ||
+        rawLead?.lead_id ||
+        "",
+    };
+
+    setLead(finalLead);
+
+    // Always display numeric ID
+    setReferenceNo(String(rawLead.id));
+
+    setShow(false);
+    setPayment(true);
+
+  } catch (error) {
+
+    console.error(error);
+    alert("Reference number not found");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+};
 
   return (
     <>
@@ -119,7 +131,7 @@ const price =
                 <div>
                   <div className="text-sm">
                     Order number:
-                    <span className="font-bold"> #{lead.lead_id}</span>
+                    <span className="font-bold"> #{referenceNo}</span>
                   </div>
                   <div className="text-sm text-white/70">
                     Date: {new Date(lead.created_at).toLocaleDateString()}
@@ -127,7 +139,7 @@ const price =
                 </div>
 
                 <Link
-                  href={`/account/paymentInfo?ref=${lead.lead_id}&price=${price}&miles=${miles}`}
+                  href={`/account/paymentInfo?ref=${lead.lead_id}&reference=${referenceNo}&price=${price}&miles=${miles}`}
                   className="bg-blue-600 hover:bg-blue-700 px-8 py-2 rounded-lg font-semibold"
                 >
                   Pay

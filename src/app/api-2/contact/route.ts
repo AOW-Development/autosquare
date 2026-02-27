@@ -6,20 +6,31 @@ import {
 
 export async function POST(req: NextRequest) {
   if (req.method !== "POST") {
-    return NextResponse.json(
-      { message: "Method not allowed" },
-      { status: 405 }
-    );
+    return NextResponse.json({ message: "Method not allowed" }, { status: 405 });
   }
 
   try {
     const body = await req.json();
-    const { name, email, message } = body;
+    const { name, email, message, captchaToken } = body;
 
     // Validate required fields
-    if (!name || !email || !message) {
+    if (!name || !email || !message || !captchaToken) {
       return NextResponse.json(
-        { message: "Missing required fields: name, email, message" },
+        { message: "Missing required fields" },
+        { status: 400 }
+      );
+    }
+
+    // Verify reCAPTCHA
+    const captchaRes = await fetch(
+      `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${captchaToken}`,
+      { method: "POST" }
+    );
+    const captchaData = await captchaRes.json();
+
+    if (!captchaData.success) {
+      return NextResponse.json(
+        { message: "CAPTCHA verification failed. Please try again." },
         { status: 400 }
       );
     }
@@ -32,10 +43,7 @@ export async function POST(req: NextRequest) {
     // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(cleanEmail)) {
-      return NextResponse.json(
-        { message: "Invalid email format" },
-        { status: 400 }
-      );
+      return NextResponse.json({ message: "Invalid email format" }, { status: 400 });
     }
 
     // Validate message length
@@ -53,36 +61,29 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Clean data to send
-    const contactData = {
-      name: cleanName,
-      email: cleanEmail,
-      message: cleanMessage
-    };
+    const contactData = { name: cleanName, email: cleanEmail, message: cleanMessage };
 
     // Send email to admin
     const adminEmailSent = await sendContactFormEmail(contactData);
 
     if (!adminEmailSent) {
       return NextResponse.json(
-        { message: "Failed to send email to admin. Please try again later." },
+        { message: "Failed to send email. Please try again later." },
         { status: 500 }
       );
     }
 
-    // Send confirmation email to customer
+    // Send confirmation to customer (non-critical)
     try {
       await sendContactConfirmationEmail(contactData);
     } catch (confirmationError) {
       console.error("Failed to send confirmation email:", confirmationError);
-      // Don't fail the entire request if confirmation email fails
-      // The admin email has been sent, which is the critical part
     }
 
     return NextResponse.json(
-      { 
+      {
         message: "Message sent successfully!",
-        note: "You will receive a confirmation email shortly. We typically respond within 24-48 business hours."
+        note: "You will receive a confirmation email shortly. We typically respond within 24-48 business hours.",
       },
       { status: 200 }
     );

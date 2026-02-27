@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ThankYouPopupPartRequestform from "../components/ThankYouPopupPartRequestform";
 
 interface PartRequestPopupProps {
@@ -8,6 +8,7 @@ interface PartRequestPopupProps {
   defaultMake?: string;
   defaultModel?: string;
   defaultYear?: string;
+  defaultEngine?: string; // Engine size like 2.3L, 3.5L etc.
 }
 
 export default function PartRequestPopup({
@@ -15,12 +16,14 @@ export default function PartRequestPopup({
   defaultMake = "",
   defaultModel = "",
   defaultYear = "",
+  defaultEngine = "",
 }: PartRequestPopupProps) {
   const [showThankYou, setShowThankYou] = useState(false);
 
   const [make, setMake] = useState(defaultMake);
   const [model, setModel] = useState(defaultModel);
   const [year, setYear] = useState(defaultYear);
+  const [specification, setSpecification] = useState("");
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -29,6 +32,18 @@ export default function PartRequestPopup({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [apiError, setApiError] = useState("");
+
+  // Auto-generate specification
+  useEffect(() => {
+    if (make && model && year) {
+      const baseSpec = `${year} ${make} ${model}`;
+      setSpecification(
+        defaultEngine ? `${baseSpec} – ${defaultEngine}` : baseSpec
+      );
+    } else {
+      setSpecification("");
+    }
+  }, [make, model, year, defaultEngine]);
 
   if (showThankYou) {
     return (
@@ -64,6 +79,7 @@ export default function PartRequestPopup({
           make,
           model,
           year,
+          specification,
           fullName,
           email,
           phone,
@@ -89,7 +105,6 @@ export default function PartRequestPopup({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm px-4 sm:px-6 overflow-y-auto">
       <div className="relative bg-[#11213A] rounded-lg shadow-xl p-6 sm:p-8 w-full max-w-lg md:max-w-2xl mx-auto my-6 sm:my-12">
-        {/* Close Button */}
         <button
           className="absolute top-3 md:top-6 right-3 text-gray-400 hover:text-white text-xl"
           onClick={() => setClosePopup(false)}
@@ -98,7 +113,6 @@ export default function PartRequestPopup({
           &times;
         </button>
 
-        {/* Title */}
         <h2 className="text-lg sm:text-xl font-audiowide mb-2 tracking-wide text-white">
           CONTACT INFORMATION
         </h2>
@@ -150,6 +164,19 @@ export default function PartRequestPopup({
             {errors.year && (
               <p className="text-red-500 text-xs sm:text-sm">{errors.year}</p>
             )}
+          </div>
+
+          {/* Specification */}
+          <div>
+            <label className="text-xs sm:text-sm text-gray-300 mb-1 block">
+              Specification
+            </label>
+            <input
+              className="w-full bg-[#1A2B47] text-white rounded px-3 py-2 text-sm sm:text-base focus:outline-none focus:border-blue-400"
+              value={specification}
+              readOnly
+              placeholder="Auto generated from vehicle details"
+            />
           </div>
 
           {/* Full Name */}
@@ -220,14 +247,12 @@ export default function PartRequestPopup({
             )}
           </div>
 
-          {/* API Error */}
           {apiError && (
             <div className="bg-red-500/20 border border-red-500 text-red-300 px-3 py-2 rounded text-xs sm:text-sm">
               {apiError}
             </div>
           )}
 
-          {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 mt-5">
             <button
               type="button"

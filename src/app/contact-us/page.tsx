@@ -1,21 +1,30 @@
 "use client";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useRef } from "react";
+import ReCAPTCHA from "react-google-recaptcha";
 import EmailSubmittedModal from "@/components/EmailSubmittedModal";
 import Link from "next/link";
 
 export default function ContactUsPage() {
+  const recaptchaRef = useRef<ReCAPTCHA>(null);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     message: "",
   });
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    if (!captchaToken) {
+      setError("Please complete the CAPTCHA verification.");
+      return;
+    }
+
     setIsLoading(true);
     setError("");
 
@@ -23,24 +32,26 @@ export default function ContactUsPage() {
       const res = await fetch("/api-2/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, captchaToken }),
       });
 
       const responseData = await res.json();
 
       if (res.ok) {
         setModalOpen(true);
-        setFormData({
-          name: "",
-          email: "",
-          message: "",
-        });
+        setFormData({ name: "", email: "", message: "" });
+        setCaptchaToken(null);
+        recaptchaRef.current?.reset();
       } else {
         setError(responseData.message || "Failed to send email. Please try again.");
+        recaptchaRef.current?.reset();
+        setCaptchaToken(null);
       }
     } catch (error) {
       console.error("Error:", error);
       setError("An error occurred. Please try again.");
+      recaptchaRef.current?.reset();
+      setCaptchaToken(null);
     } finally {
       setIsLoading(false);
     }
@@ -53,7 +64,7 @@ export default function ContactUsPage() {
           src="/about/car-1.png"
           alt="Account Banner"
           fill
-          className="object-cover object-center "
+          className="object-cover object-center"
         />
       </div>
       <div className="bg-[#091B33] text-white flex flex-col md:flex-row gap-0 md:gap-4 py-6 p-4">
@@ -62,22 +73,10 @@ export default function ContactUsPage() {
             {/* Breadcrumb */}
             <div className="w-full max-w-6xl flex items-center gap-2 mb-6 md:mt-8">
               <Link href="/">
-                <Image
-                  src="/Images/HouseLine.png"
-                  alt="Home"
-                  width={20}
-                  height={20}
-                />
+                <Image src="/Images/HouseLine.png" alt="Home" width={20} height={20} />
               </Link>
-              <Image
-                src="/Images/arrows (1).svg"
-                alt=">"
-                width={16}
-                height={16}
-              />
-              <span className="text-white text-base font-medium">
-                Contact us
-              </span>
+              <Image src="/Images/arrows (1).svg" alt=">" width={16} height={16} />
+              <span className="text-white text-base font-medium">Contact us</span>
             </div>
 
             <main className="grid grid-cols-1 md:grid-cols-2 gap-8 pb-0 mb-0">
@@ -100,67 +99,32 @@ export default function ContactUsPage() {
                 {/* Contact Details */}
                 <div className="flex flex-col gap-5 mt-2">
                   <div className="flex items-center gap-4">
-                    <Image
-                      src="/Images/contact_us.png"
-                      alt="Clock"
-                      width={32}
-                      height={32}
-                    />
+                    <Image src="/Images/contact_us.png" alt="Clock" width={32} height={32} />
                     <div className="flex flex-col">
-                      <span className="text-white text-base font-semibold mb-0.5">
-                        Working hours
-                      </span>
-                      <span className="text-gray-200 text-sm">
-                        Mon–Fri: 8AM – 7PM EST
-                      </span>
+                      <span className="text-white text-base font-semibold mb-0.5">Working hours</span>
+                      <span className="text-gray-200 text-sm">Mon–Fri: 8AM – 7PM EST</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Image
-                      src="/Images/contact_us (1).png"
-                      alt="Phone"
-                      width={32}
-                      height={32}
-                    />
+                    <Image src="/Images/contact_us (1).png" alt="Phone" width={32} height={32} />
                     <div className="flex flex-col">
-                      <span className="text-white text-base font-semibold mb-0.5">
-                        Phone
-                      </span>
-                      <span className="text-gray-200 text-sm">
-                        (888) 338-2540
-                      </span>
+                      <span className="text-white text-base font-semibold mb-0.5">Phone</span>
+                      <span className="text-gray-200 text-sm">(888) 338-2540</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Image
-                      src="/Images/contact_us (3).png"
-                      alt="Mail"
-                      width={32}
-                      height={32}
-                    />
+                    <Image src="/Images/contact_us (3).png" alt="Mail" width={32} height={32} />
                     <div className="flex flex-col">
-                      <span className="text-white text-base font-semibold mb-0.5">
-                        Email address
-                      </span>
-                      <a
-                        href="mailto:support@partscentral.us"
-                        className="underline"
-                      >
+                      <span className="text-white text-base font-semibold mb-0.5">Email address</span>
+                      <a href="mailto:support@partscentral.us" className="underline">
                         support@partscentral.us
                       </a>
                     </div>
                   </div>
                   <div className="flex items-center gap-4">
-                    <Image
-                      src="/Images/contact_us (2).png"
-                      alt="Location"
-                      width={32}
-                      height={32}
-                    />
+                    <Image src="/Images/contact_us (2).png" alt="Location" width={32} height={32} />
                     <div className="flex flex-col">
-                      <span className="text-white text-base font-semibold mb-0.5">
-                        Office location
-                      </span>
+                      <span className="text-white text-base font-semibold mb-0.5">Office location</span>
                       <span className="text-gray-200 text-sm">
                         Parts Central LLC <br />
                         76 Imperial Dr Suite E Evanston, WY 82930, USA
@@ -179,12 +143,7 @@ export default function ContactUsPage() {
                       type="text"
                       placeholder="Name"
                       value={formData.name}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          name: e.target.value,
-                        }))
-                      }
+                      onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                       className="w-full bg-[#091627] text-white rounded-lg border border-gray-600 px-4 py-2 focus:outline-none focus:border-blue-400 placeholder-gray-500"
                       required
                     />
@@ -195,12 +154,7 @@ export default function ContactUsPage() {
                       type="email"
                       placeholder="example@gmail.com"
                       value={formData.email}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          email: e.target.value,
-                        }))
-                      }
+                      onChange={(e) => setFormData((prev) => ({ ...prev, email: e.target.value }))}
                       className="w-full bg-[#091627] text-white rounded-lg border border-gray-600 px-4 py-2 focus:outline-none focus:border-blue-400 placeholder-gray-500"
                       required
                     />
@@ -210,18 +164,20 @@ export default function ContactUsPage() {
                     <textarea
                       placeholder="Write your message"
                       value={formData.message}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          message: e.target.value,
-                        }))
-                      }
+                      onChange={(e) => setFormData((prev) => ({ ...prev, message: e.target.value }))}
                       rows={4}
                       className="w-full bg-[#091627] text-white rounded-lg border border-gray-600 px-4 py-2 focus:outline-none focus:border-blue-400 placeholder-gray-500 resize-none"
                       required
                     />
                   </div>
 
+                  {/* reCAPTCHA */}
+                  <ReCAPTCHA
+                   ref={recaptchaRef}
+                    sitekey="6LdHCHcsAAAAADnMXZEW6WN2pj3hqWtvUgXnqAv7"
+                    onChange={(token) => setCaptchaToken(token)}
+                    onExpired={() => setCaptchaToken(null)}
+                    />
                   {error && (
                     <div className="bg-red-500/20 border border-red-500 text-red-300 px-4 py-2 rounded-lg text-sm">
                       {error}
@@ -230,12 +186,13 @@ export default function ContactUsPage() {
 
                   <button
                     type="submit"
-                    disabled={isLoading}
+                    disabled={isLoading || !captchaToken}
                     className="w-full cursor-pointer bg-[#00a3ff] hover:bg-blue-600 disabled:bg-gray-500 disabled:cursor-not-allowed text-white rounded-lg py-2 mt-4 font-semibold transition-colors"
                   >
                     {isLoading ? "Sending..." : "Submit Now"}
                   </button>
                 </form>
+
                 {modalOpen && (
                   <EmailSubmittedModal onClose={() => setModalOpen(false)} />
                 )}

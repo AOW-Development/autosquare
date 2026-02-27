@@ -963,20 +963,17 @@ export default function EngineProductClient({
     </div>
 
     {/* Popup */}
-    {showPopup && (
-      <PartRequestPopup
-        setClosePopup={setShowPopup}
-        defaultMake={
-          selectedProduct?.make || productInfo.make || ""
-        }
-        defaultModel={
-          selectedProduct?.model || productInfo.model || ""
-        }
-        defaultYear={
-          selectedProduct?.year || productInfo.year || ""
-        }
-      />
-    )}
+{showPopup && (
+  <PartRequestPopup
+    setClosePopup={setShowPopup}
+    defaultMake={selectedProduct?.make || productInfo.make || ""}
+    defaultModel={selectedProduct?.model || productInfo.model || ""}
+    defaultYear={selectedProduct?.year || productInfo.year || ""}
+    defaultEngine={
+      groupedVariants.find((g) => g.subPart.id === selectedSubPartId)?.subPart?.name || ""
+    }
+  />
+)}
   </>
 ) : (
 

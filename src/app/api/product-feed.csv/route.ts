@@ -59,7 +59,9 @@ function escapeCsvField(field: string | number | null | undefined): string {
 
 /* ---------------- CSV FEED ---------------- */
 
-export async function GET() {
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+  const makeParam = searchParams.get("make");
   const API_BASE =
     process.env.NEXT_PUBLIC_API_URL || "https://partscentral.us/api";
 
@@ -95,7 +97,7 @@ export async function GET() {
 
     let csvContent = headers.join(",") + "\n";
 
-    for (const make of MAKES) {
+    for (const make of (makeParam ? [makeParam] : MAKES)) {
       const makeKey = Object.keys(MODELS).find(
         (m) => m.toLowerCase() === make.toLowerCase()
       );
@@ -158,7 +160,7 @@ export async function GET() {
 
                 const title = `${year} ${make.toUpperCase()} ${model.toUpperCase()} Used ${part}`;
                 const description = ` This ${make} ${model} ${part} is from ${year} models. Each ${part} is tested and ready to install and offers improved performance.
-                   This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
+                This Unit is perfect for anyone in the market for reliable used ${part} that will offer superior results - a great addition to any repair project!`;
                
                 const actualPrice = Number(variant.actualprice || 500);
                 const discountedPrice = Number(

@@ -80,8 +80,53 @@ export default function EngineProductClient({
   const addItem = useCartStore((s) => s.addItem);
   const items = useCartStore((s) => s.items);
  
-  // Initialize state
-  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  // Initialize state — compute initial product eagerly so Availability shows on first render
+  const [selectedProduct, setSelectedProduct] = useState<any>(() => {
+    if (!initialData?.groupedVariants?.length) return null;
+    let targetGroup = null;
+    let targetVariant = null;
+    if (setSku) {
+      for (const group of initialData.groupedVariants) {
+        const variant = group.variants.find((v: any) => v.sku === setSku);
+        if (variant) { targetGroup = group; targetVariant = variant; break; }
+      }
+    }
+    if (!targetVariant && specification) {
+      const normalizeSpec = (spec: string) => spec.toLowerCase().replace(/[^a-z0-9]/g, "");
+      const specNormalized = normalizeSpec(specification);
+      for (const group of initialData.groupedVariants) {
+        const groupNormalized = normalizeSpec(group.subPart?.name || "");
+        if (groupNormalized.includes(specNormalized) || specNormalized.includes(groupNormalized)) {
+          targetGroup = group;
+          if (miles) {
+            const milesNormalized = miles.toLowerCase().replace(/[^a-z0-9]/g, "");
+            targetVariant = group.variants.find((v: any) =>
+              (v.miles?.toString().toLowerCase().replace(/[^a-z0-9]/g, "") || "") === milesNormalized
+            );
+          }
+          if (!targetVariant) targetVariant = group.variants.find((v: any) => v.inStock) || group.variants[0];
+          break;
+        }
+      }
+    }
+    if (!targetVariant && initialData.groupedVariants.length > 0) {
+      targetGroup = initialData.groupedVariants[0];
+      targetVariant = targetGroup.variants.find((v: any) => v.inStock) || targetGroup.variants[0];
+    }
+    if (targetVariant && targetGroup) {
+      return {
+        ...targetVariant,
+        make: initialData.make,
+        model: initialData.model,
+        year: initialData.year,
+        part: initialData.part,
+        subPart: targetGroup.subPart,
+        title: targetVariant.title ||
+          `${initialData.year || ""} ${initialData.make || ""} ${initialData.model || ""}${initialData.model ? ", " : ""} ${initialData.part === "Engine" ? "Used Engine" : "Used Transmission"}`.trim(),
+      };
+    }
+    return null;
+  });
   const [productInfo, setProductInfo] = useState({
     make: initialData?.make || "",
     model: initialData?.model || "",

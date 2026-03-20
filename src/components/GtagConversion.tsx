@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 
 declare global {
   interface Window {
-    dataLayer: any[];
+    dataLayer: Record<string, any>[];
     gtag?: (...args: any[]) => void;
     __conversionSentFor?: string;
   }

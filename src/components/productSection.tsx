@@ -219,6 +219,7 @@ export default function ProductSection({
           : prod.part === "Engine"
             ? "/catalog/Engine 1.png"
             : "/catalog/Trasmission_.png",
+      part: prod.part || part,
       price,
       quantity,
     })

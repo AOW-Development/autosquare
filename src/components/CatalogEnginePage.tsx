@@ -556,6 +556,7 @@ const filteredProducts = (() => {
           : part === "Engine"
           ? "/catalog/Engine 1.png"
           : "/catalog/Trasmission_.png"),
+      part: product.part || part,
       quantity: quantity,
       price: price, // ✅ Use validated price
     });

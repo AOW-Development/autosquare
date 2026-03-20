@@ -413,6 +413,7 @@ export default function CatalogTransmissionPage() {
           : part === "Engine"
           ? "/catalog/Engine 1.png"
           : "/catalog/Trasmission_.png",
+      part: product.part || part,
       quantity: quantity,
       price: product.discountedPrice || 0,
     });

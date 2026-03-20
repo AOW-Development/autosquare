@@ -1,6 +1,917 @@
-"use client";
-import Image from "next/image";
+// "use client";
+// import Image from "next/image";
 
+// import Link from "next/link";
+// import { Suspense, useEffect, useRef, useState } from "react";
+// import useBillingStore from "@/store/billingStore";
+// import { useCartStore } from "@/store/cartStore";
+// import { generateOrderNumber } from "@/utils/order";
+// import { useShippingStore } from "@/store/shippingStore";
+// import { createOrderInBackend } from "@/utils/orderUtils";
+// import { toast } from "react-hot-toast";
+// import useAuthStore from "@/store/authStore";
+// import { OrderEmailData } from "@/lib/mail";
+// import GtagConversion from "@/components/GtagConversion";
+// import Script from "next/script";
+// import { useSearchParams } from "next/navigation";
+// import { clearSessionId, updateCheckoutData } from "@/utils/redisCheckout";
+
+// function ThankYouPageContent() {
+//   const searchParams = useSearchParams();
+//   const { billingInfo } = useBillingStore();
+//   const cartItems = useCartStore((s) => s.items);
+//   const cartHasHydrated = useCartStore((s) => s.hasHydrated);
+//   const setCartHasHydrated = useCartStore((s) => s.setHasHydrated);
+//   const [orderNumber, setOrderNumber] = useState("");
+//   const [orderDate, setOrderDate] = useState("");
+//   const { shippingInfo } = useShippingStore();
+//   const [paymentInfo, setPaymentInfo] = useState<{
+//     method: string;
+//     lastFour?: string;
+//   }>({ method: "card" });
+//   const [cardType, setCardType] = useState("unknown");
+//   const isSameAddress =
+//     JSON.stringify(billingInfo) === JSON.stringify(shippingInfo);
+//   const { setShippingInfo } = useShippingStore();
+//   const { setBillingInfo } = useBillingStore();
+//   const [finalOrderNumber, setFinalOrderNumber] = useState("");
+//   const { user } = useAuthStore();
+//   const [showPopup, setShowPopup] = useState(false);
+//   const hasProcessed = useRef(false);
+//   const hasRunRef = useRef(false);
+//   const paymentIntentId = searchParams.get("payment_intent");
+//   // const [stripePaymentData, setStripePaymentData] = useState({
+//   //   paymentIntentId: "",
+//   //   amount: 0,
+//   //   currency: "",
+//   //   status: "",
+//   //   created: 0,
+//   //   customer: null,
+//   //   cardDetails: {
+//   //     brand: "",
+//   //     country: "",
+//   //     exp_month: "",
+//   //     exp_year: "",
+//   //     last4: "",
+//   //   },
+//   //   billingDetails: {
+//   //     name: "",
+//   //     email: "",
+//   //     phone: "",
+//   //     address: "",
+//   //   },
+//   //   paymentMethod: "",
+//   //   paymentIntent: "",
+//   // });
+//   // const [isStripePaymentReady, setIsStripePaymentReady] = useState(false);
+
+//   // Card image mapping
+//   const cardImageMap: Record<string, string> = {
+//     Visa: "visa-inverted_82058.png",
+//     MasterCard: "mastercard_82049.png",
+//     "American Express": "americanexpress_82060 1.png",
+//     Discover: "discover_82082.png",
+//   };
+
+//   const cardImage = cardImageMap[cardType];
+//   const subtotal = cartItems.reduce(
+//     (sum, item) => sum + item.price * item.quantity,
+//     0
+//   );
+//   const salesTax = Math.round(subtotal * 0.029);
+//   const total = subtotal + salesTax;
+
+//   // useEffect(() => {
+//   //   if (paymentIntentId) {
+//   //     verifyPayment(paymentIntentId);
+//   //   }
+//   // }, [paymentIntentId]);
+
+//   const verifyPayment = async (id: string) => {
+//     const response = await fetch(`/api-2/confirm-payment`, {
+//       method: "POST",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({ paymentIntentId: id }),
+//     });
+
+//     const data = await response.json();
+//     console.log("Payment verification:", data);
+//   };
+
+//   // useEffect(() => {
+//   //   if (paymentIntentId) {
+//   //     setIsStripePaymentReady(false);
+//   //     fetch(`/api-2/stripData?payment_intent=${paymentIntentId}`)
+//   //       .then((response) => response.json())
+//   //       .then((data) => {
+//   //         console.log("Stripe payment data1:", data);
+//   //         setStripePaymentData({
+//   //           paymentIntent: paymentIntentId,
+//   //           paymentMethod: "card",
+//   //           cardDetails: {
+//   //             brand: data.cardDetails.brand,
+//   //             last4: data.cardDetails.last4,
+//   //             exp_month: data.cardDetails.exp_month,
+//   //             exp_year: data.cardDetails.exp_year,
+//   //             country: data.cardDetails.country,
+//   //           },
+//   //           billingDetails: {
+//   //             name: data.billingDetails.name,
+//   //             email: data.billingDetails.email,
+//   //             phone: data.billingDetails.phone,
+//   //             address: data.billingDetails.address,
+//   //           },
+//   //         } as any);
+//   //         setIsStripePaymentReady(true);
+//   //       })
+//   //       .catch((error) => {
+//   //         console.error("Failed to fetch Stripe data:", error);
+//   //         setIsStripePaymentReady(false);
+//   //       });
+//   //   } else {
+//   //     setIsStripePaymentReady(false);
+//   //   }
+//   // }, [paymentIntentId]);
+
+//   // useEffect(() => {
+//   //   console.log("Stripe payment data2:", stripePaymentData);
+//   // }, [stripePaymentData]);
+
+//   useEffect(() => {
+//     // Check if the page was reloaded
+//     const [navigation] = performance.getEntriesByType(
+//       "navigation"
+//     ) as PerformanceNavigationTiming[];
+//     if (navigation?.type === "reload") {
+//       // toast.error("You cannot reload this page. Your order has already been processed.")
+//       alert(
+//         "You cannot reload this page. Your order has already been processed we will redirect to homepage."
+//       );
+//       window.location.href = "/";
+//       return;
+//     }
+//   }, []);
+
+//   //  MAIN: Run once to create order + send invoice
+
+//   useEffect(() => {
+//     // Wait for cart store hydration and non-empty cart
+//     if (hasRunRef.current) return;
+//     if (!cartHasHydrated) {
+//       // Try to force hydration if not hydrated
+//       setCartHasHydrated(true);
+//       console.log("Cart store not hydrated yet, waiting...");
+//       return;
+//     }
+//     if (!cartItems || cartItems.length === 0) {
+//       console.error("Cart is empty or not loaded, aborting order creation.");
+//       toast.error(
+//         "Your cart is empty. Please add items before placing an order."
+//       );
+//       return;
+//     }
+
+//     const orderData = sessionStorage.getItem("orderData");
+//     let existingOrderNumber = "";
+
+//     if (orderData) {
+//       try {
+//         const parsedOrderData = JSON.parse(orderData);
+//         existingOrderNumber = parsedOrderData.orderNumber || "";
+//       } catch (error) {
+//         console.error("Error parsing order data:", error);
+//       }
+//     }
+
+//     // if (!isStripePaymentReady || !stripePaymentData.paymentIntent) {
+//     //   console.log("Stripe payment data not ready yet, waiting…");
+//     //   return;
+//     // }
+//     hasRunRef.current = true;
+
+//     const orderNum = existingOrderNumber;
+//     setFinalOrderNumber(orderNum);
+//     setOrderNumber(orderNum);
+//     setOrderDate(
+//       new Date().toLocaleDateString("en-US", {
+//         year: "numeric",
+//         month: "long",
+//         day: "numeric",
+//       })
+//     );
+
+//     const storedPaymentMethod = localStorage.getItem("paymentMethod") || "card";
+//     const storedCardData = localStorage.getItem("cardData");
+
+//     if (storedPaymentMethod === "card" && storedCardData) {
+//       try {
+//         const cardData = JSON.parse(storedCardData);
+//         const lastFour = cardData.cardNumber?.slice(-4) || "****";
+//         setPaymentInfo({ method: "card", lastFour });
+
+//         if (/^4/.test(cardData.cardNumber)) setCardType("Visa");
+//         else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard");
+//         else if (/^3[47]/.test(cardData.cardNumber))
+//           setCardType("American Express");
+//         else if (/^6/.test(cardData.cardNumber)) setCardType("Discover");
+//       } catch {
+//         setPaymentInfo({ method: "card", lastFour: "****" });
+//       }
+//     } else {
+//       setPaymentInfo({ method: storedPaymentMethod });
+//     }
+
+//     const createOrder = async () => {
+//       // Get sessionId from sessionStorage
+//       const checkoutSessionId = sessionStorage.getItem("checkoutSessionId");
+
+//       try {
+//         const orderData = sessionStorage.getItem("orderData");
+//         if (!orderData) {
+//           console.error("No order data found in session storage");
+//           toast.error("No order data found. Please try again.");
+
+//           // Update Redis to mark as failed
+//           if (checkoutSessionId) {
+//             await updateCheckoutData(
+//               { isOrderCreatedInBackend: false },
+//               checkoutSessionId
+//             );
+//             clearSessionId();
+//           }
+//           return;
+//         }
+//         // console.log("orderData", JSON.parse(orderData).payment);
+//         // const lastOrderData = (JSON.parse(orderData).payment.cardData = {
+//         //   cardNumber: stripePaymentData.cardDetails.last4,
+//         //   cardholderName:
+//         //     stripePaymentData.billingDetails.name || "ONLINE PAYMENT",
+//         //   expirationDate: `${
+//         //     stripePaymentData.cardDetails.exp_month
+//         //   }/${stripePaymentData.cardDetails.exp_year.toString().slice(-2)}`,
+//         //   securityCode: stripePaymentData.cardDetails.brand,
+//         // });
+//         // console.log("lastOrderData", lastOrderData);
+
+//         const parsedOrderData = JSON.parse(orderData);
+//         const customerEmail =
+//           parsedOrderData.customerEmail ||
+//           parsedOrderData.user?.email ||
+//           parsedOrderData.shipping?.email ||
+//           parsedOrderData.billing?.email ||
+//           user?.email;
+
+//         if (!customerEmail) {
+//           console.error("No customer email found for invoice");
+//           toast.error("Unable to send invoice - no email address found");
+
+//           // Update Redis to mark as failed
+//           if (checkoutSessionId) {
+//             await updateCheckoutData(
+//               { isOrderCreatedInBackend: false },
+//               checkoutSessionId
+//             );
+//             clearSessionId();
+//           }
+//           return;
+//         }
+
+//         const orderUser = user
+//           ? {
+//               id: user.id,
+//               email: customerEmail,
+//               firstName: user.firstName,
+//               lastName: user.lastName,
+//               name: user.name,
+//             }
+//           : {
+//               email: customerEmail,
+//               firstName:
+//                 parsedOrderData.billing?.firstName ||
+//                 parsedOrderData.shipping?.firstName ||
+//                 "",
+//               lastName:
+//                 parsedOrderData.billing?.lastName ||
+//                 parsedOrderData.shipping?.lastName ||
+//                 "",
+//               name: `${
+//                 parsedOrderData.billing?.firstName ||
+//                 parsedOrderData.shipping?.firstName ||
+//                 ""
+//               } ${
+//                 parsedOrderData.billing?.lastName ||
+//                 parsedOrderData.shipping?.lastName ||
+//                 ""
+//               }`.trim(),
+//             };
+//         // console.log("stripePaymentData", stripePaymentData);
+//         const fullOrderData = {
+//           user: orderUser,
+//           // payment: {
+//           //   ...parsedOrderData.payment,
+//           //   // cardData: lastOrderData,
+//           // },
+//           payment: parsedOrderData.payment,
+//           billing: parsedOrderData.billing,
+//           shipping: parsedOrderData.shipping,
+//           cartItems: cartItems,
+//           orderNumber: orderNum,
+//           totalAmount: total,
+//           subtotal: subtotal,
+//           customerEmail: customerEmail,
+
+//           // stripePayment: {
+//           //   paymentIntentId: stripePaymentData.paymentIntent,
+//           //   paymentMethod: stripePaymentData.paymentMethod,
+
+//           //   cardDetails: {
+//           //     brand: stripePaymentData.cardDetails.brand,
+//           //     last4: stripePaymentData.cardDetails.last4,
+//           //     expMonth: stripePaymentData.cardDetails.exp_month,
+//           //     expYear: stripePaymentData.cardDetails.exp_year,
+//           //     country: stripePaymentData.cardDetails.country,
+//           //   },
+
+//           //   billingDetails: {
+//           //     name: stripePaymentData.billingDetails.name,
+//           //     email: stripePaymentData.billingDetails.email,
+//           //     phone: stripePaymentData.billingDetails.phone,
+//           //     address: stripePaymentData.billingDetails.address,
+//           //   },
+
+//           //   status: stripePaymentData.status,
+//           //   created: stripePaymentData.created,
+//           //   currency: stripePaymentData.currency,
+//           //   amount: stripePaymentData.amount,
+//           // },
+//         };
+
+//         // Start the loading toast only after we've confirmed orderData exists and built the payload
+//         const sendingToastId = toast.loading(
+//           "Please wait… sending your invoice"
+//         );
+//         console.log("Final full order data to be sent:", fullOrderData);
+
+//         // 1) Create order in backend
+//         let createdOrderResult = null;
+//         try {
+//           // if (
+//           //   stripePaymentData.paymentIntent &&
+//           //   stripePaymentData.paymentMethod === "card"
+//           // ) {
+//             createdOrderResult = await createOrderInBackend(fullOrderData);
+//           //   console.log("Order created in backend:", createdOrderResult);
+//           // } else {
+//           //   console.log(
+//           //     "No stripe payment data found, skipping order creation"
+//           //   );
+//           // }
+//         } catch (err) {
+//           //  Send SMS notification (TypeScript safe)
+
+//           if (checkoutSessionId) {
+//             await updateCheckoutData(
+//               { isOrderCreatedInBackend: true },
+//               checkoutSessionId
+//             );
+//             clearSessionId();
+//             console.log(" Order created successfully - updated Redis");
+//           }
+
+//           console.log("createOrderInBackend result:", createdOrderResult);
+//           // } catch (err) {
+//           await fetch("/api-2/send-order-email", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({
+//               ...fullOrderData,
+//               status: "failed",
+//             }),
+//           });
+
+//           // Ensure loading toast is dismissed and keep orderData for retry
+//           toast.dismiss(sendingToastId);
+//           console.error("createOrderInBackend failed:", err);
+//           toast.error(
+//             "Failed to create order. Please try again or contact support."
+//           );
+//           //  Send SMS notification (TypeScript safe)
+//           const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+//           if (phoneNumber) {
+//             try {
+//               const formattedPhone = phoneNumber.startsWith("+")
+//                 ? phoneNumber
+//                 : `+91${phoneNumber}`;
+//               const smsText = `"Dear Customer, your order #${orderNum} couldn’t be processed successfully. Our team will connect with you shortly to assist.`;
+
+//               await fetch("/api-2/sendsms", {
+//                 method: "POST",
+//                 headers: { "Content-Type": "application/json" },
+//                 body: JSON.stringify({
+//                   to: formattedPhone,
+//                   message: smsText,
+//                 }),
+//               });
+
+//               console.log(" SMS sent successfully to", formattedPhone);
+//             } catch (smsErr) {
+//               console.error(" Failed to send SMS:", smsErr);
+//             }
+//           } else {
+//             console.warn(" No phone number found — SMS not sent.");
+//           }
+//           // Update Redis to mark as failed
+//           if (checkoutSessionId) {
+//             await updateCheckoutData(
+//               { isOrderCreatedInBackend: false },
+//               checkoutSessionId
+//             );
+
+//             console.log(" Order creation failed - updated Redis");
+
+//             clearSessionId();
+//             console.log(" Order creation failed - updated Redis");
+//           }
+//           return;
+//         }
+
+//         // 2) Send confirmation email - require success before clearing sessionStorage
+//         try {
+//           // const emailResponse = await fetch("/api-2/send-order-email", {
+//           //   method: "POST",
+//           //   headers: { "Content-Type": "application/json" },
+//           //   body: JSON.stringify(fullOrderData),
+//           // });
+
+//           // if (!emailResponse.ok) {
+//           //   const errorText = await emailResponse.text();
+//           //   toast.dismiss(sendingToastId);
+//           //   console.error(
+//           //     "Failed to send order confirmation email:",
+//           //     errorText
+//           //   );
+//           //   toast.error(
+//           //     "Order placed successfully, but failed to send confirmation email"
+//           //   );
+
+//           // Update Redis - backend order created but email failed
+//           // if (checkoutSessionId) {
+//           //   await updateCheckoutData(
+//           //     { isOrderCreatedInBackend: true },
+//           //     checkoutSessionId
+//           //   );
+
+//           //   console.log(" Order created but email failed - updated Redis");
+
+//           //   clearSessionId();
+//           //   console.log(" Order created but email failed - updated Redis");
+//           // }
+//           // Do NOT remove sessionStorage so the orderData can be retried
+//           //   return;
+//           // }
+
+//           // Both backend order creation and email succeeded
+//           toast.dismiss(sendingToastId);
+//           toast.success(`Order confirmation sent to ${customerEmail}`);
+//           await fetch("/api-2/send-order-email", {
+//             method: "POST",
+//             headers: { "Content-Type": "application/json" },
+//             body: JSON.stringify({
+//               ...fullOrderData,
+//             }),
+//           });
+//           // Update Redis to mark as successful
+//           if (checkoutSessionId) {
+//             await updateCheckoutData(
+//               { isOrderCreatedInBackend: true },
+//               checkoutSessionId
+//             );
+//             console.log(" Order created successfully - updated Redis");
+
+//             // Track order completion in FCM analytics
+//             try {
+//               // Get sessionId from localStorage (FCM uses this) or use checkoutSessionId
+//               const fcmSessionId =
+//                 localStorage.getItem("session_id") || checkoutSessionId;
+
+//               if (fcmSessionId) {
+//                 // Check if user came from a notification click (check last 1 hour)
+//                 const recentClicksResponse = await fetch(
+//                   `/api-2/fcm-analytics?type=clicks`
+//                 );
+//                 const clicksData = await recentClicksResponse.json();
+//                 const recentClicks = clicksData.clicks || [];
+
+//                 // Check if there's a click from this session in the last hour
+//                 const oneHourAgo = Date.now() - 60 * 60 * 1000;
+//                 const cameFromNotification = recentClicks.some((click: any) => {
+//                   const clickTime = new Date(click.clickedAt).getTime();
+//                   return (
+//                     click.sessionId === fcmSessionId && clickTime > oneHourAgo
+//                   );
+//                 });
+
+//                 // Track order completion
+//                 await fetch("/api-2/fcm-analytics", {
+//                   method: "POST",
+//                   headers: { "Content-Type": "application/json" },
+//                   body: JSON.stringify({
+//                     action: "trackOrderCompleted",
+//                     data: {
+//                       sessionId: fcmSessionId,
+//                       orderNumber: orderNum,
+//                       total: total,
+//                       fromNotification: cameFromNotification,
+//                     },
+//                   }),
+//                 });
+//                 console.log("✅ Order completion tracked in FCM analytics");
+//               }
+//             } catch (trackError) {
+//               console.warn("Failed to track order completion:", trackError);
+//             }
+
+//             clearSessionId();
+//             console.log(" Order created successfully - updated Redis");
+//           }
+
+//           const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
+//           if (phoneNumber) {
+//             try {
+//               const formattedPhone = phoneNumber.startsWith("+")
+//                 ? phoneNumber
+//                 : `+91${phoneNumber}`;
+//               const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
+
+//               await fetch("/api-2/sendsms", {
+//                 method: "POST",
+//                 headers: { "Content-Type": "application/json" },
+//                 body: JSON.stringify({
+//                   to: formattedPhone,
+//                   message: smsText,
+//                 }),
+//               });
+
+//               console.log(" SMS sent successfully to", formattedPhone);
+//             } catch (smsErr) {
+//               console.error(" Failed to send SMS:", smsErr);
+//             }
+//           } else {
+//             console.warn(" No phone number found — SMS not sent.");
+//           }
+
+//           // Remove orderData now that both steps succeeded
+//           sessionStorage.removeItem("orderData");
+//         } catch (err) {
+//           toast.dismiss(sendingToastId);
+//           console.error("Email sending failed:", err);
+//           toast.error(
+//             "Order placed successfully, but failed to send confirmation email"
+//           );
+
+//           // Update Redis - backend order created but email failed
+//           if (checkoutSessionId) {
+//             await updateCheckoutData(
+//               { isOrderCreatedInBackend: true },
+//               checkoutSessionId
+//             );
+
+//             console.log(" Order created but email failed - updated Redis");
+
+//             clearSessionId();
+//             console.log(" Order created but email failed - updated Redis");
+//           }
+//           // Do NOT remove sessionStorage so the orderData can be retried
+//           return;
+//         }
+
+//         //  Now mark as viewed (after order creation)
+//         const viewedOrders = JSON.parse(
+//           localStorage.getItem("viewedOrders") || "[]"
+//         );
+//         if (orderNum && viewedOrders.includes(orderNum)) {
+//           setShowPopup(true);
+//           setTimeout(() => {
+//             window.location.href = "/";
+//           }, 3000);
+//         } else if (orderNum) {
+//           viewedOrders.push(orderNum);
+//           localStorage.setItem("viewedOrders", JSON.stringify(viewedOrders));
+//         }
+//       } catch (error) {
+//         console.error("Error creating order:", error);
+//         toast.error("Failed to process order. Please contact support.");
+//         if (checkoutSessionId) {
+//           await updateCheckoutData(
+//             { isOrderCreatedInBackend: false },
+//             checkoutSessionId
+//           );
+//           clearSessionId();
+//         }
+//       }
+//     };
+
+//     // console.log("stripePaymentData", stripePaymentData);
+//     createOrder();
+//   }, [
+//     user,
+//     cartHasHydrated,
+//     cartItems,
+//     setCartHasHydrated,
+//     // stripePaymentData,
+//     // isStripePaymentReady,
+//   ]);
+
+//   return (
+//     <div className="min-h-screen w-full bg-[#0B1422] relative overflow-hidden flex items-center justify-center">
+//       {/* Background Car Image */}
+//       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+//         <div className="w-[700px] h-[624px] relative">
+//           <Image
+//             src="/Images/thx_car.png"
+//             alt="Car background"
+//             fill
+//             className="object-contain object-center"
+//             priority
+//           />
+//         </div>
+//       </div>
+
+//       <main className="relative z-10 w-full flex justify-center lg:justify-end md:pr-4 lg:pr-100 px-4">
+//         <div className="w-full max-w-xl bg-gray-900 rounded-lg shadow-lg p-6 md:p-8 lg:p-12 flex flex-col">
+//           <div className="flex flex-col items-center mb-6">
+//             <h1
+//               className="text-white text-2xl md:text-3xl lg:text-3xl font-semibold uppercase text-center leading-tight tracking-wide"
+//               style={{
+//                 fontFamily: "Audiowide, sans-serif",
+//                 letterSpacing: "0.1em",
+//               }}
+//             >
+//               Thank you for shopping with us!
+//             </h1>
+//             <div className="text-white text-xl md:text-xl lg:text-xl font-normal text-center mt-1">
+//               Your payment is protected. Our team is processing your order.
+//             </div>
+//           </div>
+
+//           <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-0 mb-1">
+//             <div>
+//               <div className="uppercase text-sm text-gray-300 font-semibold">
+//                 Deliver To
+//               </div>
+//               <div className="text-white text-sm mt-1 leading-tight">
+//                 <>
+//                   {billingInfo && Object.keys(billingInfo).length > 0 && (
+//                     <div>
+//                       <strong>Billing Information</strong>
+//                       <br />
+//                       {shippingInfo.firstName} {shippingInfo.lastName}
+//                       <br />
+//                       {billingInfo.address}
+//                       {billingInfo.apartment && (
+//                         <>
+//                           <br />
+//                           {billingInfo.apartment}
+//                         </>
+//                       )}
+//                       <br />
+//                       {billingInfo.company && (
+//                         <>
+//                           {billingInfo.company}
+//                           <br />
+//                         </>
+//                       )}
+//                       {billingInfo.city}, {billingInfo.state},{" "}
+//                       {billingInfo.zipCode}, {billingInfo.country}
+//                       <br />
+//                       {billingInfo.phone}
+//                     </div>
+//                   )}
+
+//                   {!isSameAddress &&
+//                     shippingInfo &&
+//                     Object.keys(shippingInfo).length > 0 && (
+//                       <div className="mt-3">
+//                         <strong>Shipping Information</strong>
+//                         <br />
+//                         {shippingInfo.firstName} {shippingInfo.lastName}
+//                         <br />
+//                         {shippingInfo.address}
+//                         {shippingInfo.apartment && (
+//                           <>
+//                             <br />
+//                             {shippingInfo.apartment}
+//                           </>
+//                         )}
+//                         <br />
+//                         {shippingInfo.company && (
+//                           <>
+//                             {shippingInfo.company}
+//                             <br />
+//                           </>
+//                         )}
+//                         {shippingInfo.city}, {shippingInfo.state},{" "}
+//                         {shippingInfo.zipCode}, {shippingInfo.country}
+//                         <br />
+//                         {shippingInfo.phone}
+//                       </div>
+//                     )}
+//                 </>
+//               </div>
+//             </div>
+
+//             <div className="flex flex-col items-start md:items-center">
+//               <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
+//                 Payment Method
+//               </div>
+//               <div className="flex items-center gap-3 mt-1">
+//                 {paymentInfo.method === "card" ? (
+//                   <>
+//                     <span className="text-white text-sm tracking-widest">
+//                       **** **** ****{" "}
+//                       {paymentInfo.lastFour || "****"}
+//                     </span>
+//                     {cardImage && (
+//                       <img
+//                         src={`/images/home/${cardImage}`}
+//                         alt={cardType}
+//                         className="h-auto w-6 sm:w-8 md:w-10 lg:w-12 object-contain"
+//                       />
+//                     )}
+//                   </>
+//                 ) : (
+//                   <span className="text-white text-sm">PayPal</span>
+//                 )}
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="border-t border-white my-4" />
+//           <div className="flex flex-col md:flex-row justify-between items-center mb-2">
+//             <div className="uppercase text-sm text-white font-semibold">
+//               Order Details{" "}
+//               <span id="order-id" className="font-normal">
+//                 #{orderNumber}
+//               </span>
+//             </div>
+//             <div className="text-sm text-white">{orderDate}</div>
+//           </div>
+
+//           {cartItems.length > 0 ? (
+//             cartItems.map((item) => (
+//               <div
+//                 key={item.id}
+//                 className="flex flex-row items-start gap-4 py-2"
+//               >
+//                 <Image
+//                   src={
+//                     item.title?.includes("Transmission")
+//                       ? "/catalog/Trasmission_.png"
+//                       : "/catalog/Engine 1.png"
+//                   }
+//                   alt={item.title || "default"}
+//                   width={64}
+//                   height={64}
+//                   className="rounded-lg"
+//                 />
+//                 <div className="flex-1">
+//                   <div className="product-title text-base text-white font-semibold">
+//                     {item.title}
+//                   </div>
+//                   <div className="text-sm text-gray-300">{item.subtitle}</div>
+//                   <div className="text-sm text-gray-300">
+//                     {item.quantity} pc{item.quantity > 1 ? "s" : ""}.
+//                   </div>
+//                 </div>
+//                 <div className="product-price text-base text-white font-semibold min-w-[60px] text-right">
+//                   ${item.price * item.quantity}
+//                 </div>
+//               </div>
+//             ))
+//           ) : (
+//             <div className="flex flex-row items-start gap-4 py-2">
+//               <div className="text-white text-center w-full">
+//                 No items in cart
+//               </div>
+//             </div>
+//           )}
+
+//           <div className="border-t border-white my-3" />
+//           <div className="flex flex-col gap-1 text-base text-white mt-2">
+//             <div className="flex justify-between">
+//               <span>Cart total:</span>
+//               <span>${subtotal}</span>
+//             </div>
+//             <div className="flex justify-between">
+//               <span>Shipping:</span>
+//               <span className="text-white">Free Shipping</span>
+//             </div>
+//           </div>
+
+//           <div className="border-t border-white my-4" />
+//           <div className="flex justify-between items-center text-lg font-semibold text-white uppercase">
+//             <span>Total:</span>
+//             <span id="order-total">${subtotal}</span>
+//           </div>
+
+//           <div className="flex flex-col md:flex-row items-center justify-between mt-6 gap-4">
+//             <Link href="/account/trackOrder">
+//               <button className="bg-blue-500 cursor-pointer hover:bg-blue-600 text-white rounded-md py-2 px-6 w-full md:w-auto transition">
+//                 Track order
+//               </button>
+//             </Link>
+//             <Link
+//               href="/"
+//               className="text-blue-400 cursor-pointer hover:underline ml-0 md:ml-4 mt-2 md:mt-0 inline-block text-base"
+//             >
+//               Continue shopping
+//             </Link>
+//           </div>
+//         </div>
+//       </main>
+
+//       {/*  Popup for duplicate view */}
+//       {/* <Script
+//         id="google-ads-conversion"
+//         strategy="beforeInteractive"
+//         dangerouslySetInnerHTML={{
+//           __html: `
+//             window.dataLayer = window.dataLayer || [];
+//             function gtag(){dataLayer.push(arguments);}
+//             gtag('event', 'conversion', {
+//               'send_to': 'AW-17273467579/qtoECO6FibkbELvl0KxA',
+//               'value': ${subtotal},
+//               'currency': 'USD',
+//               'transaction_id': '${orderNumber}'
+//             });
+//           `,
+//         }}
+//       /> */}
+//       {/* Hidden conversion component */}
+//       <div className="">
+//         {orderNumber && cartItems.length > 0 && (
+//           <GtagConversion
+//             orderId={orderNumber}
+//             orderTotal={subtotal}
+//             items={cartItems.map((item) => ({
+//               itemId: item.id || "unknown",
+//               itemName: item.title || "unknown",
+//               price: item.price || 0,
+//               quantity: item.quantity || 1,
+//             }))}
+//           />
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default function ThankYouPage() {
+//   return (
+//     <Suspense fallback={
+//       <div className="min-h-screen w-full bg-[#0B1422] flex items-center justify-center">
+//         <div className="text-white text-xl">Loading...</div>
+//       </div>
+//     }>
+//       <ThankYouPageContent />
+//     </Suspense>
+//   );
+// }
+
+ 
+"use client";
+
+// app/account/thank-you/page.tsx  (or wherever ThankYouPage lives)
+//
+// ─── WHAT CHANGED AND WHY ────────────────────────────────────────────────────
+// REMOVED: import GtagConversion from "@/components/GtagConversion"
+//          That component was tracking purchases in an incomplete way —
+//          no clearEcommerce() call, Google Ads block fully commented out,
+//          and it fired based on state existence rather than backend confirmation.
+//
+// REMOVED: import Script from "next/script" — no longer needed here.
+//
+// REMOVED: The <GtagConversion ... /> JSX block at the bottom of the return.
+//
+// REMOVED: The commented-out <Script id="google-ads-conversion"> block.
+//
+// ADDED:   import { trackPurchase } from "@/lib/gtm"
+//
+// ADDED:   trackPurchase() call INSIDE the createOrder success path —
+//          specifically right after toast.success() fires and before the
+//          email send. This is the semantically correct moment because:
+//          1. The backend has confirmed the order exists
+//          2. The payment has been processed
+//          3. We're about to send the confirmation email
+//          Firing here (vs on component mount) ensures Google Ads only
+//          counts REAL confirmed purchases, not orders that failed backend
+//          creation. Previously, GtagConversion could fire for failed orders
+//          because orderNumber was set in state before createOrder ran.
+//
+// ALL existing functionality — order creation, email sending, SMS, Redis
+// updates, FCM analytics, payment info display, cart display — unchanged.
+
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense, useEffect, useRef, useState } from "react";
 import useBillingStore from "@/store/billingStore";
@@ -11,8 +922,7 @@ import { createOrderInBackend } from "@/utils/orderUtils";
 import { toast } from "react-hot-toast";
 import useAuthStore from "@/store/authStore";
 import { OrderEmailData } from "@/lib/mail";
-import GtagConversion from "@/components/GtagConversion";
-import Script from "next/script";
+import { trackPurchase } from "@/lib/gtm"; // ← NEW: replaces GtagConversion entirely
 import { useSearchParams } from "next/navigation";
 import { clearSessionId, updateCheckoutData } from "@/utils/redisCheckout";
 
@@ -40,30 +950,6 @@ function ThankYouPageContent() {
   const hasProcessed = useRef(false);
   const hasRunRef = useRef(false);
   const paymentIntentId = searchParams.get("payment_intent");
-  // const [stripePaymentData, setStripePaymentData] = useState({
-  //   paymentIntentId: "",
-  //   amount: 0,
-  //   currency: "",
-  //   status: "",
-  //   created: 0,
-  //   customer: null,
-  //   cardDetails: {
-  //     brand: "",
-  //     country: "",
-  //     exp_month: "",
-  //     exp_year: "",
-  //     last4: "",
-  //   },
-  //   billingDetails: {
-  //     name: "",
-  //     email: "",
-  //     phone: "",
-  //     address: "",
-  //   },
-  //   paymentMethod: "",
-  //   paymentIntent: "",
-  // });
-  // const [isStripePaymentReady, setIsStripePaymentReady] = useState(false);
 
   // Card image mapping
   const cardImageMap: Record<string, string> = {
@@ -81,69 +967,22 @@ function ThankYouPageContent() {
   const salesTax = Math.round(subtotal * 0.029);
   const total = subtotal + salesTax;
 
-  // useEffect(() => {
-  //   if (paymentIntentId) {
-  //     verifyPayment(paymentIntentId);
-  //   }
-  // }, [paymentIntentId]);
-
   const verifyPayment = async (id: string) => {
     const response = await fetch(`/api-2/confirm-payment`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ paymentIntentId: id }),
     });
-
     const data = await response.json();
     console.log("Payment verification:", data);
   };
 
-  // useEffect(() => {
-  //   if (paymentIntentId) {
-  //     setIsStripePaymentReady(false);
-  //     fetch(`/api-2/stripData?payment_intent=${paymentIntentId}`)
-  //       .then((response) => response.json())
-  //       .then((data) => {
-  //         console.log("Stripe payment data1:", data);
-  //         setStripePaymentData({
-  //           paymentIntent: paymentIntentId,
-  //           paymentMethod: "card",
-  //           cardDetails: {
-  //             brand: data.cardDetails.brand,
-  //             last4: data.cardDetails.last4,
-  //             exp_month: data.cardDetails.exp_month,
-  //             exp_year: data.cardDetails.exp_year,
-  //             country: data.cardDetails.country,
-  //           },
-  //           billingDetails: {
-  //             name: data.billingDetails.name,
-  //             email: data.billingDetails.email,
-  //             phone: data.billingDetails.phone,
-  //             address: data.billingDetails.address,
-  //           },
-  //         } as any);
-  //         setIsStripePaymentReady(true);
-  //       })
-  //       .catch((error) => {
-  //         console.error("Failed to fetch Stripe data:", error);
-  //         setIsStripePaymentReady(false);
-  //       });
-  //   } else {
-  //     setIsStripePaymentReady(false);
-  //   }
-  // }, [paymentIntentId]);
-
-  // useEffect(() => {
-  //   console.log("Stripe payment data2:", stripePaymentData);
-  // }, [stripePaymentData]);
-
+  // Prevent page reload to avoid double-processing orders
   useEffect(() => {
-    // Check if the page was reloaded
     const [navigation] = performance.getEntriesByType(
       "navigation"
     ) as PerformanceNavigationTiming[];
     if (navigation?.type === "reload") {
-      // toast.error("You cannot reload this page. Your order has already been processed.")
       alert(
         "You cannot reload this page. Your order has already been processed we will redirect to homepage."
       );
@@ -152,22 +991,17 @@ function ThankYouPageContent() {
     }
   }, []);
 
-  //  MAIN: Run once to create order + send invoice
-
+  // MAIN: Run once to create order + send invoice
   useEffect(() => {
-    // Wait for cart store hydration and non-empty cart
     if (hasRunRef.current) return;
     if (!cartHasHydrated) {
-      // Try to force hydration if not hydrated
       setCartHasHydrated(true);
       console.log("Cart store not hydrated yet, waiting...");
       return;
     }
     if (!cartItems || cartItems.length === 0) {
       console.error("Cart is empty or not loaded, aborting order creation.");
-      toast.error(
-        "Your cart is empty. Please add items before placing an order."
-      );
+      toast.error("Your cart is empty. Please add items before placing an order.");
       return;
     }
 
@@ -183,10 +1017,6 @@ function ThankYouPageContent() {
       }
     }
 
-    // if (!isStripePaymentReady || !stripePaymentData.paymentIntent) {
-    //   console.log("Stripe payment data not ready yet, waiting…");
-    //   return;
-    // }
     hasRunRef.current = true;
 
     const orderNum = existingOrderNumber;
@@ -211,8 +1041,7 @@ function ThankYouPageContent() {
 
         if (/^4/.test(cardData.cardNumber)) setCardType("Visa");
         else if (/^5[1-5]/.test(cardData.cardNumber)) setCardType("MasterCard");
-        else if (/^3[47]/.test(cardData.cardNumber))
-          setCardType("American Express");
+        else if (/^3[47]/.test(cardData.cardNumber)) setCardType("American Express");
         else if (/^6/.test(cardData.cardNumber)) setCardType("Discover");
       } catch {
         setPaymentInfo({ method: "card", lastFour: "****" });
@@ -222,7 +1051,6 @@ function ThankYouPageContent() {
     }
 
     const createOrder = async () => {
-      // Get sessionId from sessionStorage
       const checkoutSessionId = sessionStorage.getItem("checkoutSessionId");
 
       try {
@@ -230,28 +1058,12 @@ function ThankYouPageContent() {
         if (!orderData) {
           console.error("No order data found in session storage");
           toast.error("No order data found. Please try again.");
-
-          // Update Redis to mark as failed
           if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: false },
-              checkoutSessionId
-            );
+            await updateCheckoutData({ isOrderCreatedInBackend: false }, checkoutSessionId);
             clearSessionId();
           }
           return;
         }
-        // console.log("orderData", JSON.parse(orderData).payment);
-        // const lastOrderData = (JSON.parse(orderData).payment.cardData = {
-        //   cardNumber: stripePaymentData.cardDetails.last4,
-        //   cardholderName:
-        //     stripePaymentData.billingDetails.name || "ONLINE PAYMENT",
-        //   expirationDate: `${
-        //     stripePaymentData.cardDetails.exp_month
-        //   }/${stripePaymentData.cardDetails.exp_year.toString().slice(-2)}`,
-        //   securityCode: stripePaymentData.cardDetails.brand,
-        // });
-        // console.log("lastOrderData", lastOrderData);
 
         const parsedOrderData = JSON.parse(orderData);
         const customerEmail =
@@ -264,13 +1076,8 @@ function ThankYouPageContent() {
         if (!customerEmail) {
           console.error("No customer email found for invoice");
           toast.error("Unable to send invoice - no email address found");
-
-          // Update Redis to mark as failed
           if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: false },
-              checkoutSessionId
-            );
+            await updateCheckoutData({ isOrderCreatedInBackend: false }, checkoutSessionId);
             clearSessionId();
           }
           return;
@@ -288,29 +1095,21 @@ function ThankYouPageContent() {
               email: customerEmail,
               firstName:
                 parsedOrderData.billing?.firstName ||
-                parsedOrderData.shipping?.firstName ||
-                "",
+                parsedOrderData.shipping?.firstName || "",
               lastName:
                 parsedOrderData.billing?.lastName ||
-                parsedOrderData.shipping?.lastName ||
-                "",
+                parsedOrderData.shipping?.lastName || "",
               name: `${
                 parsedOrderData.billing?.firstName ||
-                parsedOrderData.shipping?.firstName ||
-                ""
+                parsedOrderData.shipping?.firstName || ""
               } ${
                 parsedOrderData.billing?.lastName ||
-                parsedOrderData.shipping?.lastName ||
-                ""
+                parsedOrderData.shipping?.lastName || ""
               }`.trim(),
             };
-        // console.log("stripePaymentData", stripePaymentData);
+
         const fullOrderData = {
           user: orderUser,
-          // payment: {
-          //   ...parsedOrderData.payment,
-          //   // cardData: lastOrderData,
-          // },
           payment: parsedOrderData.payment,
           billing: parsedOrderData.billing,
           shipping: parsedOrderData.shipping,
@@ -319,100 +1118,46 @@ function ThankYouPageContent() {
           totalAmount: total,
           subtotal: subtotal,
           customerEmail: customerEmail,
-
-          // stripePayment: {
-          //   paymentIntentId: stripePaymentData.paymentIntent,
-          //   paymentMethod: stripePaymentData.paymentMethod,
-
-          //   cardDetails: {
-          //     brand: stripePaymentData.cardDetails.brand,
-          //     last4: stripePaymentData.cardDetails.last4,
-          //     expMonth: stripePaymentData.cardDetails.exp_month,
-          //     expYear: stripePaymentData.cardDetails.exp_year,
-          //     country: stripePaymentData.cardDetails.country,
-          //   },
-
-          //   billingDetails: {
-          //     name: stripePaymentData.billingDetails.name,
-          //     email: stripePaymentData.billingDetails.email,
-          //     phone: stripePaymentData.billingDetails.phone,
-          //     address: stripePaymentData.billingDetails.address,
-          //   },
-
-          //   status: stripePaymentData.status,
-          //   created: stripePaymentData.created,
-          //   currency: stripePaymentData.currency,
-          //   amount: stripePaymentData.amount,
-          // },
         };
 
-        // Start the loading toast only after we've confirmed orderData exists and built the payload
-        const sendingToastId = toast.loading(
-          "Please wait… sending your invoice"
-        );
+        const sendingToastId = toast.loading("Please wait… sending your invoice");
         console.log("Final full order data to be sent:", fullOrderData);
 
-        // 1) Create order in backend
+        // Step 1: Create order in backend
         let createdOrderResult = null;
         try {
-          // if (
-          //   stripePaymentData.paymentIntent &&
-          //   stripePaymentData.paymentMethod === "card"
-          // ) {
-            createdOrderResult = await createOrderInBackend(fullOrderData);
-          //   console.log("Order created in backend:", createdOrderResult);
-          // } else {
-          //   console.log(
-          //     "No stripe payment data found, skipping order creation"
-          //   );
-          // }
+          createdOrderResult = await createOrderInBackend(fullOrderData);
         } catch (err) {
-          //  Send SMS notification (TypeScript safe)
-
           if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: true },
-              checkoutSessionId
-            );
+            await updateCheckoutData({ isOrderCreatedInBackend: true }, checkoutSessionId);
             clearSessionId();
             console.log(" Order created successfully - updated Redis");
           }
 
           console.log("createOrderInBackend result:", createdOrderResult);
-          // } catch (err) {
+
           await fetch("/api-2/send-order-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...fullOrderData,
-              status: "failed",
-            }),
+            body: JSON.stringify({ ...fullOrderData, status: "failed" }),
           });
 
-          // Ensure loading toast is dismissed and keep orderData for retry
           toast.dismiss(sendingToastId);
           console.error("createOrderInBackend failed:", err);
-          toast.error(
-            "Failed to create order. Please try again or contact support."
-          );
-          //  Send SMS notification (TypeScript safe)
+          toast.error("Failed to create order. Please try again or contact support.");
+
           const phoneNumber = shippingInfo?.phone || billingInfo?.phone;
           if (phoneNumber) {
             try {
               const formattedPhone = phoneNumber.startsWith("+")
                 ? phoneNumber
                 : `+91${phoneNumber}`;
-              const smsText = `"Dear Customer, your order #${orderNum} couldn’t be processed successfully. Our team will connect with you shortly to assist.`;
-
+              const smsText = `"Dear Customer, your order #${orderNum} couldn't be processed successfully. Our team will connect with you shortly to assist.`;
               await fetch("/api-2/sendsms", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  to: formattedPhone,
-                  message: smsText,
-                }),
+                body: JSON.stringify({ to: formattedPhone, message: smsText }),
               });
-
               console.log(" SMS sent successfully to", formattedPhone);
             } catch (smsErr) {
               console.error(" Failed to send SMS:", smsErr);
@@ -420,98 +1165,70 @@ function ThankYouPageContent() {
           } else {
             console.warn(" No phone number found — SMS not sent.");
           }
-          // Update Redis to mark as failed
+
           if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: false },
-              checkoutSessionId
-            );
-
+            await updateCheckoutData({ isOrderCreatedInBackend: false }, checkoutSessionId);
             console.log(" Order creation failed - updated Redis");
-
             clearSessionId();
-            console.log(" Order creation failed - updated Redis");
           }
           return;
         }
 
-        // 2) Send confirmation email - require success before clearing sessionStorage
+        // Step 2: Send confirmation email
         try {
-          // const emailResponse = await fetch("/api-2/send-order-email", {
-          //   method: "POST",
-          //   headers: { "Content-Type": "application/json" },
-          //   body: JSON.stringify(fullOrderData),
-          // });
-
-          // if (!emailResponse.ok) {
-          //   const errorText = await emailResponse.text();
-          //   toast.dismiss(sendingToastId);
-          //   console.error(
-          //     "Failed to send order confirmation email:",
-          //     errorText
-          //   );
-          //   toast.error(
-          //     "Order placed successfully, but failed to send confirmation email"
-          //   );
-
-          // Update Redis - backend order created but email failed
-          // if (checkoutSessionId) {
-          //   await updateCheckoutData(
-          //     { isOrderCreatedInBackend: true },
-          //     checkoutSessionId
-          //   );
-
-          //   console.log(" Order created but email failed - updated Redis");
-
-          //   clearSessionId();
-          //   console.log(" Order created but email failed - updated Redis");
-          // }
-          // Do NOT remove sessionStorage so the orderData can be retried
-          //   return;
-          // }
-
-          // Both backend order creation and email succeeded
           toast.dismiss(sendingToastId);
           toast.success(`Order confirmation sent to ${customerEmail}`);
+
+          // ─── NEW: Fire purchase tracking event ─────────────────────────────
+          // We fire HERE — not on component mount and not from GtagConversion —
+          // because this is the proven moment of a real completed purchase:
+          // the backend accepted the order and we're about to send the email.
+          //
+          // trackPurchase() in lib/gtm.ts calls clearEcommerce() first, which
+          // prevents product data from earlier events in this session from
+          // bleeding into the purchase event. Then it pushes the full ecommerce
+          // object to window.dataLayer. GTM picks it up and fires both:
+          //   - "GA4 - Purchase" tag → revenue and items reach GA4
+          //   - "GA Conversion Tracking" tag → Google Ads counts a real conversion
+          trackPurchase({
+            orderId: orderNum,
+            orderTotal: subtotal,  // cart total before tax
+            tax: salesTax,         // Math.round(subtotal * 0.029) — calculated above
+            shipping: 0,           // free shipping on all orders
+            items: cartItems.map((item) => ({
+              item_id: item.id.toString(),
+              item_name: item.title || "Unknown Product",
+              price: item.price,
+              quantity: item.quantity,
+            })),
+          });
+
           await fetch("/api-2/send-order-email", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ...fullOrderData,
-            }),
+            body: JSON.stringify({ ...fullOrderData }),
           });
-          // Update Redis to mark as successful
+
           if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: true },
-              checkoutSessionId
-            );
+            await updateCheckoutData({ isOrderCreatedInBackend: true }, checkoutSessionId);
             console.log(" Order created successfully - updated Redis");
 
             // Track order completion in FCM analytics
             try {
-              // Get sessionId from localStorage (FCM uses this) or use checkoutSessionId
               const fcmSessionId =
                 localStorage.getItem("session_id") || checkoutSessionId;
 
               if (fcmSessionId) {
-                // Check if user came from a notification click (check last 1 hour)
-                const recentClicksResponse = await fetch(
-                  `/api-2/fcm-analytics?type=clicks`
-                );
+                const recentClicksResponse = await fetch(`/api-2/fcm-analytics?type=clicks`);
                 const clicksData = await recentClicksResponse.json();
                 const recentClicks = clicksData.clicks || [];
 
-                // Check if there's a click from this session in the last hour
                 const oneHourAgo = Date.now() - 60 * 60 * 1000;
                 const cameFromNotification = recentClicks.some((click: any) => {
                   const clickTime = new Date(click.clickedAt).getTime();
-                  return (
-                    click.sessionId === fcmSessionId && clickTime > oneHourAgo
-                  );
+                  return click.sessionId === fcmSessionId && clickTime > oneHourAgo;
                 });
 
-                // Track order completion
                 await fetch("/api-2/fcm-analytics", {
                   method: "POST",
                   headers: { "Content-Type": "application/json" },
@@ -542,16 +1259,11 @@ function ThankYouPageContent() {
                 ? phoneNumber
                 : `+91${phoneNumber}`;
               const smsText = `Thank you for your order #${orderNum}! Your order is being processed and will be shipped soon.`;
-
               await fetch("/api-2/sendsms", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                  to: formattedPhone,
-                  message: smsText,
-                }),
+                body: JSON.stringify({ to: formattedPhone, message: smsText }),
               });
-
               console.log(" SMS sent successfully to", formattedPhone);
             } catch (smsErr) {
               console.error(" Failed to send SMS:", smsErr);
@@ -560,35 +1272,21 @@ function ThankYouPageContent() {
             console.warn(" No phone number found — SMS not sent.");
           }
 
-          // Remove orderData now that both steps succeeded
           sessionStorage.removeItem("orderData");
         } catch (err) {
           toast.dismiss(sendingToastId);
           console.error("Email sending failed:", err);
-          toast.error(
-            "Order placed successfully, but failed to send confirmation email"
-          );
+          toast.error("Order placed successfully, but failed to send confirmation email");
 
-          // Update Redis - backend order created but email failed
           if (checkoutSessionId) {
-            await updateCheckoutData(
-              { isOrderCreatedInBackend: true },
-              checkoutSessionId
-            );
-
+            await updateCheckoutData({ isOrderCreatedInBackend: true }, checkoutSessionId);
             console.log(" Order created but email failed - updated Redis");
-
             clearSessionId();
-            console.log(" Order created but email failed - updated Redis");
           }
-          // Do NOT remove sessionStorage so the orderData can be retried
           return;
         }
 
-        //  Now mark as viewed (after order creation)
-        const viewedOrders = JSON.parse(
-          localStorage.getItem("viewedOrders") || "[]"
-        );
+        const viewedOrders = JSON.parse(localStorage.getItem("viewedOrders") || "[]");
         if (orderNum && viewedOrders.includes(orderNum)) {
           setShowPopup(true);
           setTimeout(() => {
@@ -602,24 +1300,18 @@ function ThankYouPageContent() {
         console.error("Error creating order:", error);
         toast.error("Failed to process order. Please contact support.");
         if (checkoutSessionId) {
-          await updateCheckoutData(
-            { isOrderCreatedInBackend: false },
-            checkoutSessionId
-          );
+          await updateCheckoutData({ isOrderCreatedInBackend: false }, checkoutSessionId);
           clearSessionId();
         }
       }
     };
 
-    // console.log("stripePaymentData", stripePaymentData);
     createOrder();
   }, [
     user,
     cartHasHydrated,
     cartItems,
     setCartHasHydrated,
-    // stripePaymentData,
-    // isStripePaymentReady,
   ]);
 
   return (
@@ -642,10 +1334,7 @@ function ThankYouPageContent() {
           <div className="flex flex-col items-center mb-6">
             <h1
               className="text-white text-2xl md:text-3xl lg:text-3xl font-semibold uppercase text-center leading-tight tracking-wide"
-              style={{
-                fontFamily: "Audiowide, sans-serif",
-                letterSpacing: "0.1em",
-              }}
+              style={{ fontFamily: "Audiowide, sans-serif", letterSpacing: "0.1em" }}
             >
               Thank you for shopping with us!
             </h1>
@@ -656,9 +1345,7 @@ function ThankYouPageContent() {
 
           <div className="flex flex-col md:flex-row md:justify-between gap-6 md:gap-0 mb-1">
             <div>
-              <div className="uppercase text-sm text-gray-300 font-semibold">
-                Deliver To
-              </div>
+              <div className="uppercase text-sm text-gray-300 font-semibold">Deliver To</div>
               <div className="text-white text-sm mt-1 leading-tight">
                 <>
                   {billingInfo && Object.keys(billingInfo).length > 0 && (
@@ -668,68 +1355,41 @@ function ThankYouPageContent() {
                       {shippingInfo.firstName} {shippingInfo.lastName}
                       <br />
                       {billingInfo.address}
-                      {billingInfo.apartment && (
-                        <>
-                          <br />
-                          {billingInfo.apartment}
-                        </>
-                      )}
+                      {billingInfo.apartment && (<><br />{billingInfo.apartment}</>)}
                       <br />
-                      {billingInfo.company && (
-                        <>
-                          {billingInfo.company}
-                          <br />
-                        </>
-                      )}
-                      {billingInfo.city}, {billingInfo.state},{" "}
-                      {billingInfo.zipCode}, {billingInfo.country}
+                      {billingInfo.company && (<>{billingInfo.company}<br /></>)}
+                      {billingInfo.city}, {billingInfo.state}, {billingInfo.zipCode}, {billingInfo.country}
                       <br />
                       {billingInfo.phone}
                     </div>
                   )}
 
-                  {!isSameAddress &&
-                    shippingInfo &&
-                    Object.keys(shippingInfo).length > 0 && (
-                      <div className="mt-3">
-                        <strong>Shipping Information</strong>
-                        <br />
-                        {shippingInfo.firstName} {shippingInfo.lastName}
-                        <br />
-                        {shippingInfo.address}
-                        {shippingInfo.apartment && (
-                          <>
-                            <br />
-                            {shippingInfo.apartment}
-                          </>
-                        )}
-                        <br />
-                        {shippingInfo.company && (
-                          <>
-                            {shippingInfo.company}
-                            <br />
-                          </>
-                        )}
-                        {shippingInfo.city}, {shippingInfo.state},{" "}
-                        {shippingInfo.zipCode}, {shippingInfo.country}
-                        <br />
-                        {shippingInfo.phone}
-                      </div>
-                    )}
+                  {!isSameAddress && shippingInfo && Object.keys(shippingInfo).length > 0 && (
+                    <div className="mt-3">
+                      <strong>Shipping Information</strong>
+                      <br />
+                      {shippingInfo.firstName} {shippingInfo.lastName}
+                      <br />
+                      {shippingInfo.address}
+                      {shippingInfo.apartment && (<><br />{shippingInfo.apartment}</>)}
+                      <br />
+                      {shippingInfo.company && (<>{shippingInfo.company}<br /></>)}
+                      {shippingInfo.city}, {shippingInfo.state}, {shippingInfo.zipCode}, {shippingInfo.country}
+                      <br />
+                      {shippingInfo.phone}
+                    </div>
+                  )}
                 </>
               </div>
             </div>
 
             <div className="flex flex-col items-start md:items-center">
-              <div className="uppercase text-sm text-gray-300 font-semibold pr-12">
-                Payment Method
-              </div>
+              <div className="uppercase text-sm text-gray-300 font-semibold pr-12">Payment Method</div>
               <div className="flex items-center gap-3 mt-1">
                 {paymentInfo.method === "card" ? (
                   <>
                     <span className="text-white text-sm tracking-widest">
-                      **** **** ****{" "}
-                      {paymentInfo.lastFour || "****"}
+                      **** **** **** {paymentInfo.lastFour || "****"}
                     </span>
                     {cardImage && (
                       <img
@@ -749,20 +1409,14 @@ function ThankYouPageContent() {
           <div className="border-t border-white my-4" />
           <div className="flex flex-col md:flex-row justify-between items-center mb-2">
             <div className="uppercase text-sm text-white font-semibold">
-              Order Details{" "}
-              <span id="order-id" className="font-normal">
-                #{orderNumber}
-              </span>
+              Order Details <span id="order-id" className="font-normal">#{orderNumber}</span>
             </div>
             <div className="text-sm text-white">{orderDate}</div>
           </div>
 
           {cartItems.length > 0 ? (
             cartItems.map((item) => (
-              <div
-                key={item.id}
-                className="flex flex-row items-start gap-4 py-2"
-              >
+              <div key={item.id} className="flex flex-row items-start gap-4 py-2">
                 <Image
                   src={
                     item.title?.includes("Transmission")
@@ -775,13 +1429,9 @@ function ThankYouPageContent() {
                   className="rounded-lg"
                 />
                 <div className="flex-1">
-                  <div className="product-title text-base text-white font-semibold">
-                    {item.title}
-                  </div>
+                  <div className="product-title text-base text-white font-semibold">{item.title}</div>
                   <div className="text-sm text-gray-300">{item.subtitle}</div>
-                  <div className="text-sm text-gray-300">
-                    {item.quantity} pc{item.quantity > 1 ? "s" : ""}.
-                  </div>
+                  <div className="text-sm text-gray-300">{item.quantity} pc{item.quantity > 1 ? "s" : ""}.</div>
                 </div>
                 <div className="product-price text-base text-white font-semibold min-w-[60px] text-right">
                   ${item.price * item.quantity}
@@ -790,9 +1440,7 @@ function ThankYouPageContent() {
             ))
           ) : (
             <div className="flex flex-row items-start gap-4 py-2">
-              <div className="text-white text-center w-full">
-                No items in cart
-              </div>
+              <div className="text-white text-center w-full">No items in cart</div>
             </div>
           )}
 
@@ -830,38 +1478,12 @@ function ThankYouPageContent() {
         </div>
       </main>
 
-      {/*  Popup for duplicate view */}
-      {/* <Script
-        id="google-ads-conversion"
-        strategy="beforeInteractive"
-        dangerouslySetInnerHTML={{
-          __html: `
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('event', 'conversion', {
-              'send_to': 'AW-17273467579/qtoECO6FibkbELvl0KxA',
-              'value': ${subtotal},
-              'currency': 'USD',
-              'transaction_id': '${orderNumber}'
-            });
-          `,
-        }}
-      /> */}
-      {/* Hidden conversion component */}
-      <div className="">
-        {orderNumber && cartItems.length > 0 && (
-          <GtagConversion
-            orderId={orderNumber}
-            orderTotal={subtotal}
-            items={cartItems.map((item) => ({
-              itemId: item.id || "unknown",
-              itemName: item.title || "unknown",
-              price: item.price || 0,
-              quantity: item.quantity || 1,
-            }))}
-          />
-        )}
-      </div>
+      {/*
+        REMOVED: <GtagConversion ... /> component — replaced by trackPurchase()
+                 call inside the createOrder success path above.
+        REMOVED: Commented-out <Script id="google-ads-conversion"> block.
+        Both are now handled by GTM via the purchase event pushed to dataLayer.
+      */}
     </div>
   );
 }
